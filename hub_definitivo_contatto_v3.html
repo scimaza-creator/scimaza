@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub Contatti</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:#1A3A5C; --navy2:#2E5A8E; --blue-lt:#B5D4F4; --teal:#5DCAA5;
+  --bg:#F4F6F9; --surface:#FFFFFF; --border:#E2E8F0;
+  --text:#1A202C; --muted:#64748B; --hint:#94A3B8;
+  --green:#375623; --green-bg:#C6EFCE; --red:#9C0006; --red-bg:#FFC7CE;
+  --amber-bg:#FAEEDA; --amber:#633806;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:16px}
+
+/* LAYOUT VIEWS */
+#viewList{display:block} #viewCard{display:none} #viewForm{display:none}
+
+/* TOPBAR */
+.topbar{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.logo{font-size:14px;font-weight:500;color:var(--navy);margin-right:6px}
+.pill{font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--muted);transition:all .15s;font-family:'DM Sans',sans-serif}
+.pill:hover{border-color:var(--navy2);color:var(--navy)}
+.pill.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn{font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .12s}
+.btn:hover{background:var(--bg);border-color:var(--navy2)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.primary:hover{background:var(--navy2)}
+.btn.danger{background:#FFF0F0;color:var(--red);border-color:#FFCDD2}
+.btn.ghost{border-color:var(--navy2);color:var(--blue-lt);background:transparent}
+
+/* SEARCH */
+.search-bar{display:flex;gap:8px;margin-bottom:14px;align-items:center}
+.search-bar input{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);outline:none}
+.search-bar input:focus{border-color:var(--navy2)}
+
+/* CONTACT LIST */
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.contact-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:12px}
+.contact-card:hover{border-color:var(--navy2);box-shadow:0 2px 8px rgba(26,58,92,.08)}
+.c-av{width:44px;height:44px;border-radius:50%;background:var(--navy2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500;color:var(--blue-lt);flex-shrink:0;overflow:hidden}
+.c-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.c-info{flex:1;min-width:0}
+.c-name{font-size:13px;font-weight:500;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-role{font-size:11px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-cat{font-size:10px;padding:2px 7px;border-radius:8px;margin-top:4px;display:inline-block}
+.cat-personale{background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
+.cat-fornitori{background:#E6F1FB;color:#0C447C;border:1px solid #85B7EB}
+.cat-terzi{background:#FAEEDA;color:#633806;border:1px solid #EF9F27}
+.cat-default{background:var(--bg);color:var(--muted);border:1px solid var(--border)}
+.empty-state{text-align:center;padding:48px 20px;color:var(--muted);font-size:13px}
+
+/* CARD VIEW */
+.card-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card-hdr{background:var(--navy);padding:16px 18px;display:flex;align-items:center;gap:12px}
+.av-lg{width:58px;height:58px;border-radius:50%;background:var(--navy2);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:500;color:var(--blue-lt);flex-shrink:0;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,.15)}
+.av-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.card-body{display:grid;grid-template-columns:1fr 1fr}
+.col{padding:14px 16px}
+.col:first-child{border-right:1px solid var(--border)}
+.sl{font-size:10px;font-weight:500;color:var(--hint);text-transform:uppercase;letter-spacing:.06em;margin:14px 0 7px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
+.sl:first-child{margin-top:0}
+.sl-dot{width:5px;height:5px;border-radius:50%;background:var(--navy2);flex-shrink:0}
+.fr{display:flex;justify-content:space-between;align-items:flex-start;padding:4px 0;border-bottom:1px solid #F1F5F9;gap:8px}
+.fr:last-child{border-bottom:none}
+.fl{font-size:11px;color:var(--muted);flex-shrink:0;min-width:105px}
+.fv{font-size:11px;color:var(--text);text-align:right;flex:1;word-break:break-word}
+.fv.lk{color:#185FA5;cursor:pointer}
+.fv.ok{color:var(--green);font-weight:500}
+.fv.mono{font-family:'DM Mono',monospace;font-size:10.5px}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tag{font-size:10px;padding:2px 8px;border-radius:10px;background:#EEF3F8;color:var(--muted);border:1px solid var(--border)}
+.tag.p{background:#E1F5EE;color:#085041;border-color:#9FE1CB}
+.ref-note{margin-top:7px;font-size:11px;color:var(--muted);line-height:1.6;background:#F8FAFC;padding:7px 9px;border-radius:6px;border-left:2px solid var(--navy2)}
+.cld{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.cb{font-size:11px;padding:3px 9px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--muted);cursor:pointer}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:7px}
+.mt{aspect-ratio:1;border-radius:7px;background:var(--bg);border:1px solid var(--border);overflow:hidden;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mt img,.mt video{width:100%;height:100%;object-fit:cover}
+.tb{position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;font-size:8px;padding:1px 4px;border-radius:3px;font-family:'DM Mono',monospace}
+.ma{border:1.5px dashed var(--border);background:transparent;color:var(--hint);font-size:22px;transition:all .12s}
+.ma:hover{border-color:var(--navy2);color:var(--navy2)}
+.dl{margin-top:7px;display:flex;flex-direction:column;gap:3px}
+.di{display:flex;align-items:center;gap:8px;padding:5px 7px;background:var(--bg);border-radius:6px;cursor:pointer;border:1px solid transparent;transition:all .12s}
+.di:hover{border-color:var(--border);background:#EEF3F8}
+.ic{width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;font-family:'DM Mono',monospace}
+.ic.pdf{background:var(--red-bg);color:var(--red)}
+.ic.xls{background:var(--green-bg);color:var(--green)}
+.ic.doc{background:var(--blue-lt);color:#0C447C}
+.ic.img{background:var(--amber-bg);color:var(--amber)}
+.dn{font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dd{font-size:10px;color:var(--hint);flex-shrink:0;font-family:'DM Mono',monospace}
+.di.add{border:1.5px dashed var(--border);background:transparent}
+.notes-box{background:var(--bg);border-radius:7px;padding:8px 10px;margin-top:7px;border:1px solid var(--border)}
+.ne{padding:4px 0;border-bottom:1px solid var(--border)}
+.ne:last-child{border-bottom:none}
+.nd{font-size:10px;color:var(--hint);margin-bottom:2px;font-family:'DM Mono',monospace}
+.nt{font-size:11px;color:var(--text);line-height:1.5}
+.ai-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}
+.ai-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--navy);cursor:pointer;transition:all .12s}
+.ai-btn:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.abar{padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;align-items:center;background:#FAFBFC}
+.abar button{font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .12s}
+.abar button:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* FORM */
+.form-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.form-hdr{background:var(--navy);padding:14px 18px;color:#fff;font-size:15px;font-weight:500}
+.form-body{padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+.form-group label{font-size:11px;color:var(--muted);font-weight:500}
+.form-group input,.form-group select,.form-group textarea{font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 10px;border:1px solid var(--border);border-radius:7px;background:var(--bg);color:var(--text);outline:none;transition:border .12s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--navy2);background:var(--surface)}
+.form-group textarea{resize:vertical;min-height:70px}
+.form-footer{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:#FAFBFC}
+
+/* STATUS */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:8px;font-size:12px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
+.toast.show{opacity:1}
+.loading{text-align:center;padding:40px;color:var(--muted);font-size:13px}
+
+input[type=file]{display:none}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ═══ VIEW: LISTA CONTATTI ═══ -->
+<div id="viewList">
+  <div class="topbar">
+    <span class="logo">Hub Contatti</span>
+    <span class="pill on" id="pill-tutte" onclick="filterArea('tutte',this)">Tutte</span>
+    <span class="pill" onclick="filterArea('personale',this)">Personale</span>
+    <span class="pill" onclick="filterArea('fornitori',this)">Fornitori</span>
+    <span class="pill" onclick="filterArea('terzi',this)">Terzi</span>
+    <span class="pill" onclick="filterArea('finanza',this)">Finanza</span>
+    <span class="pill" onclick="filterArea('fiscale',this)">Fiscale</span>
+    <span class="pill" onclick="filterArea('immobili',this)">Immobili</span>
+    <span class="pill" onclick="filterArea('legale',this)">Legale</span>
+    <span class="pill" onclick="filterArea('generica',this)">Generica</span>
+    <button class="btn primary" style="margin-left:auto" onclick="showForm()">+ Nuovo contatto</button>
+  </div>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Cerca per nome, cognome, azienda, professione..." oninput="renderList()">
+    <span id="countLabel" style="font-size:12px;color:var(--muted);white-space:nowrap"></span>
+  </div>
+  <div id="contactGrid" class="contact-grid">
+    <div class="loading">Connessione al database...</div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: SCHEDA CONTATTO ═══ -->
+<div id="viewCard" style="display:none">
+  <div class="topbar">
+    <button class="btn" onclick="showList()">← Tutti i contatti</button>
+    <span id="breadcrumb" style="font-size:12px;color:var(--muted)"></span>
+    <button class="btn" style="margin-left:auto" onclick="editCurrent()">Modifica</button>
+    <button class="btn danger" onclick="deleteCurrent()">Elimina</button>
+  </div>
+  <div class="card-wrap">
+    <div class="card-hdr">
+      <div class="av-lg" id="cardAv" onclick="document.getElementById('photoInput').click()">
+        <span id="cardInitials">--</span>
+      </div>
+      <input type="file" id="photoInput" accept="image/*" onchange="uploadPhoto(event)">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:18px;font-weight:500;color:#fff" id="cardName">--</div>
+        <div style="font-size:12px;color:var(--blue-lt);margin-top:1px" id="cardRole">--</div>
+        <div style="font-size:11px;color:var(--teal);margin-top:2px" id="cardCompany">--</div>
+        <div style="display:flex;gap:6px;align-items:center;margin-top:5px;flex-wrap:wrap">
+          <span id="cardArea" style="font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,.12);color:var(--blue-lt)">--</span>
+          <span id="cardCat" class="c-cat">--</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+        <button class="btn ghost" onclick="document.getElementById('photoInput').click()">+ Foto</button>
+        <span id="cardUpdated" style="font-size:10px;color:var(--blue-lt);font-family:'DM Mono',monospace"></span>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="col">
+        <div class="sl"><span class="sl-dot"></span>Dati personali</div>
+        <div class="fr"><span class="fl">Nome</span><span class="fv" id="fNome">--</span></div>
+        <div class="fr"><span class="fl">Cognome</span><span class="fv" id="fCognome">--</span></div>
+        <div class="fr"><span class="fl">Professione</span><span class="fv" id="fProfessione">--</span></div>
+        <div class="fr"><span class="fl">Categoria</span><span class="fv" id="fCategoria">--</span></div>
+        <div class="fr"><span class="fl">Incarico</span><span class="fv" id="fIncarico">--</span></div>
+        <div class="fr"><span class="fl">Telefono 1</span><span class="fv lk" id="fTel1">--</span></div>
+        <div class="fr"><span class="fl">Telefono 2</span><span class="fv lk" id="fTel2">--</span></div>
+        <div class="fr"><span class="fl">Mobile 1</span><span class="fv lk" id="fMob1">--</span></div>
+        <div class="fr"><span class="fl">Mobile 2</span><span class="fv lk" id="fMob2">--</span></div>
+        <div class="fr"><span class="fl">Email 1</span><span class="fv lk" id="fEmail1">--</span></div>
+        <div class="fr"><span class="fl">Email 2</span><span class="fv lk" id="fEmail2">--</span></div>
+        <div class="fr"><span class="fl">PEC</span><span class="fv lk" id="fPec">--</span></div>
+        <div class="fr"><span class="fl">Codice fiscale</span><span class="fv mono" id="fCf">--</span></div>
+
+        <div class="sl"><span class="sl-dot"></span>Azienda</div>
+        <div class="fr"><span class="fl">Ragione sociale</span><span class="fv" id="fRagione">--</span></div>
+        <div class="fr"><span class="fl">Indirizzo sede</span><span class="fv" id="fIndirizzo">--</span></div>
+        <div class="fr"><span class="fl">P.IVA</span><span class="fv mono" id="fPiva">--</span></div>
+        <div class="fr"><span class="fl">REA</span><span class="fv mono" id="fRea">--</span></div>
+        <div class="fr"><span class="fl">Albo</span><span class="fv" id="fAlbo">--</span></div>
+        <div class="fr"><span class="fl">Sito web</span><span class="fv lk" id="fSito">--</span></div>
+        <div class="fr"><span class="fl">Link azienda</span><span class="fv lk" id="fLink">--</span></div>
+
+        <div class="sl"><span class="sl-dot"></span>Rapporto</div>
+        <div class="fr"><span class="fl">Tipo rapporto</span><span class="fv" id="fTipo">--</span></div>
+        <div class="fr"><span class="fl">Progetto attivo</span><span class="fv" id="fProgetto">--</span></div>
+        <div class="fr"><span class="fl">Stato</span><span class="fv ok" id="fStato">--</span></div>
+
+        <div class="sl"><span class="sl-dot"></span>Conoscenze / Referenze</div>
+        <div class="tags" id="fReferenze"></div>
+        <div class="ref-note" id="fNoteRef" style="display:none"></div>
+
+        <div class="sl"><span class="sl-dot"></span>Cloud — cartella contatto</div>
+        <div class="cld">
+          <span class="cb" id="btnDropbox">Dropbox</span>
+          <span class="cb" id="btnPcloud">pCloud</span>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="sl"><span class="sl-dot"></span>Foto e video</div>
+        <div class="mg" id="mediaGrid">
+          <div class="mt ma" onclick="document.getElementById('mediaInput').click()">+
+            <input type="file" id="mediaInput" accept="image/*,video/*" multiple onchange="addMedia(event)">
+          </div>
+        </div>
+
+        <div class="sl"><span class="sl-dot"></span>Documenti allegati</div>
+        <div class="dl" id="docsList">
+          <div class="di add" onclick="document.getElementById('docInput').click()">
+            <div class="ic" style="background:var(--bg);color:var(--hint);font-size:15px">+</div>
+            <span class="dn" style="color:var(--hint)">Aggiungi documento...</span>
+            <input type="file" id="docInput" onchange="addDoc(event)">
+          </div>
+        </div>
+
+        <div class="sl"><span class="sl-dot"></span>Note cronologiche</div>
+        <div class="notes-box" id="notesList"></div>
+        <div style="margin-top:6px;display:flex;gap:6px">
+          <input type="text" id="newNoteInput" placeholder="Aggiungi nota..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);outline:none">
+          <button class="btn primary" style="font-size:11px;padding:5px 10px" onclick="addNote()">+</button>
+        </div>
+
+        <div class="sl"><span class="sl-dot"></span>Comunicazioni AI</div>
+        <div class="ai-row">
+          <button class="ai-btn" onclick="aiAction('email')">✦ Bozza email</button>
+          <button class="ai-btn" onclick="aiAction('riassunto')">✦ Riassumi</button>
+          <button class="ai-btn" onclick="aiAction('lettera')">✦ Lettera</button>
+          <button class="ai-btn" onclick="aiAction('promemoria')">✦ Promemoria</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="abar">
+      <button onclick="showList()">← Lista contatti</button>
+      <button onclick="editCurrent()">Modifica scheda</button>
+      <button onclick="addNote()">+ Nota</button>
+      <span style="margin-left:auto;font-size:10px;color:var(--hint);font-family:'DM Mono',monospace">Hub Contatti v3 — Firebase</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: FORM NUOVO/MODIFICA ═══ -->
+<div id="viewForm" style="display:none">
+  <div class="topbar">
+    <button class="btn" onclick="cancelForm()">← Annulla</button>
+    <span id="formTitle" style="font-size:14px;font-weight:500;color:var(--navy)">Nuovo contatto</span>
+  </div>
+  <div class="form-wrap">
+    <div class="form-hdr" id="formHdr">Dati contatto</div>
+    <div class="form-body">
+      <div class="form-group">
+        <label>Nome *</label>
+        <input type="text" id="fNomeI" placeholder="Mario">
+      </div>
+      <div class="form-group">
+        <label>Cognome *</label>
+        <input type="text" id="fCognomeI" placeholder="Rossi">
+      </div>
+      <div class="form-group">
+        <label>Professione</label>
+        <input type="text" id="fProfessioneI" placeholder="Architetto">
+      </div>
+      <div class="form-group">
+        <label>Categoria</label>
+        <select id="fCategoriaI">
+          <option value="">-- Seleziona --</option>
+          <option value="personale">Personale</option>
+          <option value="fornitori">Fornitori</option>
+          <option value="terzi">Terzi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Area</label>
+        <select id="fAreaI">
+          <option value="generica">Generica</option>
+          <option value="personale">Personale</option>
+          <option value="fornitori">Fornitori</option>
+          <option value="terzi">Terzi</option>
+          <option value="finanza">Finanza</option>
+          <option value="fiscale">Fiscale</option>
+          <option value="immobili">Immobili</option>
+          <option value="legale">Legale</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Incarico</label>
+        <input type="text" id="fIncaricoI" placeholder="Progettista responsabile">
+      </div>
+      <div class="form-group">
+        <label>Telefono 1</label>
+        <input type="tel" id="fTel1I" placeholder="+39 045 123 4567">
+      </div>
+      <div class="form-group">
+        <label>Telefono 2</label>
+        <input type="tel" id="fTel2I" placeholder="+39 045 765 4321">
+      </div>
+      <div class="form-group">
+        <label>Mobile 1</label>
+        <input type="tel" id="fMob1I" placeholder="+39 338 987 6543">
+      </div>
+      <div class="form-group">
+        <label>Mobile 2</label>
+        <input type="tel" id="fMob2I" placeholder="+39 347 123 9876">
+      </div>
+      <div class="form-group">
+        <label>Email 1</label>
+        <input type="email" id="fEmail1I" placeholder="mario@studio.it">
+      </div>
+      <div class="form-group">
+        <label>Email 2</label>
+        <input type="email" id="fEmail2I" placeholder="mario@gmail.com">
+      </div>
+      <div class="form-group">
+        <label>PEC</label>
+        <input type="email" id="fPecI" placeholder="mario@pec.it">
+      </div>
+      <div class="form-group">
+        <label>Codice fiscale</label>
+        <input type="text" id="fCfI" placeholder="RSSMRA70A01L781K">
+      </div>
+      <div class="form-group full" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+        <label style="font-size:12px;font-weight:500;color:var(--navy)">AZIENDA</label>
+      </div>
+      <div class="form-group">
+        <label>Ragione sociale</label>
+        <input type="text" id="fRagioneI" placeholder="Studio Rossi & Associati S.r.l.">
+      </div>
+      <div class="form-group">
+        <label>Indirizzo sede</label>
+        <input type="text" id="fIndirizzoI" placeholder="Via Roma 12, 37121 Verona VR">
+      </div>
+      <div class="form-group">
+        <label>P.IVA</label>
+        <input type="text" id="fPivaI" placeholder="IT02345678901">
+      </div>
+      <div class="form-group">
+        <label>REA</label>
+        <input type="text" id="fReaI" placeholder="VR-234567">
+      </div>
+      <div class="form-group">
+        <label>Albo professionale</label>
+        <input type="text" id="fAlboI" placeholder="Arch. VR n. 1234">
+      </div>
+      <div class="form-group">
+        <label>Sito web</label>
+        <input type="url" id="fSitoI" placeholder="https://www.studio.it">
+      </div>
+      <div class="form-group">
+        <label>Link azienda (LinkedIn ecc.)</label>
+        <input type="url" id="fLinkI" placeholder="https://linkedin.com/...">
+      </div>
+      <div class="form-group full" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+        <label style="font-size:12px;font-weight:500;color:var(--navy)">RAPPORTO</label>
+      </div>
+      <div class="form-group">
+        <label>Tipo rapporto</label>
+        <input type="text" id="fTipoI" placeholder="Fornitore professionale">
+      </div>
+      <div class="form-group">
+        <label>Progetto attivo</label>
+        <input type="text" id="fProgettoI" placeholder="Villa Zanella — restauro">
+      </div>
+      <div class="form-group">
+        <label>Stato</label>
+        <select id="fStatoI">
+          <option value="Attivo">Attivo</option>
+          <option value="Inattivo">Inattivo</option>
+          <option value="In attesa">In attesa</option>
+        </select>
+      </div>
+      <div class="form-group full" style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+        <label style="font-size:12px;font-weight:500;color:var(--navy)">CLOUD & REFERENZE</label>
+      </div>
+      <div class="form-group">
+        <label>Link cartella Dropbox</label>
+        <input type="url" id="fDropboxI" placeholder="https://www.dropbox.com/...">
+      </div>
+      <div class="form-group">
+        <label>Link cartella pCloud</label>
+        <input type="url" id="fPcloudI" placeholder="https://my.pcloud.com/...">
+      </div>
+      <div class="form-group full">
+        <label>Note referenze / come conosciuto</label>
+        <textarea id="fNoteRefI" placeholder="Conosciuto tramite Ing. Bianchi — presentazione diretta gen 2026..."></textarea>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn" onclick="cancelForm()">Annulla</button>
+      <button class="btn primary" onclick="saveContact()">Salva contatto</button>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, serverTimestamp, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBgT7HoFfVuuQeNctx7upLSoYlt_2MKCo0",
+  authDomain: "hub-contatti.firebaseapp.com",
+  projectId: "hub-contatti",
+  storageBucket: "hub-contatti.firebasestorage.app",
+  messagingSenderId: "1843153327",
+  appId: "1:1843153327:web:44cf6ae20d7ec43b54475a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// ─── STATE ───
+let allContacts = [];
+let currentContact = null;
+let currentArea = 'tutte';
+let editingId = null;
+
+// ─── TOAST ───
+function toast(msg, dur=2500){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), dur);
+}
+
+// ─── LOAD CONTACTS ───
+async function loadContacts(){
+  try {
+    const q = query(collection(db,'contatti'), orderBy('cognome'));
+    const snap = await getDocs(q);
+    allContacts = snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderList();
+  } catch(e){
+    document.getElementById('contactGrid').innerHTML='<div class="empty-state">Errore connessione database.<br>Verifica le regole Firestore (modalità test).</div>';
+    console.error(e);
+  }
+}
+
+// ─── RENDER LIST ───
+window.renderList = function(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  let filtered = allContacts.filter(c=>{
+    const matchArea = currentArea==='tutte' || (c.area||'').toLowerCase()===currentArea;
+    const matchSearch = !q || [c.nome,c.cognome,c.ragioneSociale,c.professione].some(v=>(v||'').toLowerCase().includes(q));
+    return matchArea && matchSearch;
+  });
+  document.getElementById('countLabel').textContent = filtered.length+' contatti';
+  const grid = document.getElementById('contactGrid');
+  if(!filtered.length){
+    grid.innerHTML='<div class="empty-state">Nessun contatto trovato.<br>Clicca "+ Nuovo contatto" per iniziare.</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(c=>{
+    const ini = ((c.nome||'')[0]||'') + ((c.cognome||'')[0]||'');
+    const catCls = c.categoria ? 'cat-'+c.categoria : 'cat-default';
+    const photoHtml = c.photoUrl ? `<img src="${c.photoUrl}" alt="">` : `<span>${ini.toUpperCase()}</span>`;
+    return `<div class="contact-card" onclick="openContact('${c.id}')">
+      <div class="c-av">${photoHtml}</div>
+      <div class="c-info">
+        <div class="c-name">${c.nome||''} ${c.cognome||''}</div>
+        <div class="c-role">${c.professione||c.incarico||''}</div>
+        <div class="c-role" style="color:var(--teal);font-size:10px">${c.ragioneSociale||''}</div>
+        ${c.categoria?`<span class="c-cat ${catCls}">${c.categoria}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ─── FILTER AREA ───
+window.filterArea = function(area, el){
+  currentArea = area;
+  document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));
+  el.classList.add('on');
+  renderList();
+}
+
+// ─── OPEN CONTACT ───
+window.openContact = function(id){
+  const c = allContacts.find(x=>x.id===id);
+  if(!c) return;
+  currentContact = c;
+
+  // Header
+  const ini = ((c.nome||'')[0]||'') + ((c.cognome||'')[0]||'');
+  const avEl = document.getElementById('cardAv');
+  avEl.innerHTML = c.photoUrl ? `<img src="${c.photoUrl}" alt="">` : `<span>${ini.toUpperCase()}</span>`;
+  document.getElementById('cardName').textContent = (c.nome||'') + ' ' + (c.cognome||'');
+  document.getElementById('cardRole').textContent = [c.professione, c.incarico].filter(Boolean).join(' — ');
+  document.getElementById('cardCompany').textContent = c.ragioneSociale||'';
+  document.getElementById('cardArea').textContent = c.area||'';
+  const catEl = document.getElementById('cardCat');
+  catEl.textContent = c.categoria||'';
+  catEl.className = 'c-cat ' + (c.categoria ? 'cat-'+c.categoria : 'cat-default');
+  const d = c.updatedAt?.toDate ? c.updatedAt.toDate() : new Date();
+  document.getElementById('cardUpdated').textContent = 'agg. '+d.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('breadcrumb').textContent = (c.nome||'')+' '+(c.cognome||'');
+
+  // Fields
+  const set = (id,val) => { const el=document.getElementById(id); if(el) el.textContent=val||'—'; };
+  set('fNome',c.nome); set('fCognome',c.cognome); set('fProfessione',c.professione);
+  set('fCategoria',c.categoria); set('fIncarico',c.incarico);
+  set('fTel1',c.tel1); set('fTel2',c.tel2);
+  set('fMob1',c.mob1); set('fMob2',c.mob2);
+  set('fEmail1',c.email1); set('fEmail2',c.email2);
+  set('fPec',c.pec); set('fCf',c.cf);
+  set('fRagione',c.ragioneSociale); set('fIndirizzo',c.indirizzo);
+  set('fPiva',c.piva); set('fRea',c.rea);
+  set('fAlbo',c.albo); set('fSito',c.sitoWeb); set('fLink',c.linkAzienda);
+  set('fTipo',c.tipoRapporto); set('fProgetto',c.progetto); set('fStato',c.stato);
+
+  // Referenze
+  const refs = (c.referenze||'').split(',').map(r=>r.trim()).filter(Boolean);
+  document.getElementById('fReferenze').innerHTML = refs.map(r=>`<span class="tag p">${r}</span>`).join('');
+  const noteRef = document.getElementById('fNoteRef');
+  noteRef.textContent = c.noteRef||'';
+  noteRef.style.display = c.noteRef ? 'block' : 'none';
+
+  // Cloud
+  const db2 = document.getElementById('btnDropbox');
+  const pc = document.getElementById('btnPcloud');
+  db2.onclick = c.dropboxUrl ? ()=>window.open(c.dropboxUrl) : null;
+  db2.style.color = c.dropboxUrl ? '#185FA5' : 'var(--muted)';
+  pc.onclick = c.pcloudUrl ? ()=>window.open(c.pcloudUrl) : null;
+  pc.style.color = c.pcloudUrl ? '#185FA5' : 'var(--muted)';
+
+  // Media
+  const mg = document.getElementById('mediaGrid');
+  const addBtn = mg.querySelector('.ma');
+  mg.querySelectorAll('.mt:not(.ma)').forEach(el=>el.remove());
+  (c.media||[]).forEach(m=>{
+    const div=document.createElement('div'); div.className='mt';
+    const isV=m.type==='video';
+    const el=document.createElement(isV?'video':'img');
+    el.src=m.url; el.style.cssText='width:100%;height:100%;object-fit:cover';
+    div.appendChild(el);
+    const tb=document.createElement('span'); tb.className='tb';
+    tb.textContent=isV?'MP4':'JPG'; div.appendChild(tb);
+    mg.insertBefore(div,addBtn);
+  });
+
+  // Docs
+  const dl = document.getElementById('docsList');
+  const addDoc2 = dl.querySelector('.add');
+  dl.querySelectorAll('.di:not(.add)').forEach(el=>el.remove());
+  (c.docs||[]).forEach(d2=>{
+    const ext=(d2.name||'').split('.').pop().toUpperCase();
+    const cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
+    const div=document.createElement('div'); div.className='di';
+    div.innerHTML=`<div class="ic ${cls}">${ext.slice(0,3)}</div><span class="dn">${d2.name}</span><span class="dd">${d2.date||''}</span>`;
+    dl.insertBefore(div,addDoc2);
+  });
+
+  // Notes
+  renderNotes(c.note||[]);
+
+  showView('viewCard');
+}
+
+function renderNotes(notes){
+  const nl = document.getElementById('notesList');
+  if(!notes.length){ nl.innerHTML='<div class="ne"><div class="nt" style="color:var(--hint)">Nessuna nota. Aggiungi la prima nota qui sotto.</div></div>'; return; }
+  nl.innerHTML = [...notes].reverse().map(n=>`<div class="ne"><div class="nd">${n.date}</div><div class="nt">${n.text}</div></div>`).join('');
+}
+
+// ─── ADD NOTE ───
+window.addNote = async function(){
+  const input = document.getElementById('newNoteInput');
+  const text = input.value.trim();
+  if(!text || !currentContact) return;
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+  const note = {text, date: dateStr};
+  const notes = [...(currentContact.note||[]), note];
+  try {
+    await updateDoc(doc(db,'contatti',currentContact.id), {note: notes, updatedAt: serverTimestamp()});
+    currentContact.note = notes;
+    renderNotes(notes);
+    input.value='';
+    toast('Nota salvata');
+    const idx = allContacts.findIndex(x=>x.id===currentContact.id);
+    if(idx>=0) allContacts[idx].note = notes;
+  } catch(e){ toast('Errore salvataggio nota'); }
+}
+
+// ─── UPLOAD PHOTO (base64) ───
+window.uploadPhoto = async function(e){
+  const file = e.target.files[0];
+  if(!file || !currentContact) return;
+  const reader = new FileReader();
+  reader.onload = async (ev)=>{
+    const url = ev.target.result;
+    try {
+      await updateDoc(doc(db,'contatti',currentContact.id), {photoUrl: url, updatedAt: serverTimestamp()});
+      currentContact.photoUrl = url;
+      document.getElementById('cardAv').innerHTML = `<img src="${url}" alt="">`;
+      const idx = allContacts.findIndex(x=>x.id===currentContact.id);
+      if(idx>=0) allContacts[idx].photoUrl = url;
+      renderList();
+      toast('Foto aggiornata');
+    } catch(e){ toast('Errore caricamento foto'); }
+  };
+  reader.readAsDataURL(file);
+}
+
+// ─── ADD MEDIA ───
+window.addMedia = async function(e){
+  if(!currentContact) return;
+  const mg = document.getElementById('mediaGrid');
+  const addBtn = mg.querySelector('.ma');
+  const media = [...(currentContact.media||[])];
+  Array.from(e.target.files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=async(ev)=>{
+      const url=ev.target.result;
+      const isV=file.type.startsWith('video');
+      const div=document.createElement('div'); div.className='mt';
+      const el=document.createElement(isV?'video':'img');
+      el.src=url; el.style.cssText='width:100%;height:100%;object-fit:cover';
+      div.appendChild(el);
+      const tb=document.createElement('span'); tb.className='tb';
+      tb.textContent=isV?'MP4':'JPG'; div.appendChild(tb);
+      mg.insertBefore(div,addBtn);
+      media.push({url,type:isV?'video':'image'});
+      try {
+        await updateDoc(doc(db,'contatti',currentContact.id),{media,updatedAt:serverTimestamp()});
+        currentContact.media=media;
+        toast('Media aggiunto');
+      } catch(err){ toast('Errore salvataggio media'); }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ─── ADD DOC ───
+window.addDoc = async function(e){
+  if(!currentContact) return;
+  const dl = document.getElementById('docsList');
+  const addRow = dl.querySelector('.add');
+  const docs = [...(currentContact.docs||[])];
+  Array.from(e.target.files).forEach(file=>{
+    const ext=file.name.split('.').pop().toUpperCase();
+    const cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
+    const now=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
+    const div=document.createElement('div'); div.className='di';
+    div.innerHTML=`<div class="ic ${cls}">${ext.slice(0,3)}</div><span class="dn">${file.name}</span><span class="dd">${now}</span>`;
+    dl.insertBefore(div,addRow);
+    docs.push({name:file.name,date:now,ext});
+  });
+  try {
+    await updateDoc(doc(db,'contatti',currentContact.id),{docs,updatedAt:serverTimestamp()});
+    currentContact.docs=docs;
+    toast('Documento aggiunto');
+  } catch(e){ toast('Errore salvataggio documento'); }
+}
+
+// ─── FORM ───
+window.showForm = function(contact=null){
+  editingId = contact ? contact.id : null;
+  document.getElementById('formTitle').textContent = contact ? 'Modifica contatto' : 'Nuovo contatto';
+  document.getElementById('formHdr').textContent = contact ? 'Modifica — '+(contact.nome||'')+' '+(contact.cognome||'') : 'Dati contatto';
+  const fields = ['Nome','Cognome','Professione','Incarico','Tel1','Tel2','Mob1','Mob2','Email1','Email2','Pec','Cf','Ragione','Indirizzo','Piva','Rea','Albo','Sito','Link','Tipo','Progetto','Dropbox','Pcloud','NoteRef'];
+  const map = {Nome:'nome',Cognome:'cognome',Professione:'professione',Incarico:'incarico',Tel1:'tel1',Tel2:'tel2',Mob1:'mob1',Mob2:'mob2',Email1:'email1',Email2:'email2',Pec:'pec',Cf:'cf',Ragione:'ragioneSociale',Indirizzo:'indirizzo',Piva:'piva',Rea:'rea',Albo:'albo',Sito:'sitoWeb',Link:'linkAzienda',Tipo:'tipoRapporto',Progetto:'progetto',Dropbox:'dropboxUrl',Pcloud:'pcloudUrl',NoteRef:'noteRef'};
+  fields.forEach(f=>{ const el=document.getElementById('f'+f+'I'); if(el) el.value=contact?(contact[map[f]]||''):''; });
+  if(contact){
+    document.getElementById('fCategoriaI').value=contact.categoria||'';
+    document.getElementById('fAreaI').value=contact.area||'generica';
+    document.getElementById('fStatoI').value=contact.stato||'Attivo';
+  } else {
+    document.getElementById('fCategoriaI').value='';
+    document.getElementById('fAreaI').value='generica';
+    document.getElementById('fStatoI').value='Attivo';
+  }
+  showView('viewForm');
+}
+
+window.editCurrent = function(){ if(currentContact) showForm(currentContact); }
+
+window.cancelForm = function(){
+  if(currentContact) showView('viewCard');
+  else showView('viewList');
+}
+
+window.saveContact = async function(){
+  const get = id => (document.getElementById(id)||{}).value||'';
+  const data = {
+    nome: get('fNomeI'), cognome: get('fCognomeI'),
+    professione: get('fProfessioneI'), categoria: get('fCategoriaI'),
+    area: get('fAreaI'), incarico: get('fIncaricoI'),
+    tel1: get('fTel1I'), tel2: get('fTel2I'),
+    mob1: get('fMob1I'), mob2: get('fMob2I'),
+    email1: get('fEmail1I'), email2: get('fEmail2I'),
+    pec: get('fPecI'), cf: get('fCfI'),
+    ragioneSociale: get('fRagioneI'), indirizzo: get('fIndirizzoI'),
+    piva: get('fPivaI'), rea: get('fReaI'), albo: get('fAlboI'),
+    sitoWeb: get('fSitoI'), linkAzienda: get('fLinkI'),
+    tipoRapporto: get('fTipoI'), progetto: get('fProgettoI'),
+    stato: get('fStatoI'),
+    dropboxUrl: get('fDropboxI'), pcloudUrl: get('fPcloudI'),
+    noteRef: get('fNoteRefI'),
+    updatedAt: serverTimestamp()
+  };
+  if(!data.nome && !data.cognome){ toast('Inserisci almeno nome o cognome'); return; }
+  try {
+    if(editingId){
+      await updateDoc(doc(db,'contatti',editingId), data);
+      const idx=allContacts.findIndex(x=>x.id===editingId);
+      if(idx>=0){ allContacts[idx]={...allContacts[idx],...data}; currentContact={...currentContact,...data}; }
+      toast('Contatto aggiornato');
+      openContact(editingId);
+    } else {
+      data.note=[]; data.media=[]; data.docs=[];
+      const ref=await addDoc(collection(db,'contatti'), data);
+      allContacts.push({id:ref.id,...data});
+      toast('Contatto salvato');
+      showList();
+    }
+    await loadContacts();
+  } catch(e){ toast('Errore salvataggio: '+e.message); console.error(e); }
+}
+
+// ─── DELETE ───
+window.deleteCurrent = async function(){
+  if(!currentContact) return;
+  if(!confirm('Eliminare definitivamente '+currentContact.nome+' '+currentContact.cognome+'?')) return;
+  try {
+    await deleteDoc(doc(db,'contatti',currentContact.id));
+    allContacts=allContacts.filter(x=>x.id!==currentContact.id);
+    currentContact=null;
+    toast('Contatto eliminato');
+    showList();
+  } catch(e){ toast('Errore eliminazione'); }
+}
+
+// ─── AI ACTIONS ───
+window.aiAction = function(type){
+  if(!currentContact) return;
+  const nome = (currentContact.nome||'')+' '+(currentContact.cognome||'');
+  const azienda = currentContact.ragioneSociale||'';
+  const progetto = currentContact.progetto||'';
+  const prompts = {
+    email: `Scrivi una email professionale a ${nome} (${azienda}) riguardo al progetto: ${progetto}`,
+    riassunto: `Riassumi il profilo e lo storico del contatto ${nome} di ${azienda}, progetto attivo: ${progetto}`,
+    lettera: `Genera una lettera formale indirizzata a ${nome} presso ${azienda}`,
+    promemoria: `Crea un promemoria di follow-up per il contatto ${nome} (${azienda}) relativo a: ${progetto}`
+  };
+  if(typeof sendPrompt === 'function') sendPrompt(prompts[type]);
+  else { navigator.clipboard.writeText(prompts[type]); toast('Prompt copiato negli appunti'); }
+}
+
+// ─── VIEW MANAGEMENT ───
+function showView(id){
+  ['viewList','viewCard','viewForm'].forEach(v=>{ document.getElementById(v).style.display=v===id?'block':'none'; });
+}
+window.showList = function(){ currentContact=null; showView('viewList'); renderList(); }
+
+// ─── INIT ───
+loadContacts();
+</script>
+</body>
+</html>
