@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub — Rubrica & Aree</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1A3A5C;--navy2:#2E5A8E;--blue-lt:#B5D4F4;--teal:#5DCAA5;--bg:#152D4A;--surface:#1A3A5C;--border:#2E5A8E;--text:#FFFFFF;--muted:#B5D4F4;--hint:#85B7EB;--green:#375623;--green-bg:#C6EFCE;--red:#9C0006;--red-bg:#FFC7CE;--amber-bg:#FAEEDA;--amber:#633806}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#152D4A;font-family:'DM Sans',sans-serif;background:#152D4A;color:#FFFFFF;min-height:100vh;padding:16px}
+.view{display:none}.view.active{display:block}
+.main-tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--surface);padding:4px;border-radius:10px;border:1px solid var(--border);width:fit-content}
+.main-tab{font-size:12px;padding:6px 16px;border-radius:7px;cursor:pointer;color:#FFFFFF;font-family:'DM Sans',sans-serif;border:none;background:transparent;transition:all .15s}
+.main-tab.on{background:var(--navy);color:#fff}
+.topbar{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.pill{font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:#FFFFFF;transition:all .15s;font-family:'DM Sans',sans-serif}
+.pill:hover{border-color:var(--navy2);color:#FFFFFF}
+.pill.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn{font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#FFFFFF;cursor:pointer;transition:all .12s}
+.btn:hover{background:var(--bg);border-color:var(--navy2)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.danger{background:#FFF0F0;color:var(--red);border-color:#FFCDD2}
+.btn.ghost{border-color:var(--navy2);color:var(--blue-lt);background:transparent}
+.filter-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.filter-bar select{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 8px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:#FFFFFF;outline:none;cursor:pointer}
+.search-bar{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.search-bar input{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:#FFFFFF;outline:none}
+.search-bar input::placeholder{color:#B5D4F4}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.contact-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.contact-card:hover{border-color:var(--navy2);box-shadow:0 2px 8px rgba(26,58,92,.08)}
+.c-av{width:42px;height:42px;border-radius:50%;background:var(--navy2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--blue-lt);flex-shrink:0;overflow:hidden}
+.c-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.c-info{flex:1;min-width:0}
+.c-name{font-size:13px;font-weight:500;color:#FFFFFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-role{font-size:11px;color:#B5D4F4;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px}
+.badge{font-size:9px;padding:1px 6px;border-radius:8px;display:inline-block}
+.badge-fornitori{background:#E6F1FB;color:#0C447C;border:1px solid #85B7EB}
+.badge-terzi{background:#FAEEDA;color:#633806;border:1px solid #EF9F27}
+.badge-personale{background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
+.empty-state{text-align:center;padding:48px 20px;color:#FFFFFF;font-size:13px}
+.card-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card-hdr{background:var(--navy);padding:14px 18px;display:flex;align-items:center;gap:12px}
+.av-lg{width:56px;height:56px;border-radius:50%;background:var(--navy2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;color:var(--blue-lt);flex-shrink:0;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,.15)}
+.av-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.card-body{display:grid;grid-template-columns:1fr 1fr}
+.col{padding:12px 16px}
+.col:first-child{border-right:1px solid var(--border)}
+.sl{font-size:10px;font-weight:500;color:#85B7EB;text-transform:uppercase;letter-spacing:.06em;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
+.sl:first-child{margin-top:0}
+.sl-dot{width:5px;height:5px;border-radius:50%;background:var(--navy2);flex-shrink:0}
+.fr{display:flex;justify-content:space-between;align-items:flex-start;padding:4px 0;border-bottom:1px solid #F1F5F9;gap:8px}
+.fr:last-child{border-bottom:none}
+.fl{font-size:11px;#333333;flex-shrink:0;min-width:110px}
+.fv{font-size:11px;#1A202C;text-align:right;flex:1;word-break:break-word}
+.fv.lk{color:#185FA5;cursor:pointer}
+.fv.ok{color:var(--green);font-weight:500}
+.fv.mono{font-family:'DM Mono',monospace;font-size:10.5px}
+.phone-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid #F1F5F9;gap:4px}
+.phone-row:last-child{border-bottom:none}
+.phone-label{font-size:11px;#333333;flex-shrink:0;min-width:80px}
+.phone-val{font-size:11px;#1A202C;font-family:'DM Mono',monospace;flex:1;text-align:right}
+.phone-type{font-size:9px;padding:1px 5px;border-radius:6px;background:#EEF3F8;#333333;flex-shrink:0}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tag{font-size:10px;padding:2px 8px;border-radius:10px;background:#EEF3F8;#333333;border:1px solid var(--border)}
+.tag.p{background:#E1F5EE;color:#085041;border-color:#9FE1CB}
+.ref-note{margin-top:6px;font-size:11px;#333333;line-height:1.6;background:#F8FAFC;padding:6px 9px;border-radius:6px;border-left:2px solid var(--navy2)}
+.cloud-btns{display:flex;gap:8px;margin-top:8px}
+.cloud-btn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 14px;border-radius:7px;cursor:pointer;white-space:nowrap;transition:all .12s}
+.cloud-btn.dropbox{background:#E6F1FB;color:#0C447C;border:1px solid #B5D4F4}
+.cloud-btn.dropbox:hover{background:#B5D4F4}
+.cloud-btn.spike{background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
+.cloud-btn.spike:hover{background:#9FE1CB}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:6px}
+.mt{aspect-ratio:1;border-radius:7px;background:var(--bg);border:1px solid var(--border);overflow:hidden;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mt img,.mt video{width:100%;height:100%;object-fit:cover}
+.tb{position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;font-size:8px;padding:1px 4px;border-radius:3px;font-family:'DM Mono',monospace}
+.ma{border:1.5px dashed var(--border);background:transparent;#555555;font-size:22px}
+.dl{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+.di{display:flex;align-items:center;gap:7px;padding:5px 7px;background:var(--bg);border-radius:6px;cursor:pointer;border:1px solid transparent}
+.di:hover{border-color:var(--border);background:#EEF3F8}
+.ic{width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;font-family:'DM Mono',monospace}
+.ic.pdf{background:var(--red-bg);color:var(--red)}
+.ic.xls{background:var(--green-bg);color:var(--green)}
+.ic.doc{background:var(--blue-lt);color:#0C447C}
+.ic.img{background:var(--amber-bg);color:var(--amber)}
+.dn{font-size:11px;#1A202C;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dd{font-size:10px;#555555;flex-shrink:0;font-family:'DM Mono',monospace}
+.di.add{border:1.5px dashed var(--border);background:transparent}
+.notes-box{background:var(--bg);border-radius:7px;padding:7px 10px;margin-top:6px;border:1px solid var(--border)}
+.ne{padding:4px 0;border-bottom:1px solid var(--border)}
+.ne:last-child{border-bottom:none}
+.nd{font-size:10px;#555555;margin-bottom:1px;font-family:'DM Mono',monospace}
+.nt{font-size:11px;color:#FFFFFF;line-height:1.5}
+.ai-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.ai-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:#FFFFFF;cursor:pointer}
+.abar{padding:9px 16px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;align-items:center;background:var(--surface)}
+.abar button{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:#FFFFFF;cursor:pointer}
+.abar button:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.form-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.form-hdr{background:var(--navy);padding:12px 18px;color:#fff;font-size:14px;font-weight:500}
+.form-body{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg.full{grid-column:1/-1}
+.fg.triple{display:grid;grid-template-columns:100px 1fr 90px;gap:6px;grid-column:1/-1}
+.fg label{font-size:10px;color:#FFFFFF;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;background:#2E5A8E;color:#FFFFFF;outline:none;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--navy2);background:var(--navy)}
+.fg textarea{resize:vertical;min-height:60px}
+.form-section{grid-column:1/-1;font-size:11px;font-weight:500;color:#B5D4F4;padding:8px 0 4px;border-top:1px solid var(--border);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.form-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:var(--surface)}
+.aree-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.area-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s}
+.area-card:hover{border-color:var(--navy2);box-shadow:0 2px 8px rgba(26,58,92,.08)}
+.area-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
+.area-name{font-size:14px;font-weight:500;color:#FFFFFF;margin-bottom:4px}
+.area-desc{font-size:12px;color:#B5D4F4;line-height:1.5}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:8px;font-size:12px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
+.toast.show{opacity:1}
+.loading{text-align:center;padding:40px;#333333;font-size:13px}
+input[type=file]{display:none}
+</style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+  <span style="font-size:22px;font-weight:500;color:#FFFFFF">Hub</span>
+  <div class="main-tabs">
+    <button class="main-tab on" id="tabBtnRubrica">Rubrica contatti</button>
+    <button class="main-tab" id="tabBtnAree">Aree di interesse</button>
+    <button class="main-tab" id="tabBtnImpostazioni">⚙ Impostazioni</button>
+  </div>
+</div>
+
+<div id="tabRubrica" class="view active">
+  <div id="viewList" class="view active">
+    <div class="topbar">
+      <span class="pill on" id="pillTutti">Tutti</span>
+      <span class="pill" id="pillFornitori">Fornitori</span>
+      <span class="pill" id="pillTerzi">Terzi</span>
+      <span class="pill" id="pillPersonale">Personale</span>
+      <button class="btn primary" style="margin-left:auto" id="btnNuovoContatto">+ Nuovo contatto</button>
+    </div>
+    <div class="filter-bar">
+      <select id="filterCategoria"><option value="">Tutte le categorie</option></select>
+      <span id="countLabel" style="font-size:12px;color:#FFFFFF"></span>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Cerca nome, cognome, azienda, professione..." style="color:#FFFFFF">
+    </div>
+    <div id="contactGrid" class="contact-grid"><div class="loading">Connessione al database...</div></div>
+  </div>
+
+  <div id="viewCard" class="view">
+    <div class="topbar">
+      <button class="btn" id="btnBackList">← Contatti</button>
+      <span id="breadcrumb" style="font-size:12px;#333333"></span>
+      <button class="btn" style="margin-left:auto" id="btnModifica">Modifica</button>
+      <button class="btn danger" id="btnElimina">Elimina</button>
+    </div>
+    <div class="card-wrap">
+      <div class="card-hdr">
+        <div class="av-lg" id="cardAv"><span id="cardInitials">--</span></div>
+        <input type="file" id="photoInput" accept="image/*">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:17px;font-weight:500;color:#fff" id="cardName">--</div>
+          <div style="font-size:12px;color:var(--blue-lt);margin-top:1px" id="cardRole">--</div>
+          <div style="font-size:11px;color:var(--teal);margin-top:2px" id="cardCompany">--</div>
+          <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap">
+            <span id="cardGruppo" style="font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.12);color:var(--blue-lt)">--</span>
+            <span id="cardCat" style="font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.08);color:#B5D4F4">--</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+          <button class="btn ghost" id="btnFoto">+ Foto</button>
+          <span id="cardUpdated" style="font-size:10px;color:var(--blue-lt);font-family:'DM Mono',monospace"></span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col">
+          <div class="sl"><span class="sl-dot"></span>Dati personali</div>
+          <div class="fr"><span class="fl">Nome</span><span class="fv" id="fNome">--</span></div>
+          <div class="fr"><span class="fl">Cognome</span><span class="fv" id="fCognome">--</span></div>
+          <div class="fr"><span class="fl">Professione</span><span class="fv" id="fProfessione">--</span></div>
+          <div class="fr"><span class="fl">Incarico</span><span class="fv" id="fIncarico">--</span></div>
+          <div class="fr"><span class="fl">Gruppo</span><span class="fv" id="fGruppo">--</span></div>
+          <div class="fr"><span class="fl">Categoria</span><span class="fv" id="fCategoria">--</span></div>
+          <div class="fr"><span class="fl">Via / Piazza</span><span class="fv" id="fVia">--</span><span class="fv mono" id="fCivico" style="margin-left:6px;color:var(--muted)"></span></div>
+          <div class="fr"><span class="fl">CAP</span><span class="fv mono" id="fCap">--</span></div>
+          <div class="fr"><span class="fl">Località</span><span class="fv" id="fLocalita">--</span></div>
+          <div class="fr"><span class="fl">Comune</span><span class="fv" id="fComune">--</span></div>
+          <div class="fr"><span class="fl">Provincia</span><span class="fv" id="fProvincia">--</span></div>
+          <div class="fr"><span class="fl">Regione</span><span class="fv" id="fRegione">--</span></div>
+          <div class="fr"><span class="fl">Stato</span><span class="fv" id="fStato2">--</span></div>
+          <div style="margin-top:6px">
+            <button class="cloud-btn dropbox" id="btnMaps" style="font-size:10px;padding:4px 10px">📍 Apri in Google Maps</button>
+          </div>
+
+          <div class="sl"><span class="sl-dot"></span>Note cronologiche</div>
+          <div class="notes-box" id="notesList"></div>
+          <div style="margin-top:6px;display:flex;gap:6px">
+            <input type="text" id="newNoteInput" placeholder="Aggiungi nota..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;background:var(--navy2);color:#FFFFFF;outline:none">
+            <button class="btn primary" style="font-size:11px;padding:5px 10px" id="btnAddNote">+</button>
+          </div>
+
+          <div class="sl"><span class="sl-dot"></span>Telefoni</div>
+          <div class="phone-row"><span class="phone-label">Telefono 1</span><span class="phone-val" id="fTel1">--</span><span class="phone-type" id="fTel1T"></span></div>
+          <div class="phone-row"><span class="phone-label">Telefono 2</span><span class="phone-val" id="fTel2">--</span><span class="phone-type" id="fTel2T"></span></div>
+          <div class="phone-row"><span class="phone-label">Mobile 1</span><span class="phone-val" id="fMob1">--</span><span class="phone-type" id="fMob1T"></span></div>
+          <div class="phone-row"><span class="phone-label">Mobile 2</span><span class="phone-val" id="fMob2">--</span><span class="phone-type" id="fMob2T"></span></div>
+          <div class="phone-row"><span class="phone-label">Fax</span><span class="phone-val mono" id="fFax">--</span><span class="phone-type"></span></div>
+
+          <div class="sl"><span class="sl-dot"></span>Email</div>
+          <div class="fr"><span class="fl">Email 1</span><span class="fv lk" id="fEmail1">--</span></div>
+          <div class="fr"><span class="fl">Email 2</span><span class="fv lk" id="fEmail2">--</span></div>
+          <div class="fr"><span class="fl">PEC</span><span class="fv lk" id="fPec">--</span></div>
+          <div class="fr"><span class="fl">Codice fiscale</span><span class="fv mono" id="fCf">--</span></div>
+
+          <div class="sl"><span class="sl-dot"></span>Azienda</div>
+          <div class="fr"><span class="fl">Ragione sociale</span><span class="fv" id="fRagione">--</span></div>
+          <div class="fr"><span class="fl">P.IVA</span><span class="fv mono" id="fPiva">--</span></div>
+          <div class="fr"><span class="fl">REA</span><span class="fv mono" id="fRea">--</span></div>
+          <div class="fr"><span class="fl">Albo</span><span class="fv" id="fAlbo">--</span></div>
+          <div class="fr"><span class="fl">Tipologia prodotti</span><span class="fv" id="fProdotti">--</span></div>
+          <div class="fr"><span class="fl">Sito web</span><span class="fv lk" id="fSito">--</span></div>
+          <div class="fr"><span class="fl">Link azienda</span><span class="fv lk" id="fLink">--</span></div>
+
+          <div class="sl"><span class="sl-dot"></span>Rapporto</div>
+          <div class="fr"><span class="fl">Tipo rapporto</span><span class="fv" id="fTipo">--</span></div>
+          <div class="fr"><span class="fl">Progetto attivo</span><span class="fv" id="fProgetto">--</span></div>
+          <div class="fr"><span class="fl">Stato</span><span class="fv ok" id="fStato">--</span></div>
+
+          <div class="sl"><span class="sl-dot"></span>Conoscenze / Referenze</div>
+          <div class="tags" id="fReferenze"></div>
+          <div class="ref-note" id="fNoteRef" style="display:none"></div>
+
+          <div class="sl"><span class="sl-dot"></span>Cloud & Referenze</div>
+          <div class="cloud-btns">
+            <button class="cloud-btn dropbox" id="btnDropbox">Dropbox cloud</button>
+            <button class="cloud-btn spike" id="btnSpike">Spike-mail</button>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="sl"><span class="sl-dot"></span>Foto e video</div>
+          <div class="mg" id="mediaGrid">
+            <div class="mt ma" id="btnAddMedia">+<input type="file" id="mediaInput" accept="image/*,video/*" multiple></div>
+          </div>
+          <div class="sl"><span class="sl-dot"></span>Documenti allegati</div>
+          <div class="dl" id="docsList">
+            <div class="di add" id="btnAddDoc">
+              <div class="ic" style="background:var(--bg);#555555;font-size:15px">+</div>
+              <span class="dn" style="#555555">Aggiungi documento...</span>
+              <input type="file" id="docInput">
+            </div>
+          </div>
+          <div class="sl"><span class="sl-dot"></span>Comunicazioni AI</div>
+          <div class="ai-row">
+            <button class="ai-btn" id="aiBtnEmail">✦ Bozza email</button>
+            <button class="ai-btn" id="aiBtnRiassunto">✦ Riassumi</button>
+            <button class="ai-btn" id="aiBtnLettera">✦ Lettera</button>
+            <button class="ai-btn" id="aiBtnPromemoria">✦ Promemoria</button>
+          </div>
+        </div>
+      </div>
+      <div class="abar">
+        <button id="btnAbarLista">← Lista</button>
+        <button id="btnAbarModifica">Modifica</button>
+        <button id="btnAbarNota">+ Nota</button>
+        <span style="margin-left:auto;font-size:10px;#555555;font-family:'DM Mono',monospace">Hub v33</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewForm" class="view">
+    <div class="topbar">
+      <button class="btn" id="btnAnnullaForm">← Annulla</button>
+      <span id="formTitle" style="font-size:13px;font-weight:500;color:var(--navy)">Nuovo contatto</span>
+    </div>
+    <div class="form-wrap">
+      <div class="form-hdr" id="formHdr">Dati contatto</div>
+      <div class="form-body">
+        <div class="form-section">Dati personali</div>
+        <div class="fg"><label>Nome *</label><input type="text" id="fNomeI" placeholder="Mario"></div>
+        <div class="fg"><label>Cognome *</label><input type="text" id="fCognomeI" placeholder="Rossi"></div>
+        <div class="fg"><label>Professione</label>
+          <input type="text" id="fProfessioneI" list="listProfessioni" placeholder="Seleziona o scrivi...">
+          <datalist id="listProfessioni">
+            <option value="Architetto"><option value="Architetto d'interni"><option value="Architetto paesaggista">
+            <option value="Ingegnere"><option value="Ingegnere strutturista"><option value="Geometra">
+            <option value="Agronomo"><option value="Termotecnico"><option value="Elettrotecnico">
+            <option value="Notaio"><option value="Avvocato"><option value="Avvocato penalista">
+            <option value="Avvocato civilista"><option value="Commercialista"><option value="Tributarista">
+            <option value="Falegname"><option value="Idraulico"><option value="Elettricista">
+            <option value="Lattoniere"><option value="Cartongessista"><option value="Piastrellista">
+            <option value="Edile"><option value="Vivaista"><option value="Giardiniere">
+            <option value="Medico base"><option value="Cardiologo"><option value="Neurologo">
+            <option value="Oncologo"><option value="Ginecologo"><option value="Ortopedico">
+            <option value="Otorinolaringoiatra"><option value="Oculista"><option value="Dentista">
+            <option value="Fisioterapista"><option value="Chirurgo"><option value="Pediatra">
+            <option value="Psicologo"><option value="Psichiatra"><option value="Urologo">
+            <option value="Gastroenterologo"><option value="Agente commercio"><option value="Titolare"><option value="Capo area">
+          </datalist>
+        </div>
+        <div class="fg"><label>Incarico</label><input type="text" id="fIncaricoI" placeholder="Progettista responsabile"></div>
+        <div class="fg"><label>Gruppo</label>
+          <select id="fGruppoI">
+            <option value="">-- Seleziona --</option>
+            <option value="fornitori">Fornitori</option>
+            <option value="terzi">Terzi</option>
+            <option value="personale">Personale</option>
+          </select>
+        </div>
+        <div class="fg"><label>Categoria</label>
+          <input type="text" id="fCategoriaI" list="listSettori" placeholder="Digita categoria e memorizza...">
+          <datalist id="listSettori"></datalist>
+        </div>
+        <div class="fg full"><label>Via / Piazza &amp; N. Civico</label>
+          <div style="display:grid;grid-template-columns:100px 1fr 70px;gap:6px;align-items:center">
+            <select id="fViaPrefissoI" style="font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:7px;background:#2E5A8E;color:#fff;outline:none;width:100%;box-sizing:border-box">
+              <option value="Via">Via</option>
+              <option value="Viale">Viale</option>
+              <option value="Piazza">Piazza</option>
+              <option value="Piazzale">Piazzale</option>
+              <option value="Largo">Largo</option>
+              <option value="Vicolo">Vicolo</option>
+              <option value="SS.">SS.</option>
+              <option value="Strada">Strada</option>
+            </select>
+            <input type="text" id="fViaI" placeholder="Nome della via..." style="font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;background:#2E5A8E;color:#fff;outline:none;width:100%;box-sizing:border-box">
+            <input type="text" id="fCivicoI" placeholder="N°" style="font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;background:#2E5A8E;color:#fff;outline:none;width:100%;box-sizing:border-box;text-align:center">
+          </div>
+        </div>
+        <div class="fg"><label>CAP</label>
+          <input type="text" id="fCapI" placeholder="37121" list="listCAP" autocomplete="off">
+          <datalist id="listCAP"></datalist>
+        </div>
+        <div class="fg"><label>Località</label><input type="text" id="fLocalitaI" placeholder="Verona"></div>
+        <div class="fg"><label>Comune</label>
+          <input type="text" id="fComuneI" placeholder="Verona" list="listComuni" autocomplete="off">
+          <datalist id="listComuni"></datalist>
+        </div>
+        <div class="fg"><label>Provincia</label>
+          <input type="text" id="fProvinciaI" placeholder="VR" list="listProvince" autocomplete="off">
+          <datalist id="listProvince"></datalist>
+        </div>
+        <div class="fg"><label>Regione</label>
+          <input type="text" id="fRegioneI" placeholder="Veneto" list="listRegioni" autocomplete="off">
+          <datalist id="listRegioni"></datalist>
+        </div>
+        <div class="fg"><label>Stato</label>
+          <input type="text" id="fStato2I" placeholder="Italia" list="listStati" autocomplete="off">
+          <datalist id="listStati"></datalist>
+        </div>
+        <div class="fg full"><label>Note referenze / come conosciuto</label>
+          <textarea id="fNoteRefI" placeholder="Conosciuto tramite Ing. Bianchi — presentazione diretta gen 2026..."></textarea>
+        </div>
+
+        <div class="form-section">Telefoni</div>
+        <div class="fg triple">
+          <div><label>Prefisso tel.1</label><input type="text" id="fTel1PrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Telefono 1</label><input type="tel" id="fTel1I" placeholder="045 123 4567"></div>
+          <div><label>Tipo</label><select id="fTel1TI"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div>
+        </div>
+        <div class="fg triple">
+          <div><label>Prefisso tel.2</label><input type="text" id="fTel2PrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Telefono 2</label><input type="tel" id="fTel2I" placeholder="045 765 4321"></div>
+          <div><label>Tipo</label><select id="fTel2TI"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div>
+        </div>
+        <div class="fg triple">
+          <div><label>Prefisso mob.1</label><input type="text" id="fMob1PrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Mobile 1</label><input type="tel" id="fMob1I" placeholder="338 987 6543"></div>
+          <div><label>Tipo</label><select id="fMob1TI"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div>
+        </div>
+        <div class="fg triple">
+          <div><label>Prefisso mob.2</label><input type="text" id="fMob2PrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Mobile 2</label><input type="tel" id="fMob2I" placeholder="347 123 9876"></div>
+          <div><label>Tipo</label><select id="fMob2TI"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div>
+        </div>
+        <div class="fg triple">
+          <div><label>Prefisso fax</label><input type="text" id="fFaxPrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Fax</label><input type="tel" id="fFaxI" placeholder="045 123 4568"></div>
+          <div></div>
+        </div>
+        <datalist id="listPrefissi">
+          <option value="+39">+39 Italia</option><option value="+33">+33 Francia</option>
+          <option value="+41">+41 Svizzera</option><option value="+43">+43 Austria</option>
+          <option value="+44">+44 UK</option><option value="+49">+49 Germania</option>
+          <option value="+34">+34 Spagna</option><option value="+1">+1 USA/Canada</option>
+        </datalist>
+
+        <div class="form-section">Email & Fiscale</div>
+        <div class="fg"><label>Email 1</label><input type="email" id="fEmail1I" placeholder="mario@studio.it"></div>
+        <div class="fg"><label>Email 2</label><input type="email" id="fEmail2I" placeholder="mario@gmail.com"></div>
+        <div class="fg"><label>PEC</label><input type="email" id="fPecI" placeholder="mario@pec.it"></div>
+        <div class="fg"><label>Codice fiscale</label><input type="text" id="fCfI" placeholder="RSSMRA70A01L781K"></div>
+
+        <div class="form-section">Azienda</div>
+        <div class="fg"><label>Ragione sociale</label><input type="text" id="fRagioneI" placeholder="Studio Rossi & Associati S.r.l."></div>
+        <div class="fg"><label>P.IVA</label><input type="text" id="fPivaI" placeholder="IT02345678901"></div>
+        <div class="fg"><label>REA</label><input type="text" id="fReaI" placeholder="VR-234567"></div>
+        <div class="fg"><label>Albo professionale</label><input type="text" id="fAlboI" placeholder="Arch. VR n. 1234"></div>
+        <div class="fg"><label>Tipologia prodotti</label><input type="text" id="fProdottiI" list="listProdotti" placeholder="Inserisci o seleziona..."><datalist id="listProdotti"></datalist></div>
+        <div class="fg"><label>Sito web</label><input type="url" id="fSitoI" placeholder="https://www.studio.it"></div>
+        <div class="fg"><label>Link azienda</label><input type="url" id="fLinkI" placeholder="https://linkedin.com/..."></div>
+
+        <div class="form-section">Rapporto</div>
+        <div class="fg"><label>Tipo rapporto</label><input type="text" id="fTipoI" placeholder="Fornitore professionale"></div>
+        <div class="fg"><label>Progetto attivo</label><input type="text" id="fProgettoI" placeholder="Villa Zanella — restauro"></div>
+        <div class="fg"><label>Stato</label><select id="fStatoI"><option value="Attivo">Attivo</option><option value="Inattivo">Inattivo</option><option value="In attesa">In attesa</option></select></div>
+
+        <div class="form-section">Cloud</div>
+        <div class="fg"><label>Link cartella Dropbox</label><input type="url" id="fDropboxI" placeholder="https://www.dropbox.com/..."></div>
+        <div class="fg"><label>Email per Spike</label><input type="email" id="fSpikeI" placeholder="contatto@email.it"></div>
+      </div>
+      <div class="form-footer">
+        <button class="btn" id="btnAnnullaForm2">Annulla</button>
+        <button class="btn primary" id="btnSalvaContatto">Salva contatto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tabAree" class="view">
+  <div style="margin-bottom:16px"><div style="font-size:13px;#333333">Seleziona un area per accedere a risorse, fonti e strumenti dedicati.</div></div>
+  <div class="aree-grid">
+    <div class="area-card" id="areaFinanza"><div class="area-icon" style="background:#E6F1FB">💹</div><div class="area-name" style="color:#FFFFFF">Finanza</div><div class="area-desc" style="color:#B5D4F4">Portafogli virtuali, mercati azionari, ETF, obbligazioni</div></div>
+    <div class="area-card" id="areaFisco"><div class="area-icon" style="background:#FAEEDA">📋</div><div class="area-name" style="color:#FFFFFF">Fisco e Tributi</div><div class="area-desc" style="color:#B5D4F4">Scadenzario fiscale, F24, dichiarazioni, normativa tributaria</div></div>
+    <div class="area-card" id="areaLegale"><div class="area-icon" style="background:#FFC7CE">⚖️</div><div class="area-name" style="color:#FFFFFF">Legale</div><div class="area-desc" style="color:#B5D4F4">Pratiche, contratti, normativa, scadenze legali</div></div>
+    <div class="area-card" id="areaImmobili"><div class="area-icon" style="background:#C6EFCE">🏛️</div><div class="area-name" style="color:#FFFFFF">Immobili storici</div><div class="area-desc" style="color:#B5D4F4">Ville storiche, restauro conservativo, Digital Identity Card</div></div>
+    <div class="area-card" id="areaTurismo"><div class="area-icon" style="background:#E1F5EE">✈️</div><div class="area-name" style="color:#FFFFFF">Turismo</div><div class="area-desc" style="color:#B5D4F4">Strutture ricettive, incoming, promozione territoriale</div></div>
+    <div class="area-card" id="areaEnogastronomia"><div class="area-icon" style="background:#EEEDFE">🍷</div><div class="area-name" style="color:#FFFFFF">Enogastronomia</div><div class="area-desc" style="color:#B5D4F4">Vini, prodotti tipici, produttori locali, ristorazione</div></div>
+  </div>
+</div>
+
+<div id="tabImpostazioni" class="view">
+  <div style="margin-bottom:14px;font-size:13px;color:#FFFFFF">Gestisci i vocabolari — aggiungi o elimina voci dalle tendine.</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" id="vocGridWrapper">
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Professioni</div>
+      <div id="vocListProfessioni" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputProfessioni" placeholder="Nuova professione..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('professioni')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Categorie</div>
+      <div id="vocListCategorie" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputCategorie" placeholder="Nuova categoria..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('categorie')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Tipologia prodotti</div>
+      <div id="vocListProdotti" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputProdotti" placeholder="Nuovo prodotto..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('prodotti')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Prefissi Via / Piazza</div>
+      <div id="vocListPrefissiVia" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputPrefissiVia" placeholder="es. Contrada..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('prefissiVia')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+    <div style="background:var(--surface);border-radius:8px;padding:12px 16px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Prefissi telefonici</div>
+      <div id="vocListPrefissi" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputPrefissi" placeholder="+xx Paese..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('prefissi')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBgT7HoFfVuuQeNctx7upLSoYlt_2MKCo0",
+  authDomain: "hub-contatti.firebaseapp.com",
+  projectId: "hub-contatti",
+  storageBucket: "hub-contatti.firebasestorage.app",
+  messagingSenderId: "1843153327",
+  appId: "1:1843153327:web:44cf6ae20d7ec43b54475a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const CATEGORIE = {
+  fornitori: ['Professionisti','Artigiani','Medici','Commerciale','Società','Altro'],
+  terzi: ['Clienti','Altro'],
+  personale: ['Amici','Conoscenti','Affittuari','Vari','Altro']
+};
+
+let prodottiSalvati = JSON.parse(localStorage.getItem('hub_prodotti')||'[]');
+let allContacts = [], currentContact = null, currentGruppo = 'tutti', editingId = null;
+
+function toast(msg,dur=2500){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+function showView(id){
+  ['viewList','viewCard','viewForm'].forEach(v=>{
+    const el=document.getElementById(v);
+    if(el) el.classList.toggle('active',v===id);
+  });
+}
+
+function showTab(tab){
+  document.getElementById('tabRubrica').classList.toggle('active',tab==='rubrica');
+  document.getElementById('tabAree').classList.toggle('active',tab==='aree');
+  document.getElementById('tabImpostazioni').classList.toggle('active',tab==='impostazioni');
+  document.getElementById('tabBtnRubrica').classList.toggle('on',tab==='rubrica');
+  document.getElementById('tabBtnAree').classList.toggle('on',tab==='aree');
+  document.getElementById('tabBtnImpostazioni').classList.toggle('on',tab==='impostazioni');
+  if(tab==='impostazioni') caricaVocabolari();
+}
+
+function updateCategorieSelect(){
+  const gruppo = document.getElementById('fGruppoI').value;
+  const sel = document.getElementById('fCategoriaI');
+  const cats = CATEGORIE[gruppo]||[];
+  sel.innerHTML = '<option value="">-- Seleziona --</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function updateFilterCategorie(){
+  const sel = document.getElementById('filterCategoria');
+  const cats = currentGruppo==='tutti' ? [...new Set(Object.values(CATEGORIE).flat())] : (CATEGORIE[currentGruppo]||[]);
+  sel.innerHTML = '<option value="">Tutte le categorie</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function aggiornaProdotti(){
+  const dl=document.getElementById('listProdotti');
+  if(dl) dl.innerHTML=prodottiSalvati.map(p=>`<option value="${p}">`).join('');
+}
+
+function aggiornaSettori(){
+  const settoriSalvati=JSON.parse(localStorage.getItem('hub_settori')||'[]');
+  const dl=document.getElementById('listSettori');
+  if(dl) dl.innerHTML=settoriSalvati.map(s=>`<option value="${s}">`).join('');
+}
+
+async function loadContacts(){
+  try{
+    const q=query(collection(db,'contatti'),orderBy('cognome'));
+    const snap=await getDocs(q);
+    allContacts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderList();
+  }catch(e){
+    document.getElementById('contactGrid').innerHTML='<div class="empty-state">Errore connessione database.</div>';
+  }
+}
+
+function renderList(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const cat=document.getElementById('filterCategoria').value;
+  let filtered=allContacts.filter(c=>{
+    const mg=currentGruppo==='tutti'||(c.gruppo||'')===currentGruppo;
+    const mc=!cat||(c.categoria||'')===cat;
+    const ms=!q||[c.nome,c.cognome,c.ragioneSociale,c.professione,c.categoria].some(v=>(v||'').toLowerCase().includes(q));
+    return mg&&mc&&ms;
+  });
+  document.getElementById('countLabel').textContent=filtered.length+' contatti';
+  const grid=document.getElementById('contactGrid');
+  if(!filtered.length){grid.innerHTML='<div class="empty-state">Nessun contatto.<br>Clicca "+ Nuovo contatto" per iniziare.</div>';return;}
+  grid.innerHTML=filtered.map(c=>{
+    const ini=((c.nome||'')[0]||'')+((c.cognome||'')[0]||'');
+    const gc=c.gruppo?'badge-'+c.gruppo:'';
+    const ph=c.photoUrl?`<img src="${c.photoUrl}" alt="">`:`<span>${ini.toUpperCase()}</span>`;
+    return `<div class="contact-card" data-id="${c.id}">
+      <div class="c-av">${ph}</div>
+      <div class="c-info">
+        <div class="c-name">${c.nome||''} ${c.cognome||''}</div>
+        <div class="c-role">${c.professione||c.incarico||''}</div>
+        <div class="c-role" style="color:var(--teal);font-size:10px">${c.ragioneSociale||''}</div>
+        <div class="c-badges">${c.gruppo?`<span class="badge ${gc}">${c.gruppo}</span>`:''} ${c.categoria?`<span class="badge" style="background:var(--bg);#333333;border:1px solid var(--border)">${c.categoria}</span>`:''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.contact-card').forEach(card=>{
+    card.addEventListener('click',()=>openContact(card.dataset.id));
+  });
+}
+
+function openContact(id){
+  const c=allContacts.find(x=>x.id===id);
+  if(!c)return;
+  currentContact=c;
+  const ini=((c.nome||'')[0]||'')+((c.cognome||'')[0]||'');
+  const av=document.getElementById('cardAv');
+  av.innerHTML=c.photoUrl?`<img src="${c.photoUrl}" alt="">`:`<span>${ini.toUpperCase()}</span>`;
+  document.getElementById('cardName').textContent=(c.nome||'')+' '+(c.cognome||'');
+  document.getElementById('cardRole').textContent=[c.professione,c.incarico].filter(Boolean).join(' — ');
+  document.getElementById('cardCompany').textContent=c.ragioneSociale||'';
+  document.getElementById('cardGruppo').textContent=c.gruppo||'';
+  document.getElementById('cardCat').textContent=c.categoria||'';
+  document.getElementById('breadcrumb').textContent=(c.nome||'')+' '+(c.cognome||'');
+  const d=c.updatedAt?.toDate?c.updatedAt.toDate():new Date();
+  document.getElementById('cardUpdated').textContent='agg. '+d.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val||'—';};
+  set('fNome',c.nome);set('fCognome',c.cognome);set('fProfessione',c.professione);
+  set('fGruppo',c.gruppo);set('fCategoria',c.categoria);set('fIncarico',c.incarico);
+  set('fTel1',(c.tel1Pref||'')+' '+(c.tel1||''));set('fTel1T',c.tel1T||'');
+  set('fTel2',(c.tel2Pref||'')+' '+(c.tel2||''));set('fTel2T',c.tel2T||'');
+  set('fMob1',(c.mob1Pref||'')+' '+(c.mob1||''));set('fMob1T',c.mob1T||'');
+  set('fMob2',(c.mob2Pref||'')+' '+(c.mob2||''));set('fMob2T',c.mob2T||'');
+  set('fFax',(c.faxPref||'')+' '+(c.fax||''));
+  set('fEmail1',c.email1);set('fEmail2',c.email2);set('fPec',c.pec);set('fCf',c.cf);
+  set('fRagione',c.ragioneSociale);
+  // Via + civico combinati nella scheda
+  {const viaEl=document.getElementById('fVia');const civEl=document.getElementById('fCivico');
+   if(viaEl){viaEl.textContent=c.via||'—';}
+   if(civEl){civEl.textContent=c.civico||'';civEl.style.display=c.civico?'inline':'none';}}
+  set('fCap',c.cap);
+  set('fLocalita',c.localita);set('fComune',c.comune);set('fProvincia',c.provincia);
+  set('fRegione',c.regione);set('fStato2',c.stato2);
+  set('fPiva',c.piva);set('fRea',c.rea);set('fAlbo',c.albo);
+  set('fProdotti',c.prodotti);set('fSito',c.sitoWeb);set('fLink',c.linkAzienda);
+  set('fTipo',c.tipoRapporto);set('fProgetto',c.progetto);set('fStato',c.stato);
+
+  const refs=(c.referenze||'').split(',').map(r=>r.trim()).filter(Boolean);
+  document.getElementById('fReferenze').innerHTML=refs.map(r=>`<span class="tag p">${r}</span>`).join('');
+  const nr=document.getElementById('fNoteRef');
+  nr.textContent=c.noteRef||'';nr.style.display=c.noteRef?'block':'none';
+
+  const mg=document.getElementById('mediaGrid');
+  const addBtn=mg.querySelector('.ma');
+  mg.querySelectorAll('.mt:not(.ma)').forEach(el=>el.remove());
+  (c.media||[]).forEach(m=>{
+    const div=document.createElement('div');div.className='mt';
+    const isV=m.type==='video';
+    const el=document.createElement(isV?'video':'img');
+    el.src=m.url;el.style.cssText='width:100%;height:100%;object-fit:cover';
+    div.appendChild(el);
+    const tb=document.createElement('span');tb.className='tb';tb.textContent=isV?'MP4':'JPG';div.appendChild(tb);
+    mg.insertBefore(div,addBtn);
+  });
+
+  const dl=document.getElementById('docsList');
+  const addR=dl.querySelector('.add');
+  dl.querySelectorAll('.di:not(.add)').forEach(el=>el.remove());
+  (c.docs||[]).forEach(d2=>{
+    const ext=(d2.name||'').split('.').pop().toUpperCase();
+    const cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
+    const div=document.createElement('div');div.className='di';
+    div.innerHTML=`<div class="ic ${cls}">${ext.slice(0,3)}</div><span class="dn">${d2.name}</span><span class="dd">${d2.date||''}</span>`;
+    dl.insertBefore(div,addR);
+  });
+
+  renderNotes(c.note||[]);
+  showView('viewCard');
+}
+
+function renderNotes(notes){
+  const nl=document.getElementById('notesList');
+  if(!notes.length){nl.innerHTML='<div class="ne"><div class="nt" style="#555555">Nessuna nota ancora.</div></div>';return;}
+  nl.innerHTML=[...notes].reverse().map(n=>`<div class="ne"><div class="nd">${n.date}</div><div class="nt">${n.text}</div></div>`).join('');
+}
+
+async function addNote(){
+  const input=document.getElementById('newNoteInput');
+  const text=input.value.trim();
+  if(!text||!currentContact)return;
+  const dateStr=new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+  const notes=[...(currentContact.note||[]),{text,date:dateStr}];
+  try{
+    await updateDoc(doc(db,'contatti',currentContact.id),{note:notes,updatedAt:serverTimestamp()});
+    currentContact.note=notes;renderNotes(notes);input.value='';toast('Nota salvata');
+    const idx=allContacts.findIndex(x=>x.id===currentContact.id);
+    if(idx>=0)allContacts[idx].note=notes;
+  }catch(e){toast('Errore salvataggio nota');}
+}
+
+function showForm(contact=null){
+  editingId=contact?contact.id:null;
+  document.getElementById('formTitle').textContent=contact?'Modifica contatto':'Nuovo contatto';
+  document.getElementById('formHdr').textContent=contact?'Modifica — '+(contact.nome||'')+' '+(contact.cognome||''):'Dati contatto';
+  const simple={Nome:'nome',Cognome:'cognome',Professione:'professione',Incarico:'incarico',Tel1:'tel1',Tel1Pref:'tel1Pref',Tel2:'tel2',Tel2Pref:'tel2Pref',Mob1:'mob1',Mob1Pref:'mob1Pref',Mob2:'mob2',Mob2Pref:'mob2Pref',Fax:'fax',FaxPref:'faxPref',Email1:'email1',Email2:'email2',Pec:'pec',Cf:'cf',Ragione:'ragioneSociale',Civico:'civico',Cap:'cap',Localita:'localita',Comune:'comune',Provincia:'provincia',Regione:'regione',Stato2:'stato2',Piva:'piva',Rea:'rea',Albo:'albo',Prodotti:'prodotti',Sito:'sitoWeb',Link:'linkAzienda',Tipo:'tipoRapporto',Progetto:'progetto',Dropbox:'dropboxUrl',Spike:'spikeEmail',NoteRef:'noteRef'};
+  // Gestione campo Via con prefisso separato
+  if(contact&&contact.via){
+    const PREFISSI_VIA=['Via','Viale','Piazza','Piazzale','Largo','Vicolo','SS.','Strada'];
+    const viaVal=contact.via||'';
+    const found=PREFISSI_VIA.find(p=>viaVal.startsWith(p+' '));
+    const selPref=document.getElementById('fViaPrefissoI');
+    const inpVia=document.getElementById('fViaI');
+    if(found&&selPref&&inpVia){selPref.value=found;inpVia.value=viaVal.slice(found.length+1);}
+    else if(inpVia){inpVia.value=viaVal;}
+  } else {
+    const inpVia=document.getElementById('fViaI');if(inpVia)inpVia.value='';
+    const selPref=document.getElementById('fViaPrefissoI');if(selPref)selPref.value='Via';
+  }
+  Object.entries(simple).forEach(([f,k])=>{const el=document.getElementById('f'+f+'I');if(el)el.value=contact?(contact[k]||''):'';});
+  const sels={Gruppo:'gruppo',Categoria:'categoria',Tel1T:'tel1T',Tel2T:'tel2T',Mob1T:'mob1T',Mob2T:'mob2T',Stato:'stato'};
+  Object.entries(sels).forEach(([f,k])=>{const el=document.getElementById('f'+f+'I');if(el)el.value=contact?(contact[k]||''):'';});
+  if(contact&&contact.gruppo) updateCategorieSelect();
+  aggiornaProdotti();
+  showView('viewForm');
+}
+
+async function saveContact(){
+  const get=id=>(document.getElementById(id)||{}).value||'';
+  
+  // Memorizza settori nuovi
+  const settoreVal=get('fCategoriaI');
+  let settoriSalvati=JSON.parse(localStorage.getItem('hub_settori')||'[]');
+  if(settoreVal&&!settoriSalvati.includes(settoreVal)){
+    settoriSalvati.push(settoreVal);
+    localStorage.setItem('hub_settori',JSON.stringify(settoriSalvati));
+    aggiornaSettori();
+  }
+
+  // Memorizza prodotti nuovi su Firebase
+  const prodVal=get('fProdottiI');
+  if(prodVal){
+    try{
+      const prodSnap=await getDocs(collection(db,'vocabolario'));
+      const prodDoc=prodSnap.docs.find(d=>d.id==='prodotti');
+      const prodList=prodDoc?prodDoc.data().lista||[]:[];
+      if(!prodList.includes(prodVal)){
+        prodList.push(prodVal);
+        await setDoc(doc(db,'vocabolario','prodotti'),{lista:prodList});
+        aggiornaDatalist('prodotti',prodList);
+      }
+    }catch(e){}
+  }
+  
+  // Memorizza professioni nuove su Firebase
+  const profVal=get('fProfessioneI');
+  if(profVal){
+    try{
+      const profRef=doc(db,'vocabolario','professioni');
+      const profSnap=await getDocs(collection(db,'vocabolario'));
+      const profDoc=profSnap.docs.find(d=>d.id==='professioni');
+      const profList=profDoc?profDoc.data().lista||[]:[];
+      if(!profList.includes(profVal)){
+        profList.push(profVal);
+        await setDoc(profRef,{lista:profList});
+        const dl=document.getElementById('listProfessioni');
+        if(dl){const opt=document.createElement('option');opt.value=profVal;dl.appendChild(opt);}
+      }
+    }catch(e){}
+  }
+  const data={
+    nome:get('fNomeI'),cognome:get('fCognomeI'),professione:get('fProfessioneI'),
+    gruppo:get('fGruppoI'),categoria:get('fCategoriaI'),incarico:get('fIncaricoI'),
+    noteRef:get('fNoteRefI'),
+    tel1Pref:get('fTel1PrefI'),tel1:get('fTel1I'),tel1T:get('fTel1TI'),
+    tel2Pref:get('fTel2PrefI'),tel2:get('fTel2I'),tel2T:get('fTel2TI'),
+    mob1Pref:get('fMob1PrefI'),mob1:get('fMob1I'),mob1T:get('fMob1TI'),
+    mob2Pref:get('fMob2PrefI'),mob2:get('fMob2I'),mob2T:get('fMob2TI'),
+    faxPref:get('fFaxPrefI'),fax:get('fFaxI'),
+    email1:get('fEmail1I'),email2:get('fEmail2I'),pec:get('fPecI'),cf:get('fCfI'),
+    ragioneSociale:get('fRagioneI'),
+    via:(document.getElementById('fViaPrefissoI')||{}).value+' '+get('fViaI'),civico:get('fCivicoI'),cap:get('fCapI'),
+    localita:get('fLocalitaI'),comune:get('fComuneI'),provincia:get('fProvinciaI'),
+    regione:get('fRegioneI'),stato2:get('fStato2I'),
+    piva:get('fPivaI'),rea:get('fReaI'),albo:get('fAlboI'),prodotti:get('fProdottiI'),
+    sitoWeb:get('fSitoI'),linkAzienda:get('fLinkI'),
+    tipoRapporto:get('fTipoI'),progetto:get('fProgettoI'),stato:get('fStatoI'),
+    dropboxUrl:get('fDropboxI'),spikeEmail:get('fSpikeI'),
+    updatedAt:serverTimestamp()
+  };
+  if(!data.nome&&!data.cognome){toast('Inserisci almeno nome o cognome');return;}
+  try{
+    if(editingId){
+      await updateDoc(doc(db,'contatti',editingId),data);
+      const idx=allContacts.findIndex(x=>x.id===editingId);
+      if(idx>=0){allContacts[idx]={...allContacts[idx],...data};currentContact={...currentContact,...data};}
+      toast('Contatto aggiornato');
+      await loadContacts();
+      openContact(editingId);
+    }else{
+      data.note=[];data.media=[];data.docs=[];
+      const ref=await addDoc(collection(db,'contatti'),data);
+      allContacts.push({id:ref.id,...data});
+      toast('Contatto salvato');
+      await loadContacts();
+      showView('viewList');
+    }
+  }catch(e){toast('Errore: '+e.message);}
+}
+
+async function deleteContact(){
+  if(!currentContact)return;
+  if(!confirm('Eliminare '+currentContact.nome+' '+currentContact.cognome+'?'))return;
+  try{
+    await deleteDoc(doc(db,'contatti',currentContact.id));
+    allContacts=allContacts.filter(x=>x.id!==currentContact.id);
+    currentContact=null;toast('Contatto eliminato');
+    showView('viewList');renderList();
+  }catch(e){toast('Errore eliminazione');}
+}
+
+// ─── VOCABOLARI ───
+const VOC_DEFAULTS = {
+  professioni: ['Architetto',"Architetto d'interni",'Architetto paesaggista','Ingegnere','Ingegnere strutturista','Geometra','Agronomo','Termotecnico','Elettrotecnico','Notaio','Avvocato','Avvocato penalista','Avvocato civilista','Commercialista','Tributarista','Falegname','Idraulico','Elettricista','Lattoniere','Cartongessista','Piastrellista','Edile','Vivaista','Giardiniere','Medico base','Cardiologo','Neurologo','Oncologo','Ginecologo','Ortopedico','Otorinolaringoiatra','Oculista','Dentista','Fisioterapista','Chirurgo','Pediatra','Psicologo','Psichiatra','Urologo','Gastroenterologo','Agente commercio','Titolare','Capo area'],
+  categorie: [],
+  prodotti: [],
+  prefissi: ['+39 Italia','+33 Francia','+41 Svizzera','+43 Austria','+44 UK','+49 Germania','+34 Spagna','+31 Olanda','+32 Belgio','+1 USA/Canada','+7 Russia','+86 Cina','+81 Giappone','+971 UAE']
+};
+
+async function caricaVocabolari(){
+  for(const nome of ['professioni','categorie','prodotti','prefissi']){
+    try{
+      const snap=await getDocs(collection(db,'vocabolario'));
+      const d=snap.docs.find(x=>x.id===nome);
+      const lista=d?d.data().lista:VOC_DEFAULTS[nome]||[];
+      renderVocList(nome,lista);
+      aggiornaDatalist(nome,lista);
+    }catch(e){}
+  }
+}
+
+function renderVocList(nome,lista){
+  const el=document.getElementById('vocList'+cap(nome));
+  if(!el)return;
+  el.innerHTML=lista.map((v,i)=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 6px;background:#2E5A8E;border-radius:5px">
+    <span style="flex:1;font-size:11px;color:#FFFFFF">${v}</span>
+    <button onclick="vocDel('${nome}',${i})" style="background:none;border:none;color:#F09595;cursor:pointer;font-size:13px;padding:0 2px">×</button>
+  </div>`).join('');
+}
+
+function aggiornaDatalist(nome,lista){
+  const idMap={professioni:'listProfessioni',categorie:'listSettori',prodotti:'listProdotti',prefissi:'listPrefissi'};
+  const dl=document.getElementById(idMap[nome]);
+  if(dl) dl.innerHTML=lista.map(v=>`<option value="${v}">`).join('');
+}
+
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+window.vocAdd=async function(nome){
+  if(nome==='prefissiVia'){
+    const input=document.getElementById('vocInputPrefissiVia');
+    if(!input||!input.value.trim())return;
+    const val=input.value.trim();
+    try{
+      const snap=await getDocs(collection(db,'vocabolario'));
+      const d=snap.docs.find(x=>x.id==='prefissiVia');
+      const lista=d?d.data().lista:[];
+      if(!lista.includes(val)){lista.push(val);await setDoc(doc(db,'vocabolario','prefissiVia'),{lista});}
+      input.value='';aggiornaPrefissiVia();toast('Prefisso aggiunto');
+    }catch(e){toast('Errore');}
+    return;
+  }
+  const input=document.getElementById('vocInput'+cap(nome));
+  const val=input.value.trim();
+  if(!val)return;
+  try{
+    const snap=await getDocs(collection(db,'vocabolario'));
+    const d=snap.docs.find(x=>x.id===nome);
+    const lista=d?d.data().lista:[...(VOC_DEFAULTS[nome]||[])];
+    if(!lista.includes(val)){
+      lista.push(val);
+      await setDoc(doc(db,'vocabolario',nome),{lista});
+      renderVocList(nome,lista);
+      aggiornaDatalist(nome,lista);
+      input.value='';
+      toast('Aggiunto: '+val);
+    } else { toast('Voce già presente'); }
+  }catch(e){toast('Errore');}
+}
+
+window.vocDel=async function(nome,idx){
+  if(nome==='prefissiVia'){
+    try{
+      const snap=await getDocs(collection(db,'vocabolario'));
+      const d=snap.docs.find(x=>x.id==='prefissiVia');
+      let lista=d?d.data().lista:[];
+      lista=lista.filter(v=>v!==idx); // idx is the string value here
+      await setDoc(doc(db,'vocabolario','prefissiVia'),{lista});
+      aggiornaPrefissiVia();toast('Prefisso eliminato');
+    }catch(e){toast('Errore');}
+    return;
+  }
+  try{
+    const snap=await getDocs(collection(db,'vocabolario'));
+    const d=snap.docs.find(x=>x.id===nome);
+    const lista=d?d.data().lista:[...(VOC_DEFAULTS[nome]||[])];
+    const voce=lista[idx];
+    lista.splice(idx,1);
+    await setDoc(doc(db,'vocabolario',nome),{lista});
+    renderVocList(nome,lista);
+    aggiornaDatalist(nome,lista);
+    toast('Eliminato: '+voce);
+  }catch(e){toast('Errore');}
+}
+
+// ─── EVENTI ───
+document.getElementById('tabBtnRubrica').addEventListener('click',()=>showTab('rubrica'));
+document.getElementById('tabBtnAree').addEventListener('click',()=>showTab('aree'));
+document.getElementById('tabBtnImpostazioni').addEventListener('click',()=>showTab('impostazioni'));
+document.getElementById('btnNuovoContatto').addEventListener('click',()=>showForm());
+document.getElementById('btnBackList').addEventListener('click',()=>{currentContact=null;showView('viewList');renderList();});
+document.getElementById('btnModifica').addEventListener('click',()=>{if(currentContact)showForm(currentContact);});
+document.getElementById('btnElimina').addEventListener('click',deleteContact);
+document.getElementById('btnFoto').addEventListener('click',()=>document.getElementById('photoInput').click());
+document.getElementById('cardAv').addEventListener('click',()=>document.getElementById('photoInput').click());
+document.getElementById('btnAddNote').addEventListener('click',addNote);
+document.getElementById('btnAbarLista').addEventListener('click',()=>{currentContact=null;showView('viewList');renderList();});
+document.getElementById('btnAbarModifica').addEventListener('click',()=>{if(currentContact)showForm(currentContact);});
+document.getElementById('btnAbarNota').addEventListener('click',addNote);
+document.getElementById('btnAnnullaForm').addEventListener('click',()=>{if(currentContact)showView('viewCard');else{showView('viewList');renderList();}});
+document.getElementById('btnAnnullaForm2').addEventListener('click',()=>{if(currentContact)showView('viewCard');else{showView('viewList');renderList();}});
+document.getElementById('btnSalvaContatto').addEventListener('click',saveContact);
+document.getElementById('searchInput').addEventListener('input',renderList);
+document.getElementById('filterCategoria').addEventListener('change',renderList);
+
+
+document.getElementById('btnDropbox').addEventListener('click',()=>window.open('https://www.dropbox.com/home'));
+document.getElementById('btnSpike').addEventListener('click',()=>window.open('https://spikenow.com/web/?utm_content=navbar_signin_link&utm_source=website&utm_medium=referral&utm_campaign=website-direct&utm_term=%2F&lastPageUrl=%2F&ref=website-direct&ver=wip'));
+document.getElementById('btnMaps').addEventListener('click',()=>{
+  if(!currentContact)return;
+  const addr=[currentContact.via,currentContact.civico,currentContact.cap,currentContact.comune,currentContact.provincia,currentContact.stato2].filter(Boolean).join(' ');
+  if(addr) window.open('https://www.google.com/maps/search/'+encodeURIComponent(addr));
+  else toast('Nessun indirizzo inserito');
+});
+
+document.querySelectorAll('.pill').forEach(pill=>{
+  pill.addEventListener('click',function(){
+    const map={pillTutti:'tutti',pillFornitori:'fornitori',pillTerzi:'terzi',pillPersonale:'personale'};
+    currentGruppo=map[this.id]||'tutti';
+    document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));
+    this.classList.add('on');
+    updateFilterCategorie();
+    renderList();
+  });
+});
+
+document.getElementById('photoInput').addEventListener('change',async(e)=>{
+  const file=e.target.files[0];if(!file||!currentContact)return;
+  const reader=new FileReader();
+  reader.onload=async(ev)=>{
+    const url=ev.target.result;
+    try{
+      await updateDoc(doc(db,'contatti',currentContact.id),{photoUrl:url,updatedAt:serverTimestamp()});
+      currentContact.photoUrl=url;
+      document.getElementById('cardAv').innerHTML=`<img src="${url}" alt="">`;
+      const idx=allContacts.findIndex(x=>x.id===currentContact.id);
+      if(idx>=0)allContacts[idx].photoUrl=url;
+      renderList();toast('Foto aggiornata');
+    }catch(e){toast('Errore foto');}
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('mediaInput').addEventListener('change',(e)=>{
+  if(!currentContact)return;
+  const mg=document.getElementById('mediaGrid');
+  const addBtn=mg.querySelector('.ma');
+  const media=[...(currentContact.media||[])];
+  Array.from(e.target.files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=async(ev)=>{
+      const url=ev.target.result;const isV=file.type.startsWith('video');
+      const div=document.createElement('div');div.className='mt';
+      const el=document.createElement(isV?'video':'img');el.src=url;el.style.cssText='width:100%;height:100%;object-fit:cover';
+      div.appendChild(el);
+      const tb=document.createElement('span');tb.className='tb';tb.textContent=isV?'MP4':'JPG';div.appendChild(tb);
+      mg.insertBefore(div,addBtn);
+      media.push({url,type:isV?'video':'image'});
+      try{await updateDoc(doc(db,'contatti',currentContact.id),{media,updatedAt:serverTimestamp()});currentContact.media=media;toast('Media aggiunto');}
+      catch(err){toast('Errore media');}
+    };reader.readAsDataURL(file);
+  });
+});
+
+document.getElementById('btnAddMedia').addEventListener('click',()=>document.getElementById('mediaInput').click());
+
+document.getElementById('docInput').addEventListener('change',async(e)=>{
+  if(!currentContact)return;
+  const dl=document.getElementById('docsList');const addRow=dl.querySelector('.add');
+  const docs=[...(currentContact.docs||[])];
+  Array.from(e.target.files).forEach(file=>{
+    const ext=file.name.split('.').pop().toUpperCase();
+    const cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
+    const now=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
+    const div=document.createElement('div');div.className='di';
+    div.innerHTML=`<div class="ic ${cls}">${ext.slice(0,3)}</div><span class="dn">${file.name}</span><span class="dd">${now}</span>`;
+    dl.insertBefore(div,addRow);docs.push({name:file.name,date:now,ext});
+  });
+  try{await updateDoc(doc(db,'contatti',currentContact.id),{docs,updatedAt:serverTimestamp()});currentContact.docs=docs;toast('Documento aggiunto');}
+  catch(e){toast('Errore documento');}
+});
+
+document.getElementById('btnAddDoc').addEventListener('click',()=>document.getElementById('docInput').click());
+
+['aiBtnEmail','aiBtnRiassunto','aiBtnLettera','aiBtnPromemoria'].forEach(btnId=>{
+  document.getElementById(btnId).addEventListener('click',()=>{
+    if(!currentContact)return;
+    const nome=(currentContact.nome||'')+' '+(currentContact.cognome||'');
+    const az=currentContact.ragioneSociale||'';
+    const pr=currentContact.progetto||'';
+    const map={aiBtnEmail:`Scrivi email professionale a ${nome} (${az}) per: ${pr}`,aiBtnRiassunto:`Riassumi profilo di ${nome} di ${az}, progetto: ${pr}`,aiBtnLettera:`Genera lettera formale per ${nome} presso ${az}`,aiBtnPromemoria:`Crea promemoria follow-up per ${nome} (${az}): ${pr}`};
+    navigator.clipboard.writeText(map[btnId]);toast('Prompt copiato negli appunti');
+  });
+});
+
+['areaFinanza','areaFisco','areaLegale','areaImmobili','areaTurismo','areaEnogastronomia'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',()=>toast('Area in costruzione nella prossima sessione'));
+});
+
+// Carica tutti i vocabolari da Firebase
+async function caricaTuttiVocabolari(){
+  for(const nome of ['professioni','categorie','prodotti','prefissi']){
+    try{
+      const snap=await getDocs(collection(db,'vocabolario'));
+      const d=snap.docs.find(x=>x.id===nome);
+      const lista=d?d.data().lista:VOC_DEFAULTS[nome]||[];
+      aggiornaDatalist(nome,lista);
+    }catch(e){}
+  }
+}
+
+// ===== DATI GEOGRAFICI ITALIANI =====
+const COMUNI_ITALIANI = [
+  {comune:'Agrigento',cap:'92100',provincia:'AG',regione:'Sicilia'},
+  {comune:'Alessandria',cap:'15100',provincia:'AL',regione:'Piemonte'},
+  {comune:'Ancona',cap:'60100',provincia:'AN',regione:'Marche'},
+  {comune:'Andria',cap:'76123',provincia:'BT',regione:'Puglia'},
+  {comune:'Aosta',cap:'11100',provincia:'AO',regione:"Valle d'Aosta"},
+  {comune:'Arezzo',cap:'52100',provincia:'AR',regione:'Toscana'},
+  {comune:'Ascoli Piceno',cap:'63100',provincia:'AP',regione:'Marche'},
+  {comune:'Asti',cap:'14100',provincia:'AT',regione:'Piemonte'},
+  {comune:'Avellino',cap:'83100',provincia:'AV',regione:'Campania'},
+  {comune:'Bari',cap:'70121',provincia:'BA',regione:'Puglia'},
+  {comune:'Barletta',cap:'76121',provincia:'BT',regione:'Puglia'},
+  {comune:'Belluno',cap:'32100',provincia:'BL',regione:'Veneto'},
+  {comune:'Benevento',cap:'82100',provincia:'BN',regione:'Campania'},
+  {comune:'Bergamo',cap:'24100',provincia:'BG',regione:'Lombardia'},
+  {comune:'Biella',cap:'13900',provincia:'BI',regione:'Piemonte'},
+  {comune:'Bologna',cap:'40121',provincia:'BO',regione:"Emilia-Romagna"},
+  {comune:'Bolzano',cap:'39100',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Brescia',cap:'25100',provincia:'BS',regione:'Lombardia'},
+  {comune:'Brindisi',cap:'72100',provincia:'BR',regione:'Puglia'},
+  {comune:'Cagliari',cap:'09121',provincia:'CA',regione:'Sardegna'},
+  {comune:'Caltanissetta',cap:'93100',provincia:'CL',regione:'Sicilia'},
+  {comune:'Campobasso',cap:'86100',provincia:'CB',regione:'Molise'},
+  {comune:'Caserta',cap:'81100',provincia:'CE',regione:'Campania'},
+  {comune:'Catania',cap:'95121',provincia:'CT',regione:'Sicilia'},
+  {comune:'Catanzaro',cap:'88100',provincia:'CZ',regione:'Calabria'},
+  {comune:'Chieti',cap:'66100',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Como',cap:'22100',provincia:'CO',regione:'Lombardia'},
+  {comune:'Cosenza',cap:'87100',provincia:'CS',regione:'Calabria'},
+  {comune:'Cremona',cap:'26100',provincia:'CR',regione:'Lombardia'},
+  {comune:'Crotone',cap:'88900',provincia:'KR',regione:'Calabria'},
+  {comune:'Cuneo',cap:'12100',provincia:'CN',regione:'Piemonte'},
+  {comune:'Enna',cap:'94100',provincia:'EN',regione:'Sicilia'},
+  {comune:'Fermo',cap:'63900',provincia:'FM',regione:'Marche'},
+  {comune:'Ferrara',cap:'44121',provincia:'FE',regione:"Emilia-Romagna"},
+  {comune:'Firenze',cap:'50121',provincia:'FI',regione:'Toscana'},
+  {comune:'Foggia',cap:'71100',provincia:'FG',regione:'Puglia'},
+  {comune:'Forlì',cap:'47121',provincia:'FC',regione:"Emilia-Romagna"},
+  {comune:'Frosinone',cap:'03100',provincia:'FR',regione:'Lazio'},
+  {comune:'Genova',cap:'16121',provincia:'GE',regione:'Liguria'},
+  {comune:'Gorizia',cap:'34170',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Grosseto',cap:'58100',provincia:'GR',regione:'Toscana'},
+  {comune:'Imperia',cap:'18100',provincia:'IM',regione:'Liguria'},
+  {comune:'Isernia',cap:'86170',provincia:'IS',regione:'Molise'},
+  {comune:'La Spezia',cap:'19121',provincia:'SP',regione:'Liguria'},
+  {comune:"L'Aquila",cap:'67100',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Latina',cap:'04100',provincia:'LT',regione:'Lazio'},
+  {comune:'Lecce',cap:'73100',provincia:'LE',regione:'Puglia'},
+  {comune:'Lecco',cap:'23900',provincia:'LC',regione:'Lombardia'},
+  {comune:'Livorno',cap:'57121',provincia:'LI',regione:'Toscana'},
+  {comune:'Lodi',cap:'26900',provincia:'LO',regione:'Lombardia'},
+  {comune:'Lucca',cap:'55100',provincia:'LU',regione:'Toscana'},
+  {comune:'Macerata',cap:'62100',provincia:'MC',regione:'Marche'},
+  {comune:'Mantova',cap:'46100',provincia:'MN',regione:'Lombardia'},
+  {comune:'Massa',cap:'54100',provincia:'MS',regione:'Toscana'},
+  {comune:'Matera',cap:'75100',provincia:'MT',regione:'Basilicata'},
+  {comune:'Messina',cap:'98121',provincia:'ME',regione:'Sicilia'},
+  {comune:'Milano',cap:'20121',provincia:'MI',regione:'Lombardia'},
+  {comune:'Modena',cap:'41121',provincia:'MO',regione:"Emilia-Romagna"},
+  {comune:'Monza',cap:'20900',provincia:'MB',regione:'Lombardia'},
+  {comune:'Napoli',cap:'80121',provincia:'NA',regione:'Campania'},
+  {comune:'Novara',cap:'28100',provincia:'NO',regione:'Piemonte'},
+  {comune:'Nuoro',cap:'08100',provincia:'NU',regione:'Sardegna'},
+  {comune:'Oristano',cap:'09170',provincia:'OR',regione:'Sardegna'},
+  {comune:'Padova',cap:'35121',provincia:'PD',regione:'Veneto'},
+  {comune:'Palermo',cap:'90121',provincia:'PA',regione:'Sicilia'},
+  {comune:'Parma',cap:'43121',provincia:'PR',regione:"Emilia-Romagna"},
+  {comune:'Pavia',cap:'27100',provincia:'PV',regione:'Lombardia'},
+  {comune:'Perugia',cap:'06121',provincia:'PG',regione:'Umbria'},
+  {comune:'Pesaro',cap:'61121',provincia:'PU',regione:'Marche'},
+  {comune:'Pescara',cap:'65121',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Piacenza',cap:'29121',provincia:'PC',regione:"Emilia-Romagna"},
+  {comune:'Pisa',cap:'56121',provincia:'PI',regione:'Toscana'},
+  {comune:'Pistoia',cap:'51100',provincia:'PT',regione:'Toscana'},
+  {comune:'Pordenone',cap:'33170',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Potenza',cap:'85100',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Prato',cap:'59100',provincia:'PO',regione:'Toscana'},
+  {comune:'Ragusa',cap:'97100',provincia:'RG',regione:'Sicilia'},
+  {comune:'Ravenna',cap:'48121',provincia:'RA',regione:"Emilia-Romagna"},
+  {comune:'Reggio Calabria',cap:'89121',provincia:'RC',regione:'Calabria'},
+  {comune:'Reggio Emilia',cap:'42121',provincia:'RE',regione:"Emilia-Romagna"},
+  {comune:'Rieti',cap:'02100',provincia:'RI',regione:'Lazio'},
+  {comune:'Rimini',cap:'47921',provincia:'RN',regione:"Emilia-Romagna"},
+  {comune:'Roma',cap:'00118',provincia:'RM',regione:'Lazio'},
+  {comune:'Rovigo',cap:'45100',provincia:'RO',regione:'Veneto'},
+  {comune:'Salerno',cap:'84121',provincia:'SA',regione:'Campania'},
+  {comune:'Sassari',cap:'07100',provincia:'SS',regione:'Sardegna'},
+  {comune:'Savona',cap:'17100',provincia:'SV',regione:'Liguria'},
+  {comune:'Siena',cap:'53100',provincia:'SI',regione:'Toscana'},
+  {comune:'Siracusa',cap:'96100',provincia:'SR',regione:'Sicilia'},
+  {comune:'Sondrio',cap:'23100',provincia:'SO',regione:'Lombardia'},
+  {comune:'Sud Sardegna',cap:'09010',provincia:'SU',regione:'Sardegna'},
+  {comune:'Taranto',cap:'74121',provincia:'TA',regione:'Puglia'},
+  {comune:'Teramo',cap:'64100',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Terni',cap:'05100',provincia:'TR',regione:'Umbria'},
+  {comune:'Torino',cap:'10121',provincia:'TO',regione:'Piemonte'},
+  {comune:'Trani',cap:'76125',provincia:'BT',regione:'Puglia'},
+  {comune:'Trapani',cap:'91100',provincia:'TP',regione:'Sicilia'},
+  {comune:'Trento',cap:'38121',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Treviso',cap:'31100',provincia:'TV',regione:'Veneto'},
+  {comune:'Trieste',cap:'34121',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Udine',cap:'33100',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Varese',cap:'21100',provincia:'VA',regione:'Lombardia'},
+  {comune:'Venezia',cap:'30121',provincia:'VE',regione:'Veneto'},
+  {comune:'Verbania',cap:'28921',provincia:'VB',regione:'Piemonte'},
+  {comune:'Vercelli',cap:'13100',provincia:'VC',regione:'Piemonte'},
+  {comune:'Verona',cap:'37121',provincia:'VR',regione:'Veneto'},
+  {comune:'Vibo Valentia',cap:'89900',provincia:'VV',regione:'Calabria'},
+  {comune:'Vicenza',cap:'36100',provincia:'VI',regione:'Veneto'},
+  {comune:'Viterbo',cap:'01100',provincia:'VT',regione:'Lazio'},
+  // Comuni della provincia di Verona
+  {comune:'Affi',cap:'37010',provincia:'VR',regione:'Veneto'},
+  {comune:'Bardolino',cap:'37011',provincia:'VR',regione:'Veneto'},
+  {comune:'Bussolengo',cap:'37012',provincia:'VR',regione:'Veneto'},
+  {comune:'Caprino Veronese',cap:'37013',provincia:'VR',regione:'Veneto'},
+  {comune:'Castel d\'Azzano',cap:'37060',provincia:'VR',regione:'Veneto'},
+  {comune:'Cavaion Veronese',cap:'37010',provincia:'VR',regione:'Veneto'},
+  {comune:'Colognola ai Colli',cap:'37030',provincia:'VR',regione:'Veneto'},
+  {comune:'Garda',cap:'37016',provincia:'VR',regione:'Veneto'},
+  {comune:'Grezzana',cap:'37023',provincia:'VR',regione:'Veneto'},
+  {comune:'Illasi',cap:'37031',provincia:'VR',regione:'Veneto'},
+  {comune:'Lazise',cap:'37017',provincia:'VR',regione:'Veneto'},
+  {comune:'Legnago',cap:'37045',provincia:'VR',regione:'Veneto'},
+  {comune:'Malcesine',cap:'37018',provincia:'VR',regione:'Veneto'},
+  {comune:'Mezzane di Sotto',cap:'37030',provincia:'VR',regione:'Veneto'},
+  {comune:'Negrar',cap:'37024',provincia:'VR',regione:'Veneto'},
+  {comune:'Peschiera del Garda',cap:'37019',provincia:'VR',regione:'Veneto'},
+  {comune:'Pescantina',cap:'37026',provincia:'VR',regione:'Veneto'},
+  {comune:'San Bonifacio',cap:'37047',provincia:'VR',regione:'Veneto'},
+  {comune:'San Giovanni Lupatoto',cap:'37057',provincia:'VR',regione:'Veneto'},
+  {comune:'San Martino Buon Albergo',cap:'37036',provincia:'VR',regione:'Veneto'},
+  {comune:'Soave',cap:'37038',provincia:'VR',regione:'Veneto'},
+  {comune:'Sommacampagna',cap:'37066',provincia:'VR',regione:'Veneto'},
+  {comune:'Sona',cap:'37060',provincia:'VR',regione:'Veneto'},
+  {comune:'Torri del Benaco',cap:'37010',provincia:'VR',regione:'Veneto'},
+  {comune:'Tregnago',cap:'37039',provincia:'VR',regione:'Veneto'},
+  {comune:'Valeggio sul Mincio',cap:'37067',provincia:'VR',regione:'Veneto'},
+  {comune:'Vigasio',cap:'37068',provincia:'VR',regione:'Veneto'},
+  {comune:'Villafranca di Verona',cap:'37069',provincia:'VR',regione:'Veneto'},
+  {comune:'Zevio',cap:'37059',provincia:'VR',regione:'Veneto'},
+];
+
+const REGIONI_ITALIANE = [...new Set(COMUNI_ITALIANI.map(c=>c.regione))].sort();
+const PROVINCE_ITALIANE = [...new Map(COMUNI_ITALIANI.map(c=>[c.provincia,c.provincia])).values()].sort();
+
+const STATI_MONDO=['Afghanistan','Albania','Algeria','Andorra','Angola','Antigua e Barbuda','Arabia Saudita','Argentina','Armenia','Australia','Austria','Azerbaigian','Bahamas','Bahrein','Bangladesh','Barbados','Belgio','Belize','Benin','Bhutan','Bielorussia','Bolivia','Bosnia ed Erzegovina','Botswana','Brasile','Brunei','Bulgaria','Burkina Faso','Burundi','Cambogia','Camerun','Canada','Capo Verde','Ciad','Cile','Cina','Cipro','Colombia','Comore','Congo','Corea del Nord','Corea del Sud','Costa Rica','Costa d\'Avorio','Croazia','Cuba','Danimarca','Dominica','Ecuador','Egitto','El Salvador','Emirati Arabi Uniti','Eritrea','Estonia','Eswatini','Etiopia','Figi','Filippine','Finlandia','Francia','Gabon','Gambia','Georgia','Germania','Ghana','Giamaica','Giappone','Gibuti','Giordania','Grecia','Grenada','Guatemala','Guinea','Guinea Equatoriale','Guinea-Bissau','Guyana','Haiti','Honduras','India','Indonesia','Iran','Iraq','Irlanda','Islanda','Isole Marshall','Isole Salomone','Israele','Italia','Kazakhstan','Kenya','Kirghizistan','Kiribati','Kuwait','Laos','Lesotho','Lettonia','Libano','Liberia','Libia','Liechtenstein','Lituania','Lussemburgo','Macedonia del Nord','Madagascar','Malawi','Malaysia','Maldive','Mali','Malta','Marocco','Mauritania','Mauritius','Messico','Micronesia','Moldova','Monaco','Mongolia','Montenegro','Mozambico','Myanmar','Namibia','Nauru','Nepal','Nicaragua','Niger','Nigeria','Norvegia','Nuova Zelanda','Oman','Paesi Bassi','Pakistan','Palau','Panama','Papua Nuova Guinea','Paraguay','Perù','Polonia','Portogallo','Qatar','Regno Unito','Repubblica Ceca','Repubblica Centrafricana','Repubblica del Congo','Repubblica Dominicana','Romania','Ruanda','Russia','Saint Kitts e Nevis','Saint Lucia','Saint Vincent e Grenadine','Samoa','San Marino','São Tomé e Príncipe','Senegal','Serbia','Seychelles','Sierra Leone','Singapore','Siria','Slovenia','Somalia','Spagna','Sri Lanka','Stati Uniti','Sudafrica','Sudan','Sudan del Sud','Suriname','Svezia','Svizzera','Tagikistan','Tanzania','Thailandia','Timor Est','Togo','Tonga','Trinidad e Tobago','Tunisia','Turchia','Turkmenistan','Tuvalu','Ucraina','Uganda','Ungheria','Uruguay','Uzbekistan','Vanuatu','Vaticano','Venezuela','Vietnam','Yemen','Zambia','Zimbabwe'];
+
+function popolaDatalistGeografici(){
+  const dlComuni=document.getElementById('listComuni');
+  const dlCAP=document.getElementById('listCAP');
+  const dlProv=document.getElementById('listProvince');
+  const dlReg=document.getElementById('listRegioni');
+  if(dlComuni) dlComuni.innerHTML=COMUNI_ITALIANI.map(c=>`<option value="${c.comune}">${c.comune} (${c.provincia}) — ${c.cap}</option>`).join('');
+  if(dlCAP) dlCAP.innerHTML=COMUNI_ITALIANI.map(c=>`<option value="${c.cap}">${c.cap} — ${c.comune} (${c.provincia})</option>`).join('');
+  if(dlProv) dlProv.innerHTML=PROVINCE_ITALIANE.map(p=>`<option value="${p}">`).join('');
+  if(dlReg) dlReg.innerHTML=REGIONI_ITALIANE.map(r=>`<option value="${r}">`).join('');
+  const dlStati=document.getElementById('listStati');
+  if(dlStati) dlStati.innerHTML=STATI_MONDO.map(s=>`<option value="${s}">`).join('');
+}
+
+// Autocompletamento incrociato: selezione comune → compila CAP, provincia, regione
+document.addEventListener('change', function(e){
+  if(e.target.id==='fComuneI'){
+    const trovato=COMUNI_ITALIANI.find(c=>c.comune.toLowerCase()===e.target.value.toLowerCase());
+    if(trovato){
+      const capEl=document.getElementById('fCapI');
+      const provEl=document.getElementById('fProvinciaI');
+      const regEl=document.getElementById('fRegioneI');
+      if(capEl&&!capEl.value) capEl.value=trovato.cap;
+      if(provEl&&!provEl.value) provEl.value=trovato.provincia;
+      if(regEl&&!regEl.value) regEl.value=trovato.regione;
+    }
+  }
+  if(e.target.id==='fCapI'){
+    const trovato=COMUNI_ITALIANI.find(c=>c.cap===e.target.value);
+    if(trovato){
+      const comEl=document.getElementById('fComuneI');
+      const provEl=document.getElementById('fProvinciaI');
+      const regEl=document.getElementById('fRegioneI');
+      if(comEl&&!comEl.value) comEl.value=trovato.comune;
+      if(provEl&&!provEl.value) provEl.value=trovato.provincia;
+      if(regEl&&!regEl.value) regEl.value=trovato.regione;
+    }
+  }
+});
+
+// Prefissi Via personalizzati — carica dal vocabolario Firebase e aggiorna il select
+let PREFISSI_VIA_DEFAULT=['Via','Viale','Piazza','Piazzale','Largo','Vicolo','SS.','Strada'];
+
+async function aggiornaPrefissiVia(){
+  try{
+    const snap=await getDocs(collection(db,'vocabolario'));
+    let extra=[];
+    snap.forEach(d=>{if(d.id==='prefissiVia')extra=d.data().lista||[];});
+    const tutti=[...new Set([...PREFISSI_VIA_DEFAULT,...extra])];
+    const sel=document.getElementById('fViaPrefissoI');
+    if(sel){
+      const cur=sel.value;
+      sel.innerHTML=tutti.map(p=>`<option value="${p}">${p}</option>`).join('');
+      if(cur) sel.value=cur;
+    }
+    // Aggiorna anche lista in impostazioni
+    const listEl=document.getElementById('vocListPrefissiVia');
+    if(listEl){
+      listEl.innerHTML=tutti.map(p=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 6px;background:rgba(255,255,255,.05);border-radius:4px">
+        <span style="font-size:11px;color:#fff">${p}</span>
+        ${!PREFISSI_VIA_DEFAULT.includes(p)?`<button onclick="vocDel('prefissiVia','${p}')" style="background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:11px">✕</button>`:'<span style="font-size:10px;color:#85B7EB">default</span>'}
+      </div>`).join('');
+    }
+  }catch(e){console.warn('prefissiVia:',e);}
+}
+
+
+popolaDatalistGeografici();
+aggiornaPrefissiVia();
+caricaTuttiVocabolari();
+updateFilterCategorie();
+loadContacts();
+</script>
+</body>
+</html>
