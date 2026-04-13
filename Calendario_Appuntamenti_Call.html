@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💻 Appuntamenti — Call</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #1A1A1A;
+  --surface: #242424;
+  --surface2: #2E2E2E;
+  --border: #3A3A3A;
+  --text: #F0EDE8;
+  --text2: #A09890;
+  --text3: #6B6560;
+  --accent: #8B4513;
+  --accent2: #C4763A;
+
+  --presenza:  #1D9E75;
+  --presenza-bg: #0D2E22;
+  --call:      #BA7517;
+  --call-bg:   #2E1E07;
+  --riunione:  #185FA5;
+  --riunione-bg: #0D1E33;
+  --telefono:  #6B52C8;
+  --telefono-bg: #1A1433;
+
+  --programmato-bg: #1A2E3A; --programmato: #4BA3D4;
+  --completato-bg:  #0D2E22; --completato:  #1D9E75;
+  --rimandato-bg:   #2E1E07; --rimandato:   #BA7517;
+  --annullato-bg:   #2E0D0D; --annullato:   #C0392B;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* ── TOPBAR ── */
+.topbar {
+  background: #111;
+  border-bottom: 1px solid var(--border);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky; top: 0; z-index: 200;
+}
+.topbar-logo { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600; color: var(--text); letter-spacing: 0.04em; }
+.topbar-sub { font-size: 11px; color: var(--text3); margin-left: 1rem; }
+.topbar-right { display: flex; align-items: center; gap: 1rem; }
+.topbar-back { font-size: 11px; color: var(--text3); cursor: pointer; text-decoration: none; transition: color .15s; }
+.topbar-back:hover { color: var(--text); }
+
+/* ── FILTRI TIPOLOGIA ── */
+.filtri-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.875rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+.filtro-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all .15s;
+  font-weight: 400;
+}
+.filtro-btn .dot { width: 7px; height: 7px; border-radius: 50%; }
+.filtro-btn.active, .filtro-btn:hover { color: var(--text); border-color: currentColor; }
+.filtro-btn[data-tipo="tutti"].active    { border-color: var(--text3); color: var(--text); }
+.filtro-btn[data-tipo="Presenza"].active { border-color: var(--presenza); color: var(--presenza); background: var(--presenza-bg); }
+.filtro-btn[data-tipo="Telefono"].active { border-color: var(--telefono); color: var(--telefono); background: var(--telefono-bg); }
+.filtro-btn[data-tipo="Riunione"].active { border-color: var(--riunione); color: var(--riunione); background: var(--riunione-bg); }
+.filtro-btn[data-tipo="Call"].active     { border-color: var(--call); color: var(--call); background: var(--call-bg); }
+
+.filtri-right { margin-left: auto; display: flex; gap: 0.5rem; align-items: center; }
+.search-inp {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  width: 200px;
+  outline: none;
+}
+.search-inp::placeholder { color: var(--text3); }
+.search-inp:focus { border-color: var(--accent2); }
+
+.btn-nuovo {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background .15s;
+  font-weight: 500;
+}
+.btn-nuovo:hover { background: var(--accent2); }
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat-cell {
+  background: var(--surface);
+  padding: 0.75rem 1.5rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.stat-num { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 500; }
+.stat-label { font-size: 11px; color: var(--text3); line-height: 1.3; }
+
+/* ── MAIN ── */
+.main { padding: 1.5rem; max-width: 1400px; margin: 0 auto; }
+
+/* ── TABELLA ── */
+.table-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.table-header {
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.table-title { font-family: 'Cormorant Garamond', serif; font-size: 16px; color: var(--text); }
+.count-label { font-size: 11px; color: var(--text3); }
+
+table { width: 100%; border-collapse: collapse; }
+thead th {
+  background: var(--surface2);
+  padding: 0.625rem 1rem;
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background .12s;
+  cursor: pointer;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--surface2); }
+tbody td {
+  padding: 0.75rem 1rem;
+  font-size: 13px;
+  color: var(--text);
+  vertical-align: middle;
+}
+.td-titolo { font-weight: 500; max-width: 200px; }
+.td-data { font-variant-numeric: tabular-nums; color: var(--text2); white-space: nowrap; }
+.td-durata { color: var(--text3); text-align: center; }
+.td-nominativi { color: var(--text2); font-size: 12px; max-width: 160px; }
+.td-luogo { color: var(--text2); font-size: 12px; max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.td-note { color: var(--text3); font-size: 12px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.td-promemoria { color: var(--text3); font-size: 11px; white-space: nowrap; }
+.td-ai { color: var(--text3); font-size: 11px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.td-actions { white-space: nowrap; text-align: right; }
+
+/* BADGE TIPOLOGIA */
+.badge-tipo {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 12px;
+  font-size: 11px; font-weight: 500; white-space: nowrap;
+}
+.badge-Presenza  { background: var(--presenza-bg);  color: var(--presenza);  border: 1px solid var(--presenza); }
+.badge-Telefono  { background: var(--telefono-bg);  color: var(--telefono);  border: 1px solid var(--telefono); }
+.badge-Riunione  { background: var(--riunione-bg);  color: var(--riunione);  border: 1px solid var(--riunione); }
+.badge-Call      { background: var(--call-bg);      color: var(--call);      border: 1px solid var(--call); }
+
+/* BADGE STATO */
+.badge-stato {
+  display: inline-block;
+  padding: 3px 9px; border-radius: 12px;
+  font-size: 11px; white-space: nowrap;
+}
+.badge-Programmato { background: var(--programmato-bg); color: var(--programmato); }
+.badge-Completato  { background: var(--completato-bg);  color: var(--completato); }
+.badge-Rimandato   { background: var(--rimandato-bg);   color: var(--rimandato); }
+.badge-Annullato   { background: var(--annullato-bg);   color: var(--annullato); }
+
+/* AZIONI RIGA */
+.btn-edit, .btn-del {
+  background: none; border: 1px solid var(--border);
+  color: var(--text3); border-radius: 4px;
+  padding: 3px 8px; font-size: 11px;
+  cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: all .12s; margin-left: 4px;
+}
+.btn-edit:hover { border-color: var(--accent2); color: var(--accent2); }
+.btn-del:hover  { border-color: var(--annullato); color: var(--annullato); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  padding: 3rem;
+  text-align: center;
+  color: var(--text3);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 500; align-items: center; justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 680px; max-width: 95vw;
+  max-height: 90vh; overflow-y: auto;
+  padding: 1.75rem;
+}
+.modal-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px; font-weight: 500;
+  color: var(--text); margin-bottom: 1.25rem;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); }
+.form-inp, .form-sel, .form-textarea {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color .15s;
+}
+.form-inp:focus, .form-sel:focus, .form-textarea:focus { border-color: var(--accent2); }
+.form-sel option { background: var(--surface2); }
+.form-textarea { min-height: 70px; resize: vertical; }
+
+/* TIPOLOGIA SELECTOR */
+.tipo-selector { display: flex; gap: 8px; flex-wrap: wrap; grid-column: 1 / -1; }
+.tipo-opt {
+  flex: 1; min-width: 100px;
+  padding: 8px 12px; border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 12px; font-weight: 500;
+  cursor: pointer; text-align: center;
+  transition: all .15s;
+}
+.tipo-opt[data-tipo="Presenza"].sel  { background: var(--presenza-bg);  color: var(--presenza);  border-color: var(--presenza); }
+.tipo-opt[data-tipo="Telefono"].sel  { background: var(--telefono-bg);  color: var(--telefono);  border-color: var(--telefono); }
+.tipo-opt[data-tipo="Riunione"].sel  { background: var(--riunione-bg);  color: var(--riunione);  border-color: var(--riunione); }
+.tipo-opt[data-tipo="Call"].sel      { background: var(--call-bg);      color: var(--call);      border-color: var(--call); }
+
+.modal-footer {
+  display: flex; gap: 8px; justify-content: flex-end;
+  margin-top: 1.25rem; padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.btn-cancel { background: var(--surface2); border: 1px solid var(--border); color: var(--text2); border-radius: 6px; padding: 7px 16px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; }
+.btn-save   { background: var(--accent); color: #fff; border: none; border-radius: 6px; padding: 7px 20px; font-size: 12px; font-family: 'DM Sans', sans-serif; cursor: pointer; font-weight: 500; }
+.btn-save:hover { background: var(--accent2); }
+
+/* DETAIL MODAL */
+.detail-modal { width: 760px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.detail-field { }
+.detail-label { font-size: 10px; text-transform: uppercase; letter-spacing: .08em; color: var(--text3); margin-bottom: 3px; }
+.detail-value { font-size: 13px; color: var(--text); line-height: 1.4; }
+.detail-value.full { grid-column: 1/-1; }
+.detail-note { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-size: 13px; color: var(--text2); line-height: 1.6; margin-top: 0.5rem; }
+.detail-ai { background: #1A1200; border: 1px solid #3A2A00; border-radius: 6px; padding: 10px; font-size: 12px; color: #C8A020; line-height: 1.6; margin-top: 0.5rem; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+  background: #1D9E75; color: #fff;
+  padding: 8px 20px; border-radius: 20px;
+  font-size: 13px; z-index: 1000;
+  opacity: 0; transition: opacity .3s; pointer-events: none;
+}
+.toast.show { opacity: 1; }
+.toast.err { background: var(--annullato); }
+
+/* LOADER */
+.loader { text-align: center; padding: 2rem; color: var(--text3); font-size: 13px; }
+
+/* SPIKE LINK */
+.spike-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: #1A3A5C; color: #60A5FA;
+  border: 1px solid #1C4A7A;
+  border-radius: 6px; padding: 5px 12px;
+  font-size: 11px; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  text-decoration: none; transition: all .15s;
+}
+.spike-btn:hover { background: #1C4A7A; }
+
+@media (max-width: 768px) {
+  .stats-bar { grid-template-columns: 1fr 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  .detail-grid { grid-template-columns: 1fr; }
+  .filtri-bar { gap: 0.375rem; }
+  .search-inp { width: 140px; }
+  thead th:nth-child(n+6) { display: none; }
+  tbody td:nth-child(n+6) { display: none; }
+}
+</style>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:0.5rem">
+    <span class="topbar-logo">💻 Appuntamenti — Call</span>
+    <span class="topbar-sub">Hub Personale Multidisciplinare</span>
+  </div>
+  <div class="topbar-right">
+    <a class="spike-btn" href="https://spikenow.com/web/?utm_source=website&utm_medium=referral&utm_campaign=website-direct&utm_term=%2Ffeatures%2Fcalendar%2F&ref=website-direct&ver=wip" target="_blank">
+      ✉ Apri Spike Calendar
+    </a>
+    <a class="topbar-back" onclick="history.back()">← Hub Personale</a>
+  </div>
+</div>
+
+<!-- FILTRI -->
+<div class="filtri-bar">
+  <button class="filtro-btn active" data-tipo="tutti" onclick="setFiltro('tutti',this)">
+    <span class="dot" style="background:var(--text3)"></span> Tutti
+  </button>
+  <button class="filtro-btn" data-tipo="Presenza" onclick="setFiltro('Presenza',this)">
+    <span class="dot" style="background:var(--presenza)"></span> Presenza
+  </button>
+  <button class="filtro-btn" data-tipo="Telefono" onclick="setFiltro('Telefono',this)">
+    <span class="dot" style="background:var(--telefono)"></span> Telefono
+  </button>
+  <button class="filtro-btn" data-tipo="Riunione" onclick="setFiltro('Riunione',this)">
+    <span class="dot" style="background:var(--riunione)"></span> Riunioni
+  </button>
+  <button class="filtro-btn" data-tipo="Call" onclick="setFiltro('Call',this)">
+    <span class="dot" style="background:var(--call)"></span> Call
+  </button>
+
+  <div class="filtri-right">
+    <input class="search-inp" type="text" id="searchInp" placeholder="⌕  Cerca appuntamento..." oninput="renderTabella()">
+    <button class="btn-nuovo" onclick="apriForm()">+ Nuovo appuntamento</button>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-cell">
+    <div>
+      <div class="stat-num" id="stat-tot" style="color:var(--text)">—</div>
+      <div class="stat-label">Totali</div>
+    </div>
+  </div>
+  <div class="stat-cell">
+    <div>
+      <div class="stat-num" id="stat-prog" style="color:var(--programmato)">—</div>
+      <div class="stat-label">Programmati</div>
+    </div>
+  </div>
+  <div class="stat-cell">
+    <div>
+      <div class="stat-num" id="stat-comp" style="color:var(--completato)">—</div>
+      <div class="stat-label">Completati</div>
+    </div>
+  </div>
+  <div class="stat-cell">
+    <div>
+      <div class="stat-num" id="stat-rim" style="color:var(--rimandato)">—</div>
+      <div class="stat-label">Rimandati / Annullati</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="table-wrap">
+    <div class="table-header">
+      <span class="table-title">Appuntamenti</span>
+      <span class="count-label" id="count-label">—</span>
+    </div>
+    <div style="overflow-x:auto">
+      <table>
+        <thead>
+          <tr>
+            <th>Titolo</th>
+            <th>Data e Ora</th>
+            <th style="text-align:center">Min</th>
+            <th>Tipologia</th>
+            <th>Nominativi</th>
+            <th>Luogo / Link</th>
+            <th>Note</th>
+            <th>Stato</th>
+            <th>Promemoria</th>
+            <th>Sintesi AI</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbody">
+          <tr><td colspan="11"><div class="loader">Connessione a Firebase...</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FORM -->
+<div class="modal-overlay" id="modal-form">
+  <div class="modal">
+    <div class="modal-title" id="form-title">Nuovo appuntamento</div>
+    <div class="form-grid">
+
+      <div class="form-group full">
+        <div class="form-label">Tipologia appuntamento</div>
+        <div class="tipo-selector">
+          <div class="tipo-opt" data-tipo="Presenza"  onclick="selTipo('Presenza')">👤 Presenza</div>
+          <div class="tipo-opt" data-tipo="Telefono"  onclick="selTipo('Telefono')">📞 Telefono</div>
+          <div class="tipo-opt" data-tipo="Riunione"  onclick="selTipo('Riunione')">🤝 Riunione</div>
+          <div class="tipo-opt" data-tipo="Call"      onclick="selTipo('Call')">💻 Call</div>
+        </div>
+        <input type="hidden" id="f-tipo">
+      </div>
+
+      <div class="form-group full">
+        <div class="form-label">Titolo appuntamento *</div>
+        <input class="form-inp" type="text" id="f-titolo" placeholder="Es. Incontro con Arch. Rossi — Villa Zanella">
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Data e ora inizio *</div>
+        <input class="form-inp" type="datetime-local" id="f-data">
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Durata (minuti)</div>
+        <input class="form-inp" type="number" id="f-durata" placeholder="60" min="5" step="5">
+      </div>
+
+      <div class="form-group full">
+        <div class="form-label">Nominativi coinvolti</div>
+        <input class="form-inp" type="text" id="f-nominativi" placeholder="Es. Mario Rossi, Geometra Bianchi">
+      </div>
+
+      <div class="form-group full">
+        <div class="form-label">Luogo / Link appuntamento</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input class="form-inp" type="text" id="f-luogo" placeholder="Es. Studio Rossi, Via Roma 12, Verona  —  oppure https://meet.google.com/..." oninput="aggiornaMapBtn()" style="flex:1">
+          <a id="maps-btn" href="#" target="_blank"
+             style="display:none;align-items:center;gap:5px;background:#1A3A2A;border:1px solid #1D9E75;color:#1D9E75;border-radius:6px;padding:7px 12px;font-size:12px;white-space:nowrap;text-decoration:none;transition:all .15s"
+             onmouseover="this.style.background='#1D9E75';this.style.color='#fff'"
+             onmouseout="this.style.background='#1A3A2A';this.style.color='#1D9E75'">
+            🗺 Apri Maps
+          </a>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Stato appuntamento</div>
+        <select class="form-sel" id="f-stato">
+          <option value="Programmato">Programmato</option>
+          <option value="Completato">Completato</option>
+          <option value="Rimandato">Rimandato</option>
+          <option value="Annullato">Annullato</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="form-label">Promemoria (data e ora)</div>
+        <input class="form-inp" type="datetime-local" id="f-promemoria">
+      </div>
+
+      <div class="form-group full">
+        <div class="form-label">Note appuntamento</div>
+        <textarea class="form-textarea" id="f-note" placeholder="Note libere, ordine del giorno, preparativi..."></textarea>
+      </div>
+
+      <div class="form-group full">
+        <div class="form-label">Sintesi AI (generata dopo l'appuntamento)</div>
+        <textarea class="form-textarea" id="f-ai" placeholder="Incolla qui la sintesi generata da Claude dopo l'incontro..."></textarea>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="chiudiForm()">Annulla</button>
+      <button class="btn-save" onclick="salvaAppuntamento()">Salva appuntamento</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETAIL -->
+<div class="modal-overlay" id="modal-detail">
+  <div class="modal detail-modal">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.25rem">
+      <div>
+        <div class="modal-title" id="d-titolo" style="margin-bottom:6px"></div>
+        <div id="d-badges" style="display:flex;gap:6px"></div>
+      </div>
+      <button class="btn-cancel" onclick="chiudiDetail()">✕ Chiudi</button>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-field">
+        <div class="detail-label">Data e ora</div>
+        <div class="detail-value" id="d-data"></div>
+      </div>
+      <div class="detail-field">
+        <div class="detail-label">Durata</div>
+        <div class="detail-value" id="d-durata"></div>
+      </div>
+      <div class="detail-field">
+        <div class="detail-label">Nominativi coinvolti</div>
+        <div class="detail-value" id="d-nominativi"></div>
+      </div>
+      <div class="detail-field">
+        <div class="detail-label">Luogo / Link</div>
+        <div class="detail-value" id="d-luogo"></div>
+      </div>
+      <div class="detail-field">
+        <div class="detail-label">Promemoria</div>
+        <div class="detail-value" id="d-promemoria"></div>
+      </div>
+      <div class="detail-field">
+        <div class="detail-label">Stato</div>
+        <div class="detail-value" id="d-stato"></div>
+      </div>
+    </div>
+    <div class="detail-label" style="margin-bottom:4px">Note</div>
+    <div class="detail-note" id="d-note"></div>
+    <div class="detail-label" style="margin:1rem 0 4px">Sintesi AI</div>
+    <div class="detail-ai" id="d-ai"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="chiudiDetail()">Chiudi</button>
+      <button class="btn-save" onclick="modificaDaDetail()">✏ Modifica</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+const firebaseConfig = {
+  apiKey: "AIzaSyBgT7HoFfVuuQeNctx7upLSoYlt_2MKCo0",
+  authDomain: "hub-contatti.firebaseapp.com",
+  projectId: "hub-contatti",
+  storageBucket: "hub-contatti.firebasestorage.app",
+  messagingSenderId: "1843153327",
+  appId: "1:1843153327:web:44cf6ae20d7ec43b54475a"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ── STATE ──
+let allAppt = [];
+let filtroTipo = 'tutti';
+let editingId  = null;
+let detailAppt = null;
+
+// ── TOAST ──
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('err', err);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── FORMAT ──
+function fmtData(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('it-IT', { weekday:'short', day:'2-digit', month:'short', year:'numeric' })
+       + ' · ' + d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' });
+}
+function fmtDataShort(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('it-IT', { day:'2-digit', month:'short', year:'numeric' })
+       + ' ' + d.toLocaleTimeString('it-IT', { hour:'2-digit', minute:'2-digit' });
+}
+
+// ── LOAD ──
+async function loadAppt() {
+  try {
+    const snap = await db.collection('appuntamenti').orderBy('dataInizio', 'asc').get();
+    allAppt = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderTabella();
+    aggiornaStats();
+  } catch(e) {
+    document.getElementById('tbody').innerHTML =
+      `<tr><td colspan="11"><div class="empty-state">⚠ Errore connessione Firebase.<br>Verifica le regole Firestore (modalità test).<br><small style="color:var(--text3)">${e.message}</small></div></td></tr>`;
+    console.error(e);
+  }
+}
+
+// ── RENDER ──
+window.renderTabella = function() {
+  const q = (document.getElementById('searchInp')?.value || '').toLowerCase();
+  let list = allAppt.filter(a => {
+    const matchTipo = filtroTipo === 'tutti' || a.tipo === filtroTipo;
+    const matchQ = !q || [a.titolo, a.nominativi, a.luogo, a.note].some(v => (v||'').toLowerCase().includes(q));
+    return matchTipo && matchQ;
+  });
+
+  document.getElementById('count-label').textContent = list.length + ' appuntamenti';
+
+  if (!list.length) {
+    document.getElementById('tbody').innerHTML =
+      `<tr><td colspan="11"><div class="empty-state">Nessun appuntamento trovato.<br>Clicca "+ Nuovo appuntamento" per iniziare.</div></td></tr>`;
+    return;
+  }
+
+  document.getElementById('tbody').innerHTML = list.map(a => `
+    <tr onclick="apriDetail('${a.id}')">
+      <td class="td-titolo">${a.titolo || '—'}</td>
+      <td class="td-data">${fmtDataShort(a.dataInizio)}</td>
+      <td class="td-durata">${a.durata ? a.durata + '' : '—'}</td>
+      <td><span class="badge-tipo badge-${a.tipo || 'none'}">${tipoIcon(a.tipo)} ${a.tipo || '—'}</span></td>
+      <td class="td-nominativi">${a.nominativi || '—'}</td>
+      <td class="td-luogo">${a.luogo || '—'}</td>
+      <td class="td-note">${a.note || '—'}</td>
+      <td><span class="badge-stato badge-${(a.stato||'').replace(' ','')}">${a.stato || '—'}</span></td>
+      <td class="td-promemoria">${a.promemoria ? fmtDataShort(a.promemoria) : '—'}</td>
+      <td class="td-ai">${a.ai || '—'}</td>
+      <td class="td-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="apriModifica('${a.id}')">✏</button>
+        <button class="btn-del"  onclick="eliminaAppt('${a.id}')">✕</button>
+      </td>
+    </tr>
+  `).join('');
+};
+
+function tipoIcon(t) {
+  return { Presenza:'👤', Telefono:'📞', Riunione:'🤝', Call:'💻' }[t] || '';
+}
+
+function aggiornaStats() {
+  document.getElementById('stat-tot').textContent  = allAppt.length;
+  document.getElementById('stat-prog').textContent = allAppt.filter(a => a.stato === 'Programmato').length;
+  document.getElementById('stat-comp').textContent = allAppt.filter(a => a.stato === 'Completato').length;
+  document.getElementById('stat-rim').textContent  = allAppt.filter(a => a.stato === 'Rimandato' || a.stato === 'Annullato').length;
+}
+
+// ── FILTRO ──
+window.setFiltro = function(tipo, btn) {
+  filtroTipo = tipo;
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTabella();
+};
+
+// ── FORM ──
+window.apriForm = function() {
+  editingId = null;
+  document.getElementById('form-title').textContent = 'Nuovo appuntamento';
+  ['f-titolo','f-nominativi','f-luogo','f-note','f-ai'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f-data').value = '';
+  document.getElementById('f-promemoria').value = '';
+  document.getElementById('f-durata').value = '';
+  document.getElementById('f-stato').value = 'Programmato';
+  document.getElementById('f-tipo').value = '';
+  document.querySelectorAll('.tipo-opt').forEach(o => o.classList.remove('sel'));
+  document.getElementById('maps-btn').style.display = 'none';
+  document.getElementById('modal-form').classList.add('open');
+};
+
+window.apriModifica = function(id) {
+  const a = allAppt.find(x => x.id === id);
+  if (!a) return;
+  editingId = id;
+  document.getElementById('form-title').textContent = 'Modifica appuntamento';
+  document.getElementById('f-titolo').value     = a.titolo || '';
+  document.getElementById('f-data').value       = a.dataInizio || '';
+  document.getElementById('f-durata').value     = a.durata || '';
+  document.getElementById('f-nominativi').value = a.nominativi || '';
+  document.getElementById('f-luogo').value      = a.luogo || '';
+  document.getElementById('f-stato').value      = a.stato || 'Programmato';
+  document.getElementById('f-promemoria').value = a.promemoria || '';
+  document.getElementById('f-note').value       = a.note || '';
+  document.getElementById('f-ai').value         = a.ai || '';
+  document.getElementById('f-tipo').value       = a.tipo || '';
+  document.querySelectorAll('.tipo-opt').forEach(o => o.classList.toggle('sel', o.dataset.tipo === a.tipo));
+  aggiornaMapBtn();
+  document.getElementById('modal-form').classList.add('open');
+};
+
+window.chiudiForm = function() {
+  document.getElementById('modal-form').classList.remove('open');
+};
+
+window.selTipo = function(tipo) {
+  document.getElementById('f-tipo').value = tipo;
+  document.querySelectorAll('.tipo-opt').forEach(o => o.classList.toggle('sel', o.dataset.tipo === tipo));
+};
+
+window.salvaAppuntamento = async function() {
+  const titolo = document.getElementById('f-titolo').value.trim();
+  const tipo   = document.getElementById('f-tipo').value;
+  if (!titolo) { toast('Inserisci il titolo', true); return; }
+
+  const data = {
+    titolo,
+    tipo,
+    dataInizio:  document.getElementById('f-data').value,
+    durata:      parseInt(document.getElementById('f-durata').value) || null,
+    nominativi:  document.getElementById('f-nominativi').value.trim(),
+    luogo:       document.getElementById('f-luogo').value.trim(),
+    stato:       document.getElementById('f-stato').value,
+    promemoria:  document.getElementById('f-promemoria').value,
+    note:        document.getElementById('f-note').value.trim(),
+    ai:          document.getElementById('f-ai').value.trim(),
+    aggiornato:  firebase.firestore.FieldValue.serverTimestamp()
+  };
+
+  try {
+    if (editingId) {
+      await db.collection('appuntamenti').doc(editingId).update(data);
+      toast('Appuntamento aggiornato ✓');
+    } else {
+      data.creato = firebase.firestore.FieldValue.serverTimestamp();
+      await db.collection('appuntamenti').add(data);
+      toast('Appuntamento salvato ✓');
+    }
+    chiudiForm();
+    await loadAppt();
+  } catch(e) {
+    toast('Errore salvataggio: ' + e.message, true);
+    console.error(e);
+  }
+};
+
+window.eliminaAppt = async function(id) {
+  if (!confirm('Eliminare questo appuntamento?')) return;
+  try {
+    await db.collection('appuntamenti').doc(id).delete();
+    toast('Eliminato ✓');
+    await loadAppt();
+  } catch(e) {
+    toast('Errore eliminazione', true);
+  }
+};
+
+// ── DETAIL ──
+window.apriDetail = function(id) {
+  const a = allAppt.find(x => x.id === id);
+  if (!a) return;
+  detailAppt = a;
+  document.getElementById('d-titolo').textContent = a.titolo || '—';
+  document.getElementById('d-badges').innerHTML =
+    `<span class="badge-tipo badge-${a.tipo}">${tipoIcon(a.tipo)} ${a.tipo || '—'}</span>
+     <span class="badge-stato badge-${(a.stato||'').replace(' ','')}">${a.stato || '—'}</span>`;
+  document.getElementById('d-data').textContent       = fmtData(a.dataInizio);
+  document.getElementById('d-durata').textContent     = a.durata ? a.durata + ' min' : '—';
+  document.getElementById('d-nominativi').textContent = a.nominativi || '—';
+  document.getElementById('d-luogo').innerHTML        = a.luogo
+    ? (a.luogo.startsWith('http') ? `<a href="${a.luogo}" target="_blank" style="color:var(--riunione)">${a.luogo}</a>` : a.luogo)
+    : '—';
+  document.getElementById('d-promemoria').textContent = fmtData(a.promemoria);
+  document.getElementById('d-stato').innerHTML        = `<span class="badge-stato badge-${(a.stato||'').replace(' ','')}">${a.stato || '—'}</span>`;
+  document.getElementById('d-note').textContent       = a.note || 'Nessuna nota';
+  document.getElementById('d-ai').textContent         = a.ai || 'Nessuna sintesi AI';
+  document.getElementById('modal-detail').classList.add('open');
+};
+
+window.chiudiDetail = function() {
+  document.getElementById('modal-detail').classList.remove('open');
+};
+
+window.modificaDaDetail = function() {
+  chiudiDetail();
+  if (detailAppt) apriModifica(detailAppt.id);
+};
+
+// ── MAPS BTN ──
+window.aggiornaMapBtn = function() {
+  const val = document.getElementById('f-luogo').value.trim();
+  const btn = document.getElementById('maps-btn');
+  if (!val || val.startsWith('http')) {
+    btn.style.display = 'none';
+  } else {
+    btn.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(val);
+    btn.style.display = 'flex';
+  }
+};
+
+// ── INIT ──
+filtroTipo = 'Call';
+document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+const _btn = document.querySelector('.filtro-btn[data-tipo="Call"]');
+if (_btn) _btn.classList.add('active');
+loadAppt();
+}); // end DOMContentLoaded
+</script>
+</body>
+</html>
