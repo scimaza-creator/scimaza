@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<!-- saved from url=(0059)file:///C:/Users/scima/Downloads/Tableau_Finanziario_2.html -->
+<html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau Finanziario — Monitor Completo</title>
+<link href="./Tableau Finanziario — Monitor Completo_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg: #F7F5F0;
+  --bg2: #EFEDE6;
+  --surface: #FFFFFF;
+  --border: #E2DDD4;
+  --text: #1A1814;
+  --text2: #6B6560;
+  --text3: #A09890;
+  --accent: #8B4513;
+  --up: #1D9E75;
+  --dn: #C0392B;
+  --up-bg: #E4F5EE;
+  --dn-bg: #FCECEA;
+  --blue: #185FA5;
+  --blue-bg: #EBF3FA;
+  --amber: #BA7517;
+  --amber-bg: #FBF0DC;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+/* TOPBAR */
+.topbar {
+  background: var(--text);
+  color: #fff;
+  padding: 0 2rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+.topbar-center {
+  display: flex;
+  gap: 0;
+}
+.tab-btn {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: #AAA;
+  border-bottom: 3px solid transparent;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: #fff; }
+.tab-btn.active { color: #fff; border-bottom-color: var(--accent); }
+.topbar-right { font-size: 11px; color: #888; }
+
+/* TICKER */
+.ticker {
+  background: #111;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 5px 0;
+  font-size: 11px;
+  color: #ccc;
+}
+.ticker-inner { display: inline-block; animation: tick 80s linear infinite; }
+.tick-item { margin-right: 48px; }
+.tick-item .up { color: #4CAF50; }
+.tick-item .dn { color: #F44336; }
+.tick-item .neu { color: #AAA; }
+@keyframes tick { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* PANEL */
+.panel { display: none; padding: 24px 2rem; }
+.panel.active { display: block; }
+
+/* SECTION */
+.sec-label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  margin-top: 24px;
+}
+.sec-label:first-child { margin-top: 0; }
+
+/* METRIC CARDS GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.mcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  cursor: default;
+}
+.mcard-name { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.mcard-val { font-size: 20px; font-weight: 500; color: var(--text); line-height: 1; }
+.mcard-chg { font-size: 11px; margin-top: 4px; }
+.up { color: var(--up); }
+.dn { color: var(--dn); }
+.neu { color: var(--text3); }
+
+/* TABLE */
+.tbl-wrap { overflow-x: auto; margin-bottom: 8px; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 600px; }
+thead th {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  white-space: nowrap;
+}
+tbody td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+tbody tr:last-child td { border-bottom: none; }
+tbody tr:hover td { background: var(--bg2); }
+
+/* BADGE */
+.badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  display: inline-block;
+  font-weight: 400;
+}
+.badge-g { background: #EAF3DE; color: #27500A; }
+.badge-r { background: #FCEBEB; color: #791F1F; }
+.badge-b { background: #E6F1FB; color: #0C447C; }
+.badge-a { background: #FAEEDA; color: #633806; }
+.badge-n { background: var(--bg2); color: var(--text3); border: 1px solid var(--border); }
+
+/* CONVERTER */
+.converter-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+  max-width: 620px;
+}
+.conv-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 14px;
+}
+.conv-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.conv-row input[type=number] {
+  width: 130px;
+  font-size: 15px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+}
+.conv-row select {
+  font-size: 13px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+}
+.conv-arrow { font-size: 18px; color: var(--text3); }
+.conv-result {
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--text);
+  margin-top: 14px;
+}
+.conv-rate { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.conv-link {
+  font-size: 11px;
+  color: var(--blue);
+  text-decoration: none;
+  margin-top: 8px;
+  display: inline-block;
+}
+.conv-link:hover { text-decoration: underline; }
+
+/* SOURCE NOTE */
+.src-note {
+  font-size: 10px;
+  color: var(--text3);
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.src-note a { color: var(--blue); text-decoration: none; }
+.src-note a:hover { text-decoration: underline; }
+
+/* FOOTER */
+.footer {
+  background: var(--text);
+  color: #666;
+  text-align: center;
+  padding: 12px 2rem;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  margin-top: 32px;
+}
+.footer a { color: var(--accent); text-decoration: none; }
+
+/* BACK LINK */
+.back-bar {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 2rem;
+  font-size: 11px;
+  color: var(--text3);
+  display: flex;
+  gap: 16px;
+}
+.back-bar a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.back-bar a:hover { text-decoration: underline; }
+
+@media (max-width: 768px) {
+  .topbar-center { overflow-x: auto; }
+  .panel { padding: 16px 1rem; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="tick-item">FTSE MIB <span class="dn">38.420 ▼0.72%</span></span>
+    <span class="tick-item">S&amp;P 500 <span class="dn">5.611 ▼1.02%</span></span>
+    <span class="tick-item">NASDAQ 100 <span class="dn">19.280 ▼1.45%</span></span>
+    <span class="tick-item">DOW JONES <span class="dn">41.580 ▼0.88%</span></span>
+    <span class="tick-item">DAX <span class="up">22.450 ▲0.18%</span></span>
+    <span class="tick-item">CAC 40 <span class="dn">7.980 ▼0.44%</span></span>
+    <span class="tick-item">EURO STOXX 50 <span class="up">5.190 ▲0.31%</span></span>
+    <span class="tick-item">FTSE 100 <span class="up">8.620 ▲0.22%</span></span>
+    <span class="tick-item">EUR/USD <span class="up">1.0811 ▲0.32%</span></span>
+    <span class="tick-item">EUR/CHF <span class="up">0.9541 ▲0.08%</span></span>
+    <span class="tick-item">EUR/GBP <span class="dn">0.8342 ▼0.18%</span></span>
+    <span class="tick-item">USD/JPY <span class="dn">149.70 ▼0.76%</span></span>
+    <span class="tick-item">ORO <span class="up">$3.084 ▲0.62%</span></span>
+    <span class="tick-item">ARGENTO <span class="up">$34.21 ▲0.88%</span></span>
+    <span class="tick-item">WTI <span class="dn">$69.45 ▼1.23%</span></span>
+    <span class="tick-item">BRENT <span class="dn">$73.10 ▼1.08%</span></span>
+    <span class="tick-item">BTC <span class="dn">$87.240 ▼2.41%</span></span>
+    <span class="tick-item">ETH <span class="dn">$2.014 ▼3.18%</span></span>
+    <span class="tick-item">BTP 10Y <span class="up">3.65%</span></span>
+    <span class="tick-item">VIX <span class="dn">21.4 ▼5.3%</span></span>
+    <!-- loop -->
+    <span class="tick-item">FTSE MIB <span class="dn">38.420 ▼0.72%</span></span>
+    <span class="tick-item">S&amp;P 500 <span class="dn">5.611 ▼1.02%</span></span>
+    <span class="tick-item">NASDAQ 100 <span class="dn">19.280 ▼1.45%</span></span>
+    <span class="tick-item">DOW JONES <span class="dn">41.580 ▼0.88%</span></span>
+    <span class="tick-item">DAX <span class="up">22.450 ▲0.18%</span></span>
+    <span class="tick-item">CAC 40 <span class="dn">7.980 ▼0.44%</span></span>
+    <span class="tick-item">EURO STOXX 50 <span class="up">5.190 ▲0.31%</span></span>
+    <span class="tick-item">FTSE 100 <span class="up">8.620 ▲0.22%</span></span>
+    <span class="tick-item">EUR/USD <span class="up">1.0811 ▲0.32%</span></span>
+    <span class="tick-item">EUR/CHF <span class="up">0.9541 ▲0.08%</span></span>
+    <span class="tick-item">EUR/GBP <span class="dn">0.8342 ▼0.18%</span></span>
+    <span class="tick-item">USD/JPY <span class="dn">149.70 ▼0.76%</span></span>
+    <span class="tick-item">ORO <span class="up">$3.084 ▲0.62%</span></span>
+    <span class="tick-item">ARGENTO <span class="up">$34.21 ▲0.88%</span></span>
+    <span class="tick-item">WTI <span class="dn">$69.45 ▼1.23%</span></span>
+    <span class="tick-item">BRENT <span class="dn">$73.10 ▼1.08%</span></span>
+    <span class="tick-item">BTC <span class="dn">$87.240 ▼2.41%</span></span>
+    <span class="tick-item">ETH <span class="dn">$2.014 ▼3.18%</span></span>
+    <span class="tick-item">BTP 10Y <span class="up">3.65%</span></span>
+    <span class="tick-item">VIX <span class="dn">21.4 ▼5.3%</span></span>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-logo">Tableau Finanziario</div>
+  <div class="topbar-center">
+    <button class="tab-btn active" onclick="show(&#39;indici&#39;,this)">Indici</button>
+    <button class="tab-btn" onclick="show(&#39;azioni&#39;,this)">Azioni</button>
+    <button class="tab-btn" onclick="show(&#39;etf&#39;,this)">ETF / ETC</button>
+    <button class="tab-btn" onclick="show(&#39;fondi&#39;,this)">Fondi Attivi</button>
+    <button class="tab-btn" onclick="show(&#39;obblig&#39;,this)">Obbligazioni</button>
+    <button class="tab-btn" onclick="show(&#39;certificati&#39;,this)">Certificati</button>
+    <button class="tab-btn" onclick="show(&#39;crypto&#39;,this)">Crypto</button>
+    <button class="tab-btn" onclick="show(&#39;valute&#39;,this)">Forex + Valute</button>
+  </div>
+  <div class="topbar-right" id="clock">mar 31 mar 2026 · 00:49:26</div>
+</div>
+
+<!-- BACK BAR -->
+<div class="back-bar">
+  <a href="file:///C:/Users/scima/Downloads/Tableau_Finanziario_2.html#" onclick="apriFile(&#39;Hub_Personale_Multidisciplinare.html&#39;);return false;">← Hub Principale</a>
+  <a href="file:///C:/Users/scima/Downloads/Tableau_Finanziario_2.html#" onclick="apriFile(&#39;Giornale_Finanziario_Globale.html&#39;);return false;">📰 Giornale Finanziario</a>
+  <a href="https://it.investing.com/" target="_blank">Investing.com ↗</a>
+  <a href="https://it.tradingview.com/" target="_blank">TradingView ↗</a>
+  <a href="https://www.baha.com/" target="_blank">Baha ↗</a>
+  <a href="https://cbonds.it/" target="_blank">Cbonds ↗</a>
+</div>
+
+<!-- ===================== PANEL: INDICI ===================== -->
+<div id="panel-indici" class="panel active">
+
+  <div class="sec-label">Indici azionari principali</div>
+  <div class="grid">
+    <div class="mcard"><div class="mcard-name">FTSE MIB</div><div class="mcard-val">38.420</div><div class="mcard-chg dn">▼ 0.72%</div></div>
+    <div class="mcard"><div class="mcard-name">S&amp;P 500</div><div class="mcard-val">5.611</div><div class="mcard-chg dn">▼ 1.02%</div></div>
+    <div class="mcard"><div class="mcard-name">NASDAQ 100</div><div class="mcard-val">19.280</div><div class="mcard-chg dn">▼ 1.45%</div></div>
+    <div class="mcard"><div class="mcard-name">Dow Jones</div><div class="mcard-val">41.580</div><div class="mcard-chg dn">▼ 0.88%</div></div>
+    <div class="mcard"><div class="mcard-name">Euro Stoxx 50</div><div class="mcard-val">5.190</div><div class="mcard-chg up">▲ 0.31%</div></div>
+    <div class="mcard"><div class="mcard-name">DAX</div><div class="mcard-val">22.450</div><div class="mcard-chg up">▲ 0.18%</div></div>
+    <div class="mcard"><div class="mcard-name">CAC 40</div><div class="mcard-val">7.980</div><div class="mcard-chg dn">▼ 0.44%</div></div>
+    <div class="mcard"><div class="mcard-name">FTSE 100</div><div class="mcard-val">8.620</div><div class="mcard-chg up">▲ 0.22%</div></div>
+    <div class="mcard"><div class="mcard-name">Nikkei 225</div><div class="mcard-val">35.617</div><div class="mcard-chg dn">▼ 0.57%</div></div>
+    <div class="mcard"><div class="mcard-name">Hang Seng</div><div class="mcard-val">23.410</div><div class="mcard-chg up">▲ 1.12%</div></div>
+    <div class="mcard"><div class="mcard-name">Shanghai</div><div class="mcard-val">3.371</div><div class="mcard-chg up">▲ 0.43%</div></div>
+    <div class="mcard"><div class="mcard-name">IBEX 35</div><div class="mcard-val">12.840</div><div class="mcard-chg up">▲ 0.14%</div></div>
+    <div class="mcard"><div class="mcard-name">AEX</div><div class="mcard-val">880</div><div class="mcard-chg dn">▼ 0.32%</div></div>
+    <div class="mcard"><div class="mcard-name">SMI</div><div class="mcard-val">12.410</div><div class="mcard-chg up">▲ 0.11%</div></div>
+    <div class="mcard"><div class="mcard-name">VIX</div><div class="mcard-val">21.4</div><div class="mcard-chg dn">▼ 5.3%</div></div>
+    <div class="mcard"><div class="mcard-name">MOVE (bond vol)</div><div class="mcard-val">96.2</div><div class="mcard-chg dn">▼ 2.1%</div></div>
+  </div>
+
+  <div class="sec-label">Materie prime</div>
+  <div class="grid">
+    <div class="mcard"><div class="mcard-name">Oro ($/oz)</div><div class="mcard-val">3.084</div><div class="mcard-chg up">▲ 0.62%</div></div>
+    <div class="mcard"><div class="mcard-name">Argento ($/oz)</div><div class="mcard-val">34.21</div><div class="mcard-chg up">▲ 0.88%</div></div>
+    <div class="mcard"><div class="mcard-name">Platino ($/oz)</div><div class="mcard-val">1.021</div><div class="mcard-chg up">▲ 0.44%</div></div>
+    <div class="mcard"><div class="mcard-name">Palladio ($/oz)</div><div class="mcard-val">984</div><div class="mcard-chg dn">▼ 1.20%</div></div>
+    <div class="mcard"><div class="mcard-name">WTI ($/barile)</div><div class="mcard-val">69.45</div><div class="mcard-chg dn">▼ 1.23%</div></div>
+    <div class="mcard"><div class="mcard-name">Brent ($/barile)</div><div class="mcard-val">73.10</div><div class="mcard-chg dn">▼ 1.08%</div></div>
+    <div class="mcard"><div class="mcard-name">Gas naturale</div><div class="mcard-val">4.12</div><div class="mcard-chg up">▲ 2.40%</div></div>
+    <div class="mcard"><div class="mcard-name">Rame ($/lb)</div><div class="mcard-val">5.08</div><div class="mcard-chg up">▲ 0.33%</div></div>
+    <div class="mcard"><div class="mcard-name">Mais ($/bushel)</div><div class="mcard-val">4.42</div><div class="mcard-chg dn">▼ 0.45%</div></div>
+    <div class="mcard"><div class="mcard-name">Frumento</div><div class="mcard-val">5.88</div><div class="mcard-chg dn">▼ 0.68%</div></div>
+  </div>
+
+  <div class="src-note">Dati indicativi all'apertura. Real-time: <a href="https://it.investing.com/markets" target="_blank">Investing.com</a> · <a href="https://www.baha.com/" target="_blank">Baha</a> · <a href="https://it.tradingview.com/" target="_blank">TradingView</a></div>
+</div>
+
+<!-- ===================== PANEL: AZIONI ===================== -->
+<div id="panel-azioni" class="panel">
+
+  <div class="sec-label">Principali titoli azionari — Italia</div>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Titolo</th><th>Settore</th><th>Prezzo</th><th>Var. %</th><th>52W High</th><th>52W Low</th><th>Target</th><th>Upside</th><th>Raccom.</th></tr></thead>
+    <tbody>
+      <tr><td><b>ENI</b></td><td>Energia</td><td>13.82€</td><td class="up">+0.44%</td><td>15.20€</td><td>12.10€</td><td>16.50€</td><td class="up">+19.4%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Intesa Sanpaolo</b></td><td>Banche</td><td>4.21€</td><td class="dn">-0.71%</td><td>4.85€</td><td>3.30€</td><td>4.80€</td><td class="up">+14.0%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Enel</b></td><td>Utilities</td><td>7.14€</td><td class="up">+0.28%</td><td>7.80€</td><td>5.90€</td><td>8.20€</td><td class="up">+14.8%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Ferrari</b></td><td>Auto</td><td>388.50€</td><td class="dn">-1.20%</td><td>430.00€</td><td>310.00€</td><td>420.00€</td><td class="up">+8.1%</td><td><span class="badge badge-b">Hold</span></td></tr>
+      <tr><td><b>Stellantis</b></td><td>Auto</td><td>9.88€</td><td class="dn">-2.10%</td><td>18.50€</td><td>8.40€</td><td>12.00€</td><td class="up">+21.5%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Unicredit</b></td><td>Banche</td><td>38.20€</td><td class="dn">-0.52%</td><td>44.00€</td><td>25.10€</td><td>44.00€</td><td class="up">+15.2%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Generali</b></td><td>Assicurazioni</td><td>26.80€</td><td class="up">+0.15%</td><td>28.50€</td><td>21.00€</td><td>30.00€</td><td class="up">+11.9%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Leonardo</b></td><td>Difesa/Aerospazio</td><td>32.45€</td><td class="up">+1.20%</td><td>34.00€</td><td>18.20€</td><td>38.00€</td><td class="up">+17.1%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Prysmian</b></td><td>Cavi/Infrastrutture</td><td>48.20€</td><td class="up">+0.83%</td><td>60.00€</td><td>38.00€</td><td>58.00€</td><td class="up">+20.3%</td><td><span class="badge badge-g">Buy</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="sec-label">Principali titoli azionari — USA</div>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Titolo</th><th>Settore</th><th>Prezzo</th><th>Var. %</th><th>P/E</th><th>Target 12M</th><th>Upside</th><th>Raccom.</th></tr></thead>
+    <tbody>
+      <tr><td><b>Apple (AAPL)</b></td><td>Tech</td><td>$213.50</td><td class="dn">-0.89%</td><td>28.4x</td><td>$240.00</td><td class="up">+12.4%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Microsoft (MSFT)</b></td><td>Tech/Cloud</td><td>$388.20</td><td class="dn">-1.02%</td><td>31.2x</td><td>$430.00</td><td class="up">+10.8%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>NVIDIA (NVDA)</b></td><td>Semiconduttori</td><td>$112.40</td><td class="dn">-2.34%</td><td>38.8x</td><td>$150.00</td><td class="up">+33.5%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Amazon (AMZN)</b></td><td>E-comm/Cloud</td><td>$198.70</td><td class="dn">-1.15%</td><td>35.1x</td><td>$230.00</td><td class="up">+15.8%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Alphabet (GOOGL)</b></td><td>Tech/AI</td><td>$162.40</td><td class="dn">-0.78%</td><td>21.4x</td><td>$195.00</td><td class="up">+20.1%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Meta (META)</b></td><td>Social/AI</td><td>$558.30</td><td class="dn">-1.44%</td><td>24.8x</td><td>$640.00</td><td class="up">+14.6%</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Berkshire B (BRK.B)</b></td><td>Holding</td><td>$512.40</td><td class="up">+0.22%</td><td>—</td><td>$540.00</td><td class="up">+5.4%</td><td><span class="badge badge-b">Hold</span></td></tr>
+      <tr><td><b>JPMorgan (JPM)</b></td><td>Banche</td><td>$240.80</td><td class="dn">-0.55%</td><td>12.8x</td><td>$268.00</td><td class="up">+11.3%</td><td><span class="badge badge-g">Buy</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="sec-label">Principali titoli azionari — Europa</div>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Titolo</th><th>Paese</th><th>Settore</th><th>Prezzo</th><th>Var. %</th><th>Target</th><th>Raccom.</th></tr></thead>
+    <tbody>
+      <tr><td><b>LVMH</b></td><td>🇫🇷</td><td>Lusso</td><td>578€</td><td class="up">+0.55%</td><td>650€</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>SAP</b></td><td>🇩🇪</td><td>Software</td><td>242€</td><td class="up">+0.33%</td><td>270€</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>ASML</b></td><td>🇳🇱</td><td>Semiconduttori</td><td>680€</td><td class="dn">-1.88%</td><td>780€</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Nestlé</b></td><td>🇨🇭</td><td>Consumer</td><td>81.50CHF</td><td class="up">+0.12%</td><td>90CHF</td><td><span class="badge badge-b">Hold</span></td></tr>
+      <tr><td><b>Shell</b></td><td>🇬🇧</td><td>Energia</td><td>£26.80</td><td class="dn">-0.62%</td><td>£30.00</td><td><span class="badge badge-b">Hold</span></td></tr>
+      <tr><td><b>Rheinmetall</b></td><td>🇩🇪</td><td>Difesa</td><td>1.148€</td><td class="up">+2.44%</td><td>1.350€</td><td><span class="badge badge-g">Buy</span></td></tr>
+      <tr><td><b>Airbus</b></td><td>🇫🇷</td><td>Aerospazio</td><td>155€</td><td class="up">+0.88%</td><td>180€</td><td><span class="badge badge-g">Buy</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="src-note">Target price da consensus analisti. Fonte: <a href="https://it.investing.com/" target="_blank">InvestingPro</a> · <a href="https://www.marketscreener.com/" target="_blank">Marketscreener</a></div>
+</div>
+
+<!-- ===================== PANEL: ETF / ETC ===================== -->
+<div id="panel-etf" class="panel">
+  <div class="sec-label">ETF azionari per settore e benchmark</div>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Nome ETF</th><th>Categoria</th><th>Benchmark</th><th>TER</th><th>1M%</th><th>YTD%</th><th>1Y%</th><th>Dividendi</th><th>Tipo</th></tr></thead>
+    <tbody>
+      <tr><td><b>iShares Core MSCI World</b></td><td>Globale</td><td>MSCI World</td><td>0.20%</td><td class="dn">-3.1%</td><td class="dn">-4.2%</td><td class="up">+8.4%</td><td>Acc.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>Vanguard FTSE All-World</b></td><td>Globale</td><td>FTSE All-World</td><td>0.22%</td><td class="dn">-2.8%</td><td class="dn">-3.8%</td><td class="up">+7.9%</td><td>Dist.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>Lyxor FTSE MIB</b></td><td>Italia</td><td>FTSE MIB</td><td>0.35%</td><td class="up">+2.1%</td><td class="up">+8.4%</td><td class="up">+22.1%</td><td>Acc.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>iShares Core S&amp;P 500</b></td><td>USA</td><td>S&amp;P 500</td><td>0.07%</td><td class="dn">-4.2%</td><td class="dn">-5.6%</td><td class="up">+6.8%</td><td>Acc.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>Invesco QQQ (NASDAQ 100)</b></td><td>Tech USA</td><td>NASDAQ 100</td><td>0.20%</td><td class="dn">-6.1%</td><td class="dn">-8.1%</td><td class="up">+5.2%</td><td>Acc.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>Amundi Euro Stoxx 50</b></td><td>Europa</td><td>Euro Stoxx 50</td><td>0.15%</td><td class="up">+1.2%</td><td class="up">+5.2%</td><td class="up">+14.8%</td><td>Acc.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>iShares Global Energy</b></td><td>Energia</td><td>S&amp;P Global Energy</td><td>0.43%</td><td class="dn">-1.8%</td><td class="up">+2.1%</td><td class="dn">-3.2%</td><td>Dist.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>iShares Global Healthcare</b></td><td>Salute</td><td>MSCI Healthcare</td><td>0.43%</td><td class="up">+0.8%</td><td class="up">+1.8%</td><td class="up">+4.4%</td><td>Dist.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>iShares MSCI World Financials</b></td><td>Finanza</td><td>MSCI Financials</td><td>0.25%</td><td class="up">+1.4%</td><td class="up">+6.2%</td><td class="up">+18.4%</td><td>Acc.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>Xtrackers MSCI EM</b></td><td>Emergenti</td><td>MSCI Emerging Mkts</td><td>0.18%</td><td class="up">+1.8%</td><td class="up">+2.9%</td><td class="up">+6.1%</td><td>Acc.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>iShares Core Global Bond</b></td><td>Obbligazionario</td><td>Bloomberg Global Agg.</td><td>0.10%</td><td class="up">+0.4%</td><td class="up">+1.4%</td><td class="up">+3.2%</td><td>Dist.</td><td><span class="badge badge-b">ETF</span></td></tr>
+      <tr><td><b>iShares Physical Gold</b></td><td>Oro fisico</td><td>Spot Gold</td><td>0.12%</td><td class="up">+5.2%</td><td class="up">+14.8%</td><td class="up">+28.4%</td><td>Acc.</td><td><span class="badge badge-a">ETC</span></td></tr>
+      <tr><td><b>WisdomTree Silver</b></td><td>Argento fisico</td><td>Spot Silver</td><td>0.49%</td><td class="up">+3.8%</td><td class="up">+11.2%</td><td class="up">+18.8%</td><td>Acc.</td><td><span class="badge badge-a">ETC</span></td></tr>
+      <tr><td><b>Invesco Bloomberg Commodity</b></td><td>Materie prime</td><td>Bloomberg Commodity</td><td>0.19%</td><td class="dn">-1.2%</td><td class="up">+0.8%</td><td class="dn">-4.1%</td><td>Acc.</td><td><span class="badge badge-a">ETC</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="src-note">Screener completo: <a href="https://www.justetf.com/it/" target="_blank">JustETF</a> · <a href="https://www.morningstar.it/" target="_blank">Morningstar</a></div>
+</div>
+
+<!-- ===================== PANEL: FONDI ATTIVI ===================== -->
+<div id="panel-fondi" class="panel">
+  <div class="sec-label">Fondi attivi — Migliori per categoria (Morningstar)</div>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Fondo</th><th>Casa di gestione</th><th>Categoria</th><th>Rating ★</th><th>TER</th><th>1Y%</th><th>3Y ann.</th><th>Benchmark</th></tr></thead>
+    <tbody>
+      <tr><td><b>Fundsmith Equity</b></td><td>Fundsmith</td><td>Az. globale large cap</td><td>★★★★★</td><td>1.05%</td><td class="up">+12.4%</td><td class="up">+9.8%</td><td>MSCI World</td></tr>
+      <tr><td><b>Comgest Growth Europe</b></td><td>Comgest</td><td>Az. Europa qualità</td><td>★★★★★</td><td>1.57%</td><td class="up">+14.2%</td><td class="up">+8.4%</td><td>MSCI Europe</td></tr>
+      <tr><td><b>Fidelity European Growth</b></td><td>Fidelity</td><td>Az. Europa</td><td>★★★★</td><td>1.50%</td><td class="up">+11.8%</td><td class="up">+7.2%</td><td>MSCI Europe</td></tr>
+      <tr><td><b>BlackRock World Gold</b></td><td>BlackRock</td><td>Settoriale oro</td><td>★★★★</td><td>1.74%</td><td class="up">+28.4%</td><td class="up">+12.1%</td><td>NYSE Arca Gold</td></tr>
+      <tr><td><b>M&amp;G Optimal Income</b></td><td>M&amp;G</td><td>Obbl. flessibile</td><td>★★★★</td><td>0.90%</td><td class="up">+6.8%</td><td class="up">+4.2%</td><td>Bloomberg Agg.</td></tr>
+      <tr><td><b>Pimco GIS Income</b></td><td>Pimco</td><td>Obbl. globale</td><td>★★★★★</td><td>0.55%</td><td class="up">+7.4%</td><td class="up">+4.8%</td><td>Bloomberg Agg.</td></tr>
+      <tr><td><b>Vanguard Global Bond Index</b></td><td>Vanguard</td><td>Obbl. globale passivo</td><td>★★★★</td><td>0.15%</td><td class="up">+3.8%</td><td class="up">+2.4%</td><td>Bloomberg Agg.</td></tr>
+      <tr><td><b>JPMorgan Emerging Markets</b></td><td>JPMorgan AM</td><td>Az. mercati emergenti</td><td>★★★★</td><td>1.45%</td><td class="up">+8.2%</td><td class="up">+5.1%</td><td>MSCI EM</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="src-note">Rating e performance: <a href="https://www.morningstar.it/" target="_blank">Morningstar Italia</a> · <a href="https://it.investing.com/" target="_blank">Investing.com</a></div>
+</div>
+
+<!-- ===================== PANEL: OBBLIGAZIONI ===================== -->
+<div id="panel-obblig" class="panel">
+
+  <div class="sec-label">BTP e Titoli di Stato italiani</div>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Titolo</th><th>Cedola</th><th>Scadenza</th><th>Prezzo</th><th>Rendimento</th><th>Duration</th><th>Rating</th></tr></thead>
+    <tbody>
+      <tr><td><b>BTP 2 anni</b></td><td>3.25%</td><td>Feb 2026</td><td>99.80</td><td class="up">2.89%</td><td>1.9</td><td><span class="badge badge-b">BBB</span></td></tr>
+      <tr><td><b>BTP 5 anni</b></td><td>3.50%</td><td>Mar 2029</td><td>99.20</td><td class="up">3.21%</td><td>4.6</td><td><span class="badge badge-b">BBB</span></td></tr>
+      <tr><td><b>BTP 10 anni</b></td><td>3.85%</td><td>Nov 2034</td><td>98.40</td><td class="up">3.65%</td><td>8.8</td><td><span class="badge badge-b">BBB</span></td></tr>
+      <tr><td><b>BTP 15 anni</b></td><td>4.20%</td><td>Mar 2040</td><td>96.80</td><td class="up">3.88%</td><td>12.1</td><td><span class="badge badge-b">BBB</span></td></tr>
+      <tr><td><b>BTP 30 anni</b></td><td>4.45%</td><td>Sep 2053</td><td>94.10</td><td class="up">4.12%</td><td>18.4</td><td><span class="badge badge-b">BBB</span></td></tr>
+      <tr><td><b>BTP Italia (inflaz.)</b></td><td>2.00% + inf</td><td>May 2028</td><td>100.20</td><td class="up">3.88%</td><td>2.1</td><td><span class="badge badge-b">BBB</span></td></tr>
+      <tr><td><b>CCT (Euribor)</b></td><td>Euribor+0.80%</td><td>Jun 2027</td><td>99.60</td><td class="up">3.45%</td><td>1.2</td><td><span class="badge badge-b">BBB</span></td></tr>
+      <tr><td><b>BOT 6 mesi</b></td><td>—</td><td>Set 2026</td><td>98.50</td><td class="up">2.72%</td><td>0.5</td><td><span class="badge badge-b">BBB</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="sec-label">Titoli di Stato internazionali (rendimento 10 anni)</div>
+  <div class="grid">
+    <div class="mcard"><div class="mcard-name">BTP 10Y (IT)</div><div class="mcard-val">3.65%</div><div class="mcard-chg up">Spread +105 bp</div></div>
+    <div class="mcard"><div class="mcard-name">Bund 10Y (DE)</div><div class="mcard-val">2.60%</div><div class="mcard-chg neu">Benchmark EU</div></div>
+    <div class="mcard"><div class="mcard-name">OAT 10Y (FR)</div><div class="mcard-val">3.10%</div><div class="mcard-chg up">Spread +50 bp</div></div>
+    <div class="mcard"><div class="mcard-name">Gilts 10Y (UK)</div><div class="mcard-val">4.52%</div><div class="mcard-chg dn">Alta volatilità</div></div>
+    <div class="mcard"><div class="mcard-name">Treasury 10Y (US)</div><div class="mcard-val">4.22%</div><div class="mcard-chg neu">Fed watch</div></div>
+    <div class="mcard"><div class="mcard-name">JGB 10Y (JP)</div><div class="mcard-val">1.58%</div><div class="mcard-chg up">BoJ rialzo</div></div>
+  </div>
+
+  <div class="sec-label">Obbligazioni Corporate principali</div>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Emittente</th><th>Cedola</th><th>Scadenza</th><th>Prezzo</th><th>Rendimento</th><th>Rating S&amp;P</th><th>Settore</th></tr></thead>
+    <tbody>
+      <tr><td><b>ENI SpA</b></td><td>3.75%</td><td>Mar 2030</td><td>101.20</td><td class="up">3.51%</td><td><span class="badge badge-g">A-</span></td><td>Energia</td></tr>
+      <tr><td><b>Enel SpA</b></td><td>4.00%</td><td>Jun 2032</td><td>100.80</td><td class="up">3.89%</td><td><span class="badge badge-b">BBB+</span></td><td>Utilities</td></tr>
+      <tr><td><b>Intesa Sanpaolo</b></td><td>4.20%</td><td>Jan 2030</td><td>100.40</td><td class="up">4.12%</td><td><span class="badge badge-b">BBB</span></td><td>Banche</td></tr>
+      <tr><td><b>Deutsche Bank</b></td><td>4.50%</td><td>May 2029</td><td>99.40</td><td class="up">4.32%</td><td><span class="badge badge-b">BBB-</span></td><td>Banche</td></tr>
+      <tr><td><b>Volkswagen</b></td><td>3.50%</td><td>Sep 2028</td><td>98.90</td><td class="up">3.78%</td><td><span class="badge badge-b">BBB+</span></td><td>Auto</td></tr>
+      <tr><td><b>Apple Inc.</b></td><td>3.25%</td><td>Feb 2027</td><td>100.40</td><td class="up">3.12%</td><td><span class="badge badge-g">AA+</span></td><td>Tech</td></tr>
+      <tr><td><b>JPMorgan Chase</b></td><td>4.80%</td><td>Jul 2031</td><td>101.20</td><td class="up">4.62%</td><td><span class="badge badge-g">A-</span></td><td>Banche USA</td></tr>
+      <tr><td><b>TotalEnergies</b></td><td>3.50%</td><td>Oct 2029</td><td>99.80</td><td class="up">3.48%</td><td><span class="badge badge-g">A+</span></td><td>Energia</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="src-note">Dati obbligazionari completi: <a href="https://cbonds.it/" target="_blank">Cbonds</a> · <a href="https://mercati.ilsole24ore.com/obbligazioni" target="_blank">Il Sole 24 Ore MOT</a> · <a href="https://www.borsaitaliana.it/" target="_blank">Borsa Italiana</a></div>
+</div>
+
+<!-- ===================== PANEL: CERTIFICATI ===================== -->
+<div id="panel-certificati" class="panel">
+  <div class="sec-label">Certificati finanziari — Principali tipologie</div>
+  <div class="tbl-wrap">
+  <table>
+    <thead><tr><th>Tipo certificato</th><th>Sottostante</th><th>Barriera</th><th>Cedola p.a.</th><th>Scadenza</th><th>Emittente</th><th>ISIN</th><th>Mercato</th></tr></thead>
+    <tbody>
+      <tr><td><b>Phoenix Memory</b></td><td>FTSE MIB</td><td>60%</td><td class="up">8.40%</td><td>Dic 2026</td><td>BNP Paribas</td><td>XS2410xxxxx</td><td>SeDeX</td></tr>
+      <tr><td><b>Phoenix Memory</b></td><td>ENI + Enel + Intesa</td><td>55%</td><td class="up">9.80%</td><td>Mar 2027</td><td>Société Générale</td><td>DE000xxxxx</td><td>SeDeX</td></tr>
+      <tr><td><b>Reverse Convertible</b></td><td>Ferrari</td><td>70%</td><td class="up">7.20%</td><td>Giu 2026</td><td>Unicredit</td><td>IT0005xxx</td><td>SeDeX</td></tr>
+      <tr><td><b>Autocall Express</b></td><td>Euro Stoxx 50</td><td>65%</td><td class="up">6.50%</td><td>Mar 2027</td><td>Goldman Sachs</td><td>XS2310xxxxx</td><td>SeDeX</td></tr>
+      <tr><td><b>Bonus Cap</b></td><td>S&amp;P 500</td><td>75%</td><td>—</td><td>Set 2026</td><td>Deutsche Bank</td><td>DE000xxxxx</td><td>SeDeX</td></tr>
+      <tr><td><b>Turbo Long (leva)</b></td><td>DAX</td><td>Knock-out</td><td>—</td><td>Open End</td><td>Vontobel</td><td>CH0xxx</td><td>SeDeX</td></tr>
+      <tr><td><b>Maxi Coupon</b></td><td>Stellantis + Renault</td><td>60%</td><td class="up">14.40%</td><td>Nov 2026</td><td>Barclays</td><td>XS2560xxxxx</td><td>SeDeX</td></tr>
+      <tr><td><b>Twin Win</b></td><td>Oro</td><td>70%</td><td>—</td><td>Jun 2027</td><td>HSBC</td><td>XS2480xxxxx</td><td>SeDeX</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="src-note">Screener certificati completo: <a href="https://www.borsaitaliana.it/borsa/certificates/" target="_blank">Borsa Italiana SeDeX</a> · <a href="https://it.investing.com/derivatives/certificates" target="_blank">Investing.com Certificati</a></div>
+</div>
+
+<!-- ===================== PANEL: CRYPTO ===================== -->
+<div id="panel-crypto" class="panel">
+
+  <div class="sec-label">Criptovalute per capitalizzazione</div>
+  <div class="grid">
+    <div class="mcard"><div class="mcard-name">Bitcoin (BTC)</div><div class="mcard-val">$87.240</div><div class="mcard-chg dn">▼ 2.41%</div></div>
+    <div class="mcard"><div class="mcard-name">Ethereum (ETH)</div><div class="mcard-val">$2.014</div><div class="mcard-chg dn">▼ 3.18%</div></div>
+    <div class="mcard"><div class="mcard-name">BNB</div><div class="mcard-val">$594</div><div class="mcard-chg dn">▼ 2.05%</div></div>
+    <div class="mcard"><div class="mcard-name">XRP</div><div class="mcard-val">$2.18</div><div class="mcard-chg dn">▼ 1.88%</div></div>
+    <div class="mcard"><div class="mcard-name">Solana (SOL)</div><div class="mcard-val">$133.50</div><div class="mcard-chg dn">▼ 4.22%</div></div>
+    <div class="mcard"><div class="mcard-name">Cardano (ADA)</div><div class="mcard-val">$0.718</div><div class="mcard-chg dn">▼ 3.44%</div></div>
+    <div class="mcard"><div class="mcard-name">Avalanche (AVAX)</div><div class="mcard-val">$21.40</div><div class="mcard-chg dn">▼ 5.12%</div></div>
+    <div class="mcard"><div class="mcard-name">Polkadot (DOT)</div><div class="mcard-val">$4.82</div><div class="mcard-chg dn">▼ 2.90%</div></div>
+    <div class="mcard"><div class="mcard-name">Dogecoin (DOGE)</div><div class="mcard-val">$0.172</div><div class="mcard-chg dn">▼ 4.88%</div></div>
+    <div class="mcard"><div class="mcard-name">Chainlink (LINK)</div><div class="mcard-val">$13.20</div><div class="mcard-chg dn">▼ 3.55%</div></div>
+    <div class="mcard"><div class="mcard-name">USDT (Tether)</div><div class="mcard-val">$1.000</div><div class="mcard-chg neu">Stablecoin</div></div>
+    <div class="mcard"><div class="mcard-name">Cap. totale mercato</div><div class="mcard-val">$2.84T</div><div class="mcard-chg dn">▼ 2.8%</div></div>
+  </div>
+
+  <div class="sec-label">Indici di sentiment e dominanza</div>
+  <div class="grid">
+    <div class="mcard"><div class="mcard-name">BTC Dominance</div><div class="mcard-val">62.4%</div><div class="mcard-chg up">▲ 0.8%</div></div>
+    <div class="mcard"><div class="mcard-name">Fear &amp; Greed Index</div><div class="mcard-val">34 — Fear</div><div class="mcard-chg dn">Paura</div></div>
+    <div class="mcard"><div class="mcard-name">ETH/BTC ratio</div><div class="mcard-val">0.0231</div><div class="mcard-chg dn">▼ min 3Y</div></div>
+    <div class="mcard"><div class="mcard-name">BTC 200D MA</div><div class="mcard-val">$84.200</div><div class="mcard-chg up">Sopra MA</div></div>
+  </div>
+  <div class="src-note">Prezzi real-time: <a href="https://coinmarketcap.com/" target="_blank">CoinMarketCap</a> · <a href="https://www.baha.com/" target="_blank">Baha CryptoMarkets</a> · <a href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank">Fear &amp; Greed Index</a></div>
+</div>
+
+<!-- ===================== PANEL: FOREX + VALUTE ===================== -->
+<div id="panel-valute" class="panel">
+
+  <div class="sec-label">Convertitore valute — Tassi indicativi</div>
+  <div class="converter-box">
+    <div class="conv-title">Convertitore valute</div>
+    <div class="conv-row">
+      <input type="number" id="amt" value="1000" step="any" oninput="converti()">
+      <select id="from" onchange="converti()">
+        <option value="EUR">EUR — Euro</option>
+        <option value="USD">USD — Dollaro USA</option>
+        <option value="GBP">GBP — Sterlina britannica</option>
+        <option value="CHF">CHF — Franco svizzero</option>
+        <option value="JPY">JPY — Yen giapponese</option>
+        <option value="CNY">CNY — Yuan cinese</option>
+        <option value="CAD">CAD — Dollaro canadese</option>
+        <option value="AUD">AUD — Dollaro australiano</option>
+        <option value="NOK">NOK — Corona norvegese</option>
+        <option value="SEK">SEK — Corona svedese</option>
+        <option value="DKK">DKK — Corona danese</option>
+        <option value="PLN">PLN — Zloty polacco</option>
+        <option value="CZK">CZK — Corona ceca</option>
+        <option value="HUF">HUF — Fiorino ungherese</option>
+        <option value="TRY">TRY — Lira turca</option>
+        <option value="BRL">BRL — Real brasiliano</option>
+        <option value="MXN">MXN — Peso messicano</option>
+        <option value="INR">INR — Rupia indiana</option>
+        <option value="SGD">SGD — Dollaro Singapore</option>
+        <option value="HKD">HKD — Dollaro Hong Kong</option>
+        <option value="BTC">BTC — Bitcoin</option>
+      </select>
+      <span class="conv-arrow">→</span>
+      <select id="to" onchange="converti()">
+        <option value="USD">USD — Dollaro USA</option>
+        <option value="EUR">EUR — Euro</option>
+        <option value="GBP">GBP — Sterlina britannica</option>
+        <option value="CHF">CHF — Franco svizzero</option>
+        <option value="JPY">JPY — Yen giapponese</option>
+        <option value="CNY">CNY — Yuan cinese</option>
+        <option value="CAD">CAD — Dollaro canadese</option>
+        <option value="AUD">AUD — Dollaro australiano</option>
+        <option value="NOK">NOK — Corona norvegese</option>
+        <option value="SEK">SEK — Corona svedese</option>
+        <option value="DKK">DKK — Corona danese</option>
+        <option value="PLN">PLN — Zloty polacco</option>
+        <option value="CZK">CZK — Corona ceca</option>
+        <option value="HUF">HUF — Fiorino ungherese</option>
+        <option value="TRY">TRY — Lira turca</option>
+        <option value="BRL">BRL — Real brasiliano</option>
+        <option value="MXN">MXN — Peso messicano</option>
+        <option value="INR">INR — Rupia indiana</option>
+        <option value="SGD">SGD — Dollaro Singapore</option>
+        <option value="HKD">HKD — Dollaro Hong Kong</option>
+        <option value="BTC">BTC — Bitcoin</option>
+      </select>
+    </div>
+    <div class="conv-result" id="result">1149,79 USD</div>
+    <div class="conv-rate" id="rate-info">1 EUR = 1.1498 USD · Tasso indicativo — usa XE.com per tassi reali</div>
+    <a class="conv-link" href="https://www.xe.com/it/currencyconverter/" target="_blank">Per tassi reali interbancari aggiornati al secondo → XE.com ↗</a>
+  </div>
+
+  <div class="sec-label" style="display:flex;align-items:center;justify-content:space-between">
+    <span>Tassi di cambio in tempo reale — base EUR</span>
+    <span id="forex-status" style="font-size: 10px; color: var(--up);">Aggiornato 00:49:06 · ExchangeRate-API</span>
+  </div>
+  <div class="grid" id="forex-grid">
+    <div class="mcard" id="mc-EURUSD"><div class="mcard-name">EUR/USD</div><div class="mcard-val" id="f-EURUSD">1.1498</div><div class="mcard-chg neu" id="fc-EURUSD">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURGBP"><div class="mcard-name">EUR/GBP</div><div class="mcard-val" id="f-EURGBP">0.8678</div><div class="mcard-chg neu" id="fc-EURGBP">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURCHF"><div class="mcard-name">EUR/CHF</div><div class="mcard-val" id="f-EURCHF">0.9189</div><div class="mcard-chg neu" id="fc-EURCHF">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURJPY"><div class="mcard-name">EUR/JPY</div><div class="mcard-val" id="f-EURJPY">184.265</div><div class="mcard-chg neu" id="fc-EURJPY">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURCNY"><div class="mcard-name">EUR/CNY</div><div class="mcard-val" id="f-EURCNY">7.954</div><div class="mcard-chg neu" id="fc-EURCNY">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURCAD"><div class="mcard-name">EUR/CAD</div><div class="mcard-val" id="f-EURCAD">1.5974</div><div class="mcard-chg neu" id="fc-EURCAD">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURAUD"><div class="mcard-name">EUR/AUD</div><div class="mcard-val" id="f-EURAUD">1.6763</div><div class="mcard-chg neu" id="fc-EURAUD">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURNOK"><div class="mcard-name">EUR/NOK</div><div class="mcard-val" id="f-EURNOK">11.205</div><div class="mcard-chg neu" id="fc-EURNOK">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURSEK"><div class="mcard-name">EUR/SEK</div><div class="mcard-val" id="f-EURSEK">10.888</div><div class="mcard-chg neu" id="fc-EURSEK">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURPLN"><div class="mcard-name">EUR/PLN</div><div class="mcard-val" id="f-EURPLN">4.285</div><div class="mcard-chg neu" id="fc-EURPLN">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURTRY"><div class="mcard-name">EUR/TRY</div><div class="mcard-val" id="f-EURTRY">51.131</div><div class="mcard-chg neu" id="fc-EURTRY">— primo aggiornamento</div></div>
+    <div class="mcard" id="mc-EURBRL"><div class="mcard-name">EUR/BRL</div><div class="mcard-val" id="f-EURBRL">6.030</div><div class="mcard-chg neu" id="fc-EURBRL">— primo aggiornamento</div></div>
+  </div>
+
+  <div class="sec-label">Tassi di riferimento banche centrali</div>
+  <div class="grid">
+    <div class="mcard"><div class="mcard-name">BCE — Eurozona</div><div class="mcard-val">2.65%</div><div class="mcard-chg neu">Invariato</div></div>
+    <div class="mcard"><div class="mcard-name">Fed — USA</div><div class="mcard-val">4.25-4.50%</div><div class="mcard-chg neu">Invariato</div></div>
+    <div class="mcard"><div class="mcard-name">BoE — UK</div><div class="mcard-val">4.50%</div><div class="mcard-chg neu">Invariato</div></div>
+    <div class="mcard"><div class="mcard-name">BoJ — Giappone</div><div class="mcard-val">0.50%</div><div class="mcard-chg up">▲ Rialzo</div></div>
+    <div class="mcard"><div class="mcard-name">SNB — Svizzera</div><div class="mcard-val">0.25%</div><div class="mcard-chg neu">Invariato</div></div>
+    <div class="mcard"><div class="mcard-name">PBoC — Cina</div><div class="mcard-val">3.10%</div><div class="mcard-chg dn">▼ Taglio</div></div>
+    <div class="mcard"><div class="mcard-name">RBA — Australia</div><div class="mcard-val">4.10%</div><div class="mcard-chg dn">▼ Taglio</div></div>
+    <div class="mcard"><div class="mcard-name">Banxico — Messico</div><div class="mcard-val">9.00%</div>▼ Taglio</div></div>
+  </div>
+  <div class="src-note">Tassi real-time: <a href="https://www.xe.com/it/" target="_blank">XE.com</a> · <a href="https://www.oanda.com/currency-converter/it/" target="_blank">OANDA</a> · <a href="https://it.investing.com/currencies" target="_blank">Investing.com Forex</a></div>
+
+
+<!-- FOOTER -->
+<div class="footer">
+  Tableau Finanziario — Hub Personale Multidisciplinare &nbsp;·&nbsp;
+  <a href="file:///C:/Users/scima/Downloads/Tableau_Finanziario_2.html#" onclick="apriFile(&#39;Hub_Personale_Multidisciplinare.html&#39;);return false;">← Hub Principale</a> &nbsp;·&nbsp;
+  <a href="file:///C:/Users/scima/Downloads/Tableau_Finanziario_2.html#" onclick="apriFile(&#39;Giornale_Finanziario_Globale.html&#39;);return false;">Giornale Finanziario</a> &nbsp;·&nbsp;
+  Generato con Claude AI &nbsp;·&nbsp; <span id="foot-date">mar 31 mar 2026</span>
+</div>
+
+<script>
+const RATES = {
+  EUR:{USD:1.0811,GBP:0.8342,CHF:0.9541,JPY:161.84,CNY:7.842,CAD:1.5621,AUD:1.7108,NOK:11.640,SEK:10.955,DKK:7.458,PLN:4.158,CZK:25.24,HUF:398.4,TRY:38.80,BRL:6.22,MXN:20.88,INR:90.42,SGD:1.444,HKD:8.406,BTC:0.0000115,EUR:1},
+  USD:{EUR:0.9250,GBP:0.7716,CHF:0.8826,JPY:149.70,CNY:7.251,CAD:1.4449,AUD:1.5825,NOK:10.767,SEK:10.133,DKK:6.897,PLN:3.845,CZK:23.35,HUF:368.5,TRY:35.88,BRL:5.75,MXN:19.31,INR:83.62,SGD:1.335,HKD:7.773,BTC:0.0000106,USD:1},
+  GBP:{EUR:1.1988,USD:1.2960,CHF:1.1437,JPY:193.92,CNY:9.399,CAD:1.8725,AUD:2.0508,NOK:13.950,SEK:13.130,DKK:8.941,PLN:4.983,CZK:30.26,HUF:477.6,TRY:46.50,BRL:7.45,MXN:25.02,INR:108.40,SGD:1.730,HKD:10.071,BTC:0.0000138,GBP:1},
+  CHF:{EUR:1.0481,USD:1.1331,GBP:0.8743,JPY:169.62,CNY:8.220,CAD:1.6376,AUD:1.7930,NOK:12.202,SEK:11.484,DKK:7.819,PLN:4.358,CZK:26.47,HUF:417.6,TRY:40.68,BRL:6.52,MXN:21.89,INR:94.84,SGD:1.514,HKD:8.812,BTC:0.0000121,CHF:1},
+  JPY:{EUR:0.006178,USD:0.006679,GBP:0.005157,CHF:0.005896,CNY:0.04848,CAD:0.009657,AUD:0.01058,NOK:0.07192,SEK:0.06769,DKK:0.04608,PLN:0.02569,CZK:0.1560,HUF:2.462,TRY:0.2399,BRL:0.03844,MXN:0.1291,INR:0.5592,SGD:0.008927,HKD:0.05197,BTC:7.10e-8,JPY:1},
+  CNY:{EUR:0.1275,USD:0.1379,GBP:0.1064,CHF:0.1217,JPY:20.63,CAD:0.1993,AUD:0.2183,NOK:1.484,SEK:1.396,DKK:0.9508,PLN:0.5301,CZK:3.220,HUF:50.80,TRY:4.951,BRL:0.7934,MXN:2.664,INR:11.54,SGD:0.1841,HKD:1.071,BTC:1.46e-6,CNY:1},
+  CHF:{EUR:1.0481,USD:1.1331,GBP:0.8743,JPY:169.62,CNY:8.220,CAD:1.6376,AUD:1.7930,CHF:1},
+  CAD:{EUR:0.6402,USD:0.6921,GBP:0.5340,CHF:0.6107,JPY:103.55,CNY:5.018,AUD:1.0949,CAD:1,BTC:7.34e-6},
+  AUD:{EUR:0.5846,USD:0.6319,GBP:0.4876,CHF:0.5578,JPY:94.57,CNY:4.583,CAD:0.9133,AUD:1,BTC:6.70e-6},
+  BTC:{EUR:87000,USD:87240,GBP:67240,CHF:82800,JPY:13062900,CNY:632600,CAD:126000,AUD:138100,BTC:1}
+};
+
+function converti(){
+  const amt = parseFloat(document.getElementById('amt').value)||0;
+  const from = document.getElementById('from').value;
+  const to = document.getElementById('to').value;
+  if(from===to){
+    document.getElementById('result').textContent = amt.toLocaleString('it-IT',{maximumFractionDigits:2})+' '+to;
+    document.getElementById('rate-info').textContent = 'Tasso: 1.0000';
+    return;
+  }
+  let rate = RATES[from]?.[to];
+  if(!rate && RATES[from] && RATES[to]){
+    const toUSD = RATES[from]['USD'] || (1/RATES['USD'][from]);
+    const fromUSD = RATES['USD'][to] || (RATES[to]['USD'] ? 1/RATES[to]['USD'] : null);
+    if(toUSD && fromUSD) rate = toUSD * fromUSD;
+  }
+  if(!rate){ document.getElementById('result').textContent='—'; return; }
+  const res = amt * rate;
+  const isBTC = to==='BTC';
+  const isJPY = to==='JPY'||to==='HUF'||to==='INR'||to==='CZK';
+  const dec = isBTC ? 8 : isJPY ? 0 : 2;
+  document.getElementById('result').textContent = res.toLocaleString('it-IT',{minimumFractionDigits:dec,maximumFractionDigits:dec})+' '+to;
+  const rateDisp = isBTC ? rate.toFixed(8) : rate.toFixed(isJPY?2:4);
+  document.getElementById('rate-info').textContent = '1 '+from+' = '+rateDisp+' '+to+' · Tasso indicativo — usa XE.com per tassi reali';
+}
+
+function apriFile(nome) {
+  const a = document.createElement('a');
+  a.href = nome;
+  a.click();
+}
+
+function show(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function clock(){
+  const d = new Date();
+  const t = d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const dt = d.toLocaleDateString('it-IT',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+  const el = document.getElementById('clock');
+  const el2 = document.getElementById('foot-date');
+  if(el) el.textContent = dt+' · '+t;
+  if(el2) el2.textContent = dt;
+}
+
+// ── Tassi precedenti per calcolo variazione ──────────────────────
+const prevRates = {};
+
+// ── Definizione coppie da monitorare (base EUR) ───────────────────
+const FOREX_PAIRS = ['USD','GBP','CHF','JPY','CNY','CAD','AUD','NOK','SEK','PLN','TRY','BRL'];
+
+// ── Decimali per valuta ───────────────────────────────────────────
+function fmtRate(code, val) {
+  if(['JPY','NOK','SEK','PLN','TRY','BRL','CNY'].includes(code)) return val.toFixed(3);
+  return val.toFixed(4);
+}
+
+// ── Aggiorna una singola card con colore e freccia ─────────────────
+function aggiornaCard(code, newVal) {
+  const key = 'EUR' + code;
+  const elVal = document.getElementById('f-' + key);
+  const elChg = document.getElementById('fc-' + key);
+  const elCard = document.getElementById('mc-' + key);
+  if (!elVal || !elChg || !elCard) return;
+
+  const displayed = fmtRate(code, newVal);
+  elVal.textContent = displayed;
+
+  if (prevRates[code] !== undefined) {
+    const prev = prevRates[code];
+    const diff = newVal - prev;
+    const pct  = ((diff / prev) * 100).toFixed(3);
+    if (diff > 0.000001) {
+      elChg.textContent  = '▲ +' + pct + '%';
+      elChg.className    = 'mcard-chg up';
+      elCard.style.background = 'rgba(29,158,117,0.12)';
+      elCard.style.borderColor = 'rgba(29,158,117,0.5)';
+      setTimeout(() => {
+        elCard.style.background = '';
+        elCard.style.borderColor = '';
+      }, 4000);
+    } else if (diff < -0.000001) {
+      elChg.textContent  = '▼ ' + pct + '%';
+      elChg.className    = 'mcard-chg dn';
+      elCard.style.background = 'rgba(192,57,43,0.10)';
+      elCard.style.borderColor = 'rgba(192,57,43,0.45)';
+      setTimeout(() => {
+        elCard.style.background = '';
+        elCard.style.borderColor = '';
+      }, 4000);
+    } else {
+      elChg.textContent = '— invariato';
+      elChg.className   = 'mcard-chg neu';
+      elCard.style.background = '';
+      elCard.style.borderColor = '';
+    }
+  } else {
+    elChg.textContent = '— primo aggiornamento';
+    elChg.className   = 'mcard-chg neu';
+  }
+  prevRates[code] = newVal;
+}
+
+// ── Fetch tassi da ExchangeRate-API (pubblico, senza chiave) ──────
+async function fetchForex() {
+  const status = document.getElementById('forex-status');
+  try {
+    const res = await fetch('https://open.er-api.com/v6/latest/EUR');
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    if (data.result !== 'success') throw new Error('API error');
+    FOREX_PAIRS.forEach(code => {
+      if (data.rates[code]) aggiornaCard(code, data.rates[code]);
+    });
+    const ora = new Date().toLocaleTimeString('it-IT', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+    status.textContent = 'Aggiornato ' + ora + ' · ExchangeRate-API';
+    status.style.color = 'var(--up)';
+    // aggiorna anche il convertitore con i tassi freschi
+    FOREX_PAIRS.forEach(code => {
+      if (data.rates[code]) {
+        RATES['EUR'][code] = data.rates[code];
+        if (RATES[code]) RATES[code]['EUR'] = 1 / data.rates[code];
+      }
+    });
+    converti();
+  } catch(e) {
+    status.textContent = 'Offline — tassi indicativi';
+    status.style.color = 'var(--dn)';
+  }
+}
+
+converti();
+clock();
+setInterval(clock, 1000);
+fetchForex();                        // carica subito
+setInterval(fetchForex, 60000);      // aggiorna ogni 60 secondi
+</script>
+
+
+</body></html>
