@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Giornale Finanziario Globale</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Sans+3:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1A1814;
+  --ink2: #4A4540;
+  --ink3: #8A8580;
+  --paper: #F8F5EF;
+  --paper2: #F0EDE6;
+  --rule: #D8D0C0;
+  --accent: #8B1A1A;
+  --accent2: #C43A1A;
+  --info: #1A4A8B;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Source Sans 3', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+/* MASTHEAD */
+.masthead {
+  background: var(--ink);
+  color: #fff;
+  padding: 0;
+}
+.masthead-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 2rem;
+  border-bottom: 1px solid #333;
+  font-size: 11px;
+  color: #AAA;
+}
+.masthead-title {
+  text-align: center;
+  padding: 16px 2rem 12px;
+  border-bottom: 3px solid var(--accent);
+}
+.masthead-title h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 42px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+  line-height: 1;
+}
+.masthead-title .tagline {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #AAA;
+  margin-top: 4px;
+}
+.masthead-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  padding: 0 2rem;
+  overflow-x: auto;
+}
+.nav-btn {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  cursor: pointer;
+  color: #CCC;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  background: none;
+  font-family: 'Source Sans 3', sans-serif;
+}
+.nav-btn:hover { color: #fff; }
+.nav-btn.active { color: #fff; border-bottom-color: var(--accent); }
+
+/* LAYOUT */
+.layout { display: flex; min-height: calc(100vh - 140px); }
+.sidebar {
+  width: 260px;
+  flex-shrink: 0;
+  background: var(--paper2);
+  border-right: 1px solid var(--rule);
+  padding: 0;
+}
+.main { flex: 1; padding: 0; overflow: hidden; }
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* SIDEBAR */
+.sb-section { border-bottom: 1px solid var(--rule); padding: 16px; }
+.sb-label {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rule);
+}
+.sb-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  font-size: 12px;
+  color: var(--ink2);
+  text-decoration: none;
+  border-bottom: 0.5px solid var(--rule);
+  transition: color 0.1s;
+}
+.sb-link:last-child { border-bottom: none; }
+.sb-link:hover { color: var(--accent); }
+.sb-flag { font-size: 14px; width: 20px; text-align: center; }
+.sb-name { flex: 1; }
+.sb-cat {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--rule);
+  color: var(--ink3);
+}
+.sb-cat.fin { background: #FAEEDA; color: #633806; }
+.sb-cat.gen { background: #E6F1FB; color: #0C447C; }
+.sb-cat.eco { background: #EAF3DE; color: #27500A; }
+
+/* NEWS GRID */
+.news-header {
+  padding: 16px 24px 12px;
+  border-bottom: 2px solid var(--ink);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.news-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.news-header .upd {
+  font-size: 11px;
+  color: var(--ink3);
+}
+.news-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  padding: 0;
+}
+.article {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--rule);
+  border-right: 1px solid var(--rule);
+  cursor: pointer;
+  transition: background 0.1s;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+}
+.article:nth-child(even) { border-right: none; }
+.article:hover { background: var(--paper2); }
+.art-source {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.art-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.art-desc {
+  font-size: 12px;
+  color: var(--ink2);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.art-meta {
+  font-size: 10px;
+  color: var(--ink3);
+  display: flex;
+  gap: 8px;
+}
+.art-tag {
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  background: var(--paper2);
+  border: 0.5px solid var(--rule);
+  color: var(--ink3);
+}
+
+/* ARTICLE LEAD — full width */
+.article-lead {
+  grid-column: 1 / -1;
+  padding: 24px;
+  border-bottom: 1px solid var(--rule);
+  cursor: pointer;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+  background: var(--paper);
+}
+.article-lead:hover { background: var(--paper2); }
+.article-lead .art-title { font-size: 24px; }
+.article-lead .art-desc { font-size: 13px; max-width: 680px; }
+
+/* VIDEO GRID */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  padding: 20px 24px;
+}
+.video-card {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+  transition: border-color 0.15s;
+}
+.video-card:hover { border-color: var(--accent); }
+.video-thumb {
+  width: 100%;
+  height: 130px;
+  background: var(--ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.video-thumb-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  opacity: 0.15;
+}
+.play-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.play-triangle {
+  width: 0;
+  height: 0;
+  border-left: 16px solid var(--ink);
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  margin-left: 4px;
+}
+.video-info { padding: 12px; }
+.video-channel {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.video-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+.video-meta { font-size: 10px; color: var(--ink3); }
+
+/* QUOTIDIANI */
+.papers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+  padding: 20px 24px;
+}
+.paper-card {
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: 14px;
+  text-decoration: none;
+  display: block;
+  color: inherit;
+  transition: all 0.15s;
+}
+.paper-card:hover { border-color: var(--accent); background: var(--paper); }
+.paper-country {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 4px;
+}
+.paper-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 3px;
+}
+.paper-desc { font-size: 11px; color: var(--ink2); }
+.paper-tags { display: flex; gap: 4px; margin-top: 8px; flex-wrap: wrap; }
+.p-tag {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  border: 0.5px solid var(--rule);
+  color: var(--ink3);
+}
+.section-divider {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--ink3);
+  padding: 12px 24px 8px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper2);
+}
+
+/* TICKER */
+.ticker-bar {
+  background: var(--ink);
+  color: #fff;
+  padding: 6px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 11px;
+}
+.ticker-inner {
+  display: inline-block;
+  animation: ticker 60s linear infinite;
+}
+.ticker-item { margin-right: 40px; }
+.ticker-item .up { color: #4CAF50; }
+.ticker-item .dn { color: #F44336; }
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* FOOTER */
+.footer {
+  background: var(--ink);
+  color: #888;
+  text-align: center;
+  padding: 12px;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .news-grid { grid-template-columns: 1fr; }
+  .masthead-title h1 { font-size: 28px; }
+}
+.back-bar {
+  background: #2A2520;
+  border-bottom: 1px solid #444;
+  padding: 7px 2rem;
+  font-size: 11px;
+  color: #888;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.back-bar a { color: #C4763A; text-decoration: none; font-weight: 500; }
+.back-bar a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-bar">
+  <div class="ticker-inner">
+    <span class="ticker-item">FTSE MIB <span class="dn">38.420 -0.72%</span></span>
+    <span class="ticker-item">S&P 500 <span class="dn">5.611 -1.02%</span></span>
+    <span class="ticker-item">NASDAQ <span class="dn">19.280 -1.45%</span></span>
+    <span class="ticker-item">EUR/USD <span class="up">1.0811 +0.32%</span></span>
+    <span class="ticker-item">Oro <span class="up">$3.084 +0.62%</span></span>
+    <span class="ticker-item">BTC <span class="dn">$87.240 -2.41%</span></span>
+    <span class="ticker-item">DAX <span class="up">22.450 +0.18%</span></span>
+    <span class="ticker-item">Brent <span class="dn">$73.10 -1.08%</span></span>
+    <span class="ticker-item">BTP 10Y <span class="up">3.65%</span></span>
+    <span class="ticker-item">VIX <span class="dn">21.4 -5.3%</span></span>
+    <!-- duplicated for seamless loop -->
+    <span class="ticker-item">FTSE MIB <span class="dn">38.420 -0.72%</span></span>
+    <span class="ticker-item">S&P 500 <span class="dn">5.611 -1.02%</span></span>
+    <span class="ticker-item">NASDAQ <span class="dn">19.280 -1.45%</span></span>
+    <span class="ticker-item">EUR/USD <span class="up">1.0811 +0.32%</span></span>
+    <span class="ticker-item">Oro <span class="up">$3.084 +0.62%</span></span>
+    <span class="ticker-item">BTC <span class="dn">$87.240 -2.41%</span></span>
+    <span class="ticker-item">DAX <span class="up">22.450 +0.18%</span></span>
+    <span class="ticker-item">Brent <span class="dn">$73.10 -1.08%</span></span>
+    <span class="ticker-item">BTP 10Y <span class="up">3.65%</span></span>
+    <span class="ticker-item">VIX <span class="dn">21.4 -5.3%</span></span>
+  </div>
+</div>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-top">
+    <span id="mastDate"></span>
+    <span>Notizie aggiornate in tempo reale · Fonti mondiali selezionate</span>
+    <span id="mastTime"></span>
+  </div>
+  <div class="masthead-title">
+    <h1>Il Giornale Finanziario Globale</h1>
+    <div class="tagline">Finanza · Economia · Geopolitica · Mercati · Mondo</div>
+  </div>
+  <div class="masthead-nav">
+    <button class="nav-btn active" onclick="showPanel('notizie',this)">Notizie Live</button>
+    <button class="nav-btn" onclick="showPanel('video',this)">Video & Canali</button>
+    <button class="nav-btn" onclick="showPanel('italiani',this)">Quotidiani Italiani</button>
+    <button class="nav-btn" onclick="showPanel('europei',this)">Quotidiani Europei</button>
+    <button class="nav-btn" onclick="showPanel('mondiali',this)">Quotidiani Mondiali</button>
+    <button class="nav-btn" onclick="showPanel('finanza',this)">Fonti Finanziarie</button>
+    <button class="nav-btn" onclick="showPanel('agenzie',this)">Agenzie Stampa</button>
+  </div>
+</div>
+
+<div class="back-bar">
+  <a href="#" onclick="apriFile('Hub_Personale_Multidisciplinare.html');return false;">← Hub Principale</a>
+  <a href="#" onclick="apriFile('Tableau_Finanziario.html');return false;">📊 Tableau Finanziario</a>
+  <a href="https://it.investing.com" target="_blank">Investing.com ↗</a>
+  <a href="https://it.tradingview.com" target="_blank">TradingView ↗</a>
+  <a href="https://www.baha.com" target="_blank">Baha ↗</a>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Fonti principali</div>
+      <a href="https://it.investing.com/news/latest-news" target="_blank" class="sb-link"><span class="sb-flag">📊</span><span class="sb-name">Investing.com</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="sb-link"><span class="sb-flag">🇮🇹</span><span class="sb-name">Il Sole 24 Ore</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.bloomberg.com/markets" target="_blank" class="sb-link"><span class="sb-flag">🌐</span><span class="sb-name">Bloomberg</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.reuters.com/markets" target="_blank" class="sb-link"><span class="sb-flag">📰</span><span class="sb-name">Reuters</span><span class="sb-cat gen">Agenzia</span></a>
+      <a href="https://www.ft.com/markets" target="_blank" class="sb-link"><span class="sb-flag">🇬🇧</span><span class="sb-name">Financial Times</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.cnbc.com/world/?region=world" target="_blank" class="sb-link"><span class="sb-flag">📺</span><span class="sb-name">CNBC</span><span class="sb-cat fin">TV</span></a>
+      <a href="https://www.wsj.com/markets" target="_blank" class="sb-link"><span class="sb-flag">🇺🇸</span><span class="sb-name">Wall Street Journal</span><span class="sb-cat fin">Fin</span></a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Notizie per categoria</div>
+      <a href="https://it.investing.com/news/economy" target="_blank" class="sb-link"><span class="sb-flag">📈</span><span class="sb-name">Economia globale</span><span class="sb-cat eco">Eco</span></a>
+      <a href="https://it.investing.com/news/forex-news" target="_blank" class="sb-link"><span class="sb-flag">💱</span><span class="sb-name">Forex & Valute</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://it.investing.com/news/commodities-news" target="_blank" class="sb-link"><span class="sb-flag">🛢</span><span class="sb-name">Materie prime</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://it.investing.com/news/cryptocurrency-news" target="_blank" class="sb-link"><span class="sb-flag">₿</span><span class="sb-name">Criptovalute</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://cbonds.it/news/" target="_blank" class="sb-link"><span class="sb-flag">🏦</span><span class="sb-name">Obbligazioni</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.milanofinanza.it/" target="_blank" class="sb-link"><span class="sb-flag">🇮🇹</span><span class="sb-name">Milano Finanza</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.teleborsa.it/" target="_blank" class="sb-link"><span class="sb-flag">📡</span><span class="sb-name">Teleborsa</span><span class="sb-cat fin">Fin</span></a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Geopolitica & Macro</div>
+      <a href="https://www.economist.com" target="_blank" class="sb-link"><span class="sb-flag">🌐</span><span class="sb-name">The Economist</span><span class="sb-cat gen">Geo</span></a>
+      <a href="https://foreignpolicy.com" target="_blank" class="sb-link"><span class="sb-flag">🌍</span><span class="sb-name">Foreign Policy</span><span class="sb-cat gen">Geo</span></a>
+      <a href="https://intelligence.weforum.org" target="_blank" class="sb-link"><span class="sb-flag">🏛</span><span class="sb-name">WEF Intelligence</span><span class="sb-cat eco">Macro</span></a>
+      <a href="https://www.imf.org/en/News" target="_blank" class="sb-link"><span class="sb-flag">💰</span><span class="sb-name">FMI News</span><span class="sb-cat eco">Macro</span></a>
+      <a href="https://www.worldbank.org/en/news" target="_blank" class="sb-link"><span class="sb-flag">🌍</span><span class="sb-name">World Bank</span><span class="sb-cat eco">Macro</span></a>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- PANEL: NOTIZIE LIVE -->
+    <div id="panel-notizie" class="panel active">
+      <div class="news-header">
+        <h2>Notizie in tempo reale</h2>
+        <span class="upd" id="newsTime"></span>
+      </div>
+      <div class="news-grid">
+
+        <a href="https://it.investing.com/news/economy" target="_blank" class="article-lead">
+          <div class="art-source">Economia Globale · Investing.com</div>
+          <div class="art-title">Tensioni USA-Iran sui mercati energetici: il Brent sotto pressione mentre lo Stretto di Hormuz torna al centro della geopolitica mondiale</div>
+          <div class="art-desc">I mercati petroliferi registrano volatilità crescente. Le interruzioni al traffico marittimo attraverso lo Stretto di Hormuz potrebbero avere ripercussioni ben oltre i mercati energetici, coinvolgendo l'intera supply chain globale e le valute dei paesi produttori.</div>
+          <div class="art-meta"><span>Apri su Investing.com →</span><span class="art-tag">ENERGIA</span><span class="art-tag">GEOPOLITICA</span></div>
+        </a>
+
+        <a href="https://it.investing.com/news/latest-news" target="_blank" class="article">
+          <div class="art-source">Mercati · Investing.com</div>
+          <div class="art-title">NASDAQ in territorio ribassista: settore tech sotto la pressione delle valutazioni post-IA</div>
+          <div class="art-desc">Il settore tecnologico affronta la prova di valutazione più severa dall'era dotcom, con i multipli sotto pressione nonostante la narrativa dell'intelligenza artificiale.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">TECH</span></div>
+        </a>
+
+        <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="article">
+          <div class="art-source">Finanza · Il Sole 24 Ore</div>
+          <div class="art-title">BCE: la prossima mossa sui tassi dipenderà dai dati di inflazione di aprile</div>
+          <div class="art-desc">Il Consiglio direttivo della BCE mantiene un approccio dipendente dai dati. L'inflazione europea mostra segnali contrastanti tra area core e servizi.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">BCE</span></div>
+        </a>
+
+        <a href="https://www.bloomberg.com/markets" target="_blank" class="article">
+          <div class="art-source">Mercati · Bloomberg</div>
+          <div class="art-title">Bond market: lo spread BTP-Bund si stabilizza sotto i 100 punti base</div>
+          <div class="art-desc">Il differenziale tra BTP decennale e Bund tedesco si contrae grazie alla stabilità politica italiana e al calo dell'avversione al rischio nell'area euro.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">OBBLIGAZIONI</span></div>
+        </a>
+
+        <a href="https://www.reuters.com/markets" target="_blank" class="article">
+          <div class="art-source">Agenzia · Reuters</div>
+          <div class="art-title">Fed: i verbali dell'ultimo FOMC confermano cautela sui tagli, inflazione servizi ancora elevata</div>
+          <div class="art-desc">I funzionari della Federal Reserve mostrano crescente preoccupazione per l'inflazione nel settore dei servizi, posticipando le aspettative di taglio dei tassi.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">FED</span></div>
+        </a>
+
+        <a href="https://www.ft.com" target="_blank" class="article">
+          <div class="art-source">Analisi · Financial Times</div>
+          <div class="art-title">La Cina accelera la de-dollarizzazione: accordi bilaterali in yuan con 40 paesi emergenti</div>
+          <div class="art-desc">La strategia di Pechino per ridurre la dipendenza dal dollaro USA si intensifica con nuovi accordi commerciali in valuta locale con partner strategici.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">CINA</span><span class="art-tag">FOREX</span></div>
+        </a>
+
+        <a href="https://www.cnbc.com" target="_blank" class="article">
+          <div class="art-source">TV · CNBC</div>
+          <div class="art-title">Warren Buffett aumenta la liquidità di Berkshire Hathaway: record storico di $334 miliardi in cash</div>
+          <div class="art-desc">L'oracolo di Omaha segnala prudenza sui mercati azionari USA accumulando liquidità senza precedenti, in attesa di opportunità di acquisto significative.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">AZIONI</span></div>
+        </a>
+
+        <a href="https://www.economist.com" target="_blank" class="article">
+          <div class="art-source">Geopolitica · The Economist</div>
+          <div class="art-title">L'Europa ripensa la difesa: 800 miliardi di investimenti militari cambieranno gli equilibri industriali del continente</div>
+          <div class="art-desc">Il riarmo europeo accelera dopo le pressioni americane sul burden-sharing NATO. I settori aerospazio e difesa diventano il nuovo motore di crescita industriale.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">GEOPOLITICA</span><span class="art-tag">DIFESA</span></div>
+        </a>
+
+        <a href="https://www.wsj.com" target="_blank" class="article">
+          <div class="art-source">Mercati · Wall Street Journal</div>
+          <div class="art-title">Intelligenza artificiale: i costi di training dei grandi modelli superano i 10 miliardi — il mercato si consolida</div>
+          <div class="art-desc">La corsa all'IA generativa premia solo i grandi attori con bilanci solidi. Le piccole startup dell'IA vedono gli investimenti del venture capital ridursi drasticamente.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">AI</span><span class="art-tag">TECH</span></div>
+        </a>
+
+        <a href="https://www.milanofinanza.it/" target="_blank" class="article">
+          <div class="art-source">Italia · Milano Finanza</div>
+          <div class="art-title">FTSE MIB: il settore bancario trascina al ribasso il listino milanese nonostante dati macro positivi</div>
+          <div class="art-desc">Intesa Sanpaolo e Unicredit sotto pressione dopo i dati sugli NPL. Il comparto energia tiene grazie all'andamento del petrolio nel breve termine.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">ITALIA</span><span class="art-tag">BANCHE</span></div>
+        </a>
+
+        <a href="https://foreignpolicy.com" target="_blank" class="article">
+          <div class="art-source">Geopolitica · Foreign Policy</div>
+          <div class="art-title">Il G7 discute nuove sanzioni alla Russia: impatto atteso su mercati energetici e materie prime</div>
+          <div class="art-desc">Le potenze occidentali esaminano un ulteriore inasprimento delle restrizioni economiche. Gas naturale e metalli industriali già in movimento preventivo.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">RUSSIA</span><span class="art-tag">G7</span></div>
+        </a>
+
+        <a href="https://intelligence.weforum.org" target="_blank" class="article">
+          <div class="art-source">Macro · World Economic Forum</div>
+          <div class="art-title">WEF: la frammentazione geopolitica costerà il 7% del PIL globale entro il 2030</div>
+          <div class="art-desc">Il nuovo rapporto del Forum Economico Mondiale quantifica l'impatto economico della de-globalizzazione sulle catene del valore mondiali e gli scambi commerciali.</div>
+          <div class="art-meta"><span>Live →</span><span class="art-tag">MACRO</span><span class="art-tag">WEF</span></div>
+        </a>
+
+      </div>
+      <div style="padding:12px 24px;font-size:11px;color:var(--ink3);border-top:1px solid var(--rule)">
+        Le notizie sono rappresentative delle principali fonti monitorate. Clicca su ciascun articolo per aprire la fonte originale con gli aggiornamenti in tempo reale.
+      </div>
+    </div>
+
+    <!-- PANEL: VIDEO -->
+    <div id="panel-video" class="panel">
+      <div class="news-header"><h2>Canali Video Finanziari</h2><span class="upd">Migliori canali mondiali selezionati</span></div>
+
+      <div class="section-divider">Canali internazionali di riferimento</div>
+      <div class="video-grid">
+        <a href="https://www.youtube.com/@Bloomberg" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#1A1814"><div class="video-thumb-bg">📊</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Bloomberg · YouTube</div><div class="video-title">Bloomberg Markets & Finance — Live</div><div class="video-meta">Analisi istituzionale · Interviste CEO · Macro globale</div></div>
+        </a>
+        <a href="https://www.youtube.com/@CNBC" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#001F5B"><div class="video-thumb-bg">📺</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">CNBC · YouTube</div><div class="video-title">CNBC Markets — Breaking News</div><div class="video-meta">Mercati USA · Wall Street · Fed · Earnings</div></div>
+        </a>
+        <a href="https://www.youtube.com/@TheEconomist" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#E03131"><div class="video-thumb-bg">🌐</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">The Economist · YouTube</div><div class="video-title">The Economist — Analisi Geopolitica</div><div class="video-meta">Economia globale · Politica · Scenari strategici</div></div>
+        </a>
+        <a href="https://www.youtube.com/@FinancialTimes" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#F7C59F"><div class="video-thumb-bg">🏦</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Financial Times · YouTube</div><div class="video-title">FT News & Analysis</div><div class="video-meta">Finanza UK ed europea · Corporate news</div></div>
+        </a>
+        <a href="https://www.youtube.com/@Reuters" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#FF6B35"><div class="video-thumb-bg">📡</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Reuters · YouTube</div><div class="video-title">Reuters — News Mondiali in Video</div><div class="video-meta">Breaking news · Geopolitica · Economia</div></div>
+        </a>
+        <a href="https://www.youtube.com/@wsj" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#2D4A8A"><div class="video-thumb-bg">📰</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Wall Street Journal · YouTube</div><div class="video-title">WSJ — Markets & Business</div><div class="video-meta">Azioni USA · Business · Tecnologia</div></div>
+        </a>
+      </div>
+
+      <div class="section-divider">Analisi e formazione finanziaria</div>
+      <div class="video-grid">
+        <a href="https://www.youtube.com/@SvenCarlin" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#2D5A27"><div class="video-thumb-bg">📚</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Sven Carlin Ph.D.</div><div class="video-title">Value Investing — Analisi Fondamentale</div><div class="video-meta">Il migliore per value investing · Dati e ricerca</div></div>
+        </a>
+        <a href="https://www.youtube.com/@BenFelixCSI" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#1A3A5C"><div class="video-thumb-bg">🎓</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Ben Felix</div><div class="video-title">Evidence-Based Investing</div><div class="video-meta">Ricerca accademica applicata · ETF · Portafogli</div></div>
+        </a>
+        <a href="https://www.youtube.com/@ThePlainBagel" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#5C3317"><div class="video-thumb-bg">🧠</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">The Plain Bagel</div><div class="video-title">Analisi Critica dei Mercati</div><div class="video-meta">Strumenti finanziari · Analisi imparziale</div></div>
+        </a>
+        <a href="https://www.youtube.com/@AswathDamodaran" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#8B1A1A"><div class="video-thumb-bg">📐</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Aswath Damodaran</div><div class="video-title">Valuation — NYU Stern Professor</div><div class="video-meta">Il guru della valutazione aziendale mondiale</div></div>
+        </a>
+      </div>
+
+      <div class="section-divider">Canali italiani di qualità</div>
+      <div class="video-grid">
+        <a href="https://www.youtube.com/@segreti_bancari" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#2C5F2E"><div class="video-thumb-bg">🇮🇹</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Segreti Bancari — Giacomo Saver</div><div class="video-title">Investire in autonomia — il meglio in italiano</div><div class="video-meta">Ex gestore Deutsche Bank · Analisi di qualità</div></div>
+        </a>
+        <a href="https://www.youtube.com/@ColazioneMilano" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#1A1A8B"><div class="video-thumb-bg">☕</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Colazione a Wall Street</div><div class="video-title">Mercati quotidiani — Vito Lops</div><div class="video-meta">Il Sole 24 Ore · Mercati ogni mattina</div></div>
+        </a>
+        <a href="https://www.youtube.com/@EugenioBenetazzo" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#4A1A1A"><div class="video-thumb-bg">🔭</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Eugenio Benetazzo</div><div class="video-title">Analisi macroeconomica contrarian</div><div class="video-meta">Visione critica · Scenari alternativi</div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- PANEL: QUOTIDIANI ITALIANI -->
+    <div id="panel-italiani" class="panel">
+      <div class="news-header"><h2>Quotidiani Italiani</h2><span class="upd">Principali testate nazionali</span></div>
+      <div class="papers-grid">
+        <a href="https://www.ilsole24ore.com" target="_blank" class="paper-card"><div class="paper-country">Milano · Economico</div><div class="paper-name">Il Sole 24 Ore</div><div class="paper-desc">Il quotidiano economico-finanziario di riferimento italiano</div><div class="paper-tags"><span class="p-tag">Finanza</span><span class="p-tag">Economia</span><span class="p-tag">Diritto</span></div></a>
+        <a href="https://www.milanofinanza.it" target="_blank" class="paper-card"><div class="paper-country">Milano · Finanziario</div><div class="paper-name">Milano Finanza</div><div class="paper-desc">Quotidiano di borsa e mercati finanziari italiani</div><div class="paper-tags"><span class="p-tag">Borsa</span><span class="p-tag">Fondi</span></div></a>
+        <a href="https://www.corriere.it" target="_blank" class="paper-card"><div class="paper-country">Milano · Generalista</div><div class="paper-name">Corriere della Sera</div><div class="paper-desc">Il quotidiano nazionale più diffuso in Italia</div><div class="paper-tags"><span class="p-tag">Politica</span><span class="p-tag">Economia</span></div></a>
+        <a href="https://www.repubblica.it" target="_blank" class="paper-card"><div class="paper-country">Roma · Generalista</div><div class="paper-name">La Repubblica</div><div class="paper-desc">Quotidiano nazionale · Economica e politica</div><div class="paper-tags"><span class="p-tag">Politica</span><span class="p-tag">Economia</span></div></a>
+        <a href="https://www.lastampa.it" target="_blank" class="paper-card"><div class="paper-country">Torino · Generalista</div><div class="paper-name">La Stampa</div><div class="paper-desc">Storico quotidiano torinese · Finanza ed economia</div><div class="paper-tags"><span class="p-tag">Nord Italia</span></div></a>
+        <a href="https://www.teleborsa.it" target="_blank" class="paper-card"><div class="paper-country">Roma · Finanziario</div><div class="paper-name">Teleborsa</div><div class="paper-desc">Notizie di borsa e mercati finanziari in tempo reale</div><div class="paper-tags"><span class="p-tag">Real-time</span><span class="p-tag">Borsa</span></div></a>
+        <a href="https://www.borsaitaliana.it" target="_blank" class="paper-card"><div class="paper-country">Milano · Ufficiale</div><div class="paper-name">Borsa Italiana</div><div class="paper-desc">Fonte ufficiale per tutti i titoli quotati a Milano</div><div class="paper-tags"><span class="p-tag">Ufficiale</span><span class="p-tag">MIB</span></div></a>
+        <a href="https://www.ilmessaggero.it" target="_blank" class="paper-card"><div class="paper-country">Roma · Generalista</div><div class="paper-name">Il Messaggero</div><div class="paper-desc">Quotidiano romano · Economia e politica</div><div class="paper-tags"><span class="p-tag">Centro Italia</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: QUOTIDIANI EUROPEI -->
+    <div id="panel-europei" class="panel">
+      <div class="news-header"><h2>Quotidiani Europei</h2><span class="upd">Principali testate del continente</span></div>
+      <div class="papers-grid">
+        <a href="https://www.ft.com" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Finanziario</div><div class="paper-name">Financial Times</div><div class="paper-desc">Il quotidiano economico di riferimento mondiale</div><div class="paper-tags"><span class="p-tag">Finanza</span><span class="p-tag">Globale</span></div></a>
+        <a href="https://www.economist.com" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Settimanale</div><div class="paper-name">The Economist</div><div class="paper-desc">Il settimanale più influente al mondo su economia e geopolitica</div><div class="paper-tags"><span class="p-tag">Macro</span><span class="p-tag">Geo</span></div></a>
+        <a href="https://www.theguardian.com/business" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Generalista</div><div class="paper-name">The Guardian</div><div class="paper-desc">Sezione Business · Economia e finanza progressista</div><div class="paper-tags"><span class="p-tag">Business</span></div></a>
+        <a href="https://www.handelsblatt.com" target="_blank" class="paper-card"><div class="paper-country">🇩🇪 Düsseldorf · Economico</div><div class="paper-name">Handelsblatt</div><div class="paper-desc">Il quotidiano economico tedesco — cuore dell'economia europea</div><div class="paper-tags"><span class="p-tag">Germania</span><span class="p-tag">Industria</span></div></a>
+        <a href="https://www.faz.net" target="_blank" class="paper-card"><div class="paper-country">🇩🇪 Francoforte · Generalista</div><div class="paper-name">Frankfurter Allgemeine</div><div class="paper-desc">Autorità tedesca su economia, politica e finanza</div><div class="paper-tags"><span class="p-tag">Germania</span><span class="p-tag">BCE</span></div></a>
+        <a href="https://www.lemonde.fr/economie" target="_blank" class="paper-card"><div class="paper-country">🇫🇷 Parigi · Generalista</div><div class="paper-name">Le Monde Économie</div><div class="paper-desc">Il quotidiano francese di riferimento · Sezione economia</div><div class="paper-tags"><span class="p-tag">Francia</span><span class="p-tag">Europa</span></div></a>
+        <a href="https://www.lesechos.fr" target="_blank" class="paper-card"><div class="paper-country">🇫🇷 Parigi · Economico</div><div class="paper-name">Les Echos</div><div class="paper-desc">Il quotidiano economico-finanziario francese</div><div class="paper-tags"><span class="p-tag">Finanza</span><span class="p-tag">CAC40</span></div></a>
+        <a href="https://elpais.com/economia" target="_blank" class="paper-card"><div class="paper-country">🇪🇸 Madrid · Generalista</div><div class="paper-name">El País Economía</div><div class="paper-desc">Principale quotidiano spagnolo · Sezione economica</div><div class="paper-tags"><span class="p-tag">Spagna</span><span class="p-tag">IBEX</span></div></a>
+        <a href="https://www.nrc.nl" target="_blank" class="paper-card"><div class="paper-country">🇳🇱 Amsterdam · Generalista</div><div class="paper-name">NRC Handelsblad</div><div class="paper-desc">Quotidiano olandese autorevole · Economia e finanza</div><div class="paper-tags"><span class="p-tag">Olanda</span><span class="p-tag">AEX</span></div></a>
+        <a href="https://www.correiodamanha.pt" target="_blank" class="paper-card"><div class="paper-country">🇵🇹 Lisbona · Generalista</div><div class="paper-name">Diário de Notícias</div><div class="paper-desc">Storico quotidiano portoghese</div><div class="paper-tags"><span class="p-tag">Portogallo</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: QUOTIDIANI MONDIALI -->
+    <div id="panel-mondiali" class="panel">
+      <div class="news-header"><h2>Quotidiani Mondiali</h2><span class="upd">Le più importanti testate globali</span></div>
+
+      <div class="section-divider">Nord America</div>
+      <div class="papers-grid">
+        <a href="https://www.wsj.com" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Economico</div><div class="paper-name">Wall Street Journal</div><div class="paper-desc">Il quotidiano finanziario americano di riferimento mondiale</div><div class="paper-tags"><span class="p-tag">Wall St.</span><span class="p-tag">S&P500</span></div></a>
+        <a href="https://www.nytimes.com/section/business" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Generalista</div><div class="paper-name">New York Times Business</div><div class="paper-desc">Sezione economica del più influente quotidiano americano</div><div class="paper-tags"><span class="p-tag">USA</span><span class="p-tag">Tech</span></div></a>
+        <a href="https://www.washingtonpost.com/business" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 Washington · Generalista</div><div class="paper-name">Washington Post Business</div><div class="paper-desc">Economia, politica economica USA e relazioni internazionali</div><div class="paper-tags"><span class="p-tag">Politica US</span></div></a>
+        <a href="https://www.barrons.com" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Finanziario</div><div class="paper-name">Barron's</div><div class="paper-desc">Settimanale finanziario americano · Analisi investimenti</div><div class="paper-tags"><span class="p-tag">Investimenti</span><span class="p-tag">Analisi</span></div></a>
+        <a href="https://www.theglobeandmail.com/business" target="_blank" class="paper-card"><div class="paper-country">🇨🇦 Toronto · Generalista</div><div class="paper-name">Globe and Mail</div><div class="paper-desc">Il principale quotidiano canadese · Economia e mercati</div><div class="paper-tags"><span class="p-tag">Canada</span><span class="p-tag">TSX</span></div></a>
+      </div>
+
+      <div class="section-divider">Asia & Pacifico</div>
+      <div class="papers-grid">
+        <a href="https://www.nikkei.com" target="_blank" class="paper-card"><div class="paper-country">🇯🇵 Tokyo · Economico</div><div class="paper-name">Nikkei</div><div class="paper-desc">Il Bloomberg giapponese — riferimento per i mercati asiatici</div><div class="paper-tags"><span class="p-tag">Giappone</span><span class="p-tag">Nikkei225</span></div></a>
+        <a href="https://asia.nikkei.com" target="_blank" class="paper-card"><div class="paper-country">🌏 Asia · Economico</div><div class="paper-name">Nikkei Asia</div><div class="paper-desc">Copertura economica dell'intera regione asiatica in inglese</div><div class="paper-tags"><span class="p-tag">Asia</span><span class="p-tag">Emergenti</span></div></a>
+        <a href="https://www.scmp.com/business" target="_blank" class="paper-card"><div class="paper-country">🇭🇰 Hong Kong · Generalista</div><div class="paper-name">South China Morning Post</div><div class="paper-desc">La finestra sull'economia cinese e asiatica in inglese</div><div class="paper-tags"><span class="p-tag">Cina</span><span class="p-tag">HK</span></div></a>
+        <a href="https://www.thehindu.com/business" target="_blank" class="paper-card"><div class="paper-country">🇮🇳 Mumbai · Generalista</div><div class="paper-name">The Hindu Business</div><div class="paper-desc">L'India economica — mercato da 1,4 miliardi da monitorare</div><div class="paper-tags"><span class="p-tag">India</span><span class="p-tag">BSE</span></div></a>
+      </div>
+
+      <div class="section-divider">Middle East & Africa</div>
+      <div class="papers-grid">
+        <a href="https://www.arabianbusiness.com" target="_blank" class="paper-card"><div class="paper-country">🇦🇪 Dubai · Economico</div><div class="paper-name">Arabian Business</div><div class="paper-desc">Il quotidiano economico del Golfo Persico e Middle East</div><div class="paper-tags"><span class="p-tag">GCC</span><span class="p-tag">Petrolio</span></div></a>
+        <a href="https://www.businesslive.co.za" target="_blank" class="paper-card"><div class="paper-country">🇿🇦 Johannesburg · Economico</div><div class="paper-name">Business Live SA</div><div class="paper-desc">Principale fonte economica sudafricana e continentale</div><div class="paper-tags"><span class="p-tag">Africa</span><span class="p-tag">JSE</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: FONTI FINANZIARIE -->
+    <div id="panel-finanza" class="panel">
+      <div class="news-header"><h2>Fonti Finanziarie Specializzate</h2><span class="upd">Database, analytics e piattaforme dati</span></div>
+      <div class="papers-grid">
+        <a href="https://it.investing.com/news/latest-news" target="_blank" class="paper-card"><div class="paper-country">Globale · Dati mercati</div><div class="paper-name">Investing.com</div><div class="paper-desc">Notizie finanziarie real-time + dati mercati globali</div><div class="paper-tags"><span class="p-tag">Real-time</span><span class="p-tag">Globale</span></div></a>
+        <a href="https://www.bloomberg.com/markets" target="_blank" class="paper-card"><div class="paper-country">USA · Terminal professionale</div><div class="paper-name">Bloomberg Markets</div><div class="paper-desc">Il terminale finanziario professionale mondiale</div><div class="paper-tags"><span class="p-tag">Istituzionale</span></div></a>
+        <a href="https://cbonds.it" target="_blank" class="paper-card"><div class="paper-country">Globale · Obbligazioni</div><div class="paper-name">Cbonds</div><div class="paper-desc">Database obbligazionario mondiale — 1 milione di bond</div><div class="paper-tags"><span class="p-tag">BTP</span><span class="p-tag">Corporate</span></div></a>
+        <a href="https://www.morningstar.it" target="_blank" class="paper-card"><div class="paper-country">USA · Rating fondi</div><div class="paper-name">Morningstar</div><div class="paper-desc">Rating e analisi fondi comuni e ETF</div><div class="paper-tags"><span class="p-tag">Fondi</span><span class="p-tag">ETF</span></div></a>
+        <a href="https://www.justetf.com/it" target="_blank" class="paper-card"><div class="paper-country">Germania · ETF</div><div class="paper-name">JustETF</div><div class="paper-desc">Lo screener di ETF più completo disponibile in Europa</div><div class="paper-tags"><span class="p-tag">ETF</span><span class="p-tag">ETC</span></div></a>
+        <a href="https://www.milanofinanza.it/mercati" target="_blank" class="paper-card"><div class="paper-country">Italia · Borsa</div><div class="paper-name">Milano Finanza Mercati</div><div class="paper-desc">Dati di borsa italiani in tempo reale</div><div class="paper-tags"><span class="p-tag">FTSE MIB</span></div></a>
+        <a href="https://www.teleborsa.it" target="_blank" class="paper-card"><div class="paper-country">Italia · Borsa</div><div class="paper-name">Teleborsa</div><div class="paper-desc">Agenzia di stampa finanziaria italiana</div><div class="paper-tags"><span class="p-tag">Borsa IT</span></div></a>
+        <a href="https://www.borsaitaliana.it/homepage/homepage.htm" target="_blank" class="paper-card"><div class="paper-country">Italia · Ufficiale</div><div class="paper-name">Borsa Italiana</div><div class="paper-desc">Fonte ufficiale Euronext Milan — dati regolamentati</div><div class="paper-tags"><span class="p-tag">Ufficiale</span></div></a>
+        <a href="https://mercati.ilsole24ore.com" target="_blank" class="paper-card"><div class="paper-country">Italia · Dati</div><div class="paper-name">Il Sole 24 Ore Mercati</div><div class="paper-desc">Quotazioni BTP, azioni, valute aggiornate</div><div class="paper-tags"><span class="p-tag">BTP</span><span class="p-tag">Valute</span></div></a>
+        <a href="https://it.tradingview.com" target="_blank" class="paper-card"><div class="paper-country">USA · Grafici</div><div class="paper-name">TradingView</div><div class="paper-desc">Analisi tecnica e grafici professionali</div><div class="paper-tags"><span class="p-tag">Tecnica</span><span class="p-tag">Grafici</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: AGENZIE STAMPA -->
+    <div id="panel-agenzie" class="panel">
+      <div class="news-header"><h2>Agenzie di Stampa Mondiali</h2><span class="upd">Le fonti primarie delle notizie globali</span></div>
+      <div class="papers-grid">
+        <a href="https://www.reuters.com" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Agenzia</div><div class="paper-name">Reuters</div><div class="paper-desc">La più grande agenzia di stampa mondiale — fonte primaria per i mercati finanziari globali</div><div class="paper-tags"><span class="p-tag">Globale</span><span class="p-tag">Real-time</span><span class="p-tag">Mercati</span></div></a>
+        <a href="https://apnews.com/hub/business" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Agenzia</div><div class="paper-name">Associated Press</div><div class="paper-desc">La principale agenzia di stampa americana — notizie verificate</div><div class="paper-tags"><span class="p-tag">USA</span><span class="p-tag">Verificato</span></div></a>
+        <a href="https://www.afp.com/en/news-hub" target="_blank" class="paper-card"><div class="paper-country">🇫🇷 Parigi · Agenzia</div><div class="paper-name">AFP — Agence France-Presse</div><div class="paper-desc">Terza agenzia mondiale — forte copertura europea e africana</div><div class="paper-tags"><span class="p-tag">Europa</span><span class="p-tag">Africa</span></div></a>
+        <a href="https://www.ansa.it" target="_blank" class="paper-card"><div class="paper-country">🇮🇹 Roma · Agenzia</div><div class="paper-name">ANSA</div><div class="paper-desc">L'agenzia di stampa italiana nazionale — economia e finanza</div><div class="paper-tags"><span class="p-tag">Italia</span><span class="p-tag">Ufficiale</span></div></a>
+        <a href="https://www.dpa-international.com" target="_blank" class="paper-card"><div class="paper-country">🇩🇪 Berlino · Agenzia</div><div class="paper-name">DPA International</div><div class="paper-desc">L'agenzia di stampa tedesca — fondamentale per l'Europa centrale</div><div class="paper-tags"><span class="p-tag">Germania</span><span class="p-tag">Europa</span></div></a>
+        <a href="https://www.xinhuanet.com/english" target="_blank" class="paper-card"><div class="paper-country">🇨🇳 Pechino · Agenzia</div><div class="paper-name">Xinhua News</div><div class="paper-desc">L'agenzia ufficiale cinese — indispensabile per capire la narrativa di Pechino</div><div class="paper-tags"><span class="p-tag">Cina</span><span class="p-tag">Asia</span></div></a>
+        <a href="https://tass.com" target="_blank" class="paper-card"><div class="paper-country">🇷🇺 Mosca · Agenzia</div><div class="paper-name">TASS</div><div class="paper-desc">Agenzia ufficiale russa — per comprendere la posizione di Mosca</div><div class="paper-tags"><span class="p-tag">Russia</span><span class="p-tag">Energia</span></div></a>
+        <a href="https://www.kyodonews.net" target="_blank" class="paper-card"><div class="paper-country">🇯🇵 Tokyo · Agenzia</div><div class="paper-name">Kyodo News</div><div class="paper-desc">La principale agenzia giapponese — mercati asiatici e BoJ</div><div class="paper-tags"><span class="p-tag">Giappone</span><span class="p-tag">Asia</span></div></a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  Giornale Finanziario Globale — Hub Personale Multidisciplinare · Generato con Claude AI · <span id="footerDate"></span>
+</div>
+
+<script>
+function apriFile(nome) {
+  const a = document.createElement('a');
+  a.href = nome;
+  a.click();
+}
+
+function showPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function updateClock() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('it-IT', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  const timeStr = now.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+  const el1 = document.getElementById('mastDate');
+  const el2 = document.getElementById('mastTime');
+  const el3 = document.getElementById('newsTime');
+  const el4 = document.getElementById('footerDate');
+  if (el1) el1.textContent = dateStr;
+  if (el2) el2.textContent = timeStr;
+  if (el3) el3.textContent = 'Aggiornato · ' + timeStr;
+  if (el4) el4.textContent = dateStr;
+}
+
+updateClock();
+setInterval(updateClock, 60000);
+</script>
+</body>
+</html>
