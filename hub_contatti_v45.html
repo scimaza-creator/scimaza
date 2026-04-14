@@ -2454,7 +2454,7 @@ async function backupDropboxUpload(nomeFile, dati) {
       headers: {
         'Authorization': `Bearer ${DBX_TOKEN_BACKUP}`,
         'Dropbox-API-Arg': JSON.stringify({ path, mode:'add', autorename:true, mute:false }),
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/octet-stream'
       },
       body: JSON.stringify(dati, null, 2)
     });
