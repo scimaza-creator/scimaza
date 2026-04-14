@@ -1,0 +1,2556 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub — Rubrica & Aree</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1A3A5C;--navy2:#2E5A8E;--blue-lt:#B5D4F4;--teal:#5DCAA5;--bg:#152D4A;--surface:#1A3A5C;--border:#2E5A8E;--text:#FFFFFF;--muted:#B5D4F4;--hint:#85B7EB;--green:#375623;--green-bg:#C6EFCE;--red:#9C0006;--red-bg:#FFC7CE;--amber-bg:#FAEEDA;--amber:#633806}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#152D4A;font-family:'DM Sans',sans-serif;background:#152D4A;color:#FFFFFF;min-height:100vh;padding:16px}
+.view{display:none}.view.active{display:block}
+.main-tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--surface);padding:4px;border-radius:10px;border:1px solid var(--border);width:fit-content}
+.main-tab{font-size:12px;padding:6px 16px;border-radius:7px;cursor:pointer;color:#FFFFFF;font-family:'DM Sans',sans-serif;border:none;background:transparent;transition:all .15s}
+.main-tab.on{background:var(--navy);color:#fff}
+.topbar{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.pill{font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:#FFFFFF;transition:all .15s;font-family:'DM Sans',sans-serif}
+.pill:hover{border-color:var(--navy2);color:#FFFFFF}
+.pill.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn{font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:#FFFFFF;cursor:pointer;transition:all .12s}
+.btn:hover{background:var(--bg);border-color:var(--navy2)}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.danger{background:#FFF0F0;color:var(--red);border-color:#FFCDD2}
+.btn.ghost{border-color:var(--navy2);color:var(--blue-lt);background:transparent}
+.filter-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.filter-bar select{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 8px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:#FFFFFF;outline:none;cursor:pointer}
+.search-bar{display:flex;gap:8px;margin-bottom:12px;align-items:center}
+.search-bar input{flex:1;font-family:'DM Sans',sans-serif;font-size:13px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:#FFFFFF;outline:none}
+.search-bar input::placeholder{color:#B5D4F4}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.contact-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px}
+.contact-card:hover{border-color:var(--navy2);box-shadow:0 2px 8px rgba(26,58,92,.08)}
+.c-av{width:42px;height:42px;border-radius:50%;background:var(--navy2);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:var(--blue-lt);flex-shrink:0;overflow:hidden}
+.c-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.c-info{flex:1;min-width:0}
+.c-name{font-size:13px;font-weight:500;color:#FFFFFF;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-role{font-size:11px;color:#B5D4F4;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-badges{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px}
+.badge{font-size:9px;padding:1px 6px;border-radius:8px;display:inline-block}
+.badge-fornitori{background:#E6F1FB;color:#0C447C;border:1px solid #85B7EB}
+.badge-terzi{background:#FAEEDA;color:#633806;border:1px solid #EF9F27}
+.badge-personale{background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
+.empty-state{text-align:center;padding:48px 20px;color:#FFFFFF;font-size:13px}
+.card-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card-hdr{background:var(--navy);padding:14px 18px;display:flex;align-items:center;gap:12px}
+.av-lg{width:56px;height:56px;border-radius:50%;background:var(--navy2);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:500;color:var(--blue-lt);flex-shrink:0;overflow:hidden;cursor:pointer;border:2px solid rgba(255,255,255,.15)}
+.av-lg img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.card-body{display:grid;grid-template-columns:1fr 1fr}
+.col{padding:12px 16px}
+.col:first-child{border-right:1px solid var(--border)}
+.sl{font-size:10px;font-weight:500;color:#85B7EB;text-transform:uppercase;letter-spacing:.06em;margin:12px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:5px}
+.sl:first-child{margin-top:0}
+.sl-dot{width:5px;height:5px;border-radius:50%;background:var(--navy2);flex-shrink:0}
+.fr{display:flex;justify-content:space-between;align-items:flex-start;padding:4px 0;border-bottom:1px solid #F1F5F9;gap:8px}
+.fr:last-child{border-bottom:none}
+.fl{font-size:11px;#333333;flex-shrink:0;min-width:110px}
+.fv{font-size:11px;#1A202C;text-align:right;flex:1;word-break:break-word}
+.fv.lk{color:#185FA5;cursor:pointer}
+.fv.ok{color:var(--green);font-weight:500}
+.fv.mono{font-family:'DM Mono',monospace;font-size:10.5px}
+.phone-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:1px solid #F1F5F9;gap:4px}
+.phone-row:last-child{border-bottom:none}
+.phone-label{font-size:11px;#333333;flex-shrink:0;min-width:80px}
+.phone-val{font-size:11px;#1A202C;font-family:'DM Mono',monospace;flex:1;text-align:right}
+.phone-type{font-size:9px;padding:1px 5px;border-radius:6px;background:#EEF3F8;#333333;flex-shrink:0}
+.tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.tag{font-size:10px;padding:2px 8px;border-radius:10px;background:#EEF3F8;#333333;border:1px solid var(--border)}
+.tag.p{background:#E1F5EE;color:#085041;border-color:#9FE1CB}
+.ref-note{margin-top:6px;font-size:11px;#333333;line-height:1.6;background:#F8FAFC;padding:6px 9px;border-radius:6px;border-left:2px solid var(--navy2)}
+.cloud-btns{display:flex;gap:8px;margin-top:8px}
+.cloud-btn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 14px;border-radius:7px;cursor:pointer;white-space:nowrap;transition:all .12s}
+.cloud-btn.dropbox{background:#E6F1FB;color:#0C447C;border:1px solid #B5D4F4}
+.cloud-btn.dropbox:hover{background:#B5D4F4}
+.cloud-btn.spike{background:#E1F5EE;color:#085041;border:1px solid #9FE1CB}
+.cloud-btn.spike:hover{background:#9FE1CB}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:6px}
+.mt{aspect-ratio:1;border-radius:7px;background:var(--bg);border:1px solid var(--border);overflow:hidden;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mt img,.mt video{width:100%;height:100%;object-fit:cover}
+.tb{position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;font-size:8px;padding:1px 4px;border-radius:3px;font-family:'DM Mono',monospace}
+.ma{border:1.5px dashed var(--border);background:transparent;#555555;font-size:22px}
+.dl{margin-top:6px;display:flex;flex-direction:column;gap:3px}
+.di{display:flex;align-items:center;gap:7px;padding:5px 7px;background:var(--bg);border-radius:6px;cursor:pointer;border:1px solid transparent}
+.di:hover{border-color:var(--border);background:#EEF3F8}
+.ic{width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;font-family:'DM Mono',monospace}
+.ic.pdf{background:var(--red-bg);color:var(--red)}
+.ic.xls{background:var(--green-bg);color:var(--green)}
+.ic.doc{background:var(--blue-lt);color:#0C447C}
+.ic.img{background:var(--amber-bg);color:var(--amber)}
+.dn{font-size:11px;#1A202C;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dd{font-size:10px;#555555;flex-shrink:0;font-family:'DM Mono',monospace}
+.di.add{border:1.5px dashed var(--border);background:transparent}
+.notes-box{background:var(--bg);border-radius:7px;padding:7px 10px;margin-top:6px;border:1px solid var(--border)}
+.ne{padding:4px 0;border-bottom:1px solid var(--border)}
+.ne:last-child{border-bottom:none}
+.nd{font-size:10px;#555555;margin-bottom:1px;font-family:'DM Mono',monospace}
+.nt{font-size:11px;color:#FFFFFF;line-height:1.5}
+.ai-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.ai-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 9px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:#FFFFFF;cursor:pointer}
+.abar{padding:9px 16px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;align-items:center;background:var(--surface)}
+.abar button{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:#FFFFFF;cursor:pointer}
+.abar button:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.form-wrap{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+.form-hdr{background:var(--navy);padding:12px 18px;color:#fff;font-size:14px;font-weight:500}
+.form-body{padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.fg{display:flex;flex-direction:column;gap:3px}
+.fg.full{grid-column:1/-1}
+.fg.triple{display:grid;grid-template-columns:100px 1fr 90px;gap:6px;grid-column:1/-1}
+.fg label{font-size:10px;color:#FFFFFF;font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.fg input,.fg select,.fg textarea{font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;background:#2E5A8E;color:#FFFFFF;outline:none;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--navy2);background:var(--navy)}
+.fg textarea{resize:vertical;min-height:60px}
+.form-section{grid-column:1/-1;font-size:11px;font-weight:500;color:#B5D4F4;padding:8px 0 4px;border-top:1px solid var(--border);margin-top:4px;text-transform:uppercase;letter-spacing:.05em}
+.form-footer{padding:10px 16px;border-top:1px solid var(--border);display:flex;gap:8px;justify-content:flex-end;background:var(--surface)}
+.aree-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.area-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;cursor:pointer;transition:all .15s}
+.area-card:hover{border-color:var(--navy2);box-shadow:0 2px 8px rgba(26,58,92,.08)}
+.area-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:10px}
+.area-name{font-size:14px;font-weight:500;color:#FFFFFF;margin-bottom:4px}
+.area-desc{font-size:12px;color:#B5D4F4;line-height:1.5}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:8px;font-size:12px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
+.toast.show{opacity:1}
+.loading{text-align:center;padding:40px;#333333;font-size:13px}
+input[type=file]{display:none}
+</style>
+</head>
+<body>
+<div style="display:none" aria-hidden="true">
+  <datalist id="listCAP"></datalist>
+  <datalist id="listComuni"></datalist>
+  <datalist id="listProvince"></datalist>
+  <datalist id="listRegioni"></datalist>
+  <datalist id="listStati"></datalist>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+  <span style="font-size:22px;font-weight:500;color:#FFFFFF">Hub</span>
+  <div class="main-tabs" style="margin-bottom:0">
+    <button class="main-tab on" id="tabBtnRubrica">Rubrica contatti</button>
+    <button class="main-tab" id="tabBtnAree">Aree di interesse</button>
+    <button class="main-tab" id="tabBtnImpostazioni">⚙ Impostazioni</button>
+  </div>
+  <div style="margin-left:auto;padding-bottom:21px">
+    <button id="btn-backup" onclick="backupContatti()" style="font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 14px;border-radius:8px;border:1px solid var(--border);background:#808080;color:#000000;cursor:pointer;transition:all .12s;white-space:nowrap">💾 Backup Dropbox</button>
+  </div>
+</div>
+
+<div id="tabRubrica" class="view active">
+  <div id="viewList" class="view active">
+    <div class="topbar">
+      <span class="pill on" id="pillTutti">Tutti</span>
+      <span class="pill" id="pillFornitori">Fornitori</span>
+      <span class="pill" id="pillTerzi">Terzi</span>
+      <span class="pill" id="pillPersonale">Personale</span>
+        <button class="btn primary" style="margin-left:auto" id="btnNuovoContatto">+ Nuovo contatto</button>
+    </div>
+    <div class="filter-bar">
+      <select id="filterCategoria"><option value="">Tutte le categorie</option></select>
+      <span id="countLabel" style="font-size:12px;color:#FFFFFF"></span>
+    </div>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Cerca nome, cognome, azienda, professione..." style="color:#FFFFFF">
+    </div>
+    <div id="contactGrid" class="contact-grid"><div class="loading">Connessione al database...</div></div>
+  </div>
+
+  <div id="viewCard" class="view">
+    <div class="topbar">
+      <button class="btn" id="btnBackList">← Contatti</button>
+      <span id="breadcrumb" style="font-size:12px;#333333"></span>
+      <button class="btn" style="margin-left:auto" id="btnModifica">Modifica</button>
+      <button class="btn danger" id="btnElimina">Elimina</button>
+    </div>
+    <div class="card-wrap">
+      <div class="card-hdr">
+        <div class="av-lg" id="cardAv"><span id="cardInitials">--</span></div>
+        <input type="file" id="photoInput" accept="image/*">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:17px;font-weight:500;color:#fff" id="cardName">--</div>
+          <div style="font-size:12px;color:var(--blue-lt);margin-top:1px" id="cardRole">--</div>
+          <div style="font-size:11px;color:var(--teal);margin-top:2px" id="cardCompany">--</div>
+          <div style="display:flex;gap:6px;margin-top:5px;flex-wrap:wrap">
+            <span id="cardGruppo" style="font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.12);color:var(--blue-lt)">--</span>
+            <span id="cardCat" style="font-size:10px;padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.08);color:#B5D4F4">--</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:5px;align-items:flex-end">
+          <button class="btn ghost" id="btnFoto">+ Foto</button>
+          <span id="cardUpdated" style="font-size:10px;color:var(--blue-lt);font-family:'DM Mono',monospace"></span>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="col">
+          <div class="sl"><span class="sl-dot"></span>Dati personali</div>
+          <div class="fr"><span class="fl">Nome</span><span class="fv" id="fNome">--</span></div>
+          <div class="fr"><span class="fl">Cognome</span><span class="fv" id="fCognome">--</span></div>
+          <div class="fr"><span class="fl">Professione</span><span class="fv" id="fProfessione">--</span></div>
+          <div class="fr"><span class="fl">Incarico</span><span class="fv" id="fIncarico">--</span></div>
+          <div class="fr"><span class="fl">Gruppo</span><span class="fv" id="fGruppo">--</span></div>
+          <div class="fr"><span class="fl">Categoria</span><span class="fv" id="fCategoria">--</span></div>
+          <div class="fr"><span class="fl">Via / Piazza</span><span class="fv" id="fVia">--</span><span class="fv mono" id="fCivico" style="margin-left:6px;color:var(--muted)"></span></div>
+          <div class="fr"><span class="fl">CAP</span><span class="fv mono" id="fCap">--</span></div>
+          <div class="fr"><span class="fl">Località</span><span class="fv" id="fLocalita">--</span></div>
+          <div class="fr"><span class="fl">Comune</span><span class="fv" id="fComune">--</span></div>
+          <div class="fr"><span class="fl">Provincia</span><span class="fv" id="fProvincia">--</span></div>
+          <div class="fr"><span class="fl">Regione</span><span class="fv" id="fRegione">--</span></div>
+          <div class="fr"><span class="fl">Stato</span><span class="fv" id="fStato2">--</span></div>
+          <div style="margin-top:6px">
+            <button class="cloud-btn dropbox" id="btnMaps" style="font-size:10px;padding:4px 10px">📍 Apri in Google Maps</button>
+          </div>
+
+          <div class="sl"><span class="sl-dot"></span>Note cronologiche</div>
+          <div class="notes-box" id="notesList"></div>
+          <div style="margin-top:6px;display:flex;gap:6px">
+            <input type="text" id="newNoteInput" placeholder="Aggiungi nota..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 9px;border:1px solid var(--border);border-radius:6px;background:var(--navy2);color:#FFFFFF;outline:none">
+            <button class="btn primary" style="font-size:11px;padding:5px 10px" id="btnAddNote">+</button>
+          </div>
+
+          <div class="sl"><span class="sl-dot"></span>Telefoni</div>
+          <div class="phone-row"><span class="phone-label">Telefono 1</span><span class="phone-val" id="fTel1">--</span><span class="phone-type" id="fTel1T"></span></div>
+          <div class="phone-row"><span class="phone-label">Telefono 2</span><span class="phone-val" id="fTel2">--</span><span class="phone-type" id="fTel2T"></span></div>
+          <div class="phone-row"><span class="phone-label">Mobile 1</span><span class="phone-val" id="fMob1">--</span><span class="phone-type" id="fMob1T"></span></div>
+          <div class="phone-row"><span class="phone-label">Mobile 2</span><span class="phone-val" id="fMob2">--</span><span class="phone-type" id="fMob2T"></span></div>
+          <div class="phone-row"><span class="phone-label">Fax</span><span class="phone-val mono" id="fFax">--</span><span class="phone-type"></span></div>
+
+          <div class="sl"><span class="sl-dot"></span>Email</div>
+          <div class="fr"><span class="fl">Email 1</span><span class="fv lk" id="fEmail1">--</span></div>
+          <div class="fr"><span class="fl">Email 2</span><span class="fv lk" id="fEmail2">--</span></div>
+          <div class="fr"><span class="fl">PEC</span><span class="fv lk" id="fPec">--</span></div>
+          <div class="fr"><span class="fl">Codice fiscale</span><span class="fv mono" id="fCf">--</span></div>
+
+          <div class="sl"><span class="sl-dot"></span>Azienda</div>
+          <div class="fr"><span class="fl">Ragione sociale</span><span class="fv" id="fRagione">--</span></div>
+          <div class="fr"><span class="fl">P.IVA</span><span class="fv mono" id="fPiva">--</span></div>
+          <div class="fr"><span class="fl">REA</span><span class="fv mono" id="fRea">--</span></div>
+          <div class="fr"><span class="fl">Albo</span><span class="fv" id="fAlbo">--</span></div>
+          <div class="fr"><span class="fl">Tipologia prodotti</span><span class="fv" id="fProdotti">--</span></div>
+          <div class="fr"><span class="fl">Sito web</span><span class="fv lk" id="fSito">--</span></div>
+          <div class="fr"><span class="fl">Link azienda</span><span class="fv lk" id="fLink">--</span></div>
+
+          <div class="sl"><span class="sl-dot"></span>Rapporto</div>
+          <div class="fr"><span class="fl">Tipo rapporto</span><span class="fv" id="fTipo">--</span></div>
+          <div class="fr"><span class="fl">Progetto attivo</span><span class="fv" id="fProgetto">--</span></div>
+          <div class="fr"><span class="fl">Stato</span><span class="fv ok" id="fStato">--</span></div>
+
+          <div class="sl"><span class="sl-dot"></span>Conoscenze / Referenze</div>
+          <div class="tags" id="fReferenze"></div>
+          <div class="ref-note" id="fNoteRef" style="display:none"></div>
+
+          <div class="sl"><span class="sl-dot"></span>Cloud & Referenze</div>
+          <div class="cloud-btns">
+            <button class="cloud-btn dropbox" id="btnDropbox">Dropbox cloud</button>
+            <button class="cloud-btn spike" id="btnSpike">Spike-mail</button>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="sl"><span class="sl-dot"></span>Foto</div>
+          <div class="mg" id="photoGrid">
+            <div class="mt ma" id="btnAddPhoto">+<input type="file" id="photoInput" accept="image/*" multiple></div>
+          </div>
+          <div class="sl" style="margin-top:10px"><span class="sl-dot"></span>Video</div>
+          <div class="mg" id="videoGrid">
+            <div class="mt ma" id="btnAddVideo">+<input type="file" id="videoInput" accept="video/*" multiple></div>
+          </div>
+          <div class="sl" style="margin-top:10px"><span class="sl-dot"></span>Documenti allegati</div>
+          <div class="dl" id="docsList">
+            <div class="di add" id="btnAddDoc">
+              <div class="ic" style="background:var(--bg);font-size:15px">+</div>
+              <span class="dn">Aggiungi documento...</span>
+            </div>
+          </div>
+          <div class="sl"><span class="sl-dot"></span>Comunicazioni AI</div>
+          <div class="ai-row">
+            <button class="ai-btn" id="aiBtnEmail">✦ Bozza email</button>
+            <button class="ai-btn" id="aiBtnRiassunto">✦ Riassumi</button>
+            <button class="ai-btn" id="aiBtnLettera">✦ Lettera</button>
+            <button class="ai-btn" id="aiBtnPromemoria">✦ Promemoria</button>
+          </div>
+        </div>
+      </div>
+      <div class="abar">
+        <button id="btnAbarLista">← Lista</button>
+        <button id="btnAbarModifica">Modifica</button>
+        <button id="btnAbarNota">+ Nota</button>
+        <span style="margin-left:auto;font-size:10px;#555555;font-family:'DM Mono',monospace">Hub v46</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewForm" class="view">
+    <div class="topbar">
+      <button class="btn" id="btnAnnullaForm">← Annulla</button>
+      <span id="formTitle" style="font-size:13px;font-weight:500;color:var(--navy)">Nuovo contatto</span>
+    </div>
+    <div class="form-wrap">
+      <div class="form-hdr" id="formHdr">Dati contatto</div>
+      <div class="form-body">
+        <div class="form-section">Dati personali</div>
+        <div class="fg"><label>Nome *</label><input type="text" id="fNomeI" placeholder="Mario"></div>
+        <div class="fg"><label>Cognome *</label><input type="text" id="fCognomeI" placeholder="Rossi"></div>
+        <div class="fg"><label>Professione</label>
+          <input type="text" id="fProfessioneI" list="listProfessioni" placeholder="Seleziona o scrivi...">
+          <datalist id="listProfessioni">
+            <option value="Architetto"><option value="Architetto d'interni"><option value="Architetto paesaggista">
+            <option value="Ingegnere"><option value="Ingegnere strutturista"><option value="Geometra">
+            <option value="Agronomo"><option value="Termotecnico"><option value="Elettrotecnico">
+            <option value="Notaio"><option value="Avvocato"><option value="Avvocato penalista">
+            <option value="Avvocato civilista"><option value="Commercialista"><option value="Tributarista">
+            <option value="Falegname"><option value="Idraulico"><option value="Elettricista">
+            <option value="Lattoniere"><option value="Cartongessista"><option value="Piastrellista">
+            <option value="Edile"><option value="Vivaista"><option value="Giardiniere">
+            <option value="Medico base"><option value="Cardiologo"><option value="Neurologo">
+            <option value="Oncologo"><option value="Ginecologo"><option value="Ortopedico">
+            <option value="Otorinolaringoiatra"><option value="Oculista"><option value="Dentista">
+            <option value="Fisioterapista"><option value="Chirurgo"><option value="Pediatra">
+            <option value="Psicologo"><option value="Psichiatra"><option value="Urologo">
+            <option value="Gastroenterologo"><option value="Agente commercio"><option value="Titolare"><option value="Capo area">
+          </datalist>
+        </div>
+        <div class="fg"><label>Incarico</label><input type="text" id="fIncaricoI" placeholder="Progettista responsabile"></div>
+        <div class="fg"><label>Gruppo</label>
+          <select id="fGruppoI">
+            <option value="">-- Seleziona --</option>
+            <option value="fornitori">Fornitori</option>
+            <option value="terzi">Terzi</option>
+            <option value="personale">Personale</option>
+          </select>
+        </div>
+        <div class="fg"><label>Categoria</label>
+          <input type="text" id="fCategoriaI" list="listSettori" placeholder="Digita categoria e memorizza...">
+          <datalist id="listSettori"></datalist>
+        </div>
+        <div class="fg full"><label>Via / Piazza &amp; N. Civico</label>
+          <div style="display:grid;grid-template-columns:100px 1fr 70px;gap:6px;align-items:center">
+            <select id="fViaPrefissoI" style="font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 8px;border:1px solid var(--border);border-radius:7px;background:#2E5A8E;color:#fff;outline:none;width:100%;box-sizing:border-box">
+              <option value="Via">Via</option>
+              <option value="Viale">Viale</option>
+              <option value="Piazza">Piazza</option>
+              <option value="Piazzale">Piazzale</option>
+              <option value="Largo">Largo</option>
+              <option value="Vicolo">Vicolo</option>
+              <option value="SS.">SS.</option>
+              <option value="Strada">Strada</option>
+            </select>
+            <input type="text" id="fViaI" placeholder="Nome della via..." style="font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;background:#2E5A8E;color:#fff;outline:none;width:100%;box-sizing:border-box">
+            <input type="text" id="fCivicoI" placeholder="N°" style="font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 9px;border:1px solid var(--border);border-radius:7px;background:#2E5A8E;color:#fff;outline:none;width:100%;box-sizing:border-box;text-align:center">
+          </div>
+        </div>
+        <div class="fg"><label>CAP</label>
+          <input type="text" id="fCapI" placeholder="37121" list="listCAP" autocomplete="off">
+
+        </div>
+        <div class="fg"><label>Località</label><input type="text" id="fLocalitaI" placeholder="Verona"></div>
+        <div class="fg"><label>Comune</label>
+          <input type="text" id="fComuneI" placeholder="Verona" list="listComuni" autocomplete="off">
+
+        </div>
+        <div class="fg"><label>Provincia</label>
+          <input type="text" id="fProvinciaI" placeholder="VR" list="listProvince" autocomplete="off">
+
+        </div>
+        <div class="fg"><label>Regione</label>
+          <input type="text" id="fRegioneI" placeholder="Veneto" list="listRegioni" autocomplete="off">
+
+        </div>
+        <div class="fg"><label>Stato</label>
+          <input type="text" id="fStato2I" placeholder="Italia" list="listStati" autocomplete="off">
+
+        </div>
+        <div class="fg full"><label>Note referenze / come conosciuto</label>
+          <textarea id="fNoteRefI" placeholder="Conosciuto tramite Ing. Bianchi — presentazione diretta gen 2026..."></textarea>
+        </div>
+
+        <div class="form-section">Telefoni</div>
+        <div class="fg triple">
+          <div><label>Prefisso tel.1</label><input type="text" id="fTel1PrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Telefono 1</label><input type="tel" id="fTel1I" placeholder="045 123 4567"></div>
+          <div><label>Tipo</label><select id="fTel1TI"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div>
+        </div>
+        <div class="fg triple">
+          <div><label>Prefisso tel.2</label><input type="text" id="fTel2PrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Telefono 2</label><input type="tel" id="fTel2I" placeholder="045 765 4321"></div>
+          <div><label>Tipo</label><select id="fTel2TI"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div>
+        </div>
+        <div class="fg triple">
+          <div><label>Prefisso mob.1</label><input type="text" id="fMob1PrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Mobile 1</label><input type="tel" id="fMob1I" placeholder="338 987 6543"></div>
+          <div><label>Tipo</label><select id="fMob1TI"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div>
+        </div>
+        <div class="fg triple">
+          <div><label>Prefisso mob.2</label><input type="text" id="fMob2PrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Mobile 2</label><input type="tel" id="fMob2I" placeholder="347 123 9876"></div>
+          <div><label>Tipo</label><select id="fMob2TI"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div>
+        </div>
+        <div class="fg triple">
+          <div><label>Prefisso fax</label><input type="text" id="fFaxPrefI" list="listPrefissi" placeholder="+39"></div>
+          <div><label>Fax</label><input type="tel" id="fFaxI" placeholder="045 123 4568"></div>
+          <div></div>
+        </div>
+        <datalist id="listPrefissi">
+          <option value="+39">+39 Italia</option><option value="+33">+33 Francia</option>
+          <option value="+41">+41 Svizzera</option><option value="+43">+43 Austria</option>
+          <option value="+44">+44 UK</option><option value="+49">+49 Germania</option>
+          <option value="+34">+34 Spagna</option><option value="+1">+1 USA/Canada</option>
+        </datalist>
+
+        <div class="form-section">Email & Fiscale</div>
+        <div class="fg"><label>Email 1</label><input type="email" id="fEmail1I" placeholder="mario@studio.it"></div>
+        <div class="fg"><label>Email 2</label><input type="email" id="fEmail2I" placeholder="mario@gmail.com"></div>
+        <div class="fg"><label>PEC</label><input type="email" id="fPecI" placeholder="mario@pec.it"></div>
+        <div class="fg"><label>Codice fiscale</label><input type="text" id="fCfI" placeholder="RSSMRA70A01L781K"></div>
+
+        <div class="form-section">Azienda</div>
+        <div class="fg"><label>Ragione sociale</label><input type="text" id="fRagioneI" placeholder="Studio Rossi & Associati S.r.l."></div>
+        <div class="fg"><label>P.IVA</label><input type="text" id="fPivaI" placeholder="IT02345678901"></div>
+        <div class="fg"><label>REA</label><input type="text" id="fReaI" placeholder="VR-234567"></div>
+        <div class="fg"><label>Albo professionale</label><input type="text" id="fAlboI" placeholder="Arch. VR n. 1234"></div>
+        <div class="fg"><label>Tipologia prodotti</label><input type="text" id="fProdottiI" list="listProdotti" placeholder="Inserisci o seleziona..."><datalist id="listProdotti"></datalist></div>
+        <div class="fg"><label>Sito web</label><input type="url" id="fSitoI" placeholder="https://www.studio.it"></div>
+        <div class="fg"><label>Link azienda</label><input type="url" id="fLinkI" placeholder="https://linkedin.com/..."></div>
+
+        <div class="form-section">Rapporto</div>
+        <div class="fg"><label>Tipo rapporto</label><input type="text" id="fTipoI" placeholder="Fornitore professionale"></div>
+        <div class="fg"><label>Progetto attivo</label><input type="text" id="fProgettoI" placeholder="Villa Zanella — restauro"></div>
+        <div class="fg"><label>Stato</label><select id="fStatoI"><option value="Attivo">Attivo</option><option value="Inattivo">Inattivo</option><option value="In attesa">In attesa</option></select></div>
+
+        <div class="form-section">Foto</div>
+        <div class="fg full">
+          <div class="mg" id="formPhotoGrid" style="margin-top:4px">
+            <div class="mt ma" id="formBtnAddPhoto" style="cursor:pointer">+<input type="file" id="formPhotoInput" accept="image/*" multiple style="display:none"></div>
+          </div>
+        </div>
+
+        <div class="form-section">Video</div>
+        <div class="fg full">
+          <div class="mg" id="formVideoGrid" style="margin-top:4px">
+            <div class="mt ma" id="formBtnAddVideo" style="cursor:pointer">+<input type="file" id="formVideoInput" accept="video/*" multiple style="display:none"></div>
+          </div>
+        </div>
+
+        <div class="form-section">Cloud</div>
+        <div class="fg"><label>Link cartella Dropbox</label><input type="url" id="fDropboxI" placeholder="https://www.dropbox.com/..."></div>
+        <div class="fg"><label>Email per Spike</label><input type="email" id="fSpikeI" placeholder="contatto@email.it"></div>
+      </div>
+      <div class="form-footer">
+        <button class="btn" id="btnAnnullaForm2">Annulla</button>
+        <button class="btn primary" id="btnSalvaContatto">Salva contatto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="tabAree" class="view">
+  <div style="margin-bottom:16px"><div style="font-size:13px;#333333">Seleziona un area per accedere a risorse, fonti e strumenti dedicati.</div></div>
+  <div class="aree-grid">
+    <div class="area-card" id="areaFinanza"><div class="area-icon" style="background:#E6F1FB">💹</div><div class="area-name" style="color:#FFFFFF">Finanza</div><div class="area-desc" style="color:#B5D4F4">Portafogli virtuali, mercati azionari, ETF, obbligazioni</div></div>
+    <div class="area-card" id="areaFisco"><div class="area-icon" style="background:#FAEEDA">📋</div><div class="area-name" style="color:#FFFFFF">Fisco e Tributi</div><div class="area-desc" style="color:#B5D4F4">Scadenzario fiscale, F24, dichiarazioni, normativa tributaria</div></div>
+    <div class="area-card" id="areaLegale"><div class="area-icon" style="background:#FFC7CE">⚖️</div><div class="area-name" style="color:#FFFFFF">Legale</div><div class="area-desc" style="color:#B5D4F4">Pratiche, contratti, normativa, scadenze legali</div></div>
+    <div class="area-card" id="areaImmobili"><div class="area-icon" style="background:#C6EFCE">🏛️</div><div class="area-name" style="color:#FFFFFF">Immobili storici</div><div class="area-desc" style="color:#B5D4F4">Ville storiche, restauro conservativo, Digital Identity Card</div></div>
+    <div class="area-card" id="areaTurismo"><div class="area-icon" style="background:#E1F5EE">✈️</div><div class="area-name" style="color:#FFFFFF">Turismo</div><div class="area-desc" style="color:#B5D4F4">Strutture ricettive, incoming, promozione territoriale</div></div>
+    <div class="area-card" id="areaEnogastronomia"><div class="area-icon" style="background:#EEEDFE">🍷</div><div class="area-name" style="color:#FFFFFF">Enogastronomia</div><div class="area-desc" style="color:#B5D4F4">Vini, prodotti tipici, produttori locali, ristorazione</div></div>
+  </div>
+</div>
+
+<div id="tabImpostazioni" class="view">
+  <div style="margin-bottom:14px;font-size:13px;color:#FFFFFF">Gestisci i vocabolari — aggiungi o elimina voci dalle tendine.</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px" id="vocGridWrapper">
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Professioni</div>
+      <div id="vocListProfessioni" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputProfessioni" placeholder="Nuova professione..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('professioni')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Categorie</div>
+      <div id="vocListCategorie" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputCategorie" placeholder="Nuova categoria..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('categorie')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Tipologia prodotti</div>
+      <div id="vocListProdotti" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputProdotti" placeholder="Nuovo prodotto..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('prodotti')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Prefissi Via / Piazza</div>
+      <div id="vocListPrefissiVia" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputPrefissiVia" placeholder="es. Contrada..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('prefissiVia')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+    <div style="background:var(--surface);border-radius:8px;padding:12px 16px">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em">Prefissi telefonici</div>
+      <div id="vocListPrefissi" style="display:flex;flex-direction:column;gap:4px;margin-bottom:10px"></div>
+      <div style="display:flex;gap:6px">
+        <input type="text" id="vocInputPrefissi" placeholder="+xx Paese..." style="flex:1;font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="vocAdd('prefissi')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:5px 10px;border-radius:6px;background:var(--navy2);color:#fff;border:none;cursor:pointer">+</button>
+      </div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;grid-column:1/-1">
+      <div style="font-size:12px;font-weight:500;color:#FFFFFF;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">🔑 Token Dropbox — Backup</div>
+      <div style="font-size:11px;color:#85B7EB;margin-bottom:10px">Incolla qui il tuo token Dropbox. Viene salvato su Firebase e non è mai nel codice. Se il backup smette di funzionare, genera un nuovo token dalla Dropbox App Console e aggiornalo qui.</div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <input type="password" id="dbxTokenInput" placeholder="Incolla il token Dropbox..." style="flex:1;font-family:'DM Mono',monospace;font-size:11px;padding:6px 10px;border:1px solid var(--border);border-radius:7px;background:#2E5A8E;color:#FFFFFF;outline:none">
+        <button onclick="toggleTokenVisibility()" id="btnToggleToken" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 10px;border-radius:7px;background:var(--navy2);color:#fff;border:none;cursor:pointer">👁</button>
+        <button onclick="salvaTokenDropbox()" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 14px;border-radius:7px;background:var(--teal);color:#fff;border:none;cursor:pointer;font-weight:500">Salva</button>
+      </div>
+      <div id="dbxTokenStatus" style="font-size:10px;color:#85B7EB;margin-top:6px;font-family:'DM Mono',monospace"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const COMUNI_ITALIANI = [
+  {comune:'Abano Terme',cap:'35031',provincia:'PD',regione:'Veneto'},
+  {comune:'Abbiategrasso',cap:'20081',provincia:'MI',regione:'Lombardia'},
+  {comune:'Abbiategrasso',cap:'20081',provincia:'PV',regione:'Lombardia'},
+  {comune:'Acate',cap:'97011',provincia:'RG',regione:'Sicilia'},
+  {comune:'Acireale',cap:'95024',provincia:'CT',regione:'Sicilia'},
+  {comune:'Acquapendente',cap:'01021',provincia:'VT',regione:'Lazio'},
+  {comune:'Acquasparta',cap:'05021',provincia:'TR',regione:'Umbria'},
+  {comune:'Acquaviva Picena',cap:'63075',provincia:'AP',regione:'Marche'},
+  {comune:'Acquaviva delle Fonti',cap:'70021',provincia:'BA',regione:'Puglia'},
+  {comune:'Acqui Terme',cap:'15011',provincia:'AL',regione:'Piemonte'},
+  {comune:'Acri',cap:'87041',provincia:'CS',regione:'Calabria'},
+  {comune:'Adrano',cap:'95031',provincia:'CT',regione:'Sicilia'},
+  {comune:'Adria',cap:'45011',provincia:'RO',regione:'Veneto'},
+  {comune:'Affi',cap:'37010',provincia:'VR',regione:'Veneto'},
+  {comune:'Afragola',cap:'80021',provincia:'NA',regione:'Campania'},
+  {comune:'Agira',cap:'94011',provincia:'EN',regione:'Sicilia'},
+  {comune:'Agliana',cap:'51031',provincia:'PT',regione:'Toscana'},
+  {comune:'Agliana',cap:'51031',provincia:'PO',regione:'Toscana'},
+  {comune:'Agnone',cap:'86081',provincia:'IS',regione:'Molise'},
+  {comune:'Agordo',cap:'32021',provincia:'BL',regione:'Veneto'},
+  {comune:'Agrigento',cap:'92100',provincia:'AG',regione:'Sicilia'},
+  {comune:'Agropoli',cap:'84043',provincia:'SA',regione:'Campania'},
+  {comune:'Airola',cap:'82011',provincia:'BN',regione:'Campania'},
+  {comune:'Ala',cap:'38061',provincia:'VR',regione:'Veneto'},
+  {comune:'Alatri',cap:'03011',provincia:'FR',regione:'Lazio'},
+  {comune:'Alba',cap:'12051',provincia:'CN',regione:'Piemonte'},
+  {comune:'Alba Adriatica',cap:'64011',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Albano Laziale',cap:'00041',provincia:'RM',regione:'Lazio'},
+  {comune:'Albenga',cap:'17031',provincia:'SV',regione:'Liguria'},
+  {comune:'Albignasego',cap:'35020',provincia:'PD',regione:'Veneto'},
+  {comune:'Albissola Marina',cap:'17012',provincia:'SV',regione:'Liguria'},
+  {comune:'Albosaggia',cap:'23010',provincia:'SO',regione:'Lombardia'},
+  {comune:'Alcamo',cap:'91011',provincia:'PA',regione:'Sicilia'},
+  {comune:'Alcamo',cap:'91011',provincia:'TP',regione:'Sicilia'},
+  {comune:'Ales',cap:'09091',provincia:'OR',regione:'Sardegna'},
+  {comune:'Alessandria',cap:'15100',provincia:'AL',regione:'Piemonte'},
+  {comune:'Alfonsine',cap:'48011',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Alghero',cap:'07041',provincia:'SS',regione:'Sardegna'},
+  {comune:'Alpignano',cap:'10091',provincia:'TO',regione:'Piemonte'},
+  {comune:'Altamura',cap:'70022',provincia:'BA',regione:'Puglia'},
+  {comune:'Altopascio',cap:'55011',provincia:'LU',regione:'Toscana'},
+  {comune:'Alzano Lombardo',cap:'24022',provincia:'BG',regione:'Lombardia'},
+  {comune:'Amalfi',cap:'84011',provincia:'SA',regione:'Campania'},
+  {comune:'Amatrice',cap:'02012',provincia:'RI',regione:'Lazio'},
+  {comune:'Ameglia',cap:'19031',provincia:'SP',regione:'Liguria'},
+  {comune:'Amelia',cap:'05022',provincia:'TR',regione:'Umbria'},
+  {comune:'Anagni',cap:'03012',provincia:'FR',regione:'Lazio'},
+  {comune:'Ancona',cap:'60100',provincia:'AN',regione:'Marche'},
+  {comune:'Andria',cap:'76123',provincia:'BT',regione:'Puglia'},
+  {comune:'Angera',cap:'21021',provincia:'VA',regione:'Lombardia'},
+  {comune:'Anzio',cap:'00042',provincia:'RM',regione:'Lazio'},
+  {comune:'Aosta',cap:'11100',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Appiano Gentile',cap:'22070',provincia:'CO',regione:'Lombardia'},
+  {comune:'Appiano sulla Strada del Vino',cap:'39057',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Aprilia',cap:'04011',provincia:'LT',regione:'Lazio'},
+  {comune:'Arce',cap:'03032',provincia:'FR',regione:'Lazio'},
+  {comune:'Arcisate',cap:'21051',provincia:'VA',regione:'Lombardia'},
+  {comune:'Arco',cap:'38062',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Arcola',cap:'19021',provincia:'SP',regione:'Liguria'},
+  {comune:'Ardea',cap:'00040',provincia:'RM',regione:'Lazio'},
+  {comune:'Arese',cap:'20020',provincia:'MI',regione:'Lombardia'},
+  {comune:'Arezzo',cap:'52100',provincia:'AR',regione:'Toscana'},
+  {comune:'Argenta',cap:'44011',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Ariano Irpino',cap:'83031',provincia:'AV',regione:'Campania'},
+  {comune:'Arona',cap:'28041',provincia:'NO',regione:'Piemonte'},
+  {comune:'Arona',cap:'28041',provincia:'VB',regione:'Piemonte'},
+  {comune:'Arzachena',cap:'07021',provincia:'SS',regione:'Sardegna'},
+  {comune:'Arzignano',cap:'36071',provincia:'VI',regione:'Veneto'},
+  {comune:'Ascoli Piceno',cap:'63100',provincia:'AP',regione:'Marche'},
+  {comune:'Asiago',cap:'36012',provincia:'VI',regione:'Veneto'},
+  {comune:'Asola',cap:'46041',provincia:'MN',regione:'Lombardia'},
+  {comune:'Asolo',cap:'31011',provincia:'TV',regione:'Veneto'},
+  {comune:'Assemini',cap:'09032',provincia:'CA',regione:'Sardegna'},
+  {comune:'Assisi',cap:'06081',provincia:'PG',regione:'Umbria'},
+  {comune:'Asti',cap:'14100',provincia:'AT',regione:'Piemonte'},
+  {comune:'Atessa',cap:'66041',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Atri',cap:'64032',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Atripalda',cap:'83042',provincia:'AV',regione:'Campania'},
+  {comune:'Augusta',cap:'96011',provincia:'SR',regione:'Sicilia'},
+  {comune:'Aulla',cap:'54011',provincia:'MS',regione:'Toscana'},
+  {comune:'Avellino',cap:'83100',provincia:'AV',regione:'Campania'},
+  {comune:'Aversa',cap:'81031',provincia:'CE',regione:'Campania'},
+  {comune:'Avezzano',cap:'67051',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Aviano',cap:'33081',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Avigliana',cap:'10051',provincia:'TO',regione:'Piemonte'},
+  {comune:'Avio',cap:'38063',provincia:'VR',regione:'Veneto'},
+  {comune:'Avola',cap:'96012',provincia:'SR',regione:'Sicilia'},
+  {comune:'Azzano Decimo',cap:'33082',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Bacoli',cap:'80070',provincia:'NA',regione:'Campania'},
+  {comune:'Badia Polesine',cap:'45021',provincia:'RO',regione:'Veneto'},
+  {comune:'Bagheria',cap:'90011',provincia:'PA',regione:'Sicilia'},
+  {comune:'Bagnacavallo',cap:'48012',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Bagnara Calabra',cap:'89011',provincia:'RC',regione:'Calabria'},
+  {comune:'Bagno a Ripoli',cap:'50012',provincia:'FI',regione:'Toscana'},
+  {comune:'Bagnoli Irpino',cap:'83043',provincia:'AV',regione:'Campania'},
+  {comune:'Bagnolo in Piano',cap:'42011',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Baldichieri d\'Asti',cap:'14011',provincia:'AT',regione:'Piemonte'},
+  {comune:'Balestrate',cap:'90041',provincia:'PA',regione:'Sicilia'},
+  {comune:'Barcellona Pozzo di Gotto',cap:'98051',provincia:'ME',regione:'Sicilia'},
+  {comune:'Bardolino',cap:'37011',provincia:'VR',regione:'Veneto'},
+  {comune:'Bari',cap:'70100',provincia:'BA',regione:'Puglia'},
+  {comune:'Barletta',cap:'76121',provincia:'BT',regione:'Puglia'},
+  {comune:'Barrafranca',cap:'94012',provincia:'EN',regione:'Sicilia'},
+  {comune:'Bassano del Grappa',cap:'36061',provincia:'VI',regione:'Veneto'},
+  {comune:'Battipaglia',cap:'84091',provincia:'SA',regione:'Campania'},
+  {comune:'Baveno',cap:'28831',provincia:'VB',regione:'Piemonte'},
+  {comune:'Beinasco',cap:'10092',provincia:'TO',regione:'Piemonte'},
+  {comune:'Bellano',cap:'23822',provincia:'LC',regione:'Lombardia'},
+  {comune:'Bellaria-Igea Marina',cap:'47814',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'Belluno',cap:'32100',provincia:'BL',regione:'Veneto'},
+  {comune:'Belmonte Piceno',cap:'63838',provincia:'FM',regione:'Marche'},
+  {comune:'Benevento',cap:'82100',provincia:'BN',regione:'Campania'},
+  {comune:'Bergamo',cap:'24100',provincia:'BG',regione:'Lombardia'},
+  {comune:'Bernalda',cap:'75012',provincia:'MT',regione:'Basilicata'},
+  {comune:'Bertinoro',cap:'47032',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Bibbiena',cap:'52011',provincia:'AR',regione:'Toscana'},
+  {comune:'Biella',cap:'13900',provincia:'BI',regione:'Piemonte'},
+  {comune:'Bisceglie',cap:'70052',provincia:'BA',regione:'Puglia'},
+  {comune:'Bisceglie',cap:'70052',provincia:'BT',regione:'Puglia'},
+  {comune:'Bitonto',cap:'70032',provincia:'BA',regione:'Puglia'},
+  {comune:'Bitti',cap:'08021',provincia:'NU',regione:'Sardegna'},
+  {comune:'Bogliasco',cap:'16031',provincia:'GE',regione:'Liguria'},
+  {comune:'Bojano',cap:'86021',provincia:'CB',regione:'Molise'},
+  {comune:'Bollate',cap:'20021',provincia:'MI',regione:'Lombardia'},
+  {comune:'Bologna',cap:'40100',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Bolsena',cap:'01023',provincia:'VT',regione:'Lazio'},
+  {comune:'Bolzano',cap:'39100',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Bondeno',cap:'44012',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Bordighera',cap:'18012',provincia:'IM',regione:'Liguria'},
+  {comune:'Borghetto Lodigiano',cap:'26812',provincia:'LO',regione:'Lombardia'},
+  {comune:'Borghetto Santo Spirito',cap:'17052',provincia:'SV',regione:'Liguria'},
+  {comune:'Borgia',cap:'88021',provincia:'CZ',regione:'Calabria'},
+  {comune:'Borgo San Dalmazzo',cap:'12011',provincia:'CN',regione:'Piemonte'},
+  {comune:'Borgo Valbelluna',cap:'32026',provincia:'BL',regione:'Veneto'},
+  {comune:'Borgo Valsugana',cap:'38051',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Borgomanero',cap:'28021',provincia:'NO',regione:'Piemonte'},
+  {comune:'Borgonovo Val Tidone',cap:'29011',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Borgorose',cap:'02021',provincia:'RI',regione:'Lazio'},
+  {comune:'Borgosesia',cap:'13011',provincia:'VC',regione:'Piemonte'},
+  {comune:'Bormio',cap:'23032',provincia:'SO',regione:'Lombardia'},
+  {comune:'Bosa',cap:'08013',provincia:'OR',regione:'Sardegna'},
+  {comune:'Bovino',cap:'71023',provincia:'FG',regione:'Puglia'},
+  {comune:'Bovolone',cap:'37051',provincia:'VR',regione:'Veneto'},
+  {comune:'Bra',cap:'12042',provincia:'CN',regione:'Piemonte'},
+  {comune:'Bracciano',cap:'00062',provincia:'RM',regione:'Lazio'},
+  {comune:'Brentino Belluno',cap:'37010',provincia:'VR',regione:'Veneto'},
+  {comune:'Brescia',cap:'25100',provincia:'BS',regione:'Lombardia'},
+  {comune:'Bressanone',cap:'39042',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Briatico',cap:'89817',provincia:'VV',regione:'Calabria'},
+  {comune:'Brindisi',cap:'72100',provincia:'BR',regione:'Puglia'},
+  {comune:'Brissogne',cap:'11020',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Broni',cap:'27043',provincia:'PV',regione:'Lombardia'},
+  {comune:'Bronte',cap:'95034',provincia:'CT',regione:'Sicilia'},
+  {comune:'Brugherio',cap:'20861',provincia:'MB',regione:'Lombardia'},
+  {comune:'Brugnera',cap:'33070',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Brunico',cap:'39031',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Buccinasco',cap:'20090',provincia:'MI',regione:'Lombardia'},
+  {comune:'Budrio',cap:'40054',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Buggerru',cap:'09010',provincia:'SU',regione:'Sardegna'},
+  {comune:'Buggiano',cap:'51011',provincia:'PT',regione:'Toscana'},
+  {comune:'Buonconvento',cap:'53022',provincia:'SI',regione:'Toscana'},
+  {comune:'Busca',cap:'12022',provincia:'CN',regione:'Piemonte'},
+  {comune:'Busseto',cap:'43011',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Bussolengo',cap:'37012',provincia:'VR',regione:'Veneto'},
+  {comune:'Busto Arsizio',cap:'21052',provincia:'VA',regione:'Lombardia'},
+  {comune:'Butera',cap:'93011',provincia:'CL',regione:'Sicilia'},
+  {comune:'Cabras',cap:'09072',provincia:'OR',regione:'Sardegna'},
+  {comune:'Cagli',cap:'61043',provincia:'PU',regione:'Marche'},
+  {comune:'Cagliari',cap:'09100',provincia:'CA',regione:'Sardegna'},
+  {comune:'Cairo Montenotte',cap:'17014',provincia:'SV',regione:'Liguria'},
+  {comune:'Calasetta',cap:'09011',provincia:'SU',regione:'Sardegna'},
+  {comune:'Calcinaia',cap:'56012',provincia:'PI',regione:'Toscana'},
+  {comune:'Caldaro sulla Strada del Vino',cap:'39052',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Caldiero',cap:'37042',provincia:'VR',regione:'Veneto'},
+  {comune:'Calenzano',cap:'50041',provincia:'FI',regione:'Toscana'},
+  {comune:'Calolziocorte',cap:'23801',provincia:'LC',regione:'Lombardia'},
+  {comune:'Caltagirone',cap:'95041',provincia:'CT',regione:'Sicilia'},
+  {comune:'Caltanissetta',cap:'93100',provincia:'CL',regione:'Sicilia'},
+  {comune:'Camaiore',cap:'55041',provincia:'LU',regione:'Toscana'},
+  {comune:'Camerino',cap:'62032',provincia:'MC',regione:'Marche'},
+  {comune:'Camogli',cap:'16032',provincia:'GE',regione:'Liguria'},
+  {comune:'Campi Bisenzio',cap:'50013',provincia:'FI',regione:'Toscana'},
+  {comune:'Campo nell\'Elba',cap:'57034',provincia:'LI',regione:'Toscana'},
+  {comune:'Campobasso',cap:'86100',provincia:'CB',regione:'Molise'},
+  {comune:'Campobello di Mazara',cap:'91021',provincia:'TP',regione:'Sicilia'},
+  {comune:'Camporosso',cap:'18033',provincia:'IM',regione:'Liguria'},
+  {comune:'Camposampiero',cap:'35012',provincia:'PD',regione:'Veneto'},
+  {comune:'Candelo',cap:'13878',provincia:'BI',regione:'Piemonte'},
+  {comune:'Canelli',cap:'14053',provincia:'AT',regione:'Piemonte'},
+  {comune:'Canicattini Bagni',cap:'96010',provincia:'SR',regione:'Sicilia'},
+  {comune:'Canicattì',cap:'92024',provincia:'AG',regione:'Sicilia'},
+  {comune:'Cannobio',cap:'28822',provincia:'VB',regione:'Piemonte'},
+  {comune:'Canosa di Puglia',cap:'76012',provincia:'BT',regione:'Puglia'},
+  {comune:'Cantagallo',cap:'59025',provincia:'PO',regione:'Toscana'},
+  {comune:'Cantù',cap:'22063',provincia:'CO',regione:'Lombardia'},
+  {comune:'Capaccio Paestum',cap:'84047',provincia:'SA',regione:'Campania'},
+  {comune:'Capannori',cap:'55012',provincia:'LU',regione:'Toscana'},
+  {comune:'Capo d\'Orlando',cap:'98071',provincia:'ME',regione:'Sicilia'},
+  {comune:'Capoliveri',cap:'57031',provincia:'LI',regione:'Toscana'},
+  {comune:'Capoterra',cap:'09012',provincia:'CA',regione:'Sardegna'},
+  {comune:'Cappelle sul Tavo',cap:'65010',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Capracotta',cap:'86082',provincia:'IS',regione:'Molise'},
+  {comune:'Capranica',cap:'01012',provincia:'VT',regione:'Lazio'},
+  {comune:'Capri',cap:'80073',provincia:'NA',regione:'Campania'},
+  {comune:'Caprino Veronese',cap:'37013',provincia:'VR',regione:'Veneto'},
+  {comune:'Capua',cap:'81043',provincia:'CE',regione:'Campania'},
+  {comune:'Caravaggio',cap:'24043',provincia:'BG',regione:'Lombardia'},
+  {comune:'Carbonia',cap:'09013',provincia:'SU',regione:'Sardegna'},
+  {comune:'Carini',cap:'90044',provincia:'PA',regione:'Sicilia'},
+  {comune:'Carloforte',cap:'09014',provincia:'SU',regione:'Sardegna'},
+  {comune:'Carmagnola',cap:'10022',provincia:'TO',regione:'Piemonte'},
+  {comune:'Carmignano',cap:'59015',provincia:'PO',regione:'Toscana'},
+  {comune:'Carovigno',cap:'72012',provincia:'BR',regione:'Puglia'},
+  {comune:'Carpi',cap:'41012',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Carrara',cap:'54033',provincia:'MS',regione:'Toscana'},
+  {comune:'Carsoli',cap:'67061',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Cartoceto',cap:'61030',provincia:'PU',regione:'Marche'},
+  {comune:'Casale Monferrato',cap:'15033',provincia:'AL',regione:'Piemonte'},
+  {comune:'Casalecchio di Reno',cap:'40033',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Casalmaggiore',cap:'26041',provincia:'CR',regione:'Lombardia'},
+  {comune:'Casalpusterlengo',cap:'26841',provincia:'LO',regione:'Lombardia'},
+  {comune:'Casalserugo',cap:'35020',provincia:'PD',regione:'Veneto'},
+  {comune:'Casarano',cap:'73042',provincia:'LE',regione:'Puglia'},
+  {comune:'Casatenovo',cap:'23880',provincia:'LC',regione:'Lombardia'},
+  {comune:'Cascina',cap:'56021',provincia:'PI',regione:'Toscana'},
+  {comune:'Casentino',cap:'52010',provincia:'AR',regione:'Toscana'},
+  {comune:'Caserta',cap:'81100',provincia:'CE',regione:'Campania'},
+  {comune:'Casola in Lunigiana',cap:'54014',provincia:'MS',regione:'Toscana'},
+  {comune:'Casoli',cap:'66043',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Casoria',cap:'80026',provincia:'NA',regione:'Campania'},
+  {comune:'Cassano all\'Ionio',cap:'87011',provincia:'CS',regione:'Calabria'},
+  {comune:'Cassino',cap:'03043',provincia:'FR',regione:'Lazio'},
+  {comune:'Casteggio',cap:'27045',provincia:'PV',regione:'Lombardia'},
+  {comune:'Castel San Giovanni',cap:'29015',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Castel San Pietro Terme',cap:'40024',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Castel Volturno',cap:'81030',provincia:'CE',regione:'Campania'},
+  {comune:'Castel del Giudice',cap:'86080',provincia:'IS',regione:'Molise'},
+  {comune:'Castel di Sangro',cap:'67031',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Castelfidardo',cap:'60022',provincia:'AN',regione:'Marche'},
+  {comune:'Castelfranco Emilia',cap:'41013',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Castelfranco Veneto',cap:'31033',provincia:'TV',regione:'Veneto'},
+  {comune:'Castellammare del Golfo',cap:'91014',provincia:'PA',regione:'Sicilia'},
+  {comune:'Castellammare di Stabia',cap:'80053',provincia:'NA',regione:'Campania'},
+  {comune:'Castellaneta',cap:'74011',provincia:'TA',regione:'Puglia'},
+  {comune:'Castellanza',cap:'21053',provincia:'VA',regione:'Lombardia'},
+  {comune:'Castelleone',cap:'26012',provincia:'CR',regione:'Lombardia'},
+  {comune:'Castelli Romani',cap:'00040',provincia:'RM',regione:'Lazio'},
+  {comune:'Castello di Annone',cap:'14034',provincia:'AT',regione:'Piemonte'},
+  {comune:'Castelmassa',cap:'45035',provincia:'RO',regione:'Veneto'},
+  {comune:'Castelnovo ne\' Monti',cap:'42035',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Castelnuovo Magra',cap:'19033',provincia:'SP',regione:'Liguria'},
+  {comune:'Castelnuovo del Garda',cap:'37014',provincia:'VR',regione:'Veneto'},
+  {comune:'Castelsardo',cap:'07031',provincia:'SS',regione:'Sardegna'},
+  {comune:'Castelvetrano',cap:'91022',provincia:'TP',regione:'Sicilia'},
+  {comune:'Castiglion Fiorentino',cap:'52043',provincia:'AR',regione:'Toscana'},
+  {comune:'Castiglione Olona',cap:'21043',provincia:'VA',regione:'Lombardia'},
+  {comune:'Castiglione d\'Adda',cap:'26823',provincia:'LO',regione:'Lombardia'},
+  {comune:'Castiglione del Lago',cap:'06061',provincia:'PG',regione:'Umbria'},
+  {comune:'Castiglione della Pescaia',cap:'58043',provincia:'GR',regione:'Toscana'},
+  {comune:'Castiglione delle Stiviere',cap:'46043',provincia:'MN',regione:'Lombardia'},
+  {comune:'Castrovillari',cap:'87012',provincia:'CS',regione:'Calabria'},
+  {comune:'Catania',cap:'95100',provincia:'CT',regione:'Sicilia'},
+  {comune:'Catanzaro',cap:'88100',provincia:'CZ',regione:'Calabria'},
+  {comune:'Catenanuova',cap:'95040',provincia:'EN',regione:'Sicilia'},
+  {comune:'Cattolica',cap:'47841',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'Cava Manara',cap:'27051',provincia:'PV',regione:'Lombardia'},
+  {comune:'Cava de\' Tirreni',cap:'84013',provincia:'SA',regione:'Campania'},
+  {comune:'Cavalese',cap:'38033',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Cavarzere',cap:'30014',provincia:'VE',regione:'Veneto'},
+  {comune:'Cecina',cap:'57023',provincia:'LI',regione:'Toscana'},
+  {comune:'Cefalù',cap:'90015',provincia:'PA',regione:'Sicilia'},
+  {comune:'Ceglie Messapica',cap:'72013',provincia:'BR',regione:'Puglia'},
+  {comune:'Celano',cap:'67043',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Cento',cap:'44042',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Ceppaloni',cap:'82010',provincia:'BN',regione:'Campania'},
+  {comune:'Ceprano',cap:'03024',provincia:'FR',regione:'Lazio'},
+  {comune:'Cerea',cap:'37053',provincia:'VR',regione:'Veneto'},
+  {comune:'Ceregnano',cap:'45010',provincia:'RO',regione:'Veneto'},
+  {comune:'Cerignola',cap:'71042',provincia:'FG',regione:'Puglia'},
+  {comune:'Cernobbio',cap:'22012',provincia:'CO',regione:'Lombardia'},
+  {comune:'Cerveteri',cap:'00052',provincia:'RM',regione:'Lazio'},
+  {comune:'Cervia',cap:'48015',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Cervignano del Friuli',cap:'33052',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Cesano Boscone',cap:'20090',provincia:'MI',regione:'Lombardia'},
+  {comune:'Cesano Maderno',cap:'20811',provincia:'MB',regione:'Lombardia'},
+  {comune:'Cesena',cap:'47521',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Cesenatico',cap:'47042',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Cherasco',cap:'12062',provincia:'CN',regione:'Piemonte'},
+  {comune:'Chiaramonte Gulfi',cap:'97012',provincia:'RG',regione:'Sicilia'},
+  {comune:'Chiaravalle',cap:'60033',provincia:'AN',regione:'Marche'},
+  {comune:'Chiaravalle Centrale',cap:'88064',provincia:'CZ',regione:'Calabria'},
+  {comune:'Chiari',cap:'25032',provincia:'BS',regione:'Lombardia'},
+  {comune:'Chiavari',cap:'16043',provincia:'GE',regione:'Liguria'},
+  {comune:'Chiavenna',cap:'23022',provincia:'SO',regione:'Lombardia'},
+  {comune:'Chieri',cap:'10023',provincia:'TO',regione:'Piemonte'},
+  {comune:'Chiesa in Valmalenco',cap:'23023',provincia:'SO',regione:'Lombardia'},
+  {comune:'Chieti',cap:'66100',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Chioggia',cap:'30015',provincia:'VE',regione:'Veneto'},
+  {comune:'Chiusi',cap:'53043',provincia:'SI',regione:'Toscana'},
+  {comune:'Chivasso',cap:'10034',provincia:'TO',regione:'Piemonte'},
+  {comune:'Châtillon',cap:'11024',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Cigliano',cap:'13043',provincia:'VC',regione:'Piemonte'},
+  {comune:'Cingoli',cap:'62011',provincia:'MC',regione:'Marche'},
+  {comune:'Cinisello Balsamo',cap:'20092',provincia:'MI',regione:'Lombardia'},
+  {comune:'Ciriè',cap:'10073',provincia:'TO',regione:'Piemonte'},
+  {comune:'Cirò',cap:'88813',provincia:'KR',regione:'Calabria'},
+  {comune:'Cirò Marina',cap:'88811',provincia:'KR',regione:'Calabria'},
+  {comune:'Cisterna di Latina',cap:'04012',provincia:'LT',regione:'Lazio'},
+  {comune:'Cisternino',cap:'72014',provincia:'BR',regione:'Puglia'},
+  {comune:'Cittadella',cap:'35013',provincia:'PD',regione:'Veneto'},
+  {comune:'Cittaducale',cap:'02015',provincia:'RI',regione:'Lazio'},
+  {comune:'Città Sant\'Angelo',cap:'65013',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Città di Castello',cap:'06012',provincia:'PG',regione:'Umbria'},
+  {comune:'Cividale del Friuli',cap:'33043',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Civita Castellana',cap:'01033',provincia:'VT',regione:'Lazio'},
+  {comune:'Civitanova Marche',cap:'62012',provincia:'FM',regione:'Marche'},
+  {comune:'Civitanova Marche',cap:'62012',provincia:'MC',regione:'Marche'},
+  {comune:'Civitavecchia',cap:'00053',provincia:'RM',regione:'Lazio'},
+  {comune:'Civitella del Tronto',cap:'64010',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Civitella in Val di Chiana',cap:'52041',provincia:'AR',regione:'Toscana'},
+  {comune:'Cles',cap:'38023',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Clusone',cap:'24023',provincia:'BG',regione:'Lombardia'},
+  {comune:'Codigoro',cap:'44021',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Codogno',cap:'26845',provincia:'LO',regione:'Lombardia'},
+  {comune:'Codroipo',cap:'33033',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Colico',cap:'23823',provincia:'LC',regione:'Lombardia'},
+  {comune:'Colle di Val d\'Elsa',cap:'53034',provincia:'SI',regione:'Toscana'},
+  {comune:'Collecchio',cap:'43044',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Colleferro',cap:'00034',provincia:'RM',regione:'Lazio'},
+  {comune:'Collegno',cap:'10093',provincia:'TO',regione:'Piemonte'},
+  {comune:'Collesalvetti',cap:'57014',provincia:'LI',regione:'Toscana'},
+  {comune:'Cologna Veneta',cap:'37044',provincia:'VR',regione:'Veneto'},
+  {comune:'Cologno Monzese',cap:'20093',provincia:'MI',regione:'Lombardia'},
+  {comune:'Colognola ai Colli',cap:'37030',provincia:'VR',regione:'Veneto'},
+  {comune:'Comacchio',cap:'44022',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Comiso',cap:'97013',provincia:'RG',regione:'Sicilia'},
+  {comune:'Como',cap:'22100',provincia:'CO',regione:'Lombardia'},
+  {comune:'Conegliano',cap:'31015',provincia:'TV',regione:'Veneto'},
+  {comune:'Conversano',cap:'70014',provincia:'BA',regione:'Puglia'},
+  {comune:'Copertino',cap:'73043',provincia:'LE',regione:'Puglia'},
+  {comune:'Corato',cap:'70033',provincia:'BA',regione:'Puglia'},
+  {comune:'Corciano',cap:'06073',provincia:'PG',regione:'Umbria'},
+  {comune:'Cordenons',cap:'33084',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Cori',cap:'04010',provincia:'LT',regione:'Lazio'},
+  {comune:'Coriano',cap:'47853',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'Corigliano-Rossano',cap:'87064',provincia:'CS',regione:'Calabria'},
+  {comune:'Corleone',cap:'90034',provincia:'PA',regione:'Sicilia'},
+  {comune:'Cormons',cap:'34071',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Correggio',cap:'42015',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Corsico',cap:'20094',provincia:'MI',regione:'Lombardia'},
+  {comune:'Cortemaggiore',cap:'29016',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Cortina d\'Ampezzo',cap:'32043',provincia:'BL',regione:'Veneto'},
+  {comune:'Cortona',cap:'52044',provincia:'AR',regione:'Toscana'},
+  {comune:'Cosenza',cap:'87100',provincia:'CS',regione:'Calabria'},
+  {comune:'Cossato',cap:'13836',provincia:'BI',regione:'Piemonte'},
+  {comune:'Costigliole d\'Asti',cap:'14055',provincia:'AT',regione:'Piemonte'},
+  {comune:'Cotignola',cap:'48010',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Courmayeur',cap:'11013',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Crema',cap:'26013',provincia:'CR',regione:'Lombardia'},
+  {comune:'Cremona',cap:'26100',provincia:'CR',regione:'Lombardia'},
+  {comune:'Crescentino',cap:'13044',provincia:'VC',regione:'Piemonte'},
+  {comune:'Cropani',cap:'88051',provincia:'CZ',regione:'Calabria'},
+  {comune:'Crotone',cap:'88900',provincia:'KR',regione:'Calabria'},
+  {comune:'Cuglieri',cap:'09073',provincia:'OR',regione:'Sardegna'},
+  {comune:'Cuneo',cap:'12100',provincia:'CN',regione:'Piemonte'},
+  {comune:'Cusano Milanino',cap:'20095',provincia:'MI',regione:'Lombardia'},
+  {comune:'Cutro',cap:'88842',provincia:'KR',regione:'Calabria'},
+  {comune:'Dalmine',cap:'24044',provincia:'BG',regione:'Lombardia'},
+  {comune:'Darfo Boario Terme',cap:'25047',provincia:'BS',regione:'Lombardia'},
+  {comune:'Decimomannu',cap:'09033',provincia:'CA',regione:'Sardegna'},
+  {comune:'Delia',cap:'93010',provincia:'CL',regione:'Sicilia'},
+  {comune:'Demonte',cap:'12014',provincia:'CN',regione:'Piemonte'},
+  {comune:'Desenzano del Garda',cap:'25015',provincia:'BS',regione:'Lombardia'},
+  {comune:'Desio',cap:'20832',provincia:'MB',regione:'Lombardia'},
+  {comune:'Diano Marina',cap:'18013',provincia:'IM',regione:'Liguria'},
+  {comune:'Dolcè',cap:'37020',provincia:'VR',regione:'Veneto'},
+  {comune:'Dolo',cap:'30031',provincia:'VE',regione:'Veneto'},
+  {comune:'Domodossola',cap:'28845',provincia:'VB',regione:'Piemonte'},
+  {comune:'Dorgali',cap:'08022',provincia:'NU',regione:'Sardegna'},
+  {comune:'Dovera',cap:'26010',provincia:'CR',regione:'Lombardia'},
+  {comune:'Dronero',cap:'12025',provincia:'CN',regione:'Piemonte'},
+  {comune:'Dugenta',cap:'82030',provincia:'BN',regione:'Campania'},
+  {comune:'Duino-Aurisina',cap:'34011',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Eboli',cap:'84025',provincia:'SA',regione:'Campania'},
+  {comune:'Egna',cap:'39044',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Elmas',cap:'09030',provincia:'CA',regione:'Sardegna'},
+  {comune:'Empoli',cap:'50053',provincia:'FI',regione:'Toscana'},
+  {comune:'Enna',cap:'94100',provincia:'EN',regione:'Sicilia'},
+  {comune:'Eraclea',cap:'30020',provincia:'VE',regione:'Veneto'},
+  {comune:'Erba',cap:'22036',provincia:'CO',regione:'Lombardia'},
+  {comune:'Erbè',cap:'37060',provincia:'VR',regione:'Veneto'},
+  {comune:'Ercolano',cap:'80056',provincia:'NA',regione:'Campania'},
+  {comune:'Erice',cap:'91016',provincia:'TP',regione:'Sicilia'},
+  {comune:'Este',cap:'35042',provincia:'PD',regione:'Veneto'},
+  {comune:'Fabriano',cap:'60044',provincia:'AN',regione:'Marche'},
+  {comune:'Faenza',cap:'48018',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Faggiano',cap:'74020',provincia:'TA',regione:'Puglia'},
+  {comune:'Falconara Marittima',cap:'60015',provincia:'AN',regione:'Marche'},
+  {comune:'Fano',cap:'61032',provincia:'PU',regione:'Marche'},
+  {comune:'Fara in Sabina',cap:'02032',provincia:'RI',regione:'Lazio'},
+  {comune:'Fasano',cap:'72015',provincia:'BR',regione:'Puglia'},
+  {comune:'Favara',cap:'92026',provincia:'AG',regione:'Sicilia'},
+  {comune:'Favignana',cap:'91023',provincia:'TP',regione:'Sicilia'},
+  {comune:'Felino',cap:'43035',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Felizzano',cap:'15023',provincia:'AL',regione:'Piemonte'},
+  {comune:'Feltre',cap:'32032',provincia:'BL',regione:'Veneto'},
+  {comune:'Ferentino',cap:'03013',provincia:'FR',regione:'Lazio'},
+  {comune:'Fermo',cap:'63900',provincia:'FM',regione:'Marche'},
+  {comune:'Ferrandina',cap:'75013',provincia:'MT',regione:'Basilicata'},
+  {comune:'Ferrara',cap:'44100',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Ferrara di Monte Baldo',cap:'37020',provincia:'VR',regione:'Veneto'},
+  {comune:'Fidenza',cap:'43036',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Fiesole',cap:'50014',provincia:'FI',regione:'Toscana'},
+  {comune:'Fiesso Umbertiano',cap:'45024',provincia:'RO',regione:'Veneto'},
+  {comune:'Figline e Incisa Valdarno',cap:'50063',provincia:'FI',regione:'Toscana'},
+  {comune:'Filadelfia',cap:'89814',provincia:'VV',regione:'Calabria'},
+  {comune:'Finale Emilia',cap:'41034',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Finale Ligure',cap:'17024',provincia:'SV',regione:'Liguria'},
+  {comune:'Fiorenzuola d\'Arda',cap:'29017',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Firenze',cap:'50100',provincia:'FI',regione:'Toscana'},
+  {comune:'Fiuggi',cap:'03014',provincia:'FR',regione:'Lazio'},
+  {comune:'Fiumicino',cap:'00054',provincia:'RM',regione:'Lazio'},
+  {comune:'Fivizzano',cap:'54013',provincia:'SP',regione:'Liguria'},
+  {comune:'Fivizzano',cap:'54013',provincia:'MS',regione:'Toscana'},
+  {comune:'Floridia',cap:'96014',provincia:'SR',regione:'Sicilia'},
+  {comune:'Fluminimaggiore',cap:'09010',provincia:'SU',regione:'Sardegna'},
+  {comune:'Foggia',cap:'71100',provincia:'FG',regione:'Puglia'},
+  {comune:'Folignano',cap:'63084',provincia:'AP',regione:'Marche'},
+  {comune:'Foligno',cap:'06034',provincia:'PG',regione:'Umbria'},
+  {comune:'Follonica',cap:'58022',provincia:'GR',regione:'Toscana'},
+  {comune:'Fondi',cap:'04022',provincia:'LT',regione:'Lazio'},
+  {comune:'Fonni',cap:'08023',provincia:'NU',regione:'Sardegna'},
+  {comune:'Fontanafredda',cap:'33074',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Forlimpopoli',cap:'47034',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Forlì',cap:'47100',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Formia',cap:'04023',provincia:'LT',regione:'Lazio'},
+  {comune:'Formigine',cap:'41043',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Forte dei Marmi',cap:'55042',provincia:'LU',regione:'Toscana'},
+  {comune:'Fossacesia',cap:'66022',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Fossano',cap:'12045',provincia:'CN',regione:'Piemonte'},
+  {comune:'Fossombrone',cap:'61034',provincia:'PU',regione:'Marche'},
+  {comune:'Francavilla Fontana',cap:'74021',provincia:'BR',regione:'Puglia'},
+  {comune:'Frascati',cap:'00044',provincia:'RM',regione:'Lazio'},
+  {comune:'Frosinone',cap:'03100',provincia:'FR',regione:'Lazio'},
+  {comune:'Frosolone',cap:'86095',provincia:'IS',regione:'Molise'},
+  {comune:'Fumane',cap:'37022',provincia:'VR',regione:'Veneto'},
+  {comune:'Fusignano',cap:'48010',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Fénis',cap:'11020',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Gaeta',cap:'04024',provincia:'LT',regione:'Lazio'},
+  {comune:'Gaglianico',cap:'13894',provincia:'BI',regione:'Piemonte'},
+  {comune:'Gaiole in Chianti',cap:'53013',provincia:'SI',regione:'Toscana'},
+  {comune:'Galatina',cap:'73013',provincia:'LE',regione:'Puglia'},
+  {comune:'Gallarate',cap:'21013',provincia:'VA',regione:'Lombardia'},
+  {comune:'Galliate',cap:'28066',provincia:'NO',regione:'Piemonte'},
+  {comune:'Gallio',cap:'36032',provincia:'VI',regione:'Veneto'},
+  {comune:'Gallipoli',cap:'73014',provincia:'LE',regione:'Puglia'},
+  {comune:'Gambettola',cap:'47035',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Garda',cap:'37016',provincia:'VR',regione:'Veneto'},
+  {comune:'Gardone Val Trompia',cap:'25063',provincia:'BS',regione:'Lombardia'},
+  {comune:'Garlasco',cap:'27026',provincia:'PV',regione:'Lombardia'},
+  {comune:'Gatteo',cap:'47043',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Gattinara',cap:'13045',provincia:'VC',regione:'Piemonte'},
+  {comune:'Gavoi',cap:'08020',provincia:'NU',regione:'Sardegna'},
+  {comune:'Gela',cap:'93012',provincia:'CL',regione:'Sicilia'},
+  {comune:'Gemona del Friuli',cap:'33013',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Genova',cap:'16100',provincia:'GE',regione:'Liguria'},
+  {comune:'Genzano di Roma',cap:'00045',provincia:'RM',regione:'Lazio'},
+  {comune:'Ghiffa',cap:'28823',provincia:'VB',regione:'Piemonte'},
+  {comune:'Ghilarza',cap:'09074',provincia:'OR',regione:'Sardegna'},
+  {comune:'Giarre',cap:'95014',provincia:'CT',regione:'Sicilia'},
+  {comune:'Gibellina',cap:'91024',provincia:'TP',regione:'Sicilia'},
+  {comune:'Ginosa',cap:'74013',provincia:'TA',regione:'Puglia'},
+  {comune:'Gioia Tauro',cap:'89013',provincia:'RC',regione:'Calabria'},
+  {comune:'Girifalco',cap:'88024',provincia:'CZ',regione:'Calabria'},
+  {comune:'Giugliano in Campania',cap:'80014',provincia:'NA',regione:'Campania'},
+  {comune:'Giulianova',cap:'64021',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Goito',cap:'46044',provincia:'MN',regione:'Lombardia'},
+  {comune:'Gorizia',cap:'34170',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Gossolengo',cap:'29020',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Gozzano',cap:'28024',provincia:'NO',regione:'Piemonte'},
+  {comune:'Gradisca d\'Isonzo',cap:'34072',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Granarolo dell\'Emilia',cap:'40057',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Gravellona Toce',cap:'28883',provincia:'VB',regione:'Piemonte'},
+  {comune:'Gravina di Catania',cap:'95030',provincia:'CT',regione:'Sicilia'},
+  {comune:'Gravina in Puglia',cap:'70024',provincia:'BA',regione:'Puglia'},
+  {comune:'Greve in Chianti',cap:'50022',provincia:'FI',regione:'Toscana'},
+  {comune:'Grezzana',cap:'37023',provincia:'VR',regione:'Veneto'},
+  {comune:'Grosseto',cap:'58100',provincia:'GR',regione:'Toscana'},
+  {comune:'Grottaglie',cap:'74023',provincia:'TA',regione:'Puglia'},
+  {comune:'Grottaminarda',cap:'83035',provincia:'AV',regione:'Campania'},
+  {comune:'Grottammare',cap:'63066',provincia:'AP',regione:'Marche'},
+  {comune:'Grugliasco',cap:'10095',provincia:'TO',regione:'Piemonte'},
+  {comune:'Grumello del Monte',cap:'24064',provincia:'BG',regione:'Lombardia'},
+  {comune:'Guardea',cap:'05025',provincia:'TR',regione:'Umbria'},
+  {comune:'Guardiagrele',cap:'66016',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Guardialfiera',cap:'86030',provincia:'CB',regione:'Molise'},
+  {comune:'Guastalla',cap:'42016',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Gubbio',cap:'06024',provincia:'PG',regione:'Umbria'},
+  {comune:'Guidizzolo',cap:'46040',provincia:'MN',regione:'Lombardia'},
+  {comune:'Guidonia Montecelio',cap:'00012',provincia:'RM',regione:'Lazio'},
+  {comune:'Iglesias',cap:'09016',provincia:'SU',regione:'Sardegna'},
+  {comune:'Imola',cap:'40026',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Imperia',cap:'18100',provincia:'IM',regione:'Liguria'},
+  {comune:'Impruneta',cap:'50023',provincia:'FI',regione:'Toscana'},
+  {comune:'Ischia',cap:'80077',provincia:'NA',regione:'Campania'},
+  {comune:'Isernia',cap:'86170',provincia:'CB',regione:'Molise'},
+  {comune:'Isernia',cap:'86170',provincia:'IS',regione:'Molise'},
+  {comune:'Isola del Liri',cap:'03036',provincia:'FR',regione:'Lazio'},
+  {comune:'Isola della Scala',cap:'37063',provincia:'VR',regione:'Veneto'},
+  {comune:'Isola di Capo Rizzuto',cap:'88841',provincia:'KR',regione:'Calabria'},
+  {comune:'Ispica',cap:'97014',provincia:'RG',regione:'Sicilia'},
+  {comune:'Ivrea',cap:'10015',provincia:'TO',regione:'Piemonte'},
+  {comune:'Jesi',cap:'60035',provincia:'AN',regione:'Marche'},
+  {comune:'Jesolo',cap:'30016',provincia:'VE',regione:'Veneto'},
+  {comune:'L\'Aquila',cap:'67100',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'La Maddalena',cap:'07024',provincia:'SS',regione:'Sardegna'},
+  {comune:'La Spezia',cap:'19100',provincia:'SP',regione:'Liguria'},
+  {comune:'Lacedonia',cap:'83046',provincia:'AV',regione:'Campania'},
+  {comune:'Ladispoli',cap:'00055',provincia:'RM',regione:'Lazio'},
+  {comune:'Lagonegro',cap:'85042',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Lagosanto',cap:'44023',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Laives',cap:'39055',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Lamezia Terme',cap:'88046',provincia:'CZ',regione:'Calabria'},
+  {comune:'Lamporecchio',cap:'51035',provincia:'PT',regione:'Toscana'},
+  {comune:'Lanciano',cap:'66034',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Langhirano',cap:'43013',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Larciano',cap:'51036',provincia:'PT',regione:'Toscana'},
+  {comune:'Larino',cap:'86035',provincia:'CB',regione:'Molise'},
+  {comune:'Lastra a Signa',cap:'50055',provincia:'FI',regione:'Toscana'},
+  {comune:'Latiano',cap:'72022',provincia:'BR',regione:'Puglia'},
+  {comune:'Latina',cap:'04100',provincia:'LT',regione:'Lazio'},
+  {comune:'Latisana',cap:'33053',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Lauria',cap:'85044',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Lavagna',cap:'16033',provincia:'GE',regione:'Liguria'},
+  {comune:'Lavagno',cap:'37030',provincia:'VR',regione:'Veneto'},
+  {comune:'Lavello',cap:'85024',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Laveno-Mombello',cap:'21014',provincia:'VA',regione:'Lombardia'},
+  {comune:'Lazise',cap:'37017',provincia:'VR',regione:'Veneto'},
+  {comune:'Lecce',cap:'73100',provincia:'LE',regione:'Puglia'},
+  {comune:'Lecco',cap:'23900',provincia:'CO',regione:'Lombardia'},
+  {comune:'Lecco',cap:'23900',provincia:'LC',regione:'Lombardia'},
+  {comune:'Legnago',cap:'37045',provincia:'VR',regione:'Veneto'},
+  {comune:'Legnano',cap:'20025',provincia:'MI',regione:'Lombardia'},
+  {comune:'Lendinara',cap:'45026',provincia:'RO',regione:'Veneto'},
+  {comune:'Lenta',cap:'13035',provincia:'VC',regione:'Piemonte'},
+  {comune:'Lentate sul Seveso',cap:'20823',provincia:'MB',regione:'Lombardia'},
+  {comune:'Lentini',cap:'96016',provincia:'SR',regione:'Sicilia'},
+  {comune:'Leonessa',cap:'02016',provincia:'RI',regione:'Lazio'},
+  {comune:'Leonforte',cap:'94013',provincia:'EN',regione:'Sicilia'},
+  {comune:'Leporano',cap:'74020',provincia:'TA',regione:'Puglia'},
+  {comune:'Lerici',cap:'19032',provincia:'SP',regione:'Liguria'},
+  {comune:'Licata',cap:'92027',provincia:'AG',regione:'Sicilia'},
+  {comune:'Lignano Sabbiadoro',cap:'33054',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Limbiate',cap:'20812',provincia:'MB',regione:'Lombardia'},
+  {comune:'Limone Piemonte',cap:'12015',provincia:'CN',regione:'Piemonte'},
+  {comune:'Lipari',cap:'98055',provincia:'ME',regione:'Sicilia'},
+  {comune:'Lissone',cap:'20851',provincia:'MB',regione:'Lombardia'},
+  {comune:'Livigno',cap:'23041',provincia:'SO',regione:'Lombardia'},
+  {comune:'Livorno',cap:'57100',provincia:'LI',regione:'Toscana'},
+  {comune:'Livorno Ferraris',cap:'13046',provincia:'VC',regione:'Piemonte'},
+  {comune:'Loano',cap:'17025',provincia:'SV',regione:'Liguria'},
+  {comune:'Locri',cap:'89044',provincia:'RC',regione:'Calabria'},
+  {comune:'Lodi',cap:'26900',provincia:'LO',regione:'Lombardia'},
+  {comune:'Lodi',cap:'26900',provincia:'PV',regione:'Lombardia'},
+  {comune:'Lodi Vecchio',cap:'26855',provincia:'LO',regione:'Lombardia'},
+  {comune:'Lomazzo',cap:'22074',provincia:'CO',regione:'Lombardia'},
+  {comune:'Lonato del Garda',cap:'25017',provincia:'BS',regione:'Lombardia'},
+  {comune:'Longarone',cap:'32013',provincia:'BL',regione:'Veneto'},
+  {comune:'Longiano',cap:'47020',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Lonigo',cap:'36045',provincia:'VI',regione:'Veneto'},
+  {comune:'Loreto',cap:'60025',provincia:'AN',regione:'Marche'},
+  {comune:'Loreto Aprutino',cap:'65014',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Lovere',cap:'24065',provincia:'BG',regione:'Lombardia'},
+  {comune:'Lucca',cap:'55100',provincia:'LU',regione:'Toscana'},
+  {comune:'Lucera',cap:'71036',provincia:'FG',regione:'Puglia'},
+  {comune:'Lugo',cap:'48022',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Luino',cap:'21016',provincia:'VA',regione:'Lombardia'},
+  {comune:'Lumezzane',cap:'25065',provincia:'BS',regione:'Lombardia'},
+  {comune:'Lusiana Conco',cap:'36046',provincia:'VI',regione:'Veneto'},
+  {comune:'Luzzara',cap:'42045',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Macchiagodena',cap:'86096',provincia:'IS',regione:'Molise'},
+  {comune:'Macerata',cap:'62100',provincia:'MC',regione:'Marche'},
+  {comune:'Macomer',cap:'08015',provincia:'OR',regione:'Sardegna'},
+  {comune:'Maddaloni',cap:'81024',provincia:'CE',regione:'Campania'},
+  {comune:'Madesimo',cap:'23024',provincia:'SO',regione:'Lombardia'},
+  {comune:'Magliano Sabina',cap:'02046',provincia:'RI',regione:'Lazio'},
+  {comune:'Maglie',cap:'73024',provincia:'LE',regione:'Puglia'},
+  {comune:'Malcesine',cap:'37018',provincia:'VR',regione:'Veneto'},
+  {comune:'Maltignano',cap:'63085',provincia:'AP',regione:'Marche'},
+  {comune:'Malè',cap:'38027',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Manciano',cap:'58014',provincia:'GR',regione:'Toscana'},
+  {comune:'Mandello del Lario',cap:'23826',provincia:'LC',regione:'Lombardia'},
+  {comune:'Manduria',cap:'74024',provincia:'TA',regione:'Puglia'},
+  {comune:'Manfredonia',cap:'71043',provincia:'FG',regione:'Puglia'},
+  {comune:'Maniago',cap:'33085',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Mantova',cap:'46100',provincia:'MN',regione:'Lombardia'},
+  {comune:'Maranello',cap:'41053',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Marano di Napoli',cap:'80016',provincia:'NA',regione:'Campania'},
+  {comune:'Marano di Valpolicella',cap:'37020',provincia:'VR',regione:'Veneto'},
+  {comune:'Maratea',cap:'85046',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Marciana Marina',cap:'57033',provincia:'LI',regione:'Toscana'},
+  {comune:'Marcianise',cap:'81025',provincia:'CE',regione:'Campania'},
+  {comune:'Marghera',cap:'30175',provincia:'VE',regione:'Veneto'},
+  {comune:'Margherita di Savoia',cap:'76016',provincia:'BT',regione:'Puglia'},
+  {comune:'Mariano Comense',cap:'22066',provincia:'CO',regione:'Lombardia'},
+  {comune:'Marino',cap:'00047',provincia:'RM',regione:'Lazio'},
+  {comune:'Marliana',cap:'51010',provincia:'PT',regione:'Toscana'},
+  {comune:'Marostica',cap:'36063',provincia:'VI',regione:'Veneto'},
+  {comune:'Marsala',cap:'91025',provincia:'TP',regione:'Sicilia'},
+  {comune:'Marsciano',cap:'06055',provincia:'PG',regione:'Umbria'},
+  {comune:'Martina Franca',cap:'74015',provincia:'TA',regione:'Puglia'},
+  {comune:'Martinsicuro',cap:'64014',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Mascali',cap:'95016',provincia:'CT',regione:'Sicilia'},
+  {comune:'Massa',cap:'54100',provincia:'MS',regione:'Toscana'},
+  {comune:'Massa Lombarda',cap:'48024',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Massa Marittima',cap:'58024',provincia:'GR',regione:'Toscana'},
+  {comune:'Massafra',cap:'74016',provincia:'TA',regione:'Puglia'},
+  {comune:'Massarosa',cap:'55054',provincia:'LU',regione:'Toscana'},
+  {comune:'Matera',cap:'75100',provincia:'MT',regione:'Basilicata'},
+  {comune:'Mattinata',cap:'71030',provincia:'FG',regione:'Puglia'},
+  {comune:'Mazara del Vallo',cap:'91026',provincia:'TP',regione:'Sicilia'},
+  {comune:'Meda',cap:'20821',provincia:'MB',regione:'Lombardia'},
+  {comune:'Mede',cap:'27035',provincia:'PV',regione:'Lombardia'},
+  {comune:'Mel',cap:'32026',provincia:'BL',regione:'Veneto'},
+  {comune:'Meldola',cap:'47014',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Melfi',cap:'85025',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Melissa',cap:'88814',provincia:'KR',regione:'Calabria'},
+  {comune:'Menaggio',cap:'22017',provincia:'CO',regione:'Lombardia'},
+  {comune:'Menfi',cap:'92013',provincia:'AG',regione:'Sicilia'},
+  {comune:'Merano',cap:'39012',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Merate',cap:'23807',provincia:'LC',regione:'Lombardia'},
+  {comune:'Mercogliano',cap:'83013',provincia:'AV',regione:'Campania'},
+  {comune:'Mesagne',cap:'72023',provincia:'BR',regione:'Puglia'},
+  {comune:'Mesoraca',cap:'88838',provincia:'KR',regione:'Calabria'},
+  {comune:'Messina',cap:'98100',provincia:'ME',regione:'Sicilia'},
+  {comune:'Mestre',cap:'30170',provincia:'VE',regione:'Veneto'},
+  {comune:'Mezzane di Sotto',cap:'37030',provincia:'VR',regione:'Veneto'},
+  {comune:'Mezzolombardo',cap:'38017',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Milano',cap:'20100',provincia:'MI',regione:'Lombardia'},
+  {comune:'Milazzo',cap:'98057',provincia:'ME',regione:'Sicilia'},
+  {comune:'Mileto',cap:'89852',provincia:'VV',regione:'Calabria'},
+  {comune:'Minervino Murge',cap:'76013',provincia:'BT',regione:'Puglia'},
+  {comune:'Minturno',cap:'04026',provincia:'LT',regione:'Lazio'},
+  {comune:'Mira',cap:'30034',provincia:'VE',regione:'Veneto'},
+  {comune:'Miranda',cap:'86080',provincia:'IS',regione:'Molise'},
+  {comune:'Mirandola',cap:'41037',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Mirano',cap:'30035',provincia:'VE',regione:'Veneto'},
+  {comune:'Misano Adriatico',cap:'47843',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'Misilmeri',cap:'90036',provincia:'PA',regione:'Sicilia'},
+  {comune:'Misterbianco',cap:'95045',provincia:'CT',regione:'Sicilia'},
+  {comune:'Mistretta',cap:'98073',provincia:'ME',regione:'Sicilia'},
+  {comune:'Modena',cap:'41100',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Modica',cap:'97015',provincia:'RG',regione:'Sicilia'},
+  {comune:'Modugno',cap:'70026',provincia:'BA',regione:'Puglia'},
+  {comune:'Mogliano Veneto',cap:'31021',provincia:'TV',regione:'Veneto'},
+  {comune:'Mogoro',cap:'09095',provincia:'OR',regione:'Sardegna'},
+  {comune:'Molfetta',cap:'70056',provincia:'BA',regione:'Puglia'},
+  {comune:'Moliterno',cap:'85047',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Mombaroccio',cap:'61024',provincia:'PU',regione:'Marche'},
+  {comune:'Moncalieri',cap:'10024',provincia:'TO',regione:'Piemonte'},
+  {comune:'Moncalvo',cap:'14036',provincia:'AT',regione:'Piemonte'},
+  {comune:'Mondavio',cap:'61040',provincia:'PU',regione:'Marche'},
+  {comune:'Mondovì',cap:'12084',provincia:'CN',regione:'Piemonte'},
+  {comune:'Monfalcone',cap:'34074',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Mongrando',cap:'13888',provincia:'BI',regione:'Piemonte'},
+  {comune:'Monopoli',cap:'70043',provincia:'BA',regione:'Puglia'},
+  {comune:'Monreale',cap:'90046',provincia:'PA',regione:'Sicilia'},
+  {comune:'Monrupino',cap:'34016',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Monsampolo del Tronto',cap:'63077',provincia:'AP',regione:'Marche'},
+  {comune:'Monselice',cap:'35043',provincia:'PD',regione:'Veneto'},
+  {comune:'Monserrato',cap:'09042',provincia:'CA',regione:'Sardegna'},
+  {comune:'Monsummano Terme',cap:'51015',provincia:'PT',regione:'Toscana'},
+  {comune:'Montafia',cap:'14014',provincia:'AT',regione:'Piemonte'},
+  {comune:'Montalcino',cap:'53024',provincia:'SI',regione:'Toscana'},
+  {comune:'Montalto Uffugo',cap:'87046',provincia:'CS',regione:'Calabria'},
+  {comune:'Monte San Savino',cap:'52048',provincia:'AR',regione:'Toscana'},
+  {comune:'Monte Sant\'Angelo',cap:'71037',provincia:'FG',regione:'Puglia'},
+  {comune:'Montebelluna',cap:'31044',provincia:'TV',regione:'Veneto'},
+  {comune:'Montecastrilli',cap:'05026',provincia:'TR',regione:'Umbria'},
+  {comune:'Montecatini Terme',cap:'51016',provincia:'LU',regione:'Toscana'},
+  {comune:'Montecatini Terme',cap:'51016',provincia:'PT',regione:'Toscana'},
+  {comune:'Montecchio Emilia',cap:'42027',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Montecchio Maggiore',cap:'36075',provincia:'VI',regione:'Veneto'},
+  {comune:'Montechiarugolo',cap:'43022',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Montecilfone',cap:'86010',provincia:'CB',regione:'Molise'},
+  {comune:'Montefiascone',cap:'01027',provincia:'VT',regione:'Lazio'},
+  {comune:'Montegiorgio',cap:'63833',provincia:'FM',regione:'Marche'},
+  {comune:'Montegranaro',cap:'63812',provincia:'FM',regione:'Marche'},
+  {comune:'Montegrotto Terme',cap:'35036',provincia:'PD',regione:'Veneto'},
+  {comune:'Montemurlo',cap:'59013',provincia:'PO',regione:'Toscana'},
+  {comune:'Monteprandone',cap:'63076',provincia:'AP',regione:'Marche'},
+  {comune:'Montepulciano',cap:'53045',provincia:'SI',regione:'Toscana'},
+  {comune:'Monterotondo',cap:'00015',provincia:'RM',regione:'Lazio'},
+  {comune:'Montesarchio',cap:'82016',provincia:'BN',regione:'Campania'},
+  {comune:'Montescaglioso',cap:'75024',provincia:'MT',regione:'Basilicata'},
+  {comune:'Montescudo-Monte Colombo',cap:'47854',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'Montesilvano',cap:'65015',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Montichiari',cap:'25018',provincia:'BS',regione:'Lombardia'},
+  {comune:'Montignoso',cap:'54038',provincia:'MS',regione:'Toscana'},
+  {comune:'Montopoli di Sabina',cap:'02034',provincia:'RI',regione:'Lazio'},
+  {comune:'Montorio Veronese',cap:'37141',provincia:'VR',regione:'Veneto'},
+  {comune:'Montoro',cap:'83025',provincia:'AV',regione:'Campania'},
+  {comune:'Montottone',cap:'63844',provincia:'FM',regione:'Marche'},
+  {comune:'Monza',cap:'20900',provincia:'MI',regione:'Lombardia'},
+  {comune:'Monza',cap:'20900',provincia:'MB',regione:'Lombardia'},
+  {comune:'Moraro',cap:'34070',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Morbegno',cap:'23017',provincia:'SO',regione:'Lombardia'},
+  {comune:'Morciano di Romagna',cap:'47833',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'Moresco',cap:'63837',provincia:'FM',regione:'Marche'},
+  {comune:'Mori',cap:'38065',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Morrone del Sannio',cap:'86020',provincia:'CB',regione:'Molise'},
+  {comune:'Morrovalle',cap:'62010',provincia:'MC',regione:'Marche'},
+  {comune:'Mortara',cap:'27036',provincia:'PV',regione:'Lombardia'},
+  {comune:'Mozzecane',cap:'37060',provincia:'VR',regione:'Veneto'},
+  {comune:'Muggia',cap:'34015',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Muggiò',cap:'20835',provincia:'MB',regione:'Lombardia'},
+  {comune:'Mulazzo',cap:'54026',provincia:'MS',regione:'Toscana'},
+  {comune:'Musei',cap:'09010',provincia:'SU',regione:'Sardegna'},
+  {comune:'Mussomeli',cap:'93014',provincia:'CL',regione:'Sicilia'},
+  {comune:'Napoli',cap:'80100',provincia:'NA',regione:'Campania'},
+  {comune:'Nardò',cap:'73048',provincia:'LE',regione:'Puglia'},
+  {comune:'Narni',cap:'05035',provincia:'TR',regione:'Umbria'},
+  {comune:'Ne',cap:'16040',provincia:'GE',regione:'Liguria'},
+  {comune:'Negrar di Valpolicella',cap:'37024',provincia:'VR',regione:'Veneto'},
+  {comune:'Nereto',cap:'64015',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Nettuno',cap:'00048',provincia:'RM',regione:'Lazio'},
+  {comune:'Nichelino',cap:'10042',provincia:'TO',regione:'Piemonte'},
+  {comune:'Nicosia',cap:'94014',provincia:'EN',regione:'Sicilia'},
+  {comune:'Nicotera',cap:'89844',provincia:'VV',regione:'Calabria'},
+  {comune:'Niscemi',cap:'93015',provincia:'CL',regione:'Sicilia'},
+  {comune:'Nizza Monferrato',cap:'14049',provincia:'AT',regione:'Piemonte'},
+  {comune:'Noale',cap:'30033',provincia:'VE',regione:'Veneto'},
+  {comune:'Nocera Inferiore',cap:'84014',provincia:'SA',regione:'Campania'},
+  {comune:'Nogara',cap:'37054',provincia:'VR',regione:'Veneto'},
+  {comune:'Nola',cap:'80035',provincia:'NA',regione:'Campania'},
+  {comune:'Noli',cap:'17026',provincia:'SV',regione:'Liguria'},
+  {comune:'None',cap:'10060',provincia:'TO',regione:'Piemonte'},
+  {comune:'Norcia',cap:'06046',provincia:'PG',regione:'Umbria'},
+  {comune:'Noto',cap:'96017',provincia:'SR',regione:'Sicilia'},
+  {comune:'Nova Milanese',cap:'20834',provincia:'MB',regione:'Lombardia'},
+  {comune:'Nova Siri',cap:'75020',provincia:'MT',regione:'Basilicata'},
+  {comune:'Novara',cap:'28100',provincia:'NO',regione:'Piemonte'},
+  {comune:'Novellara',cap:'42017',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Noventa Padovana',cap:'35027',provincia:'PD',regione:'Veneto'},
+  {comune:'Noventa Vicentina',cap:'36025',provincia:'VI',regione:'Veneto'},
+  {comune:'Novi Ligure',cap:'15067',provincia:'AL',regione:'Piemonte'},
+  {comune:'Nuoro',cap:'08100',provincia:'NU',regione:'Sardegna'},
+  {comune:'Nus',cap:'11020',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Nusco',cap:'83051',provincia:'AV',regione:'Campania'},
+  {comune:'Occhiobello',cap:'45030',provincia:'RO',regione:'Veneto'},
+  {comune:'Oderzo',cap:'31046',provincia:'TV',regione:'Veneto'},
+  {comune:'Offanengo',cap:'26010',provincia:'CR',regione:'Lombardia'},
+  {comune:'Offida',cap:'63073',provincia:'AP',regione:'Marche'},
+  {comune:'Oggiono',cap:'23848',provincia:'LC',regione:'Lombardia'},
+  {comune:'Olbia',cap:'07026',provincia:'SS',regione:'Sardegna'},
+  {comune:'Oleggio',cap:'28047',provincia:'NO',regione:'Piemonte'},
+  {comune:'Olgiate Comasco',cap:'22077',provincia:'CO',regione:'Lombardia'},
+  {comune:'Olginate',cap:'23854',provincia:'LC',regione:'Lombardia'},
+  {comune:'Omegna',cap:'28887',provincia:'VB',regione:'Piemonte'},
+  {comune:'Opera',cap:'20090',provincia:'MI',regione:'Lombardia'},
+  {comune:'Opicina',cap:'34151',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Oppeano',cap:'37050',provincia:'VR',regione:'Veneto'},
+  {comune:'Ora',cap:'39040',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Orani',cap:'08026',provincia:'NU',regione:'Sardegna'},
+  {comune:'Orbassano',cap:'10043',provincia:'TO',regione:'Piemonte'},
+  {comune:'Orbetello',cap:'58015',provincia:'GR',regione:'Toscana'},
+  {comune:'Orgosolo',cap:'08027',provincia:'NU',regione:'Sardegna'},
+  {comune:'Oristano',cap:'09170',provincia:'OR',regione:'Sardegna'},
+  {comune:'Orosei',cap:'08028',provincia:'NU',regione:'Sardegna'},
+  {comune:'Orta San Giulio',cap:'28016',provincia:'NO',regione:'Piemonte'},
+  {comune:'Orte',cap:'01028',provincia:'VT',regione:'Lazio'},
+  {comune:'Ortona',cap:'66026',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Ortonovo',cap:'19174',provincia:'SP',regione:'Liguria'},
+  {comune:'Orvieto',cap:'05018',provincia:'TR',regione:'Umbria'},
+  {comune:'Osimo',cap:'60027',provincia:'AN',regione:'Marche'},
+  {comune:'Ospedaletti',cap:'18014',provincia:'IM',regione:'Liguria'},
+  {comune:'Ostellato',cap:'44020',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Ostra',cap:'60010',provincia:'AN',regione:'Marche'},
+  {comune:'Ostuni',cap:'72017',provincia:'BR',regione:'Puglia'},
+  {comune:'Otranto',cap:'73028',provincia:'LE',regione:'Puglia'},
+  {comune:'Otricoli',cap:'05030',provincia:'TR',regione:'Umbria'},
+  {comune:'Ovada',cap:'15076',provincia:'AL',regione:'Piemonte'},
+  {comune:'Ovindoli',cap:'67046',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Ozieri',cap:'07014',provincia:'SS',regione:'Sardegna'},
+  {comune:'Paceco',cap:'91027',provincia:'TP',regione:'Sicilia'},
+  {comune:'Pachino',cap:'96018',provincia:'SR',regione:'Sicilia'},
+  {comune:'Paderno Dugnano',cap:'20037',provincia:'MI',regione:'Lombardia'},
+  {comune:'Padova',cap:'35100',provincia:'PD',regione:'Veneto'},
+  {comune:'Paese',cap:'31038',provincia:'TV',regione:'Veneto'},
+  {comune:'Palagiano',cap:'74019',provincia:'TA',regione:'Puglia'},
+  {comune:'Palau',cap:'07020',provincia:'SS',regione:'Sardegna'},
+  {comune:'Palazzolo sull\'Oglio',cap:'25036',provincia:'BS',regione:'Lombardia'},
+  {comune:'Palermo',cap:'90100',provincia:'PA',regione:'Sicilia'},
+  {comune:'Palestrina',cap:'00036',provincia:'RM',regione:'Lazio'},
+  {comune:'Pallanza',cap:'28922',provincia:'VB',regione:'Piemonte'},
+  {comune:'Palma di Montechiaro',cap:'92020',provincia:'AG',regione:'Sicilia'},
+  {comune:'Palmanova',cap:'33057',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Palmi',cap:'89015',provincia:'RC',regione:'Calabria'},
+  {comune:'Pandino',cap:'26025',provincia:'CR',regione:'Lombardia'},
+  {comune:'Pantelleria',cap:'91017',provincia:'TP',regione:'Sicilia'},
+  {comune:'Paola',cap:'87027',provincia:'CS',regione:'Calabria'},
+  {comune:'Parma',cap:'43100',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Partinico',cap:'90047',provincia:'PA',regione:'Sicilia'},
+  {comune:'Paternò',cap:'95047',provincia:'CT',regione:'Sicilia'},
+  {comune:'Patti',cap:'98066',provincia:'ME',regione:'Sicilia'},
+  {comune:'Paullo',cap:'20067',provincia:'LO',regione:'Lombardia'},
+  {comune:'Pavia',cap:'27100',provincia:'PV',regione:'Lombardia'},
+  {comune:'Pavullo nel Frignano',cap:'41026',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Penne',cap:'65017',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Pergine Valsugana',cap:'38057',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Pergola',cap:'61045',provincia:'PU',regione:'Marche'},
+  {comune:'Perugia',cap:'06100',provincia:'PG',regione:'Umbria'},
+  {comune:'Pesaro',cap:'61121',provincia:'PU',regione:'Marche'},
+  {comune:'Pescara',cap:'65100',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Peschici',cap:'71010',provincia:'FG',regione:'Puglia'},
+  {comune:'Peschiera del Garda',cap:'37019',provincia:'VR',regione:'Veneto'},
+  {comune:'Pescia',cap:'51017',provincia:'PT',regione:'Toscana'},
+  {comune:'Pescina',cap:'67057',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Pescolanciano',cap:'86097',provincia:'IS',regione:'Molise'},
+  {comune:'Pettinengo',cap:'13843',provincia:'BI',regione:'Piemonte'},
+  {comune:'Piacenza',cap:'29100',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Piadena Drizzona',cap:'26034',provincia:'CR',regione:'Lombardia'},
+  {comune:'Pianella',cap:'65019',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Pianoro',cap:'40065',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Piazza Armerina',cap:'94015',provincia:'EN',regione:'Sicilia'},
+  {comune:'Piazzola sul Brenta',cap:'35010',provincia:'PD',regione:'Veneto'},
+  {comune:'Piedimonte Matese',cap:'81016',provincia:'CE',regione:'Campania'},
+  {comune:'Pienza',cap:'53026',provincia:'SI',regione:'Toscana'},
+  {comune:'Pietra Ligure',cap:'17027',provincia:'SV',regione:'Liguria'},
+  {comune:'Pietrabbondante',cap:'86085',provincia:'IS',regione:'Molise'},
+  {comune:'Pietrasanta',cap:'55045',provincia:'LU',regione:'Toscana'},
+  {comune:'Pietrelcina',cap:'82024',provincia:'BN',regione:'Campania'},
+  {comune:'Pieve Emanuele',cap:'20090',provincia:'MI',regione:'Lombardia'},
+  {comune:'Pieve di Cadore',cap:'32044',provincia:'BL',regione:'Veneto'},
+  {comune:'Pieve di Soligo',cap:'31053',provincia:'TV',regione:'Veneto'},
+  {comune:'Pinerolo',cap:'10064',provincia:'TO',regione:'Piemonte'},
+  {comune:'Pineto',cap:'64025',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Piombino',cap:'57025',provincia:'LI',regione:'Toscana'},
+  {comune:'Pisa',cap:'56100',provincia:'PI',regione:'Toscana'},
+  {comune:'Pisticci',cap:'75015',provincia:'MT',regione:'Basilicata'},
+  {comune:'Pistoia',cap:'51100',provincia:'PT',regione:'Toscana'},
+  {comune:'Pitigliano',cap:'58017',provincia:'GR',regione:'Toscana'},
+  {comune:'Pizzighettone',cap:'26026',provincia:'CR',regione:'Lombardia'},
+  {comune:'Pizzo',cap:'89812',provincia:'VV',regione:'Calabria'},
+  {comune:'Podenzano',cap:'29027',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Poggibonsi',cap:'53036',provincia:'SI',regione:'Toscana'},
+  {comune:'Poggio Mirteto',cap:'02047',provincia:'RI',regione:'Lazio'},
+  {comune:'Poggio Renatico',cap:'44028',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Poggio a Caiano',cap:'59016',provincia:'PO',regione:'Toscana'},
+  {comune:'Poggiridenti',cap:'23010',provincia:'SO',regione:'Lombardia'},
+  {comune:'Policoro',cap:'75025',provincia:'MT',regione:'Basilicata'},
+  {comune:'Polistena',cap:'89024',provincia:'RC',regione:'Calabria'},
+  {comune:'Pollein',cap:'11020',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Pomarance',cap:'56045',provincia:'PI',regione:'Toscana'},
+  {comune:'Pomezia',cap:'00040',provincia:'RM',regione:'Lazio'},
+  {comune:'Ponsacco',cap:'56038',provincia:'PI',regione:'Toscana'},
+  {comune:'Pont-Saint-Martin',cap:'11026',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Pontassieve',cap:'50065',provincia:'FI',regione:'Toscana'},
+  {comune:'Ponte nelle Alpi',cap:'32014',provincia:'BL',regione:'Veneto'},
+  {comune:'Pontecagnano Faiano',cap:'84098',provincia:'SA',regione:'Campania'},
+  {comune:'Pontecorvo',cap:'03037',provincia:'FR',regione:'Lazio'},
+  {comune:'Pontedera',cap:'56025',provincia:'PI',regione:'Toscana'},
+  {comune:'Pontenure',cap:'29010',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Pontremoli',cap:'54027',provincia:'MS',regione:'Toscana'},
+  {comune:'Ponzano Veneto',cap:'31050',provincia:'TV',regione:'Veneto'},
+  {comune:'Popoli',cap:'65026',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Poppi',cap:'52014',provincia:'AR',regione:'Toscana'},
+  {comune:'Porcari',cap:'55016',provincia:'LU',regione:'Toscana'},
+  {comune:'Pordenone',cap:'33170',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Pordenone',cap:'33170',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Porretta Terme',cap:'40046',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Portici',cap:'80055',provincia:'NA',regione:'Campania'},
+  {comune:'Porto Azzurro',cap:'57036',provincia:'LI',regione:'Toscana'},
+  {comune:'Porto Empedocle',cap:'92014',provincia:'AG',regione:'Sicilia'},
+  {comune:'Porto Mantovano',cap:'46047',provincia:'MN',regione:'Lombardia'},
+  {comune:'Porto Recanati',cap:'62017',provincia:'MC',regione:'Marche'},
+  {comune:'Porto San Giorgio',cap:'63822',provincia:'FM',regione:'Marche'},
+  {comune:'Porto Sant\'Elpidio',cap:'63821',provincia:'FM',regione:'Marche'},
+  {comune:'Porto Santo Stefano',cap:'58019',provincia:'GR',regione:'Toscana'},
+  {comune:'Porto Torres',cap:'07046',provincia:'SS',regione:'Sardegna'},
+  {comune:'Porto Viro',cap:'45014',provincia:'RO',regione:'Veneto'},
+  {comune:'Portoferraio',cap:'57037',provincia:'LI',regione:'Toscana'},
+  {comune:'Portogruaro',cap:'30026',provincia:'VE',regione:'Veneto'},
+  {comune:'Portomaggiore',cap:'44015',provincia:'FE',regione:'Emilia-Romagna'},
+  {comune:'Portoscuso',cap:'09010',provincia:'SU',regione:'Sardegna'},
+  {comune:'Portovenere',cap:'19025',provincia:'SP',regione:'Liguria'},
+  {comune:'Positano',cap:'84017',provincia:'SA',regione:'Campania'},
+  {comune:'Posta',cap:'02019',provincia:'RI',regione:'Lazio'},
+  {comune:'Potenza',cap:'85100',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Pozzallo',cap:'97016',provincia:'RG',regione:'Sicilia'},
+  {comune:'Pozzuoli',cap:'80078',provincia:'NA',regione:'Campania'},
+  {comune:'Prato',cap:'59100',provincia:'FI',regione:'Toscana'},
+  {comune:'Prato',cap:'59100',provincia:'PO',regione:'Toscana'},
+  {comune:'Priolo Gargallo',cap:'96010',provincia:'SR',regione:'Sicilia'},
+  {comune:'Priverno',cap:'04015',provincia:'LT',regione:'Lazio'},
+  {comune:'Prosecco',cap:'34010',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Quargnento',cap:'15044',provincia:'AL',regione:'Piemonte'},
+  {comune:'Quarrata',cap:'51039',provincia:'PT',regione:'Toscana'},
+  {comune:'Quarrata',cap:'51039',provincia:'PO',regione:'Toscana'},
+  {comune:'Quart',cap:'11020',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Quarto d\'Altino',cap:'30020',provincia:'VE',regione:'Veneto'},
+  {comune:'Quartu Sant\'Elena',cap:'09045',provincia:'CA',regione:'Sardegna'},
+  {comune:'Quartucciu',cap:'09044',provincia:'CA',regione:'Sardegna'},
+  {comune:'Racale',cap:'73055',provincia:'LE',regione:'Puglia'},
+  {comune:'Racalmuto',cap:'92020',provincia:'AG',regione:'Sicilia'},
+  {comune:'Radda in Chianti',cap:'53017',provincia:'SI',regione:'Toscana'},
+  {comune:'Ragusa',cap:'97100',provincia:'RG',regione:'Sicilia'},
+  {comune:'Randazzo',cap:'95036',provincia:'CT',regione:'Sicilia'},
+  {comune:'Rapallo',cap:'16035',provincia:'GE',regione:'Liguria'},
+  {comune:'Ravenna',cap:'48100',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Recanati',cap:'62019',provincia:'MC',regione:'Marche'},
+  {comune:'Recco',cap:'16036',provincia:'GE',regione:'Liguria'},
+  {comune:'Recoaro Terme',cap:'36076',provincia:'VI',regione:'Veneto'},
+  {comune:'Regalbuto',cap:'94017',provincia:'EN',regione:'Sicilia'},
+  {comune:'Reggio Calabria',cap:'89100',provincia:'RC',regione:'Calabria'},
+  {comune:'Reggio nell\'Emilia',cap:'42100',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Rende',cap:'87036',provincia:'CS',regione:'Calabria'},
+  {comune:'Renon',cap:'39054',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Rho',cap:'20017',provincia:'MI',regione:'Lombardia'},
+  {comune:'Ribera',cap:'92016',provincia:'AG',regione:'Sicilia'},
+  {comune:'Ricadi',cap:'89866',provincia:'VV',regione:'Calabria'},
+  {comune:'Riccia',cap:'86016',provincia:'CB',regione:'Molise'},
+  {comune:'Riccione',cap:'47838',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'Riesi',cap:'93016',provincia:'CL',regione:'Sicilia'},
+  {comune:'Rieti',cap:'02100',provincia:'RI',regione:'Lazio'},
+  {comune:'Rimini',cap:'47921',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'Rionero in Vulture',cap:'85028',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Riva del Garda',cap:'38066',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Rivergaro',cap:'29029',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Rivoli',cap:'10098',provincia:'TO',regione:'Piemonte'},
+  {comune:'Rivoli Veronese',cap:'37010',provincia:'VR',regione:'Veneto'},
+  {comune:'Rocca di Mezzo',cap:'67048',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Rocca di Neto',cap:'88821',provincia:'KR',regione:'Calabria'},
+  {comune:'Rodi Garganico',cap:'71012',provincia:'FG',regione:'Puglia'},
+  {comune:'Roma',cap:'00100',provincia:'RM',regione:'Lazio'},
+  {comune:'Romano di Lombardia',cap:'24058',provincia:'BG',regione:'Lombardia'},
+  {comune:'Ronchi dei Legionari',cap:'34077',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Ronciglione',cap:'01037',provincia:'VT',regione:'Lazio'},
+  {comune:'Ronco all\'Adige',cap:'37055',provincia:'VR',regione:'Veneto'},
+  {comune:'Rosarno',cap:'89025',provincia:'RC',regione:'Calabria'},
+  {comune:'Roseto degli Abruzzi',cap:'64026',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Rosignano Marittimo',cap:'57016',provincia:'LI',regione:'Toscana'},
+  {comune:'Rotondella',cap:'75026',provincia:'MT',regione:'Basilicata'},
+  {comune:'Rottofreno',cap:'29010',provincia:'PC',regione:'Emilia-Romagna'},
+  {comune:'Rovasenda',cap:'13040',provincia:'VC',regione:'Piemonte'},
+  {comune:'Rovato',cap:'25038',provincia:'BS',regione:'Lombardia'},
+  {comune:'Roverchiara',cap:'37050',provincia:'VR',regione:'Veneto'},
+  {comune:'Rovereto',cap:'38068',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Rovigo',cap:'45100',provincia:'RO',regione:'Veneto'},
+  {comune:'Rubano',cap:'35030',provincia:'PD',regione:'Veneto'},
+  {comune:'Rubiera',cap:'42048',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Rupingrande',cap:'34010',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Russi',cap:'48026',provincia:'RA',regione:'Emilia-Romagna'},
+  {comune:'Rutigliano',cap:'70018',provincia:'BA',regione:'Puglia'},
+  {comune:'Ruvo di Puglia',cap:'70037',provincia:'BA',regione:'Puglia'},
+  {comune:'Sabaudia',cap:'04016',provincia:'LT',regione:'Lazio'},
+  {comune:'Sabbioneta',cap:'46018',provincia:'MN',regione:'Lombardia'},
+  {comune:'Sacile',cap:'33077',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Sagrado',cap:'34078',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Saint-Vincent',cap:'11027',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Salemi',cap:'91018',provincia:'TP',regione:'Sicilia'},
+  {comune:'Salerno',cap:'84100',provincia:'SA',regione:'Campania'},
+  {comune:'Salsomaggiore Terme',cap:'43039',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Saluzzo',cap:'12037',provincia:'CN',regione:'Piemonte'},
+  {comune:'Salò',cap:'25087',provincia:'BS',regione:'Lombardia'},
+  {comune:'Samugheo',cap:'09086',provincia:'OR',regione:'Sardegna'},
+  {comune:'San Benedetto del Tronto',cap:'63074',provincia:'AP',regione:'Marche'},
+  {comune:'San Bonifacio',cap:'37047',provincia:'VR',regione:'Veneto'},
+  {comune:'San Canzian d\'Isonzo',cap:'34075',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'San Cataldo',cap:'93017',provincia:'CL',regione:'Sicilia'},
+  {comune:'San Damiano d\'Asti',cap:'14015',provincia:'AT',regione:'Piemonte'},
+  {comune:'San Daniele del Friuli',cap:'33038',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'San Donà di Piave',cap:'30027',provincia:'VE',regione:'Veneto'},
+  {comune:'San Dorligo della Valle',cap:'34018',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'San Ferdinando di Puglia',cap:'76017',provincia:'BT',regione:'Puglia'},
+  {comune:'San Gemini',cap:'05027',provincia:'TR',regione:'Umbria'},
+  {comune:'San Giovanni Lupatoto',cap:'37057',provincia:'VR',regione:'Veneto'},
+  {comune:'San Giovanni Suergiu',cap:'09010',provincia:'SU',regione:'Sardegna'},
+  {comune:'San Giovanni in Marignano',cap:'47842',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'San Giovanni la Punta',cap:'95037',provincia:'CT',regione:'Sicilia'},
+  {comune:'San Giuliano Terme',cap:'56017',provincia:'PI',regione:'Toscana'},
+  {comune:'San Lazzaro di Savena',cap:'40068',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'San Lorenzo al Mare',cap:'18017',provincia:'IM',regione:'Liguria'},
+  {comune:'San Miniato',cap:'56028',provincia:'PI',regione:'Toscana'},
+  {comune:'San Pietro in Cariano',cap:'37029',provincia:'VR',regione:'Veneto'},
+  {comune:'San Quirico d\'Orcia',cap:'53027',provincia:'SI',regione:'Toscana'},
+  {comune:'San Salvo',cap:'66050',provincia:'CH',regione:'Abruzzo'},
+  {comune:'San Severino Marche',cap:'62027',provincia:'MC',regione:'Marche'},
+  {comune:'San Severo',cap:'71016',provincia:'FG',regione:'Puglia'},
+  {comune:'San Vito al Tagliamento',cap:'33078',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'San Vito dei Normanni',cap:'72019',provincia:'BR',regione:'Puglia'},
+  {comune:'Sanremo',cap:'18038',provincia:'IM',regione:'Liguria'},
+  {comune:'Sansepolcro',cap:'52037',provincia:'AR',regione:'Toscana'},
+  {comune:'Sant\'Agata de\' Goti',cap:'82019',provincia:'BN',regione:'Campania'},
+  {comune:'Sant\'Agata di Militello',cap:'98076',provincia:'ME',regione:'Sicilia'},
+  {comune:'Sant\'Ambrogio di Valpolicella',cap:'37015',provincia:'VR',regione:'Veneto'},
+  {comune:'Sant\'Angelo Lodigiano',cap:'26866',provincia:'LO',regione:'Lombardia'},
+  {comune:'Sant\'Antioco',cap:'09017',provincia:'SU',regione:'Sardegna'},
+  {comune:'Sant\'Elpidio a Mare',cap:'63811',provincia:'FM',regione:'Marche'},
+  {comune:'Santa Croce Camerina',cap:'97017',provincia:'RG',regione:'Sicilia'},
+  {comune:'Santa Croce sull\'Arno',cap:'56029',provincia:'PI',regione:'Toscana'},
+  {comune:'Santa Margherita Ligure',cap:'16038',provincia:'GE',regione:'Liguria'},
+  {comune:'Santa Maria Capua Vetere',cap:'81055',provincia:'CE',regione:'Campania'},
+  {comune:'Santa Teresa Gallura',cap:'07028',provincia:'SS',regione:'Sardegna'},
+  {comune:'Santarcangelo di Romagna',cap:'47822',provincia:'RN',regione:'Emilia-Romagna'},
+  {comune:'Santeramo in Colle',cap:'70029',provincia:'BA',regione:'Puglia'},
+  {comune:'Santhià',cap:'13048',provincia:'VC',regione:'Piemonte'},
+  {comune:'Santo Stefano di Magra',cap:'19037',provincia:'SP',regione:'Liguria'},
+  {comune:'Santorso',cap:'36014',provincia:'VI',regione:'Veneto'},
+  {comune:'Saonara',cap:'35020',provincia:'PD',regione:'Veneto'},
+  {comune:'Sarnico',cap:'24067',provincia:'BG',regione:'Lombardia'},
+  {comune:'Saronno',cap:'21047',provincia:'VA',regione:'Lombardia'},
+  {comune:'Sarre',cap:'11010',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Sarzana',cap:'19038',provincia:'SP',regione:'Liguria'},
+  {comune:'Sassari',cap:'07100',provincia:'SS',regione:'Sardegna'},
+  {comune:'Sasso Marconi',cap:'40037',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Sassocorvaro Auditore',cap:'61028',provincia:'PU',regione:'Marche'},
+  {comune:'Sassuolo',cap:'41049',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Savignano sul Rubicone',cap:'47039',provincia:'FC',regione:'Emilia-Romagna'},
+  {comune:'Savona',cap:'17100',provincia:'SV',regione:'Liguria'},
+  {comune:'Scafati',cap:'84018',provincia:'SA',regione:'Campania'},
+  {comune:'Scalea',cap:'87029',provincia:'CS',regione:'Calabria'},
+  {comune:'Scandale',cap:'88831',provincia:'KR',regione:'Calabria'},
+  {comune:'Scandiano',cap:'42019',provincia:'RE',regione:'Emilia-Romagna'},
+  {comune:'Scandicci',cap:'50018',provincia:'FI',regione:'Toscana'},
+  {comune:'Scarlino',cap:'58020',provincia:'GR',regione:'Toscana'},
+  {comune:'Schio',cap:'36015',provincia:'VI',regione:'Veneto'},
+  {comune:'Sciacca',cap:'92019',provincia:'AG',regione:'Sicilia'},
+  {comune:'Scicli',cap:'97018',provincia:'RG',regione:'Sicilia'},
+  {comune:'Sedico',cap:'32036',provincia:'BL',regione:'Veneto'},
+  {comune:'Segrate',cap:'20054',provincia:'MI',regione:'Lombardia'},
+  {comune:'Selargius',cap:'09047',provincia:'CA',regione:'Sardegna'},
+  {comune:'Sellia Marina',cap:'88050',provincia:'CZ',regione:'Calabria'},
+  {comune:'Selvazzano Dentro',cap:'35030',provincia:'PD',regione:'Veneto'},
+  {comune:'Senigallia',cap:'60019',provincia:'AN',regione:'Marche'},
+  {comune:'Senise',cap:'85038',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Seregno',cap:'20831',provincia:'MB',regione:'Lombardia'},
+  {comune:'Seriate',cap:'24068',provincia:'BG',regione:'Lombardia'},
+  {comune:'Serra San Bruno',cap:'89822',provincia:'VV',regione:'Calabria'},
+  {comune:'Serradifalco',cap:'93010',provincia:'CL',regione:'Sicilia'},
+  {comune:'Sessa Aurunca',cap:'81037',provincia:'CE',regione:'Campania'},
+  {comune:'Sesto Calende',cap:'21018',provincia:'VA',regione:'Lombardia'},
+  {comune:'Sesto Fiorentino',cap:'50019',provincia:'FI',regione:'Toscana'},
+  {comune:'Sesto San Giovanni',cap:'20099',provincia:'MI',regione:'Lombardia'},
+  {comune:'Sestri Levante',cap:'16039',provincia:'GE',regione:'Liguria'},
+  {comune:'Sestu',cap:'09028',provincia:'CA',regione:'Sardegna'},
+  {comune:'Settimo Milanese',cap:'20019',provincia:'MI',regione:'Lombardia'},
+  {comune:'Settimo Torinese',cap:'10036',provincia:'TO',regione:'Piemonte'},
+  {comune:'Sezze',cap:'04018',provincia:'LT',regione:'Lazio'},
+  {comune:'Sgonico',cap:'34010',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Siderno',cap:'89048',provincia:'RC',regione:'Calabria'},
+  {comune:'Siena',cap:'53100',provincia:'SI',regione:'Toscana'},
+  {comune:'Signa',cap:'50058',provincia:'FI',regione:'Toscana'},
+  {comune:'Signa',cap:'50058',provincia:'PO',regione:'Toscana'},
+  {comune:'Silandro',cap:'39028',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Silea',cap:'31057',provincia:'TV',regione:'Veneto'},
+  {comune:'Silvi',cap:'64028',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Sinalunga',cap:'53048',provincia:'SI',regione:'Toscana'},
+  {comune:'Siniscola',cap:'08029',provincia:'NU',regione:'Sardegna'},
+  {comune:'Siracusa',cap:'96100',provincia:'SR',regione:'Sicilia'},
+  {comune:'Sirmione',cap:'25019',provincia:'BS',regione:'Lombardia'},
+  {comune:'Sirmione',cap:'25019',provincia:'VR',regione:'Veneto'},
+  {comune:'Soave',cap:'37038',provincia:'VR',regione:'Veneto'},
+  {comune:'Solarino',cap:'96010',provincia:'SR',regione:'Sicilia'},
+  {comune:'Solofra',cap:'83029',provincia:'AV',regione:'Campania'},
+  {comune:'Solopaca',cap:'82036',provincia:'BN',regione:'Campania'},
+  {comune:'Sommacampagna',cap:'37066',provincia:'VR',regione:'Veneto'},
+  {comune:'Sommatino',cap:'93019',provincia:'CL',regione:'Sicilia'},
+  {comune:'Sondrio',cap:'23100',provincia:'SO',regione:'Lombardia'},
+  {comune:'Sora',cap:'03039',provincia:'FR',regione:'Lazio'},
+  {comune:'Sorano',cap:'58010',provincia:'GR',regione:'Toscana'},
+  {comune:'Sorbolo',cap:'43058',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Soresina',cap:'26015',provincia:'CR',regione:'Lombardia'},
+  {comune:'Soriano Calabro',cap:'89831',provincia:'VV',regione:'Calabria'},
+  {comune:'Sorrento',cap:'80067',provincia:'NA',regione:'Campania'},
+  {comune:'Sorso',cap:'07037',provincia:'SS',regione:'Sardegna'},
+  {comune:'Soverato',cap:'88068',provincia:'CZ',regione:'Calabria'},
+  {comune:'Soveria Mannelli',cap:'88049',provincia:'CZ',regione:'Calabria'},
+  {comune:'Spilimbergo',cap:'33097',provincia:'PN',regione:'Friuli-Venezia Giulia'},
+  {comune:'Spinazzola',cap:'76014',provincia:'BT',regione:'Puglia'},
+  {comune:'Spinea',cap:'30038',provincia:'VE',regione:'Veneto'},
+  {comune:'Spinetoli',cap:'63078',provincia:'AP',regione:'Marche'},
+  {comune:'Spoleto',cap:'06049',provincia:'PG',regione:'Umbria'},
+  {comune:'Spoltore',cap:'65010',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Spotorno',cap:'17028',provincia:'SV',regione:'Liguria'},
+  {comune:'Squillace',cap:'88069',provincia:'CZ',regione:'Calabria'},
+  {comune:'Staranzano',cap:'34079',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Stigliano',cap:'75018',provincia:'MT',regione:'Basilicata'},
+  {comune:'Stradella',cap:'27049',provincia:'PV',regione:'Lombardia'},
+  {comune:'Stresa',cap:'28838',provincia:'VB',regione:'Piemonte'},
+  {comune:'Stroncone',cap:'05039',provincia:'TR',regione:'Umbria'},
+  {comune:'Strongoli',cap:'88816',provincia:'KR',regione:'Calabria'},
+  {comune:'Sulmona',cap:'67039',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Suno',cap:'28019',provincia:'NO',regione:'Piemonte'},
+  {comune:'Susa',cap:'10059',provincia:'TO',regione:'Piemonte'},
+  {comune:'Susegana',cap:'31058',provincia:'TV',regione:'Veneto'},
+  {comune:'Sutri',cap:'01015',provincia:'VT',regione:'Lazio'},
+  {comune:'Suzzara',cap:'46029',provincia:'MN',regione:'Lombardia'},
+  {comune:'Taggia',cap:'18018',provincia:'IM',regione:'Liguria'},
+  {comune:'Tagliacozzo',cap:'67069',provincia:'AQ',regione:'Abruzzo'},
+  {comune:'Taormina',cap:'98039',provincia:'ME',regione:'Sicilia'},
+  {comune:'Taranto',cap:'74100',provincia:'LE',regione:'Puglia'},
+  {comune:'Taranto',cap:'74100',provincia:'TA',regione:'Puglia'},
+  {comune:'Tarquinia',cap:'01016',provincia:'VT',regione:'Lazio'},
+  {comune:'Tarvisio',cap:'33018',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Taurianova',cap:'89029',provincia:'RC',regione:'Calabria'},
+  {comune:'Tavazzano con Villavesco',cap:'26838',provincia:'LO',regione:'Lombardia'},
+  {comune:'Teano',cap:'81057',provincia:'CE',regione:'Campania'},
+  {comune:'Telese Terme',cap:'82037',provincia:'BN',regione:'Campania'},
+  {comune:'Tempio Pausania',cap:'07029',provincia:'SS',regione:'Sardegna'},
+  {comune:'Teramo',cap:'64100',provincia:'TE',regione:'Abruzzo'},
+  {comune:'Termeno sulla Strada del Vino',cap:'39040',provincia:'BZ',regione:'Trentino-Alto Adige'},
+  {comune:'Termini Imerese',cap:'90018',provincia:'PA',regione:'Sicilia'},
+  {comune:'Termoli',cap:'86039',provincia:'CB',regione:'Molise'},
+  {comune:'Terni',cap:'05100',provincia:'TR',regione:'Umbria'},
+  {comune:'Terracina',cap:'04019',provincia:'LT',regione:'Lazio'},
+  {comune:'Terralba',cap:'09098',provincia:'OR',regione:'Sardegna'},
+  {comune:'Terranuova Bracciolini',cap:'52028',provincia:'AR',regione:'Toscana'},
+  {comune:'Thiene',cap:'36016',provincia:'VI',regione:'Veneto'},
+  {comune:'Tione di Trento',cap:'38079',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Tirano',cap:'23037',provincia:'SO',regione:'Lombardia'},
+  {comune:'Tivoli',cap:'00019',provincia:'RM',regione:'Lazio'},
+  {comune:'Tocco da Casauria',cap:'65028',provincia:'PE',regione:'Abruzzo'},
+  {comune:'Todi',cap:'06059',provincia:'PG',regione:'Umbria'},
+  {comune:'Tolentino',cap:'62029',provincia:'MC',regione:'Marche'},
+  {comune:'Tolmezzo',cap:'33028',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Torino',cap:'10100',provincia:'TO',regione:'Piemonte'},
+  {comune:'Torino di Sangro',cap:'66020',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Torre del Greco',cap:'80059',provincia:'NA',regione:'Campania'},
+  {comune:'Torrecuso',cap:'82030',provincia:'BN',regione:'Campania'},
+  {comune:'Tortolì',cap:'08048',provincia:'NU',regione:'Sardegna'},
+  {comune:'Tortona',cap:'15057',provincia:'AL',regione:'Piemonte'},
+  {comune:'Tortorici',cap:'98078',provincia:'ME',regione:'Sicilia'},
+  {comune:'Tradate',cap:'21049',provincia:'VA',regione:'Lombardia'},
+  {comune:'Trani',cap:'76125',provincia:'BT',regione:'Puglia'},
+  {comune:'Trapani',cap:'91100',provincia:'TP',regione:'Sicilia'},
+  {comune:'Traversetolo',cap:'43029',provincia:'PR',regione:'Emilia-Romagna'},
+  {comune:'Trebiciano',cap:'34100',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Trebisacce',cap:'87075',provincia:'CS',regione:'Calabria'},
+  {comune:'Trecate',cap:'28069',provincia:'NO',regione:'Piemonte'},
+  {comune:'Tregnago',cap:'37039',provincia:'VR',regione:'Veneto'},
+  {comune:'Treia',cap:'62010',provincia:'MC',regione:'Marche'},
+  {comune:'Trento',cap:'38100',provincia:'TN',regione:'Trentino-Alto Adige'},
+  {comune:'Trevenzuolo',cap:'37060',provincia:'VR',regione:'Veneto'},
+  {comune:'Treviglio',cap:'24047',provincia:'BG',regione:'Lombardia'},
+  {comune:'Treviso',cap:'31100',provincia:'TV',regione:'Veneto'},
+  {comune:'Trezzano sul Naviglio',cap:'20090',provincia:'MI',regione:'Lombardia'},
+  {comune:'Tricase',cap:'73039',provincia:'LE',regione:'Puglia'},
+  {comune:'Trieste',cap:'34100',provincia:'TS',regione:'Friuli-Venezia Giulia'},
+  {comune:'Trinitapoli',cap:'76015',provincia:'BT',regione:'Puglia'},
+  {comune:'Trino',cap:'13039',provincia:'VC',regione:'Piemonte'},
+  {comune:'Trivero',cap:'13835',provincia:'BI',regione:'Piemonte'},
+  {comune:'Troia',cap:'71029',provincia:'FG',regione:'Puglia'},
+  {comune:'Troina',cap:'94018',provincia:'EN',regione:'Sicilia'},
+  {comune:'Tropea',cap:'89861',provincia:'VV',regione:'Calabria'},
+  {comune:'Turriaco',cap:'34070',provincia:'GO',regione:'Friuli-Venezia Giulia'},
+  {comune:'Tursi',cap:'75028',provincia:'MT',regione:'Basilicata'},
+  {comune:'Tuscania',cap:'01017',provincia:'VT',regione:'Lazio'},
+  {comune:'Udine',cap:'33100',provincia:'UD',regione:'Friuli-Venezia Giulia'},
+  {comune:'Ugento',cap:'73059',provincia:'LE',regione:'Puglia'},
+  {comune:'Umbertide',cap:'06019',provincia:'PG',regione:'Umbria'},
+  {comune:'Urbino',cap:'61029',provincia:'PU',regione:'Marche'},
+  {comune:'Vaiano',cap:'59021',provincia:'PO',regione:'Toscana'},
+  {comune:'Valdagno',cap:'36078',provincia:'VI',regione:'Veneto'},
+  {comune:'Valdilana',cap:'13835',provincia:'BI',regione:'Piemonte'},
+  {comune:'Valdobbiadene',cap:'31049',provincia:'TV',regione:'Veneto'},
+  {comune:'Valeggio sul Mincio',cap:'37067',provincia:'VR',regione:'Veneto'},
+  {comune:'Valenza',cap:'15048',provincia:'AL',regione:'Piemonte'},
+  {comune:'Valguarnera Caropepe',cap:'94019',provincia:'EN',regione:'Sicilia'},
+  {comune:'Vallecrosia',cap:'18019',provincia:'IM',regione:'Liguria'},
+  {comune:'Vallo della Lucania',cap:'84078',provincia:'SA',regione:'Campania'},
+  {comune:'Varenna',cap:'23829',provincia:'LC',regione:'Lombardia'},
+  {comune:'Varese',cap:'21100',provincia:'VA',regione:'Lombardia'},
+  {comune:'Vasto',cap:'66054',provincia:'CH',regione:'Abruzzo'},
+  {comune:'Veglio',cap:'13824',provincia:'BI',regione:'Piemonte'},
+  {comune:'Velletri',cap:'00049',provincia:'RM',regione:'Lazio'},
+  {comune:'Venafro',cap:'86079',provincia:'CB',regione:'Molise'},
+  {comune:'Venafro',cap:'86079',provincia:'IS',regione:'Molise'},
+  {comune:'Venaria Reale',cap:'10078',provincia:'TO',regione:'Piemonte'},
+  {comune:'Venezia',cap:'30100',provincia:'VE',regione:'Veneto'},
+  {comune:'Venosa',cap:'85029',provincia:'PZ',regione:'Basilicata'},
+  {comune:'Ventimiglia',cap:'18039',provincia:'IM',regione:'Liguria'},
+  {comune:'Verbania',cap:'28900',provincia:'NO',regione:'Piemonte'},
+  {comune:'Verbania',cap:'28900',provincia:'VB',regione:'Piemonte'},
+  {comune:'Vercelli',cap:'13100',provincia:'VC',regione:'Piemonte'},
+  {comune:'Vergato',cap:'40038',provincia:'BO',regione:'Emilia-Romagna'},
+  {comune:'Vernio',cap:'59024',provincia:'PO',regione:'Toscana'},
+  {comune:'Veroli',cap:'03029',provincia:'FR',regione:'Lazio'},
+  {comune:'Verona',cap:'37100',provincia:'VR',regione:'Veneto'},
+  {comune:'Verrès',cap:'11029',provincia:'AO',regione:'Valle d\'Aosta'},
+  {comune:'Vetralla',cap:'01019',provincia:'VT',regione:'Lazio'},
+  {comune:'Viadana',cap:'46019',provincia:'MN',regione:'Lombardia'},
+  {comune:'Viareggio',cap:'55049',provincia:'LU',regione:'Toscana'},
+  {comune:'Vibo Valentia',cap:'89900',provincia:'VV',regione:'Calabria'},
+  {comune:'Vicenza',cap:'36100',provincia:'VI',regione:'Veneto'},
+  {comune:'Vieste',cap:'71019',provincia:'FG',regione:'Puglia'},
+  {comune:'Vigasio',cap:'37068',provincia:'VR',regione:'Veneto'},
+  {comune:'Vigevano',cap:'27029',provincia:'PV',regione:'Lombardia'},
+  {comune:'Vigliano Biellese',cap:'13856',provincia:'BI',regione:'Piemonte'},
+  {comune:'Vignola',cap:'41058',provincia:'MO',regione:'Emilia-Romagna'},
+  {comune:'Vigodarzere',cap:'35010',provincia:'PD',regione:'Veneto'},
+  {comune:'Viguzzolo',cap:'15058',provincia:'AL',regione:'Piemonte'},
+  {comune:'Villa San Giovanni',cap:'89018',provincia:'RC',regione:'Calabria'},
+  {comune:'Villadose',cap:'45010',provincia:'RO',regione:'Veneto'},
+  {comune:'Villafranca di Verona',cap:'37069',provincia:'VR',regione:'Veneto'},
+  {comune:'Villafranca in Lunigiana',cap:'54028',provincia:'MS',regione:'Toscana'},
+  {comune:'Villanova d\'Asti',cap:'14019',provincia:'AT',regione:'Piemonte'},
+  {comune:'Villorba',cap:'31020',provincia:'TV',regione:'Veneto'},
+  {comune:'Vimercate',cap:'20871',provincia:'MB',regione:'Lombardia'},
+  {comune:'Viterbo',cap:'01100',provincia:'RM',regione:'Lazio'},
+  {comune:'Viterbo',cap:'01100',provincia:'VT',regione:'Lazio'},
+  {comune:'Vittoria',cap:'97019',provincia:'RG',regione:'Sicilia'},
+  {comune:'Vittorio Veneto',cap:'31029',provincia:'TV',regione:'Veneto'},
+  {comune:'Voghera',cap:'27058',provincia:'PV',regione:'Lombardia'},
+  {comune:'Volta Mantovana',cap:'46049',provincia:'MN',regione:'Lombardia'},
+  {comune:'Volterra',cap:'56048',provincia:'PI',regione:'Toscana'},
+  {comune:'Zelo Buon Persico',cap:'26839',provincia:'LO',regione:'Lombardia'},
+  {comune:'Zeri',cap:'54020',provincia:'MS',regione:'Toscana'},
+  {comune:'Zevio',cap:'37059',provincia:'VR',regione:'Veneto'},
+  {comune:'Zogno',cap:'24019',provincia:'BG',regione:'Lombardia'},
+  {comune:'Zola Predosa',cap:'40069',provincia:'BO',regione:'Emilia-Romagna'}
+];
+
+const STATI_MONDO=['Afghanistan','Albania','Algeria','Andorra','Angola','Antigua e Barbuda','Arabia Saudita','Argentina','Armenia','Australia','Austria','Azerbaigian','Bahamas','Bahrein','Bangladesh','Barbados','Belgio','Belize','Benin','Bhutan','Bielorussia','Bolivia','Bosnia ed Erzegovina','Botswana','Brasile','Brunei','Bulgaria','Burkina Faso','Burundi','Cambogia','Camerun','Canada','Capo Verde','Ciad','Cile','Cina','Cipro','Colombia','Comore','Congo','Corea del Nord','Corea del Sud','Costa Rica','Costa d\'Avorio','Croazia','Cuba','Danimarca','Dominica','Ecuador','Egitto','El Salvador','Emirati Arabi Uniti','Eritrea','Estonia','Eswatini','Etiopia','Figi','Filippine','Finlandia','Francia','Gabon','Gambia','Georgia','Germania','Ghana','Giamaica','Giappone','Gibuti','Giordania','Grecia','Grenada','Guatemala','Guinea','Guinea Equatoriale','Guinea-Bissau','Guyana','Haiti','Honduras','India','Indonesia','Iran','Iraq','Irlanda','Islanda','Isole Marshall','Isole Salomone','Israele','Italia','Kazakhstan','Kenya','Kirghizistan','Kiribati','Kuwait','Laos','Lesotho','Lettonia','Libano','Liberia','Libia','Liechtenstein','Lituania','Lussemburgo','Macedonia del Nord','Madagascar','Malawi','Malaysia','Maldive','Mali','Malta','Marocco','Mauritania','Mauritius','Messico','Micronesia','Moldova','Monaco','Mongolia','Montenegro','Mozambico','Myanmar','Namibia','Nauru','Nepal','Nicaragua','Niger','Nigeria','Norvegia','Nuova Zelanda','Oman','Paesi Bassi','Pakistan','Palau','Panama','Papua Nuova Guinea','Paraguay','Perù','Polonia','Portogallo','Qatar','Regno Unito','Repubblica Ceca','Repubblica Centrafricana','Repubblica del Congo','Repubblica Dominicana','Romania','Ruanda','Russia','Saint Kitts e Nevis','Saint Lucia','Saint Vincent e Grenadine','Samoa','San Marino','São Tomé e Príncipe','Senegal','Serbia','Seychelles','Sierra Leone','Singapore','Siria','Slovenia','Somalia','Spagna','Sri Lanka','Stati Uniti','Sudafrica','Sudan','Sudan del Sud','Suriname','Svezia','Svizzera','Tagikistan','Tanzania','Thailandia','Timor Est','Togo','Tonga','Trinidad e Tobago','Tunisia','Turchia','Turkmenistan','Tuvalu','Ucraina','Uganda','Ungheria','Uruguay','Uzbekistan','Vanuatu','Vaticano','Venezuela','Vietnam','Yemen','Zambia','Zimbabwe'];
+
+const REGIONI_ITALIANE = [...new Set(COMUNI_ITALIANI.map(c=>c.regione))].sort();
+const PROVINCE_ITALIANE = [...new Map(COMUNI_ITALIANI.map(c=>[c.provincia,c.provincia])).values()].sort();
+
+function popolaDatalistGeografici(){
+  const dlComuni=document.getElementById('listComuni');
+  const dlCAP=document.getElementById('listCAP');
+  const dlProv=document.getElementById('listProvince');
+  const dlReg=document.getElementById('listRegioni');
+  if(dlComuni) dlComuni.innerHTML=COMUNI_ITALIANI.map(c=>`<option value="${c.comune}">${c.comune} (${c.provincia}) — ${c.cap}</option>`).join('');
+  if(dlCAP) dlCAP.innerHTML=COMUNI_ITALIANI.map(c=>`<option value="${c.cap}">${c.cap} — ${c.comune} (${c.provincia})</option>`).join('');
+  if(dlProv) dlProv.innerHTML=PROVINCE_ITALIANE.map(p=>`<option value="${p}">`).join('');
+  if(dlReg) dlReg.innerHTML=REGIONI_ITALIANE.map(r=>`<option value="${r}">`).join('');
+  const dlStati=document.getElementById('listStati');
+  if(dlStati) dlStati.innerHTML=STATI_MONDO.map(s=>`<option value="${s}">`).join('');
+}
+
+// Autocompletamento incrociato: selezione comune → compila CAP, provincia, regione
+document.addEventListener('change', function(e){
+  if(e.target.id==='fComuneI'){
+    const trovato=COMUNI_ITALIANI.find(c=>c.comune.toLowerCase()===e.target.value.toLowerCase());
+    if(trovato){
+      const capEl=document.getElementById('fCapI');
+      const provEl=document.getElementById('fProvinciaI');
+      const regEl=document.getElementById('fRegioneI');
+      if(capEl&&!capEl.value) capEl.value=trovato.cap;
+      if(provEl&&!provEl.value) provEl.value=trovato.provincia;
+      if(regEl&&!regEl.value) regEl.value=trovato.regione;
+    }
+  }
+  if(e.target.id==='fCapI'){
+    const trovato=COMUNI_ITALIANI.find(c=>c.cap===e.target.value);
+    if(trovato){
+      const comEl=document.getElementById('fComuneI');
+      const provEl=document.getElementById('fProvinciaI');
+      const regEl=document.getElementById('fRegioneI');
+      if(comEl&&!comEl.value) comEl.value=trovato.comune;
+      if(provEl&&!provEl.value) provEl.value=trovato.provincia;
+      if(regEl&&!regEl.value) regEl.value=trovato.regione;
+    }
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function(){
+  popolaDatalistGeografici();
+});
+</script>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, serverTimestamp, query, orderBy, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBgT7HoFfVuuQeNctx7upLSoYlt_2MKCo0",
+  authDomain: "hub-contatti.firebaseapp.com",
+  projectId: "hub-contatti",
+  storageBucket: "hub-contatti.firebasestorage.app",
+  messagingSenderId: "1843153327",
+  appId: "1:1843153327:web:44cf6ae20d7ec43b54475a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const CATEGORIE = {
+  fornitori: ['Professionisti','Artigiani','Medici','Commerciale','Società','Altro'],
+  terzi: ['Clienti','Altro'],
+  personale: ['Amici','Conoscenti','Affittuari','Vari','Altro']
+};
+
+let prodottiSalvati = JSON.parse(localStorage.getItem('hub_prodotti')||'[]');
+let allContacts = [], currentContact = null, currentGruppo = 'tutti', editingId = null;
+let formMedia = [];
+
+function toast(msg,dur=2500){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),dur);
+}
+
+function showView(id){
+  ['viewList','viewCard','viewForm'].forEach(v=>{
+    const el=document.getElementById(v);
+    if(el) el.classList.toggle('active',v===id);
+  });
+}
+
+function showTab(tab){
+  document.getElementById('tabRubrica').classList.toggle('active',tab==='rubrica');
+  document.getElementById('tabAree').classList.toggle('active',tab==='aree');
+  document.getElementById('tabImpostazioni').classList.toggle('active',tab==='impostazioni');
+  document.getElementById('tabBtnRubrica').classList.toggle('on',tab==='rubrica');
+  document.getElementById('tabBtnAree').classList.toggle('on',tab==='aree');
+  document.getElementById('tabBtnImpostazioni').classList.toggle('on',tab==='impostazioni');
+  if(tab==='impostazioni') caricaVocabolari();
+}
+
+function updateCategorieSelect(){
+  const gruppo = document.getElementById('fGruppoI').value;
+  const sel = document.getElementById('fCategoriaI');
+  const cats = CATEGORIE[gruppo]||[];
+  sel.innerHTML = '<option value="">-- Seleziona --</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function updateFilterCategorie(){
+  const sel = document.getElementById('filterCategoria');
+  const cats = currentGruppo==='tutti' ? [...new Set(Object.values(CATEGORIE).flat())] : (CATEGORIE[currentGruppo]||[]);
+  sel.innerHTML = '<option value="">Tutte le categorie</option>'+cats.map(c=>`<option value="${c}">${c}</option>`).join('');
+}
+
+function aggiornaProdotti(){
+  const dl=document.getElementById('listProdotti');
+  if(dl) dl.innerHTML=prodottiSalvati.map(p=>`<option value="${p}">`).join('');
+}
+
+function aggiornaSettori(){
+  const settoriSalvati=JSON.parse(localStorage.getItem('hub_settori')||'[]');
+  const dl=document.getElementById('listSettori');
+  if(dl) dl.innerHTML=settoriSalvati.map(s=>`<option value="${s}">`).join('');
+}
+
+async function loadContacts(){
+  try{
+    const q=query(collection(db,'contatti'),orderBy('cognome'));
+    const snap=await getDocs(q);
+    allContacts=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderList();
+  }catch(e){
+    document.getElementById('contactGrid').innerHTML='<div class="empty-state">Errore connessione database.</div>';
+  }
+}
+
+function renderList(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const cat=document.getElementById('filterCategoria').value;
+  let filtered=allContacts.filter(c=>{
+    const mg=currentGruppo==='tutti'||(c.gruppo||'')===currentGruppo;
+    const mc=!cat||(c.categoria||'')===cat;
+    const ms=!q||[c.nome,c.cognome,c.ragioneSociale,c.professione,c.categoria].some(v=>(v||'').toLowerCase().includes(q));
+    return mg&&mc&&ms;
+  });
+  document.getElementById('countLabel').textContent=filtered.length+' contatti';
+  const grid=document.getElementById('contactGrid');
+  if(!filtered.length){grid.innerHTML='<div class="empty-state">Nessun contatto.<br>Clicca "+ Nuovo contatto" per iniziare.</div>';return;}
+  grid.innerHTML=filtered.map(c=>{
+    const ini=((c.nome||'')[0]||'')+((c.cognome||'')[0]||'');
+    const gc=c.gruppo?'badge-'+c.gruppo:'';
+    const ph=c.photoUrl?`<img src="${c.photoUrl}" alt="">`:`<span>${ini.toUpperCase()}</span>`;
+    return `<div class="contact-card" data-id="${c.id}">
+      <div class="c-av">${ph}</div>
+      <div class="c-info">
+        <div class="c-name">${c.nome||''} ${c.cognome||''}</div>
+        <div class="c-role">${c.professione||c.incarico||''}</div>
+        <div class="c-role" style="color:var(--teal);font-size:10px">${c.ragioneSociale||''}</div>
+        <div class="c-badges">${c.gruppo?`<span class="badge ${gc}">${c.gruppo}</span>`:''} ${c.categoria?`<span class="badge" style="background:var(--bg);#333333;border:1px solid var(--border)">${c.categoria}</span>`:''}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('.contact-card').forEach(card=>{
+    card.addEventListener('click',()=>openContact(card.dataset.id));
+  });
+}
+
+function openContact(id){
+  const c=allContacts.find(x=>x.id===id);
+  if(!c)return;
+  currentContact=c;
+  const ini=((c.nome||'')[0]||'')+((c.cognome||'')[0]||'');
+  const av=document.getElementById('cardAv');
+  av.innerHTML=c.photoUrl?`<img src="${c.photoUrl}" alt="">`:`<span>${ini.toUpperCase()}</span>`;
+  document.getElementById('cardName').textContent=(c.nome||'')+' '+(c.cognome||'');
+  document.getElementById('cardRole').textContent=[c.professione,c.incarico].filter(Boolean).join(' — ');
+  document.getElementById('cardCompany').textContent=c.ragioneSociale||'';
+  document.getElementById('cardGruppo').textContent=c.gruppo||'';
+  document.getElementById('cardCat').textContent=c.categoria||'';
+  document.getElementById('breadcrumb').textContent=(c.nome||'')+' '+(c.cognome||'');
+  const d=c.updatedAt?.toDate?c.updatedAt.toDate():new Date();
+  document.getElementById('cardUpdated').textContent='agg. '+d.toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val||'—';};
+  set('fNome',c.nome);set('fCognome',c.cognome);set('fProfessione',c.professione);
+  set('fGruppo',c.gruppo);set('fCategoria',c.categoria);set('fIncarico',c.incarico);
+  set('fTel1',(c.tel1Pref||'')+' '+(c.tel1||''));set('fTel1T',c.tel1T||'');
+  set('fTel2',(c.tel2Pref||'')+' '+(c.tel2||''));set('fTel2T',c.tel2T||'');
+  set('fMob1',(c.mob1Pref||'')+' '+(c.mob1||''));set('fMob1T',c.mob1T||'');
+  set('fMob2',(c.mob2Pref||'')+' '+(c.mob2||''));set('fMob2T',c.mob2T||'');
+  set('fFax',(c.faxPref||'')+' '+(c.fax||''));
+  set('fEmail1',c.email1);set('fEmail2',c.email2);set('fPec',c.pec);set('fCf',c.cf);
+  set('fRagione',c.ragioneSociale);
+  // Via + civico combinati nella scheda
+  {const viaEl=document.getElementById('fVia');const civEl=document.getElementById('fCivico');
+   if(viaEl){viaEl.textContent=c.via||'—';}
+   if(civEl){civEl.textContent=c.civico||'';civEl.style.display=c.civico?'inline':'none';}}
+  set('fCap',c.cap);
+  set('fLocalita',c.localita);set('fComune',c.comune);set('fProvincia',c.provincia);
+  set('fRegione',c.regione);set('fStato2',c.stato2);
+  set('fPiva',c.piva);set('fRea',c.rea);set('fAlbo',c.albo);
+  set('fProdotti',c.prodotti);set('fSito',c.sitoWeb);set('fLink',c.linkAzienda);
+  set('fTipo',c.tipoRapporto);set('fProgetto',c.progetto);set('fStato',c.stato);
+
+  const refs=(c.referenze||'').split(',').map(r=>r.trim()).filter(Boolean);
+  document.getElementById('fReferenze').innerHTML=refs.map(r=>`<span class="tag p">${r}</span>`).join('');
+  const nr=document.getElementById('fNoteRef');
+  nr.textContent=c.noteRef||'';nr.style.display=c.noteRef?'block':'none';
+
+  const pg=document.getElementById('photoGrid');
+  const vg=document.getElementById('videoGrid');
+  pg.querySelectorAll('.mt:not(.ma)').forEach(el=>el.remove());
+  vg.querySelectorAll('.mt:not(.ma)').forEach(el=>el.remove());
+  (c.media||[]).forEach(m=>{
+    const isV=m.type==='video';
+    const grid=isV?vg:pg;
+    const addBtn=grid.querySelector('.ma');
+    const div=document.createElement('div');div.className='mt';
+    const el=document.createElement(isV?'video':'img');
+    el.src=m.url;el.style.cssText='width:100%;height:100%;object-fit:cover';
+    div.appendChild(el);
+    const tb=document.createElement('span');tb.className='tb';tb.textContent=isV?'MP4':'JPG';div.appendChild(tb);
+    grid.insertBefore(div,addBtn);
+  });
+
+  const dl=document.getElementById('docsList');
+  const addR=dl.querySelector('.add');
+  dl.querySelectorAll('.di:not(.add)').forEach(el=>el.remove());
+  (c.docs||[]).forEach(d2=>{
+    const ext=(d2.name||'').split('.').pop().toUpperCase();
+    const cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
+    const div=document.createElement('div');div.className='di';
+    div.innerHTML=`<div class="ic ${cls}">${ext.slice(0,3)}</div><span class="dn">${d2.name}</span><span class="dd">${d2.date||''}</span>`;
+    dl.insertBefore(div,addR);
+  });
+
+  renderNotes(c.note||[]);
+  showView('viewCard');
+}
+
+function renderNotes(notes){
+  const nl=document.getElementById('notesList');
+  if(!notes.length){nl.innerHTML='<div class="ne"><div class="nt" style="#555555">Nessuna nota ancora.</div></div>';return;}
+  nl.innerHTML=[...notes].reverse().map(n=>`<div class="ne"><div class="nd">${n.date}</div><div class="nt">${n.text}</div></div>`).join('');
+}
+
+async function addNote(){
+  const input=document.getElementById('newNoteInput');
+  const text=input.value.trim();
+  if(!text||!currentContact)return;
+  const dateStr=new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+  const notes=[...(currentContact.note||[]),{text,date:dateStr}];
+  try{
+    await updateDoc(doc(db,'contatti',currentContact.id),{note:notes,updatedAt:serverTimestamp()});
+    currentContact.note=notes;renderNotes(notes);input.value='';toast('Nota salvata');
+    const idx=allContacts.findIndex(x=>x.id===currentContact.id);
+    if(idx>=0)allContacts[idx].note=notes;
+  }catch(e){toast('Errore salvataggio nota');}
+}
+
+function showForm(contact=null){
+  editingId=contact?contact.id:null;
+  document.getElementById('formTitle').textContent=contact?'Modifica contatto':'Nuovo contatto';
+  document.getElementById('formHdr').textContent=contact?'Modifica — '+(contact.nome||'')+' '+(contact.cognome||''):'Dati contatto';
+  const simple={Nome:'nome',Cognome:'cognome',Professione:'professione',Incarico:'incarico',Tel1:'tel1',Tel1Pref:'tel1Pref',Tel2:'tel2',Tel2Pref:'tel2Pref',Mob1:'mob1',Mob1Pref:'mob1Pref',Mob2:'mob2',Mob2Pref:'mob2Pref',Fax:'fax',FaxPref:'faxPref',Email1:'email1',Email2:'email2',Pec:'pec',Cf:'cf',Ragione:'ragioneSociale',Civico:'civico',Cap:'cap',Localita:'localita',Comune:'comune',Provincia:'provincia',Regione:'regione',Stato2:'stato2',Piva:'piva',Rea:'rea',Albo:'albo',Prodotti:'prodotti',Sito:'sitoWeb',Link:'linkAzienda',Tipo:'tipoRapporto',Progetto:'progetto',Dropbox:'dropboxUrl',Spike:'spikeEmail',NoteRef:'noteRef'};
+  // Gestione campo Via con prefisso separato
+  if(contact&&contact.via){
+    const PREFISSI_VIA=['Via','Viale','Piazza','Piazzale','Largo','Vicolo','SS.','Strada'];
+    const viaVal=contact.via||'';
+    const found=PREFISSI_VIA.find(p=>viaVal.startsWith(p+' '));
+    const selPref=document.getElementById('fViaPrefissoI');
+    const inpVia=document.getElementById('fViaI');
+    if(found&&selPref&&inpVia){selPref.value=found;inpVia.value=viaVal.slice(found.length+1);}
+    else if(inpVia){inpVia.value=viaVal;}
+  } else {
+    const inpVia=document.getElementById('fViaI');if(inpVia)inpVia.value='';
+    const selPref=document.getElementById('fViaPrefissoI');if(selPref)selPref.value='Via';
+  }
+  Object.entries(simple).forEach(([f,k])=>{const el=document.getElementById('f'+f+'I');if(el)el.value=contact?(contact[k]||''):'';});
+  const sels={Gruppo:'gruppo',Categoria:'categoria',Tel1T:'tel1T',Tel2T:'tel2T',Mob1T:'mob1T',Mob2T:'mob2T',Stato:'stato'};
+  Object.entries(sels).forEach(([f,k])=>{const el=document.getElementById('f'+f+'I');if(el)el.value=contact?(contact[k]||''):'';});
+  if(contact&&contact.gruppo) updateCategorieSelect();
+  aggiornaProdotti();
+  // Pre-popola griglie foto e video nel form
+  const fpg=document.getElementById('formPhotoGrid');
+  const fvg=document.getElementById('formVideoGrid');
+  if(fpg){fpg.querySelectorAll('.mt:not(.ma)').forEach(el=>el.remove());}
+  if(fvg){fvg.querySelectorAll('.mt:not(.ma)').forEach(el=>el.remove());}
+  formMedia=[...(contact&&contact.media?contact.media:[])];
+  formMedia.forEach(m=>{
+    const isV=m.type==='video';
+    const grid=isV?fvg:fpg;
+    if(!grid)return;
+    const addBtn=grid.querySelector('.ma');
+    const div=document.createElement('div');div.className='mt';
+    const el=document.createElement(isV?'video':'img');
+    el.src=m.url;el.style.cssText='width:100%;height:100%;object-fit:cover';
+    div.appendChild(el);
+    const tb=document.createElement('span');tb.className='tb';tb.textContent=isV?'MP4':'JPG';div.appendChild(tb);
+    grid.insertBefore(div,addBtn);
+  });
+  showView('viewForm');
+}
+
+async function saveContact(){
+  const get=id=>(document.getElementById(id)||{}).value||'';
+  
+  // Memorizza settori nuovi
+  const settoreVal=get('fCategoriaI');
+  let settoriSalvati=JSON.parse(localStorage.getItem('hub_settori')||'[]');
+  if(settoreVal&&!settoriSalvati.includes(settoreVal)){
+    settoriSalvati.push(settoreVal);
+    localStorage.setItem('hub_settori',JSON.stringify(settoriSalvati));
+    aggiornaSettori();
+  }
+
+  // Memorizza prodotti nuovi su Firebase
+  const prodVal=get('fProdottiI');
+  if(prodVal){
+    try{
+      const prodSnap=await getDocs(collection(db,'vocabolario'));
+      const prodDoc=prodSnap.docs.find(d=>d.id==='prodotti');
+      const prodList=prodDoc?prodDoc.data().lista||[]:[];
+      if(!prodList.includes(prodVal)){
+        prodList.push(prodVal);
+        await setDoc(doc(db,'vocabolario','prodotti'),{lista:prodList});
+        aggiornaDatalist('prodotti',prodList);
+      }
+    }catch(e){}
+  }
+  
+  // Memorizza professioni nuove su Firebase
+  const profVal=get('fProfessioneI');
+  if(profVal){
+    try{
+      const profRef=doc(db,'vocabolario','professioni');
+      const profSnap=await getDocs(collection(db,'vocabolario'));
+      const profDoc=profSnap.docs.find(d=>d.id==='professioni');
+      const profList=profDoc?profDoc.data().lista||[]:[];
+      if(!profList.includes(profVal)){
+        profList.push(profVal);
+        await setDoc(profRef,{lista:profList});
+        const dl=document.getElementById('listProfessioni');
+        if(dl){const opt=document.createElement('option');opt.value=profVal;dl.appendChild(opt);}
+      }
+    }catch(e){}
+  }
+  const data={
+    nome:get('fNomeI'),cognome:get('fCognomeI'),professione:get('fProfessioneI'),
+    gruppo:get('fGruppoI'),categoria:get('fCategoriaI'),incarico:get('fIncaricoI'),
+    noteRef:get('fNoteRefI'),
+    tel1Pref:get('fTel1PrefI'),tel1:get('fTel1I'),tel1T:get('fTel1TI'),
+    tel2Pref:get('fTel2PrefI'),tel2:get('fTel2I'),tel2T:get('fTel2TI'),
+    mob1Pref:get('fMob1PrefI'),mob1:get('fMob1I'),mob1T:get('fMob1TI'),
+    mob2Pref:get('fMob2PrefI'),mob2:get('fMob2I'),mob2T:get('fMob2TI'),
+    faxPref:get('fFaxPrefI'),fax:get('fFaxI'),
+    email1:get('fEmail1I'),email2:get('fEmail2I'),pec:get('fPecI'),cf:get('fCfI'),
+    ragioneSociale:get('fRagioneI'),
+    via:(document.getElementById('fViaPrefissoI')||{}).value+' '+get('fViaI'),civico:get('fCivicoI'),cap:get('fCapI'),
+    localita:get('fLocalitaI'),comune:get('fComuneI'),provincia:get('fProvinciaI'),
+    regione:get('fRegioneI'),stato2:get('fStato2I'),
+    piva:get('fPivaI'),rea:get('fReaI'),albo:get('fAlboI'),prodotti:get('fProdottiI'),
+    sitoWeb:get('fSitoI'),linkAzienda:get('fLinkI'),
+    tipoRapporto:get('fTipoI'),progetto:get('fProgettoI'),stato:get('fStatoI'),
+    dropboxUrl:get('fDropboxI'),spikeEmail:get('fSpikeI'),
+    media:formMedia,
+    updatedAt:serverTimestamp()
+  };
+  if(!data.nome&&!data.cognome){toast('Inserisci almeno nome o cognome');return;}
+  try{
+    if(editingId){
+      await updateDoc(doc(db,'contatti',editingId),data);
+      const idx=allContacts.findIndex(x=>x.id===editingId);
+      if(idx>=0){allContacts[idx]={...allContacts[idx],...data};currentContact={...currentContact,...data};}
+      toast('Contatto aggiornato');
+      await loadContacts();
+      openContact(editingId);
+    }else{
+      data.note=[];data.media=[];data.docs=[];
+      const ref=await addDoc(collection(db,'contatti'),data);
+      allContacts.push({id:ref.id,...data});
+      toast('Contatto salvato');
+      await loadContacts();
+      showView('viewList');
+    }
+  }catch(e){toast('Errore: '+e.message);}
+}
+
+async function deleteContact(){
+  if(!currentContact)return;
+  if(!confirm('Eliminare '+currentContact.nome+' '+currentContact.cognome+'?'))return;
+  try{
+    await deleteDoc(doc(db,'contatti',currentContact.id));
+    allContacts=allContacts.filter(x=>x.id!==currentContact.id);
+    currentContact=null;toast('Contatto eliminato');
+    showView('viewList');renderList();
+  }catch(e){toast('Errore eliminazione');}
+}
+
+// ─── VOCABOLARI ───
+const VOC_DEFAULTS = {
+  professioni: ['Architetto',"Architetto d'interni",'Architetto paesaggista','Ingegnere','Ingegnere strutturista','Geometra','Agronomo','Termotecnico','Elettrotecnico','Notaio','Avvocato','Avvocato penalista','Avvocato civilista','Commercialista','Tributarista','Falegname','Idraulico','Elettricista','Lattoniere','Cartongessista','Piastrellista','Edile','Vivaista','Giardiniere','Medico base','Cardiologo','Neurologo','Oncologo','Ginecologo','Ortopedico','Otorinolaringoiatra','Oculista','Dentista','Fisioterapista','Chirurgo','Pediatra','Psicologo','Psichiatra','Urologo','Gastroenterologo','Agente commercio','Titolare','Capo area'],
+  categorie: [],
+  prodotti: [],
+  prefissi: ['+39 Italia','+33 Francia','+41 Svizzera','+43 Austria','+44 UK','+49 Germania','+34 Spagna','+31 Olanda','+32 Belgio','+1 USA/Canada','+7 Russia','+86 Cina','+81 Giappone','+971 UAE']
+};
+
+async function caricaVocabolari(){
+  for(const nome of ['professioni','categorie','prodotti','prefissi']){
+    try{
+      const snap=await getDocs(collection(db,'vocabolario'));
+      const d=snap.docs.find(x=>x.id===nome);
+      const lista=d?d.data().lista:VOC_DEFAULTS[nome]||[];
+      renderVocList(nome,lista);
+      aggiornaDatalist(nome,lista);
+    }catch(e){}
+  }
+}
+
+function renderVocList(nome,lista){
+  const el=document.getElementById('vocList'+cap(nome));
+  if(!el)return;
+  el.innerHTML=lista.map((v,i)=>`<div style="display:flex;align-items:center;gap:6px;padding:3px 6px;background:#2E5A8E;border-radius:5px">
+    <span style="flex:1;font-size:11px;color:#FFFFFF">${v}</span>
+    <button onclick="vocDel('${nome}',${i})" style="background:none;border:none;color:#F09595;cursor:pointer;font-size:13px;padding:0 2px">×</button>
+  </div>`).join('');
+}
+
+function aggiornaDatalist(nome,lista){
+  const idMap={professioni:'listProfessioni',categorie:'listSettori',prodotti:'listProdotti',prefissi:'listPrefissi'};
+  const dl=document.getElementById(idMap[nome]);
+  if(dl) dl.innerHTML=lista.map(v=>`<option value="${v}">`).join('');
+}
+
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1);}
+
+window.vocAdd=async function(nome){
+  if(nome==='prefissiVia'){
+    const input=document.getElementById('vocInputPrefissiVia');
+    if(!input||!input.value.trim())return;
+    const val=input.value.trim();
+    try{
+      const snap=await getDocs(collection(db,'vocabolario'));
+      const d=snap.docs.find(x=>x.id==='prefissiVia');
+      const lista=d?d.data().lista:[];
+      if(!lista.includes(val)){lista.push(val);await setDoc(doc(db,'vocabolario','prefissiVia'),{lista});}
+      input.value='';aggiornaPrefissiVia();toast('Prefisso aggiunto');
+    }catch(e){toast('Errore');}
+    return;
+  }
+  const input=document.getElementById('vocInput'+cap(nome));
+  const val=input.value.trim();
+  if(!val)return;
+  try{
+    const snap=await getDocs(collection(db,'vocabolario'));
+    const d=snap.docs.find(x=>x.id===nome);
+    const lista=d?d.data().lista:[...(VOC_DEFAULTS[nome]||[])];
+    if(!lista.includes(val)){
+      lista.push(val);
+      await setDoc(doc(db,'vocabolario',nome),{lista});
+      renderVocList(nome,lista);
+      aggiornaDatalist(nome,lista);
+      input.value='';
+      toast('Aggiunto: '+val);
+    } else { toast('Voce già presente'); }
+  }catch(e){toast('Errore');}
+}
+
+window.vocDel=async function(nome,idx){
+  if(nome==='prefissiVia'){
+    try{
+      const snap=await getDocs(collection(db,'vocabolario'));
+      const d=snap.docs.find(x=>x.id==='prefissiVia');
+      let lista=d?d.data().lista:[];
+      lista=lista.filter(v=>v!==idx); // idx is the string value here
+      await setDoc(doc(db,'vocabolario','prefissiVia'),{lista});
+      aggiornaPrefissiVia();toast('Prefisso eliminato');
+    }catch(e){toast('Errore');}
+    return;
+  }
+  try{
+    const snap=await getDocs(collection(db,'vocabolario'));
+    const d=snap.docs.find(x=>x.id===nome);
+    const lista=d?d.data().lista:[...(VOC_DEFAULTS[nome]||[])];
+    const voce=lista[idx];
+    lista.splice(idx,1);
+    await setDoc(doc(db,'vocabolario',nome),{lista});
+    renderVocList(nome,lista);
+    aggiornaDatalist(nome,lista);
+    toast('Eliminato: '+voce);
+  }catch(e){toast('Errore');}
+}
+
+// ─── EVENTI ───
+document.getElementById('tabBtnRubrica').addEventListener('click',()=>showTab('rubrica'));
+document.getElementById('tabBtnAree').addEventListener('click',()=>showTab('aree'));
+document.getElementById('tabBtnImpostazioni').addEventListener('click',()=>showTab('impostazioni'));
+document.getElementById('btnNuovoContatto').addEventListener('click',()=>showForm());
+document.getElementById('btnBackList').addEventListener('click',()=>{currentContact=null;showView('viewList');renderList();});
+document.getElementById('btnModifica').addEventListener('click',()=>{if(currentContact)showForm(currentContact);});
+document.getElementById('btnElimina').addEventListener('click',deleteContact);
+document.getElementById('btnFoto').addEventListener('click',()=>document.getElementById('photoInput').click());
+document.getElementById('cardAv').addEventListener('click',()=>document.getElementById('photoInput').click());
+document.getElementById('btnAddNote').addEventListener('click',addNote);
+document.getElementById('btnAbarLista').addEventListener('click',()=>{currentContact=null;showView('viewList');renderList();});
+document.getElementById('btnAbarModifica').addEventListener('click',()=>{if(currentContact)showForm(currentContact);});
+document.getElementById('btnAbarNota').addEventListener('click',addNote);
+// Form foto listener
+document.getElementById('formPhotoInput').addEventListener('change',(e)=>{
+  const fpg=document.getElementById('formPhotoGrid');
+  const addBtn=fpg.querySelector('.ma');
+  Array.from(e.target.files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=(ev)=>{
+      const url=ev.target.result;
+      const div=document.createElement('div');div.className='mt';
+      const img=document.createElement('img');img.src=url;img.style.cssText='width:100%;height:100%;object-fit:cover';
+      div.appendChild(img);
+      const tb=document.createElement('span');tb.className='tb';tb.textContent='JPG';div.appendChild(tb);
+      fpg.insertBefore(div,addBtn);
+      formMedia.push({url,type:'image'});
+    };reader.readAsDataURL(file);
+  });
+});
+document.getElementById('formVideoInput').addEventListener('change',(e)=>{
+  const fvg=document.getElementById('formVideoGrid');
+  const addBtn=fvg.querySelector('.ma');
+  Array.from(e.target.files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=(ev)=>{
+      const url=ev.target.result;
+      const div=document.createElement('div');div.className='mt';
+      const vid=document.createElement('video');vid.src=url;vid.style.cssText='width:100%;height:100%;object-fit:cover';
+      div.appendChild(vid);
+      const tb=document.createElement('span');tb.className='tb';tb.textContent='MP4';div.appendChild(tb);
+      fvg.insertBefore(div,addBtn);
+      formMedia.push({url,type:'video'});
+    };reader.readAsDataURL(file);
+  });
+});
+document.getElementById('formBtnAddPhoto').addEventListener('click',()=>document.getElementById('formPhotoInput').click());
+document.getElementById('formBtnAddVideo').addEventListener('click',()=>document.getElementById('formVideoInput').click());
+
+document.getElementById('btnAnnullaForm').addEventListener('click',()=>{if(currentContact)showView('viewCard');else{showView('viewList');renderList();}});
+document.getElementById('btnAnnullaForm2').addEventListener('click',()=>{if(currentContact)showView('viewCard');else{showView('viewList');renderList();}});
+document.getElementById('btnSalvaContatto').addEventListener('click',saveContact);
+document.getElementById('searchInput').addEventListener('input',renderList);
+document.getElementById('filterCategoria').addEventListener('change',renderList);
+
+
+document.getElementById('btnDropbox').addEventListener('click',()=>window.open('https://www.dropbox.com/home'));
+document.getElementById('btnSpike').addEventListener('click',()=>window.open('https://spikenow.com/web/?utm_content=navbar_signin_link&utm_source=website&utm_medium=referral&utm_campaign=website-direct&utm_term=%2F&lastPageUrl=%2F&ref=website-direct&ver=wip'));
+document.getElementById('btnMaps').addEventListener('click',()=>{
+  if(!currentContact)return;
+  const addr=[currentContact.via,currentContact.civico,currentContact.cap,currentContact.comune,currentContact.provincia,currentContact.stato2].filter(Boolean).join(' ');
+  if(addr) window.open('https://www.google.com/maps/search/'+encodeURIComponent(addr));
+  else toast('Nessun indirizzo inserito');
+});
+
+document.querySelectorAll('.pill').forEach(pill=>{
+  pill.addEventListener('click',function(){
+    const map={pillTutti:'tutti',pillFornitori:'fornitori',pillTerzi:'terzi',pillPersonale:'personale'};
+    currentGruppo=map[this.id]||'tutti';
+    document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));
+    this.classList.add('on');
+    updateFilterCategorie();
+    renderList();
+  });
+});
+
+document.getElementById('photoInput').addEventListener('change',async(e)=>{
+  const file=e.target.files[0];if(!file||!currentContact)return;
+  const reader=new FileReader();
+  reader.onload=async(ev)=>{
+    const url=ev.target.result;
+    try{
+      await updateDoc(doc(db,'contatti',currentContact.id),{photoUrl:url,updatedAt:serverTimestamp()});
+      currentContact.photoUrl=url;
+      document.getElementById('cardAv').innerHTML=`<img src="${url}" alt="">`;
+      const idx=allContacts.findIndex(x=>x.id===currentContact.id);
+      if(idx>=0)allContacts[idx].photoUrl=url;
+      renderList();toast('Foto aggiornata');
+    }catch(e){toast('Errore foto');}
+  };
+  reader.readAsDataURL(file);
+});
+
+function addMediaFiles(files, forceType){
+  if(!currentContact)return;
+  const media=[...(currentContact.media||[])];
+  Array.from(files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=async(ev)=>{
+      const url=ev.target.result;
+      const isV=forceType==='video'||file.type.startsWith('video');
+      const grid=isV?document.getElementById('videoGrid'):document.getElementById('photoGrid');
+      const addBtn=grid.querySelector('.ma');
+      const div=document.createElement('div');div.className='mt';
+      const el=document.createElement(isV?'video':'img');el.src=url;el.style.cssText='width:100%;height:100%;object-fit:cover';
+      div.appendChild(el);
+      const tb=document.createElement('span');tb.className='tb';tb.textContent=isV?'MP4':'JPG';div.appendChild(tb);
+      grid.insertBefore(div,addBtn);
+      media.push({url,type:isV?'video':'image'});
+      try{await updateDoc(doc(db,'contatti',currentContact.id),{media,updatedAt:serverTimestamp()});currentContact.media=media;toast('Media aggiunto');}
+      catch(err){toast('Errore media');}
+    };reader.readAsDataURL(file);
+  });
+}
+document.getElementById('photoInput').addEventListener('change',(e)=>addMediaFiles(e.target.files,'image'));
+document.getElementById('videoInput').addEventListener('change',(e)=>addMediaFiles(e.target.files,'video'));
+document.getElementById('btnAddPhoto').addEventListener('click',()=>document.getElementById('photoInput').click());
+document.getElementById('btnAddVideo').addEventListener('click',()=>document.getElementById('videoInput').click());
+
+document.getElementById('docInput').addEventListener('change',async(e)=>{
+  if(!currentContact)return;
+  const dl=document.getElementById('docsList');const addRow=dl.querySelector('.add');
+  const docs=[...(currentContact.docs||[])];
+  Array.from(e.target.files).forEach(file=>{
+    const ext=file.name.split('.').pop().toUpperCase();
+    const cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
+    const now=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
+    const div=document.createElement('div');div.className='di';
+    div.innerHTML=`<div class="ic ${cls}">${ext.slice(0,3)}</div><span class="dn">${file.name}</span><span class="dd">${now}</span>`;
+    dl.insertBefore(div,addRow);docs.push({name:file.name,date:now,ext});
+  });
+  try{await updateDoc(doc(db,'contatti',currentContact.id),{docs,updatedAt:serverTimestamp()});currentContact.docs=docs;toast('Documento aggiunto');}
+  catch(e){toast('Errore documento');}
+});
+
+document.getElementById('btnAddDoc').addEventListener('click',()=>window.open('https://www.dropbox.com/home','_blank'));
+
+['aiBtnEmail','aiBtnRiassunto','aiBtnLettera','aiBtnPromemoria'].forEach(btnId=>{
+  document.getElementById(btnId).addEventListener('click',()=>{
+    if(!currentContact)return;
+    const nome=(currentContact.nome||'')+' '+(currentContact.cognome||'');
+    const az=currentContact.ragioneSociale||'';
+    const pr=currentContact.progetto||'';
+    const map={aiBtnEmail:`Scrivi email professionale a ${nome} (${az}) per: ${pr}`,aiBtnRiassunto:`Riassumi profilo di ${nome} di ${az}, progetto: ${pr}`,aiBtnLettera:`Genera lettera formale per ${nome} presso ${az}`,aiBtnPromemoria:`Crea promemoria follow-up per ${nome} (${az}): ${pr}`};
+    navigator.clipboard.writeText(map[btnId]);toast('Prompt copiato negli appunti');
+  });
+});
+
+['areaFinanza','areaFisco','areaLegale','areaImmobili','areaTurismo','areaEnogastronomia'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',()=>toast('Area in costruzione nella prossima sessione'));
+});
+
+// Carica tutti i vocabolari da Firebase
+async function caricaTuttiVocabolari(){
+  for(const nome of ['professioni','categorie','prodotti','prefissi']){
+    try{
+      const snap=await getDocs(collection(db,'vocabolario'));
+      const d=snap.docs.find(x=>x.id===nome);
+      const lista=d?d.data().lista:VOC_DEFAULTS[nome]||[];
+      aggiornaDatalist(nome,lista);
+    }catch(e){}
+  }
+}
+
+// ===== DATI GEOGRAFICI ITALIANI =====
+
+
+
+
+
+
+// Prefissi Via personalizzati — carica dal vocabolario Firebase e aggiorna il select
+let PREFISSI_VIA_DEFAULT=['Via','Viale','Piazza','Piazzale','Largo','Vicolo','SS.','Strada'];
+
+async function aggiornaPrefissiVia(){
+  try{
+    const snap=await getDocs(collection(db,'vocabolario'));
+    let extra=[];
+    snap.forEach(d=>{if(d.id==='prefissiVia')extra=d.data().lista||[];});
+    const tutti=[...new Set([...PREFISSI_VIA_DEFAULT,...extra])];
+    const sel=document.getElementById('fViaPrefissoI');
+    if(sel){
+      const cur=sel.value;
+      sel.innerHTML=tutti.map(p=>`<option value="${p}">${p}</option>`).join('');
+      if(cur) sel.value=cur;
+    }
+    // Aggiorna anche lista in impostazioni
+    const listEl=document.getElementById('vocListPrefissiVia');
+    if(listEl){
+      listEl.innerHTML=tutti.map(p=>`<div style="display:flex;align-items:center;justify-content:space-between;padding:3px 6px;background:rgba(255,255,255,.05);border-radius:4px">
+        <span style="font-size:11px;color:#fff">${p}</span>
+        ${!PREFISSI_VIA_DEFAULT.includes(p)?`<button onclick="vocDel('prefissiVia','${p}')" style="background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:11px">✕</button>`:'<span style="font-size:10px;color:#85B7EB">default</span>'}
+      </div>`).join('');
+    }
+  }catch(e){console.warn('prefissiVia:',e);}
+}
+
+
+aggiornaPrefissiVia();
+caricaTuttiVocabolari();
+caricaTokenDropbox();
+updateFilterCategorie();
+loadContacts();
+
+</script>
+
+
+
+<script>
+// ── DROPBOX BACKUP — token gestito via Firebase Impostazioni ──
+
+async function getTokenDropbox() {
+  try {
+    const snap = await getDocs(collection(db, 'impostazioni'));
+    const doc = snap.docs.find(d => d.id === 'dropbox');
+    return doc ? (doc.data().token || '') : '';
+  } catch(e) { return ''; }
+}
+
+async function salvaTokenDropbox() {
+  const input = document.getElementById('dbxTokenInput');
+  const status = document.getElementById('dbxTokenStatus');
+  const token = input ? input.value.trim() : '';
+  if (!token) { if(status) status.textContent = '⚠ Token vuoto — incolla il token prima di salvare.'; return; }
+  try {
+    await setDoc(doc(db, 'impostazioni', 'dropbox'), { token, aggiornato: new Date().toISOString() });
+    if(status) status.textContent = '✓ Token salvato — ' + new Date().toLocaleString('it-IT');
+    toast('✓ Token Dropbox salvato');
+  } catch(e) {
+    if(status) status.textContent = '⚠ Errore salvataggio: ' + e.message;
+  }
+}
+
+async function caricaTokenDropbox() {
+  const input = document.getElementById('dbxTokenInput');
+  const status = document.getElementById('dbxTokenStatus');
+  try {
+    const snap = await getDocs(collection(db, 'impostazioni'));
+    const d = snap.docs.find(x => x.id === 'dropbox');
+    if (d && d.data().token) {
+      if(input) input.value = d.data().token;
+      const ts = d.data().aggiornato ? new Date(d.data().aggiornato).toLocaleString('it-IT') : '';
+      if(status) status.textContent = '✓ Token presente — aggiornato il ' + ts;
+    } else {
+      if(status) status.textContent = 'Nessun token salvato. Inseriscilo per abilitare il backup.';
+    }
+  } catch(e) {}
+}
+
+function toggleTokenVisibility() {
+  const input = document.getElementById('dbxTokenInput');
+  if (!input) return;
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+async function backupDropboxUpload(nomeFile, dati) {
+  const token = await getTokenDropbox();
+  if (!token) {
+    alert('⚠ Token Dropbox non configurato.\nVai in ⚙ Impostazioni → Token Dropbox e incolla il tuo token.');
+    return { ok:false, err:'Token mancante' };
+  }
+  const ora = new Date();
+  const ts = ora.toISOString().replace(/[:.]/g,'-').slice(0,19);
+  const path = `/Hub Personale/Backup/${nomeFile}_${ts}.json`;
+  try {
+    const res = await fetch('https://content.dropboxapi.com/2/files/upload', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Dropbox-API-Arg': JSON.stringify({ path, mode:'add', autorename:true, mute:false }),
+        'Content-Type': 'application/octet-stream'
+      },
+      body: JSON.stringify(dati, null, 2)
+    });
+    if (res.ok) { const j = await res.json(); return { ok:true, path:j.path_display }; }
+    else {
+      const errTxt = await res.text();
+      if (errTxt.includes('expired') || errTxt.includes('invalid')) {
+        alert('⚠ Token Dropbox scaduto o non valido.\nVai in ⚙ Impostazioni → Token Dropbox e aggiorna il token.');
+      }
+      return { ok:false, err: errTxt };
+    }
+  } catch(e) { return { ok:false, err:e.message }; }
+}
+
+async function backupContatti() {
+  const btn = document.getElementById('btn-backup');
+  if (btn) { btn.textContent = '⏳...'; btn.disabled = true; }
+  try {
+    const url = `https://firestore.googleapis.com/v1/projects/hub-contatti/databases/(default)/documents/contatti?pageSize=1000`;
+    const res = await fetch(url);
+    const json = await res.json();
+    const dati = (json.documents || []).map(doc => {
+      const id = doc.name.split('/').pop();
+      const fields = {};
+      for (const [k,v] of Object.entries(doc.fields || {})) {
+        fields[k] = v.stringValue ?? v.integerValue ?? v.booleanValue ?? v.doubleValue ?? v.timestampValue ?? '';
+      }
+      return { id, ...fields };
+    });
+    const r = await backupDropboxUpload('Rubrica_Contatti', { contatti:dati, totale:dati.length, data:new Date().toISOString() });
+    if (r.ok) {
+      const t = document.getElementById('toast');
+      if (t) { t.textContent = '✓ Backup Dropbox salvato: ' + r.path; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),4000); }
+    }
+  } catch(e) { alert('⚠ Errore: ' + e.message); }
+  finally { if (btn) { btn.textContent = '💾 Backup Dropbox'; btn.disabled = false; } }
+}
+</script>
+</body>
+</html>
