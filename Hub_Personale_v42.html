@@ -1,0 +1,2002 @@
+<!DOCTYPE html>
+<!-- saved from url=(0076)file:///C:/Users/scima/Downloads/Hub_Personale_Multidisciplinare%20(26).html -->
+<html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub Personale Multidisciplinare</title>
+<link href="./Hub Personale Multidisciplinare Claude_files/css2" rel="stylesheet">
+<style>
+:root {
+  --bg: #3D3D3D;
+  --bg2: #3E1422;
+  --surface: #808080;
+  --border: #6B3448;
+  --text: #1A1814;
+  --text2: #6B6560;
+  --text3: #A09890;
+  --accent: #8B4513;
+  --accent2: #C4763A;
+
+  --c-blue: #185FA5;
+  --c-blue-bg: #EBF3FA;
+  --c-green: #1D9E75;
+  --c-green-bg: #E4F5EE;
+  --c-amber: #BA7517;
+  --c-amber-bg: #FBF0DC;
+  --c-red: #C0392B;
+  --c-red-bg: #FCECEA;
+  --c-purple: #6B52C8;
+  --c-purple-bg: #F0EDFB;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* TOP BAR */
+.topbar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 1rem; flex: 1; justify-content: center; }
+.topbar-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 25px;
+  font-weight: 600;
+  color: #000000;
+  letter-spacing: 0.02em;
+}
+.topbar-sep { width: 1px; height: 20px; background: var(--border); }
+.topbar-sub { font-size: 12px; color: var(--text3); font-weight: 300; }
+.topbar-right { display: flex; align-items: center; gap: 1.5rem; position: absolute; right: 2rem; }
+.topbar-date { font-size: 12px; color: var(--text2); }
+.topbar-search {
+  background: #000000;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+}
+.topbar-search:hover { border-color: var(--accent); }
+
+/* LAYOUT */
+.layout { display: block; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 1.5rem 0;
+  overflow-y: auto;
+}
+.sidebar-section { margin-bottom: 1.5rem; }
+.sidebar-label {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text3);
+  padding: 0 1.25rem;
+  margin-bottom: 0.5rem;
+}
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 1.25rem;
+  font-size: 13px;
+  color: var(--text2);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+}
+.sidebar-item:hover { background: var(--bg); color: var(--text); }
+.sidebar-item.active { background: var(--bg); color: var(--accent); border-left-color: var(--accent); font-weight: 500; }
+.sidebar-icon { font-size: 14px; width: 18px; text-align: center; }
+
+/* MAIN */
+.main { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+
+/* WELCOME STRIP */
+.welcome {
+  background: #000000;
+  border-radius: 10px;
+  padding: 1.25rem 1.75rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.welcome-text { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 400; color: #FFFFFF; }
+.welcome-sub { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 3px; }
+.welcome-tag { background: #808080; border-radius: 20px; padding: 4px 14px; font-size: 11px; color: #000000; }
+
+/* SECTION TITLE */
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: #FFFFFF;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* CARDS GRID */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 110px;
+  position: relative;
+}
+.card:hover { border-color: var(--accent2); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(139,69,19,0.08); }
+.card.active { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(139,69,19,0.15); }
+.card-accent { width: 3px; height: 30px; border-radius: 2px; position: absolute; top: 1rem; right: 1rem; }
+.card-icon { font-size: 22px; }
+.card-name { font-size: 12px; font-weight: 500; color: var(--text); line-height: 1.35; }
+.card-badge {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  display: inline-block;
+  width: fit-content;
+  font-weight: 400;
+}
+
+/* DETAIL PANEL */
+.detail {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+.detail.visible { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.detail-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.detail-title { font-family: 'Cormorant Garamond', serif; font-size: 25px; font-weight: 500; color: var(--text); }
+.detail-close { background: var(--bg2); border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; color: var(--text2); cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.detail-close:hover { background: var(--border); }
+.detail-cols { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; }
+.detail-col-title { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 0.75rem; }
+.detail-list { display: flex; flex-direction: column; gap: 6px; }
+.detail-list-item { font-size: 13px; color: var(--text2); display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; }
+.detail-list-item::before { content: '—'; color: var(--text3); font-size: 11px; margin-top: 1px; flex-shrink: 0; }
+.detail-actions { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; }
+.xe-panel { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 1px solid var(--border); display: none; }
+.xe-panel.visible { display: block; }
+.xe-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 10px; }
+.xe-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.xe-inp { width: 110px; font-size: 14px; padding: 7px 10px; border: 1px solid #C8A200; border-radius: 6px; background: #FFD700; color: #000000; font-family: 'DM Sans', sans-serif; font-weight:500; }
+.xe-sel { font-size: 12px; padding: 7px 10px; border: 1px solid #C8A200; border-radius: 6px; background: #FFD700; color: #000000; font-family: 'DM Sans', sans-serif; font-weight:500; }
+.xe-arrow { font-size: 16px; color: var(--text3); }
+.xe-result { font-size: 22px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+.xe-rate { font-size: 11px; color: var(--text3); margin-bottom: 8px; }
+.xe-link { font-size: 11px; color: var(--c-blue); text-decoration: none; }
+.xe-link:hover { text-decoration: underline; }
+.btn-action {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #666666;
+  background: #808080;
+  color: #000000;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-action:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+.btn-primary:hover { background: #6B3410; }
+
+/* SCADENZE STRIP */
+.scadenze-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 2rem;
+}
+.scadenza-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  border-left: 3px solid var(--border);
+}
+.scadenza-card.urgente { border-left-color: var(--c-red); }
+.scadenza-card.prossima { border-left-color: var(--c-amber); }
+.scadenza-card.ok { border-left-color: var(--c-green); }
+.scadenza-label { font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: #FFFFFF; margin-bottom: 4px; }
+.scadenza-title { font-size: 13px; font-weight: 500; color: var(--text); }
+.scadenza-date { font-size: 12px; color: var(--text2); margin-top: 4px; }
+
+/* FOOTER */
+.footer {
+  border-top: none;
+  padding: 0 2rem 0.5rem;
+  margin-top: -2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+.footer-inner {
+  width: 100%;
+  max-width: 480px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  background: var(--surface);
+}
+.legend { display: flex; gap: 1.5rem; justify-content: center; }
+.legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text3); transition: opacity .15s; }
+.legend-item:hover { opacity: 0.7; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.footer-note { font-size: 11px; color: var(--text3); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .detail-cols { grid-template-columns: 1fr; }
+  .topbar-sub, .topbar-sep { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar" style="justify-content:center;">
+  <div class="topbar-search">⌕ &nbsp;Cerca area...</div>
+</div>
+
+<div class="layout">
+
+
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- FASCIA NERA — data e ora centrate -->
+    <div style="background:#000000;border-radius:10px;padding:1.25rem 2rem;margin-bottom:10px;display:flex;align-items:center;justify-content:center;width:100%;max-width:480px;margin-left:auto;margin-right:auto;">
+      <div style="background:#FFFFFF;border-radius:20px;padding:8px 18px;display:flex;align-items:center;gap:14px">
+        <span style="font-size:14px;font-weight:500;letter-spacing:0.04em;font-variant-numeric:tabular-nums" id="welcome-date" style="color:#000000">sabato 04 aprile 2026</span>
+        <span style="width:1px;height:14px;background:rgba(0,0,0,0.3);display:inline-block"></span>
+        <span style="font-size:14px;font-weight:500;letter-spacing:0.04em;font-variant-numeric:tabular-nums" id="top-time" style="color:#000000">15:28:08</span>
+      </div>
+    </div>
+
+    <!-- SCHERMATA HOME — visibile all'apertura, nascosta quando si seleziona una sezione -->
+    <div id="section-home" class="hub-section" style="display:flex;align-items:center;justify-content:center;">
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:3.5rem 5rem;text-align:center;box-shadow:0 4px 32px rgba(0,0,0,0.18);width:100%;max-width:480px;">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:600;color:var(--text);letter-spacing:0.06em;margin-bottom:0.5rem">Hub Personale</div>
+        <div style="font-size:11px;color:#FFFFFF;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:2.5rem">Sistema Multidisciplinare</div>
+        <div style="display:flex;flex-direction:column;gap:0.625rem">
+          <button onclick="showSection('appuntamenti')" style="font-family:'DM Sans',sans-serif;font-size:13px;padding:11px 20px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:#FFFFFF;cursor:pointer;transition:all .15s;text-align:left;display:flex;align-items:center;gap:12px" onmouseover="this.style.borderColor='#C4763A';this.style.background='#2E1A00'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'"><span style="font-size:20px">📅</span> Appuntamenti e contatti</button>
+          <button onclick="showSection('scadenze')" style="font-family:'DM Sans',sans-serif;font-size:13px;padding:11px 20px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:#FFFFFF;cursor:pointer;transition:all .15s;text-align:left;display:flex;align-items:center;gap:12px" onmouseover="this.style.borderColor='#C4763A';this.style.background='#2E1A00'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'"><span style="font-size:20px">⏰</span> Scadenze in evidenza</button>
+          <button onclick="showSection('aree')" style="font-family:'DM Sans',sans-serif;font-size:13px;padding:11px 20px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:#FFFFFF;cursor:pointer;transition:all .15s;text-align:left;display:flex;align-items:center;gap:12px" onmouseover="this.style.borderColor='#C4763A';this.style.background='#2E1A00'" onmouseout="this.style.borderColor='var(--border)';this.style.background='var(--surface2)'"><span style="font-size:20px">🗂</span> Aree tematiche</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- APPUNTAMENTI E CONTATTI -->
+    <div id="section-appuntamenti" class="hub-section" style="display:none;">
+    <div style="margin-bottom:1rem"><button onclick="tornaHome()" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 12px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text3);cursor:pointer">← Home</button></div>
+    <div class="section-title">Appuntamenti e contatti</div>
+    <div class="scadenze-strip">
+      <div class="scadenza-card prossima" style="cursor:pointer" onclick="window.open('https://scimaza-creator.github.io/scimaza/Calendrario_Appuntamenti_Presenza.html','_blank')">
+        <div class="scadenza-label">Appuntamenti</div>
+        <div class="scadenza-title">Presenza</div>
+        <div class="scadenza-date" style="color:#1D9E75">→ Apri calendario</div>
+      </div>
+      <div class="scadenza-card prossima" style="cursor:pointer" onclick="window.open('https://scimaza-creator.github.io/scimaza/Calendario_Appuntamenti_Telefono.html','_blank')">
+        <div class="scadenza-label">Appuntamenti</div>
+        <div class="scadenza-title">Telefono</div>
+        <div class="scadenza-date" style="color:#1D9E75">→ Apri calendario</div>
+      </div>
+      <div class="scadenza-card prossima" style="cursor:pointer" onclick="window.open('https://scimaza-creator.github.io/scimaza/Calendario_Appuntamenti_Riunione.html','_blank')">
+        <div class="scadenza-label">Appuntamenti</div>
+        <div class="scadenza-title">Riunioni</div>
+        <div class="scadenza-date" style="color:#1D9E75">→ Apri calendario</div>
+      </div>
+      <div class="scadenza-card prossima" style="cursor:pointer" onclick="window.open('https://scimaza-creator.github.io/scimaza/Calendario_Appuntamenti_Call.html','_blank')">
+        <div class="scadenza-label">Appuntamenti</div>
+        <div class="scadenza-title">Call</div>
+        <div class="scadenza-date" style="color:#1D9E75">→ Apri calendario</div>
+      </div>
+      <div class="scadenza-card ok" style="cursor:pointer" onclick="window.open('https://scimaza-creator.github.io/scimaza/Calendario_Appuntamenti_Tutti.html','_blank')">
+        <div class="scadenza-label">Appuntamenti</div>
+        <div class="scadenza-title">Tutti gli appuntamenti</div>
+        <div class="scadenza-date" style="color:#1D9E75">→ Apri calendario</div>
+      </div>
+      <div class="scadenza-card ok" style="cursor:pointer" onclick="window.open('https://scimaza-creator.github.io/scimaza/hub_contatti_v28.html','_blank')">
+        <div class="scadenza-label">Contatti</div>
+        <div class="scadenza-title">Rubrica contatti</div>
+        <div class="scadenza-date" style="color:#185FA5">→ Apri rubrica</div>
+      </div>
+    </div>
+
+    </div><!-- end section-appuntamenti -->
+    <!-- SCADENZE IMMINENTI -->
+    <div id="section-scadenze" class="hub-section" style="display:none">
+    <div style="margin-bottom:1rem"><button onclick="tornaHome()" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 12px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text3);cursor:pointer">← Home</button></div>
+    <div class="section-title">Scadenze in evidenza</div>
+    <div class="scadenze-strip">
+      <div class="scadenza-card urgente">
+        <div class="scadenza-label">Cronologia</div>
+        <div class="scadenza-title">Scadenze fiscali</div>
+        <div class="scadenza-date">Da configurare in Airtable</div>
+      </div>
+      <div class="scadenza-card prossima">
+        <div class="scadenza-label">Cronologia</div>
+        <div class="scadenza-title">Rinnovi assicurativi</div>
+        <div class="scadenza-date">Da configurare in Airtable</div>
+      </div>
+      <div class="scadenza-card prossima">
+        <div class="scadenza-label">Cronologia</div>
+        <div class="scadenza-title">Collaudi impianti</div>
+        <div class="scadenza-date">Da configurare in Airtable</div>
+      </div>
+      <div class="scadenza-card ok">
+        <div class="scadenza-label">Cronologia</div>
+        <div class="scadenza-title">Contratti locazione</div>
+        <div class="scadenza-date">Da configurare in Airtable</div>
+      </div>
+      <div class="scadenza-card urgente" style="cursor:pointer" onclick="window.open('https://airtable.com/workspaces','_blank')">
+        <div class="scadenza-label">Scadenze</div>
+        <div class="scadenza-title">Altre scadenze</div>
+        <div class="scadenza-date" style="color:#C0392B">→ Apri Airtable</div>
+      </div>
+    </div>
+
+    </div><!-- end section-scadenze -->
+    <!-- AREE TEMATICHE -->
+    <div id="section-aree" class="hub-section" style="display:none">
+    <div style="margin-bottom:1rem"><button onclick="tornaHome()" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 12px;border-radius:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text3);cursor:pointer">← Home</button></div>
+    <div class="section-title">Aree tematiche</div>
+    <div class="cards-grid" id="cards-grid">
+    <div class="card " onclick="toggleDetail(1)">
+      <div class="card-accent" style="background:var(--c-green)"></div>
+      <div class="card-icon">🏛</div>
+      <div class="card-name">Restauro Conservativo</div>
+      <span class="card-badge" style="background:var(--c-green-bg);color:var(--c-green)">Operativo</span>
+    </div>
+  
+    <div class="card " onclick="toggleDetail(3)">
+      <div class="card-accent" style="background:var(--c-amber)"></div>
+      <div class="card-icon">🧾</div>
+      <div class="card-name">Fiscale / Tributario</div>
+      <span class="card-badge" style="background:var(--c-amber-bg);color:var(--c-amber)">Normativo</span>
+    </div>
+  
+    <div class="card " onclick="toggleDetail(4)">
+      <div class="card-accent" style="background:var(--c-amber)"></div>
+      <div class="card-icon">⚖️</div>
+      <div class="card-name">Legale</div>
+      <span class="card-badge" style="background:var(--c-amber-bg);color:var(--c-amber)">Normativo</span>
+    </div>
+  
+    <div class="card " onclick="toggleDetail(5)">
+      <div class="card-accent" style="background:var(--c-blue)"></div>
+      <div class="card-icon">🛡</div>
+      <div class="card-name">Assicurativo</div>
+      <span class="card-badge" style="background:var(--c-blue-bg);color:var(--c-blue)">Patrimonio</span>
+    </div>
+  
+    <div class="card " onclick="toggleDetail(6)">
+      <div class="card-accent" style="background:var(--c-blue)"></div>
+      <div class="card-icon">🏠</div>
+      <div class="card-name">Immobiliare</div>
+      <span class="card-badge" style="background:var(--c-blue-bg);color:var(--c-blue)">Patrimonio</span>
+    </div>
+  
+
+  
+    <div class="card " onclick="toggleDetail(8)">
+      <div class="card-accent" style="background:var(--c-blue)"></div>
+      <div class="card-icon">🏦</div>
+      <div class="card-name">Finanza</div>
+      <span class="card-badge" style="background:var(--c-blue-bg);color:var(--c-blue)">Patrimonio</span>
+    </div>
+  
+
+  
+    <div class="card " onclick="toggleDetail(10)">
+      <div class="card-accent" style="background:var(--c-green)"></div>
+      <div class="card-icon">🏰</div>
+      <div class="card-name">Ville Storiche</div>
+      <span class="card-badge" style="background:var(--c-green-bg);color:var(--c-green)">Operativo</span>
+    </div>
+  
+
+  
+
+
+  
+
+  
+
+  </div>
+
+    </div><!-- end section-aree -->
+    <!-- DETAIL PANEL -->
+    <div class="detail" id="detail-panel">
+      <div class="detail-header">
+        <div class="detail-title" id="detail-title"></div>
+        <button class="detail-close" onclick="closeDetail()">✕ Chiudi</button>
+      </div>
+      <div class="detail-cols">
+        <div>
+          <div class="detail-list" id="detail-items"></div>
+          <div class="detail-list" id="detail-tools"></div>
+          <div class="detail-list" id="detail-update"></div>
+        </div>
+      </div>
+      <div class="xe-panel" id="xe-panel">
+        <div class="xe-label">Convertitore valute — XE.com</div>
+        <div class="xe-row">
+          <input class="xe-inp" type="number" id="xe-amt" value="1000" step="any" oninput="xeConv()">
+          <select class="xe-sel" id="xe-from" onchange="xeConv()">
+            <option value="EUR">EUR — Euro</option>
+            <option value="USD">USD — Dollaro USA</option>
+            <option value="GBP">GBP — Sterlina</option>
+            <option value="CHF">CHF — Franco svizzero</option>
+            <option value="JPY">JPY — Yen</option>
+            <option value="CNY">CNY — Yuan</option>
+            <option value="CAD">CAD — Dollaro canadese</option>
+            <option value="AUD">AUD — Dollaro australiano</option>
+            <option value="NOK">NOK — Corona norvegese</option>
+            <option value="SEK">SEK — Corona svedese</option>
+            <option value="PLN">PLN — Zloty polacco</option>
+            <option value="TRY">TRY — Lira turca</option>
+            <option value="BRL">BRL — Real brasiliano</option>
+            <option value="INR">INR — Rupia indiana</option>
+            <option value="BTC">BTC — Bitcoin</option>
+          </select>
+          <span class="xe-arrow">→</span>
+          <select class="xe-sel" id="xe-to" onchange="xeConv()">
+            <option value="USD">USD — Dollaro USA</option>
+            <option value="EUR">EUR — Euro</option>
+            <option value="GBP">GBP — Sterlina</option>
+            <option value="CHF">CHF — Franco svizzero</option>
+            <option value="JPY">JPY — Yen</option>
+            <option value="CNY">CNY — Yuan</option>
+            <option value="CAD">CAD — Dollaro canadese</option>
+            <option value="AUD">AUD — Dollaro australiano</option>
+            <option value="NOK">NOK — Corona norvegese</option>
+            <option value="SEK">SEK — Corona svedese</option>
+            <option value="PLN">PLN — Zloty polacco</option>
+            <option value="TRY">TRY — Lira turca</option>
+            <option value="BRL">BRL — Real brasiliano</option>
+            <option value="INR">INR — Rupia indiana</option>
+            <option value="BTC">BTC — Bitcoin</option>
+          </select>
+        </div>
+        <div class="xe-result" id="xe-result">—</div>
+        <div class="xe-rate" id="xe-rate"></div>
+        <a class="xe-link" href="https://www.xe.com/it/currencyconverter/" target="_blank">Apri XE.com per tassi reali in tempo reale →</a>
+      </div>
+    </div>
+      <div class="detail-actions" id="detail-actions"></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-inner">
+  <div class="legend">
+    <div class="legend-item" onclick="window.open('https://claude.ai','_blank')" style="cursor:pointer" title="Claude AI">
+      <span style="font-size:18px;color:#A78BFA">◎</span><span style="color:#FFFFFF">Claude AI</span>
+    </div>
+    <div class="legend-item" onclick="window.open('https://spikenow.com/web/','_blank')" style="cursor:pointer" title="Spike Mail">
+      <span style="font-size:18px;color:#60A5FA">✉</span><span style="color:#FFFFFF">Mail</span>
+    </div>
+    <div class="legend-item" onclick="window.open('https://www.dropbox.com','_blank')" style="cursor:pointer" title="Dropbox">
+      <span style="font-size:18px;color:#0061FF">☁</span><span style="color:#FFFFFF">Dropbox</span>
+    </div>
+    <div class="legend-item" onclick="window.open('https://www.softmaker.com','_blank')" style="cursor:pointer" title="Office">
+      <span style="font-size:18px;color:#F59E0B">📝</span><span style="color:#FFFFFF">Office</span>
+    </div>
+    <div class="legend-item" onclick="window.open('https://airtable.com/workspaces','_blank')" style="cursor:pointer" title="Airtable">
+      <span style="display:inline-flex;align-items:center"><svg width="18" height="18" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><rect width="200" height="200" rx="40" fill="#FCB400"/><path d="M93 48L28 74c-4 2-4 8 0 10l65 26c4 2 10 2 14 0l65-26c4-2 4-8 0-10L107 48c-4-2-10-2-14 0z" fill="white"/><path d="M104 110v62c0 4 4 6 7 4l72-29c3-1 5-4 5-7V78c0-4-4-6-7-4l-72 29c-3 1-5 4-5 7z" fill="white" opacity="0.8"/><path d="M89 110v62c0 4-4 6-7 4L10 147c-3-1-5-4-5-7V78c0-4 4-6 7-4l72 29c3 1 5 4 5 7z" fill="white" opacity="0.5"/></svg></span><span style="color:#FFFFFF">Airtable</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const AREAS = [
+  { id:1, name:"Restauro Conservativo", icon:"🏛", cat:"Operativo", color:"var(--c-green)", bg:"var(--c-green-bg)",
+    items:["Ville storiche in gestione","Cantieri attivi e fasi","Fornitori e offerte","Autorizzazioni Soprintendenza","BIM semplificato","Computi metrici estimativi"],
+    tools:["Airtable — schede cantiere","Dropbox — documenti tecnici","DWG FastView — planimetrie","Amazon Photos — foto cantiere"],
+    update:["Avanzamento cantieri: settimanale","Preventivi: on demand","Scadenze Soprintendenza: alert","Foto cantiere: continuo"],
+    prompts:["Stato cantieri attivi","Analizza preventivo fornitore","Scadenze Soprintendenza","Genera lettera tecnica"] },
+
+  { id:8, name:"Finanza", icon:"🏦", cat:"Patrimonio", color:"var(--c-blue)", bg:"var(--c-blue-bg)",
+    items:["Tableau finanziario — indici, azioni, ETF, BTP, crypto, valute","Giornale finanziario globale — notizie + video + quotidiani mondiali","Portafoglio titoli e fondi","Rendimenti e performance","Conti correnti attivi","Mutui e finanziamenti","Linee di credito","Estratti conto","Alert mercati e calendario economico","Dividendi, cedole e scadenze"],
+    tools:["Tableau Finanziario — monitor completo","Giornale Finanziario Globale — news live","Airtable — registro conti","Dropbox — estratti conto","TradingView — grafici e analisi tecnica","Baha — monitor prezzi real-time","Cbonds — obbligazioni e reddito fisso","Claude — analisi e confronti"],
+    update:["Mercati e indici: quotidiano","Notizie finanziarie: real-time","Saldi: settimanale","Rate: alert scadenza","Portafoglio: settimanale"],
+    prompts:["Analizza portafoglio e rendimenti","Sintesi notizie mercati oggi","Saldo complessivo conti","Rate mutuo in scadenza","Confronta ETF per settore"] },
+
+  { id:3, name:"Fiscale / Tributario", icon:"🧾", cat:"Normativo", color:"var(--c-amber)", bg:"var(--c-amber-bg)",
+    items:["Scadenze F24 e dichiarazioni","Aggiornamenti normativi","Crediti e detrazioni","Comunicazioni AdE","IVA e imposte","Ravvedimenti"],
+    tools:["Airtable — calendario scadenze","Dropbox — documentazione fiscale","Claude — consulenza e calcoli"],
+    update:["Scadenze: alert automatico","Normative: mensile","Comunicazioni AdE: on demand"],
+    prompts:["Prossime scadenze fiscali","Novità normative tributarie","Calcola imposta","Redigi comunicazione AdE"] },
+
+  { id:4, name:"Legale", icon:"⚖️", cat:"Normativo", color:"var(--c-amber)", bg:"var(--c-amber-bg)",
+    items:["Contratti attivi e scadenze","Pratiche in corso","Normative aggiornate","Giurisprudenza rilevante","Diffide e comunicazioni","Avvocati di riferimento"],
+    tools:["Airtable — registro contratti","Dropbox — archivio legale","Claude — analisi e redazione"],
+    update:["Contratti: alert scadenza","Normative: mensile","Pratiche: on demand"],
+    prompts:["Contratti in scadenza","Novità normative legali","Analizza contratto","Redigi diffida"] },
+
+  { id:5, name:"Assicurativo", icon:"🛡", cat:"Patrimonio", color:"var(--c-blue)", bg:"var(--c-blue-bg)",
+    items:["Polizze attive e premi","Scadenze rinnovi","Massimali e franchigie","Sinistri aperti","Compagnie di riferimento","Coperture da verificare"],
+    tools:["Airtable — registro polizze","Dropbox — documenti polizze","Claude — analisi coperture"],
+    update:["Rinnovi: alert 60 giorni prima","Sinistri: on demand","Mercato: semestrale"],
+    prompts:["Polizze in scadenza","Verifica coperture immobili","Apri sinistro","Confronta tariffe assicurative"] },
+
+  { id:6, name:"Immobiliare", icon:"🏠", cat:"Patrimonio", color:"var(--c-blue)", bg:"var(--c-blue-bg)",
+    items:["Proprietà in portafoglio","Valutazioni di mercato","Affitti attivi","Rogiti e atti","Spese condominiali","Mercato locale"],
+    tools:["Airtable — registro immobili","Dropbox — atti e documenti","ForMaps — analisi catastale","Claude — valutazioni"],
+    update:["Mercato: mensile","Affitti: scadenza contratti","Valutazioni: semestrale"],
+    prompts:["Valore patrimonio immobiliare","Scadenze contratti affitto","Analisi mercato locale","Genera scheda immobile"] },
+
+
+
+
+
+  { id:10, name:"Ville Storiche", icon:"🏰", cat:"Operativo", color:"var(--c-green)", bg:"var(--c-green-bg)",
+    items:["Mappa interattiva 3D ville IRVV — 19 ville con percorsi storici","Carta identità digitale (7 sezioni)","Percorsi: Romea Germanica · Postumia · Via della Lana · 13 sentieri","Storia e proprietari","Giardini e parchi — limonaia · brolo · fontane","Vincoli Soprintendenza e schede materiali"],
+    tools:["Mappa Ville Venete (file locale Dropbox)","Airtable — database ville e BIM semplificato","Dropbox — documentazione","Amazon Photos — archivio foto","DWG FastView — planimetrie","IRVV — catalogo ufficiale","Claude — ricerche storiche"],
+    update:["Mappa: aggiornamento continuo","Cantieri: settimanale","Scadenze collaudi: alert","Documentazione: on demand"],
+    prompts:["Apri mappa ville venete","Apri carta identità villa","Ricerca storica immobile","Aggiorna scheda materiali"] },
+
+
+
+
+
+
+
+,
+
+  { id:15, name:"News", icon:"📰", cat:"Informativo", color:"var(--c-purple)", bg:"var(--c-purple-bg)",
+    items:["Quotidiani italiani e internazionali","Newspaper Index — directory mondiale"],
+    tools:["Newspaper Index — www.newspaperindex.com"],
+    update:["In tempo reale"],
+    prompts:["Apri Newspaper Index"],
+    url:"https://www.newspaperindex.com" }
+];
+
+let activeId = null;
+let currentFilter = 'all';
+let gicsRange = 'W';
+
+function gicsOpen(symbol) {
+  var url = 'https://www.tradingview.com/chart/?symbol=' + encodeURIComponent(symbol) + '&interval=' + gicsRange;
+  window.open(url, '_blank');
+}
+
+function gicsSetRange(btn, range) {
+  gicsRange = range;
+  document.querySelectorAll('.gics-iv').forEach(function(b) {
+    b.style.background = 'transparent';
+    b.style.color = '#888';
+    b.style.borderColor = '#555';
+  });
+  btn.style.background = '#2E1A00';
+  btn.style.color = '#C4763A';
+  btn.style.borderColor = '#C4763A';
+}
+
+function renderCards() {
+  const grid = document.getElementById('cards-grid');
+  const filtered = currentFilter === 'all' ? AREAS : AREAS.filter(a => a.cat === currentFilter);
+  grid.innerHTML = filtered.map(a => `
+    <div class="card ${activeId === a.id ? 'active' : ''}" onclick="${a.url ? `window.open('${a.url}','_blank')` : `toggleDetail(${a.id})`}">
+      <div class="card-accent" style="background:${a.color}"></div>
+      <div class="card-icon">${a.icon}</div>
+      <div class="card-name">${a.name}</div>
+      <span class="card-badge" style="background:${a.bg};color:${a.color}">${a.cat}</span>
+    </div>
+  `).join('');
+}
+
+function toggleDetail(id) {
+  // Apre URL diretto se definito nell'area
+  const _a = AREAS.find(x => x.id === id);
+  if (_a && _a.url) { window.open(_a.url, '_blank'); return; }
+  // Ville Storiche (id:10) — apre pannello atlante integrato
+  if (id === 10) { apriAtlante(); return; }
+
+  if (activeId === id) { closeDetail(); return; }
+  activeId = id;
+  const a = AREAS.find(x => x.id === id);
+  document.getElementById('detail-title').textContent = a.icon + '  ' + a.name;
+  document.getElementById('detail-items').innerHTML = '';
+  document.getElementById('detail-tools').innerHTML = '';
+  document.getElementById('detail-update').innerHTML = '';
+  let actionsHtml = `<button class="btn-action btn-primary" onclick="askClaude('${a.prompts[0]}')">◎ Chiedi a Claude ↗</button>` +
+    a.prompts.slice(1).map(p => `<button class="btn-action" onclick="askClaude('${p}')">${p}</button>`).join('');
+  if (a.id === 8) {
+    actionsHtml = `
+      <div style="display:flex;flex-direction:column;gap:10px;width:100%">
+        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--text3)">Finanza</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button onclick="window.open('https://scimaza-creator.github.io/scimaza/Tableau_Finanziario.html','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#185FA5;color:#fff;border:none;cursor:pointer">📊 Tableau Finanziario</button>
+          <button onclick="window.open('https://scimaza-creator.github.io/scimaza/Giornale_Finanziario_Globale.html','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#8B1A1A;color:#fff;border:none;cursor:pointer">📰 Giornale Finanziario</button>
+          <button onclick="window.open('https://it.investing.com/news/latest-news','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#1A6B3A;color:#fff;border:none;cursor:pointer">📡 News Live</button>
+          <button onclick="window.open('https://it.tradingview.com','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#1C366B;color:#fff;border:none;cursor:pointer">📉 TradingView</button>
+          <button onclick="window.open('https://www.baha.com','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#5C3A8A;color:#fff;border:none;cursor:pointer">⚡ Baha</button>
+          <button onclick="window.open('https://cbonds.it','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#1A3A5C;color:#fff;border:none;cursor:pointer">🏦 Cbonds</button>
+        </div>
+
+        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-top:4px">Screener GICS — 11 Settori</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:2px">
+          <span style="font-size:10px;color:var(--text3)">Periodo:</span>
+          <button onclick="gicsSetRange(this,'W')" class="gics-iv active-iv" style="font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:3px;border:1px solid #555;background:#2E1A00;color:#C4763A;cursor:pointer">1W</button>
+          <button onclick="gicsSetRange(this,'M')" class="gics-iv" style="font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:3px;border:1px solid #555;background:transparent;color:#888;cursor:pointer">1M</button>
+          <button onclick="gicsSetRange(this,'3M')" class="gics-iv" style="font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:3px;border:1px solid #555;background:transparent;color:#888;cursor:pointer">3M</button>
+          <button onclick="gicsSetRange(this,'12M')" class="gics-iv" style="font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:3px;border:1px solid #555;background:transparent;color:#888;cursor:pointer">1Y</button>
+          <button onclick="gicsSetRange(this,'36M')" class="gics-iv" style="font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:3px;border:1px solid #555;background:transparent;color:#888;cursor:pointer">3Y</button>
+          <button onclick="gicsSetRange(this,'60M')" class="gics-iv" style="font-family:'DM Mono',monospace;font-size:10px;padding:2px 7px;border-radius:3px;border:1px solid #555;background:transparent;color:#888;cursor:pointer">5Y</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px" id="gics-grid">
+          <button onclick="gicsOpen('AMEX:XLE')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">01</span>Energy</button>
+          <button onclick="gicsOpen('AMEX:XLB')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">02</span>Materials</button>
+          <button onclick="gicsOpen('AMEX:XLI')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">03</span>Industrials</button>
+          <button onclick="gicsOpen('AMEX:XLY')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">04</span>Cons. Disc.</button>
+          <button onclick="gicsOpen('AMEX:XLP')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">05</span>Cons. Staples</button>
+          <button onclick="gicsOpen('AMEX:XLV')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">06</span>Health Care</button>
+          <button onclick="gicsOpen('AMEX:XLF')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">07</span>Financials</button>
+          <button onclick="gicsOpen('AMEX:XLK')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">08</span>Info Tech</button>
+          <button onclick="gicsOpen('AMEX:XLC')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">09</span>Comm. Svc.</button>
+          <button onclick="gicsOpen('AMEX:XLU')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">10</span>Utilities</button>
+          <button onclick="gicsOpen('AMEX:XLRE')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #555;background:#1E1E1E;color:#B8B0A8;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#7A7068;display:block">11</span>Real Estate</button>
+          <button onclick="gicsOpen('AMEX:IVV')" class="gics-btn" style="font-family:'DM Sans',sans-serif;font-size:10px;padding:5px 6px;border-radius:5px;border:1px solid #4A1828;background:#2A1018;color:#E08898;cursor:pointer;text-align:left;line-height:1.3"><span style="font-size:8px;color:#C4763A;display:block">S&P</span>500</button>
+        </div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px">
+          <button onclick="window.open('https://airtable.com/workspaces','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#2E1A00;color:#C4763A;border:1px solid #C4763A;cursor:pointer">🗃 Airtable</button>
+          <button onclick="window.open('https://www.dropbox.com','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#2E1A00;color:#C4763A;border:1px solid #C4763A;cursor:pointer">☁ Dropbox</button>
+          <button onclick="window.open('https://spikenow.com/web/','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#2E1A00;color:#C4763A;border:1px solid #C4763A;cursor:pointer">✉ Spike Mail</button>
+          <button onclick="window.open('https://claude.ai','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#2E1A00;color:#C4763A;border:1px solid #C4763A;cursor:pointer">◎ Claude AI</button>
+          <button onclick="window.open('https://www.datawrapper.de','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#2E1A00;color:#C4763A;border:1px solid #C4763A;cursor:pointer">📊 Datawrapper</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:2px">
+          <button onclick="askClaude('Analizza portafoglio e rendimenti')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#333;color:#fff;border:none;cursor:pointer">◎ Chiedi a Claude ↗</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('detail-items').innerHTML = actionsHtml;
+    actionsHtml = '';
+  }
+  if (a.id === 1) {
+    actionsHtml = `
+      <div style="display:flex;flex-direction:column;gap:8px;width:100%">
+        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#FFFFFF;margin-bottom:2px">Strumenti e documenti</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button onclick="window.open('https://raw.githubusercontent.com/scimaza-creator/scimaza/main/Carta_Identita_Digitale_Immobile_Storico_TEMPLATE.docx','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#1D5C2E;color:#FFFFFF;border:none;cursor:pointer">📋 Carta Identità Digitale</button>
+          <button onclick="window.open('https://airtable.com/workspaces','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#185FA5;color:#FFFFFF;border:none;cursor:pointer">🗃 Airtable Cantieri</button>
+          <button onclick="window.open('https://www.dropbox.com','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#0061FF;color:#FFFFFF;border:none;cursor:pointer">☁ Dropbox Documenti</button>
+        </div>
+        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:#FFFFFF;margin-top:6px;margin-bottom:2px">Preventivatori</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px">
+          <button onclick="window.open('https://airtable.com/workspaces','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#2E1A00;color:#FFFFFF;border:1px solid #C4763A;cursor:pointer">🔧 Preventivi edili</button>
+          <button onclick="window.open('https://airtable.com/workspaces','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#2E1A00;color:#FFFFFF;border:1px solid #C4763A;cursor:pointer">⚡ Preventivi elettrici</button>
+          <button onclick="window.open('https://airtable.com/workspaces','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#2E1A00;color:#FFFFFF;border:1px solid #C4763A;cursor:pointer">🔩 Preventivi idraulici</button>
+          <button onclick="window.open('https://www.dropbox.com','_blank')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#2E1A00;color:#FFFFFF;border:1px solid #C4763A;cursor:pointer">📁 PDF Preventivi</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+          <button onclick="askClaude('Stato cantieri attivi Villa Zanella')" style="font-family:'DM Sans',sans-serif;font-size:11px;padding:6px 12px;border-radius:6px;background:#333;color:#FFFFFF;border:none;cursor:pointer">◎ Chiedi a Claude ↗</button>
+        </div>
+      </div>
+    `;
+    document.getElementById('detail-items').innerHTML = actionsHtml;
+    actionsHtml = '';
+  }
+  if (a.id === 10) {
+    actionsHtml = `
+      <button class="btn-action btn-primary" onclick="apriFile('Mappa_Ville_Venete.html')" style="background:#2D5016;color:#fff;border-color:#2D5016">🗺 Apri Mappa Ville Venete</button>
+      <button class="btn-action" onclick="window.open('https://irvv.regione.veneto.it','_blank')">Catalogo IRVV ↗</button>
+      <button class="btn-action" onclick="window.open('https://www.villevenete.net','_blank')">VilleVenete.net ↗</button>
+      <button class="btn-action" onclick="window.open('https://airtable.com/workspaces','_blank')">Airtable DB ↗</button>
+      <button class="btn-action" onclick="askClaude('${a.prompts[0]}')">◎ Chiedi a Claude ↗</button>
+    `;
+  }
+  document.getElementById('detail-actions').innerHTML = actionsHtml;
+  // Mostra il convertitore XE solo per la sezione Finanza (id 8)
+  const xePanel = document.getElementById('xe-panel');
+  if (a.id === 8) {
+    xePanel.classList.add('visible');
+    setTimeout(xeConv, 50);
+  } else {
+    xePanel.classList.remove('visible');
+  }
+  document.getElementById('detail-panel').classList.add('visible');
+  document.getElementById('detail-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  renderCards();
+}
+
+function closeDetail() {
+  activeId = null;
+  document.getElementById('detail-panel').classList.remove('visible');
+  document.getElementById('xe-panel').classList.remove('visible');
+  renderCards();
+}
+
+const XE_RATES = {
+  EUR:{USD:1.0811,GBP:0.8342,CHF:0.9541,JPY:161.84,CNY:7.842,CAD:1.5621,AUD:1.7108,NOK:11.640,SEK:10.955,PLN:4.158,TRY:38.80,BRL:6.22,INR:90.42,BTC:0.0000115,EUR:1},
+  USD:{EUR:0.9250,GBP:0.7716,CHF:0.8826,JPY:149.70,CNY:7.251,CAD:1.4449,AUD:1.5825,NOK:10.767,SEK:10.133,PLN:3.845,TRY:35.88,BRL:5.75,INR:83.62,BTC:0.0000106,USD:1},
+  GBP:{EUR:1.1988,USD:1.2960,CHF:1.1437,JPY:193.92,CNY:9.399,CAD:1.8725,AUD:2.0508,NOK:13.950,SEK:13.130,PLN:4.983,TRY:46.50,BRL:7.45,INR:108.40,BTC:0.0000138,GBP:1},
+  CHF:{EUR:1.0481,USD:1.1331,GBP:0.8743,JPY:169.62,CNY:8.220,CAD:1.6376,AUD:1.7930,NOK:12.202,SEK:11.484,PLN:4.358,TRY:40.68,BRL:6.52,INR:94.84,BTC:0.0000121,CHF:1},
+  JPY:{EUR:0.00618,USD:0.00668,GBP:0.00516,CHF:0.00590,CNY:0.04848,CAD:0.00966,AUD:0.01058,NOK:0.07192,SEK:0.06769,PLN:0.02569,TRY:0.2399,BRL:0.03844,INR:0.5592,BTC:7.1e-8,JPY:1},
+  CNY:{EUR:0.1275,USD:0.1379,GBP:0.1064,CHF:0.1217,JPY:20.63,CAD:0.1993,AUD:0.2183,NOK:1.484,SEK:1.396,PLN:0.5301,TRY:4.951,BRL:0.7934,INR:11.54,BTC:1.46e-6,CNY:1},
+  CAD:{EUR:0.6402,USD:0.6921,GBP:0.5340,CHF:0.6107,JPY:103.55,CNY:5.018,AUD:1.0949,NOK:7.449,SEK:7.010,PLN:2.662,TRY:24.84,BRL:3.982,INR:57.95,BTC:7.34e-6,CAD:1},
+  AUD:{EUR:0.5846,USD:0.6319,GBP:0.4876,CHF:0.5578,JPY:94.57,CNY:4.583,CAD:0.9133,NOK:6.800,SEK:6.399,PLN:2.430,TRY:22.68,BRL:3.638,INR:52.94,BTC:6.70e-6,AUD:1},
+  NOK:{EUR:0.0860,USD:0.0929,GBP:0.0717,CHF:0.0820,JPY:13.91,CNY:0.6739,CAD:0.1343,AUD:0.1471,SEK:0.9416,PLN:0.3573,TRY:3.336,BRL:0.5349,INR:7.779,BTC:9.85e-7,NOK:1},
+  SEK:{EUR:0.0913,USD:0.0987,GBP:0.0762,CHF:0.0871,JPY:14.77,CNY:0.7162,CAD:0.1427,AUD:0.1563,NOK:1.0620,PLN:0.3795,TRY:3.542,BRL:0.5682,INR:8.260,BTC:1.05e-6,SEK:1},
+  PLN:{EUR:0.2405,USD:0.2601,GBP:0.2007,CHF:0.2295,JPY:38.92,CNY:1.886,CAD:0.3760,AUD:0.4117,NOK:2.797,SEK:2.635,TRY:9.333,BRL:1.497,INR:21.76,BTC:2.76e-6,PLN:1},
+  TRY:{EUR:0.02577,USD:0.02787,GBP:0.02151,CHF:0.02459,JPY:4.172,CNY:0.2021,CAD:0.04029,AUD:0.04411,NOK:0.2998,SEK:0.2824,PLN:0.1072,BRL:0.1604,INR:2.330,BTC:2.96e-7,TRY:1},
+  BRL:{EUR:0.1608,USD:0.1739,GBP:0.1342,CHF:0.1534,JPY:26.03,CNY:1.261,CAD:0.2514,AUD:0.2752,NOK:1.871,SEK:1.761,PLN:0.6688,TRY:6.237,INR:14.54,BTC:1.84e-6,BRL:1},
+  INR:{EUR:0.01106,USD:0.01196,GBP:0.00923,CHF:0.01054,JPY:1.791,CNY:0.08668,CAD:0.01727,AUD:0.01890,NOK:0.1286,SEK:0.1211,PLN:0.04597,TRY:0.4292,BRL:0.06882,BTC:1.27e-7,INR:1},
+  BTC:{EUR:87000,USD:94040,GBP:72560,CHF:82600,JPY:14085000,CNY:682100,CAD:136100,AUD:149300,NOK:1015000,SEK:954800,PLN:362500,TRY:3385000,BRL:542400,INR:7451000,BTC:1}
+};
+
+function xeConv() {
+  const amt = parseFloat(document.getElementById('xe-amt').value) || 0;
+  const from = document.getElementById('xe-from').value;
+  const to = document.getElementById('xe-to').value;
+  if (from === to) {
+    document.getElementById('xe-result').textContent = amt.toLocaleString('it-IT', {maximumFractionDigits:2}) + ' ' + to;
+    document.getElementById('xe-rate').textContent = '1 ' + from + ' = 1.0000 ' + to;
+    return;
+  }
+  const rate = XE_RATES[from]?.[to];
+  if (!rate) { document.getElementById('xe-result').textContent = '—'; return; }
+  const res = amt * rate;
+  const isBTC = to === 'BTC';
+  const isLarge = ['JPY','INR','TRY','NOK','SEK','PLN','BRL'].includes(to);
+  const dec = isBTC ? 8 : isLarge ? 0 : 2;
+  document.getElementById('xe-result').textContent = res.toLocaleString('it-IT', {minimumFractionDigits:dec, maximumFractionDigits:dec}) + ' ' + to;
+  const rateDisp = isBTC ? rate.toFixed(8) : isLarge ? rate.toFixed(2) : rate.toFixed(4);
+  document.getElementById('xe-rate').textContent = '1 ' + from + ' = ' + rateDisp + ' ' + to + ' · Tasso indicativo — usa XE.com per tassi reali';
+}
+
+function showSection(nome) {
+  document.querySelectorAll('.hub-section').forEach(s => s.style.display = 'none');
+  const target = document.getElementById('section-' + nome);
+  if (target) target.style.display = 'block';
+  if (nome === 'aree') renderCards();
+  closeDetail();
+}
+function tornaHome() {
+  document.querySelectorAll('.hub-section').forEach(s => s.style.display = 'none');
+  document.getElementById('section-home').style.display = 'flex';
+  closeDetail();
+}
+
+function filterCat(cat, el) {
+  currentFilter = cat;
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  closeDetail();
+  renderCards();
+}
+
+function askClaude(prompt) {
+  window.open('https://claude.ai', '_blank');
+  setTimeout(() => alert('Copia questa richiesta in Claude:\n\n"' + prompt + '"'), 500);
+}
+
+function apriFile(nome) {
+  // Compatibile con Windows, Mac e iPad/Safari
+  try {
+    var link = document.createElement('a');
+    link.href = nome;
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch(e) {
+    window.location.href = nome;
+  }
+}
+
+function setDates() {
+  const d = new Date();
+  const optsData = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+  const optsOra  = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+  const dataStr  = d.toLocaleDateString('it-IT', optsData);
+  const oraStr   = d.toLocaleTimeString('it-IT', optsOra);
+  const el2 = document.getElementById('welcome-date');
+  const el3 = document.getElementById('top-time');
+  if (el2) el2.textContent = dataStr;
+  if (el3) el3.textContent = oraStr;
+}
+
+setDates();
+setInterval(setDates, 1000);
+renderCards();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<!-- ATLANTE VILLE STORICHE VENETE — PANNELLO OVERLAY               -->
+<!-- ═══════════════════════════════════════════════════════════════ -->
+<link rel="stylesheet" href="./Hub Personale Multidisciplinare Claude_files/leaflet.css" crossorigin="">
+<script src="./Hub Personale Multidisciplinare Claude_files/leaflet.js.download" crossorigin=""></script>
+<script>window._leafletReady = true;</script>
+
+<style>
+/* OVERLAY ATLANTE */
+#atlante-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: #0D1117;
+  flex-direction: column;
+  font-family: 'DM Sans', sans-serif;
+}
+#atlante-overlay.open { display: flex; }
+
+/* HEADER ATLANTE */
+.atl-header {
+  background: #0D1117;
+  border-bottom: 1px solid #2A3040;
+  padding: 0 1.5rem;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.atl-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #E8D5A0;
+  letter-spacing: 0.04em;
+}
+.atl-subtitle { font-size: 11px; color: #6B7280; margin-left: 1rem; }
+.atl-close {
+  background: #1C2333;
+  border: 1px solid #2A3040;
+  color: #9CA3AF;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.atl-close:hover { background: #C0392B; color: #fff; border-color: #C0392B; }
+
+/* LAYOUT ATLANTE */
+.atl-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* SIDEBAR ATLANTE */
+.atl-sidebar {
+  width: 340px;
+  flex-shrink: 0;
+  background: #111827;
+  border-right: 1px solid #1F2937;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+}
+.atl-search-bar {
+  padding: 1rem;
+  border-bottom: 1px solid #1F2937;
+  flex-shrink: 0;
+}
+.atl-search-input {
+  width: 100%;
+  background: #1C2333;
+  border: 1px solid #2A3040;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: #E5E7EB;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+}
+.atl-search-input::placeholder { color: #4B5563; }
+.atl-search-input:focus { border-color: #8B6914; }
+
+/* FILTRI */
+.atl-filters {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #1F2937;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+.atl-filter-btn {
+  background: #1C2333;
+  border: 1px solid #2A3040;
+  color: #9CA3AF;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.atl-filter-btn.active, .atl-filter-btn:hover {
+  background: #8B6914;
+  color: #F9F3E3;
+  border-color: #8B6914;
+}
+
+/* CONTATORE */
+.atl-count {
+  padding: 0.5rem 1rem;
+  font-size: 11px;
+  color: #4B5563;
+  border-bottom: 1px solid #1F2937;
+  flex-shrink: 0;
+}
+.atl-count span { color: #E8D5A0; font-weight: 500; }
+
+/* LISTA VILLE */
+.atl-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+  min-height: 100px;
+  -webkit-overflow-scrolling: touch;
+}
+.atl-list::-webkit-scrollbar { width: 4px; }
+.atl-list::-webkit-scrollbar-track { background: #0D1117; }
+.atl-list::-webkit-scrollbar-thumb { background: #2A3040; border-radius: 2px; }
+
+.atl-villa-card {
+  background: #1C2333;
+  border: 1px solid #2A3040;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.atl-villa-card:hover, .atl-villa-card.selected {
+  border-color: #8B6914;
+  background: #1E2640;
+}
+.atl-villa-card.selected { border-color: #E8D5A0; }
+
+.atl-villa-nome {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #E8D5A0;
+  margin-bottom: 3px;
+}
+.atl-villa-meta {
+  font-size: 11px;
+  color: #6B7280;
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.atl-villa-meta span { display: flex; align-items: center; gap: 3px; }
+.atl-villa-tags {
+  margin-top: 6px;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.atl-tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.atl-tag.epoca { background: #1A3A2A; color: #4ADE80; }
+.atl-tag.tipologia { background: #1A2A3A; color: #60A5FA; }
+.atl-tag.stato { background: #2A1A1A; color: #F87171; }
+.atl-tag.doc { background: #2A2A1A; color: #FBBF24; }
+
+/* SCHEDA DETTAGLIO VILLA */
+.atl-scheda {
+  display: none;
+  padding: 1rem;
+  border-top: 1px solid #1F2937;
+  background: #0D1117;
+  flex-shrink: 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.atl-scheda.open { display: block; }
+.atl-scheda::-webkit-scrollbar { width: 4px; }
+.atl-scheda::-webkit-scrollbar-thumb { background: #2A3040; }
+
+.atl-scheda-nome {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: #E8D5A0;
+  margin-bottom: 0.5rem;
+}
+.atl-scheda-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+.atl-scheda-field { font-size: 11px; }
+.atl-scheda-label { color: #4B5563; margin-bottom: 1px; }
+.atl-scheda-value { color: #D1D5DB; }
+
+.atl-scheda-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid #1F2937;
+  padding-bottom: 0.5rem;
+}
+.atl-stab {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #6B7280;
+  background: none;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.atl-stab.active, .atl-stab:hover { background: #1C2333; color: #E8D5A0; }
+
+.atl-tab-content { display: none; font-size: 12px; color: #9CA3AF; line-height: 1.6; }
+.atl-tab-content.active { display: block; }
+
+.atl-media-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 6px;
+}
+.atl-media-item {
+  background: #1C2333;
+  border: 1px solid #2A3040;
+  border-radius: 4px;
+  padding: 8px;
+  text-align: center;
+  font-size: 10px;
+  color: #6B7280;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.atl-media-item:hover { border-color: #8B6914; color: #E8D5A0; }
+.atl-media-icon { font-size: 18px; display: block; margin-bottom: 3px; }
+
+.atl-scheda-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 0.75rem;
+  flex-wrap: wrap;
+}
+.atl-btn {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  border: 1px solid #2A3040;
+  background: #1C2333;
+  color: #9CA3AF;
+  transition: all 0.15s;
+}
+.atl-btn:hover { border-color: #8B6914; color: #E8D5A0; }
+.atl-btn.primary { background: #8B6914; color: #F9F3E3; border-color: #8B6914; }
+.atl-btn.primary:hover { background: #A07820; }
+
+/* MAPPA */
+.atl-map-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 300px;
+  min-width: 0;
+}
+.atl-map-controls {
+  background: #0D1117;
+  border-bottom: 1px solid #1F2937;
+  padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+.atl-map-label { font-size: 11px; color: #4B5563; }
+.atl-style-btn {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  border: 1px solid #2A3040;
+  background: #1C2333;
+  color: #9CA3AF;
+  transition: all 0.15s;
+}
+.atl-style-btn.active, .atl-style-btn:hover { background: #8B6914; color: #F9F3E3; border-color: #8B6914; }
+
+#atl-map { flex: 1; min-height: 300px; height: calc(100vh - 200px); width: 100%; }
+
+/* TOKEN BANNER */
+#atl-token-banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #111827;
+  border: 1px solid #2A3040;
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+  z-index: 10;
+}
+#atl-token-banner h3 {
+  font-family: 'Cormorant Garamond', serif;
+  color: #E8D5A0;
+  font-size: 25px;
+  margin-bottom: 0.75rem;
+}
+#atl-token-banner p { font-size: 12px; color: #6B7280; margin-bottom: 1rem; line-height: 1.6; }
+#atl-token-input {
+  width: 100%;
+  background: #1C2333;
+  border: 1px solid #2A3040;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: #E5E7EB;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  margin-bottom: 0.75rem;
+}
+#atl-token-input:focus { border-color: #8B6914; }
+#atl-token-save {
+  background: #8B6914;
+  color: #F9F3E3;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  width: 100%;
+}
+#atl-token-save:hover { background: #A07820; }
+.atl-token-link { font-size: 11px; color: #4B5563; margin-top: 0.5rem; display: block; }
+.atl-token-link a { color: #8B6914; text-decoration: none; }
+
+/* Popup MapTiler personalizzato */
+.maplibregl-popup-content {
+  background: #111827 !important;
+  border: 1px solid #8B6914 !important;
+  border-radius: 8px !important;
+  padding: 12px !important;
+  color: #E5E7EB !important;
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 12px !important;
+  min-width: 180px;
+}
+.maplibregl-popup-tip { display: none !important; }
+.popup-nome {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 15px;
+  color: #E8D5A0;
+  margin-bottom: 4px;
+}
+.popup-meta { font-size: 11px; color: #6B7280; margin-bottom: 8px; }
+.popup-btn {
+  background: #8B6914;
+  color: #F9F3E3;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .atl-body { flex-direction: column; }
+  .atl-body { flex-direction: column; }
+  .atl-sidebar { width: 100%; height: 50vh; min-height: 250px; }
+  .atl-map-area { height: 50vh; min-height: 250px; }
+  #atl-map { height: calc(50vh - 52px) !important; min-height: 200px; }
+}
+</style>
+
+<!-- PANNELLO ATLANTE -->
+<div id="atlante-overlay">
+  <div class="atl-header">
+    <div style="display:flex;align-items:center;gap:0.5rem">
+      <span class="atl-title">🏰 Atlante Ville Storiche Venete</span>
+      <span class="atl-subtitle" id="atl-header-count">Verona e Provincia</span>
+    </div>
+    <button class="atl-close" onclick="chiudiAtlante()">✕ Chiudi</button>
+  </div>
+
+  <div class="atl-body">
+    <!-- SIDEBAR: ricerca + lista + scheda -->
+    <div class="atl-sidebar">
+      <div class="atl-search-bar">
+        <input class="atl-search-input" type="text" id="atl-search" placeholder="🔍  Cerca villa, comune, famiglia..." oninput="atlFiltra()">
+      </div>
+      <div class="atl-filters">
+        <button class="atl-filter-btn active" onclick="atlSetFiltro(&#39;all&#39;,this)">Tutte</button>
+        <button class="atl-filter-btn" onclick="atlSetFiltro(&#39;romana&#39;,this)">Romana</button>
+        <button class="atl-filter-btn" onclick="atlSetFiltro(&#39;medievale&#39;,this)">Medievale</button>
+        <button class="atl-filter-btn" onclick="atlSetFiltro(&#39;scaligera&#39;,this)">Scaligera</button>
+        <button class="atl-filter-btn" onclick="atlSetFiltro(&#39;veneziana&#39;,this)">Veneziana</button>
+        <button class="atl-filter-btn" onclick="atlSetFiltro(&#39;palladiana&#39;,this)">Palladiana</button>
+        <button class="atl-filter-btn" onclick="atlSetFiltro(&#39;ottocento&#39;,this)">Ottocento</button>
+      </div>
+      <div class="atl-count" id="atl-count-bar">
+        <span id="atl-count-n">0</span> ville · clicca per scheda e mappa
+      </div>
+      <div class="atl-list" id="atl-list"></div>
+
+      <!-- SCHEDA DETTAGLIO -->
+      <div class="atl-scheda" id="atl-scheda">
+        <div class="atl-scheda-nome" id="atl-scheda-nome">—</div>
+        <div class="atl-scheda-grid" id="atl-scheda-grid"></div>
+        <div class="atl-scheda-tabs">
+          <button class="atl-stab active" onclick="atlTab(&#39;storia&#39;,this)">Storia</button>
+          <button class="atl-stab" onclick="atlTab(&#39;architettura&#39;,this)">Architettura</button>
+          <button class="atl-stab" onclick="atlTab(&#39;media&#39;,this)">Media</button>
+          <button class="atl-stab" onclick="atlTab(&#39;fonti&#39;,this)">Fonti</button>
+          <button class="atl-stab" onclick="atlTab(&#39;cartaid&#39;,this)">📋 Carta ID</button>
+        </div>
+        <div class="atl-tab-content active" id="atl-tab-storia"></div>
+        <div class="atl-tab-content" id="atl-tab-architettura"></div>
+        <div class="atl-tab-content" id="atl-tab-media"></div>
+        <div class="atl-tab-content" id="atl-tab-fonti"></div>
+        <div class="atl-tab-content" id="atl-tab-cartaid"></div>
+        <div class="atl-scheda-actions" id="atl-scheda-actions"></div>
+      </div>
+    </div>
+
+    <!-- PANNELLO DESTRA -->
+    <div class="atl-map-area" style="background:#0D1117;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:2rem;">
+
+      <!-- Accesso mappa completa -->
+      <div style="background:#111827;border:1px solid #2A3040;border-radius:12px;padding:1.5rem 2rem;text-align:center;max-width:320px;width:100%">
+        <div style="font-size:40px;margin-bottom:0.75rem">🗺</div>
+        <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:20px;color:#E8D5A0;margin-bottom:0.5rem">Mappa Interattiva</div>
+        <div style="font-size:11px;color:#6B7280;line-height:1.6;margin-bottom:1rem">19 ville · 13 percorsi storici<br>Satellite HD · Filtri per provincia ed epoca</div>
+        <button onclick="apriFile(&#39;Mappa_Ville_Venete.html&#39;)" style="width:100%;background:#8B6914;color:#F9F3E3;border:none;padding:10px;border-radius:6px;font-size:13px;cursor:pointer;font-family:&#39;DM Sans&#39;,sans-serif;margin-bottom:0.5rem">
+          ⤢ Apri Mappa Ville Venete
+        </button>
+        <button onclick="apriFile(&#39;atlante_veneto.html&#39;)" style="width:100%;background:transparent;color:#9CA3AF;border:1px solid #2A3040;padding:9px;border-radius:6px;font-size:12px;cursor:pointer;font-family:&#39;DM Sans&#39;,sans-serif">
+          📜 Apri Atlante Storico
+        </button>
+      </div>
+
+      <!-- Statistiche rapide -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;max-width:320px;width:100%">
+        <div style="background:#111827;border:1px solid #2A3040;border-radius:8px;padding:1rem;text-align:center">
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:28px;color:#E8D5A0;line-height:1" id="atl-stat-tot">15</div>
+          <div style="font-size:10px;color:#6B7280;margin-top:4px;text-transform:uppercase;letter-spacing:.08em">Ville in archivio</div>
+        </div>
+        <div style="background:#111827;border:1px solid #2A3040;border-radius:8px;padding:1rem;text-align:center">
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:28px;color:#4ADE80;line-height:1">
+            <span id="atl-stat-vis">6</span>
+          </div>
+          <div style="font-size:10px;color:#6B7280;margin-top:4px;text-transform:uppercase;letter-spacing:.08em">Visitabili</div>
+        </div>
+        <div style="background:#111827;border:1px solid #2A3040;border-radius:8px;padding:1rem;text-align:center">
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:28px;color:#60A5FA;line-height:1">1</div>
+          <div style="font-size:10px;color:#6B7280;margin-top:4px;text-transform:uppercase;letter-spacing:.08em">Carta ID compilata</div>
+        </div>
+        <div style="background:#111827;border:1px solid #2A3040;border-radius:8px;padding:1rem;text-align:center">
+          <div style="font-family:&#39;Cormorant Garamond&#39;,serif;font-size:28px;color:#FBBF24;line-height:1">7</div>
+          <div style="font-size:10px;color:#6B7280;margin-top:4px;text-transform:uppercase;letter-spacing:.08em">Epoche storiche</div>
+        </div>
+      </div>
+
+      <!-- Risorse esterne -->
+      <div style="max-width:320px;width:100%;display:flex;flex-direction:column;gap:0.5rem">
+        <div style="font-size:10px;color:#4B5563;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px">Risorse esterne</div>
+        <button onclick="window.open(&#39;https://irvv.regione.veneto.it&#39;,&#39;_blank&#39;)" style="background:#111827;border:1px solid #2A3040;color:#9CA3AF;padding:8px 14px;border-radius:6px;font-size:11px;cursor:pointer;font-family:&#39;DM Sans&#39;,sans-serif;text-align:left">📚 Catalogo IRVV — 3.807 ville Veneto</button>
+        <button onclick="window.open(&#39;https://www.villevenete.net&#39;,&#39;_blank&#39;)" style="background:#111827;border:1px solid #2A3040;color:#9CA3AF;padding:8px 14px;border-radius:6px;font-size:11px;cursor:pointer;font-family:&#39;DM Sans&#39;,sans-serif;text-align:left">🌐 VilleVenete.net</button>
+        <button onclick="window.open(&#39;https://airtable.com/workspaces&#39;,&#39;_blank&#39;)" style="background:#111827;border:1px solid #2A3040;color:#9CA3AF;padding:8px 14px;border-radius:6px;font-size:11px;cursor:pointer;font-family:&#39;DM Sans&#39;,sans-serif;text-align:left">🗄 Airtable — Database ville e BIM</button>
+      </div>
+
+    </div>
+  </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════
+// DATABASE VILLE VERONA E PROVINCIA
+// (dataset iniziale — espandibile via Airtable CSV)
+// ═══════════════════════════════════
+const ATL_VILLE = [
+  {
+    id: 1, nome: "Villa Zanella", comune: "Colognola ai Colli", prov: "VR",
+    lat: 45.4350, lng: 11.1886,
+    epoca: "medievale", tipologia: "Villa-fortilizio monastica",
+    periodo: "XII–XX sec.", proprietari: "Gregori · Ridolfi · Portalupi · Ferrari · Grisi · Zanella",
+    stato: "privata", visitabile: false,
+    storia: "Prima domus benedettina cluniacense (~1100), poi fortilizio templare-ospitaliero (XIII sec.), residenza signorile (Ridolfi, XVII sec.). Murature in opus spicatum, sala del capitolo, chiostro, barbacani, affreschi con Araba Fenice. Occupata da Comando tedesco 1943-1946. Proprietà di riferimento dell'Atlante.",
+    architettura: "Opus spicatum nelle murature più antiche. Portale con iscrizione latina. Camino con simboli (Fiore dell'Apocalisse, numeri 17-62, croce a 8 punte). Sala del capitolo-chiostro. Cantina su roccia. Barbacani facciata nord. Affreschi tardo-medievali.",
+    fonti: "Relazione storica privata SZ (108 pp., 2024). ASVr Antichi Estimi Provvisori. Bolla Lucio III 1185. Catasto austriaco 1848.",
+    media: { foto: 12, video: 0, doc: 3, piante: 1 },
+    tags: ["medievale","monastica","templari","veneto_orientale"],
+    cartaid: {
+      s1: { denominazione: "Villa Zanella", tipologia: "Villa-fortilizio monastica", uso_attuale: "Residenza privata", superficie_coperta: "—", superficie_fondiaria: "—", piani: "3", anno_costruzione: "~1100 (prima fase)", epoca_prevalente: "Medievale XII–XIII sec." },
+      s1_loc: { comune: "Colognola ai Colli", prov: "VR", regione: "Veneto", indirizzo: "San Vittore", lat: "45.4350", lng: "11.1886" },
+      s1_cat: { foglio: "—", mappale: "167,169,172", categ_catastale: "A/7", zona_urb: "—", vincoli: "Soprintendenza BACT Verona — verifica in corso" },
+      s2_storia: "Prima domus benedettina cluniacense (~1100). Fortilizio templare-ospitaliero (XIII sec.). Residenza nobiliare Gregori (1400-1514), Umiliati (1514-1651), Ridolfi (1652), Portalupi (1657), Veneranda Dottrina Cristiana (1770). Ferrari (1848), Grisi (1875), Zanella (dal 1899).",
+      s2_proprietari: [
+        { periodo: "~1100–1220", soggetto: "Ordine Benedettino Cluniacense", fonte: "Bolla Lucio III 1185" },
+        { periodo: "1220–1350", soggetto: "Prepositura S. Maria della Giara / Templari-Ospitalieri", fonte: "Atto 1350 ASVr" },
+        { periodo: "1400–1514", soggetto: "Famiglia Gregori", fonte: "Estimi ASVr" },
+        { periodo: "1514–1651", soggetto: "Ordine degli Umiliati", fonte: "Registro parrocchiale" },
+        { periodo: "1652–1657", soggetto: "Famiglia Ridolfi (Teodosio)", fonte: "Polizza estimo 1652 ASVr" },
+        { periodo: "1657–1770", soggetto: "Famiglia Portalupi", fonte: "ASVr Santa Maria Vergini" },
+        { periodo: "1770–1848", soggetto: "Veneranda Dottrina Cristiana", fonte: "Archivio parrocchiale" },
+        { periodo: "1848–1875", soggetto: "Ferrari Girolamo fu Agostino", fonte: "Catasto austriaco 1848" },
+        { periodo: "1875–1899", soggetto: "Famiglia Grisi (da Badia Calavena)", fonte: "Atto compravendita" },
+        { periodo: "1899–oggi", soggetto: "Famiglia Zanella", fonte: "Atto 25/10/1899" }
+      ],
+      s3_cantieri: [],
+      s4_materiali: [],
+      s5_scadenze: [],
+      s6_giardino: { tipo: "Brolo con alberi da frutto", limonaia: "Non documentata", fontane: "Non documentate", statue: "Non documentate", note: "Atto 1514: 'casa murata e coppata e solarata, cortivo e forno e due fienili con brolo con alberi da frutto'" },
+      s7_docs: { dropbox_path: "/Ville Storiche/Villa Zanella/", note: "Relazione storica 108pp (2024), Catasto austriaco 1848, Planimetria generale" }
+    }
+  },
+  {
+    id: 2, nome: "Villa Giusti del Giardino", comune: "Verona", prov: "VR",
+    lat: 45.4425, lng: 11.0030,
+    epoca: "veneziana", tipologia: "Villa con giardino storico",
+    periodo: "XIV–XIX sec.", proprietari: "Famiglia Giusti",
+    stato: "aperta al pubblico", visitabile: true,
+    storia: "Il palazzo risale al XIV secolo. Il celebre giardino rinascimentale fu realizzato dai Giusti nel 1586 e dichiarato tra i dieci giardini più belli d'Europa. Visitato da Mozart, Goethe e numerosi sovrani europei.",
+    architettura: "Facciata cinquecentesca con logge. Giardino a terrazze con cipresseto storico, labirinto, grotta e belvedere. Vista panoramica sulla città.",
+    fonti: "IRVV cat. VR0023. Archivio storico comunale VR.",
+    media: { foto: 8, video: 2, doc: 2, piante: 0 },
+    tags: ["veneziana","giardino_storico","verona_città","visitabile"]
+  },
+  {
+    id: 3, nome: "Villa Arvedi", comune: "Grezzana", prov: "VR",
+    lat: 45.5185, lng: 11.0420,
+    epoca: "veneziana", tipologia: "Villa veneta con barchessa",
+    periodo: "XVII sec.", proprietari: "Famiglia Arvedi",
+    stato: "privata", visitabile: false,
+    storia: "Costruita nella seconda metà del Seicento nella Valle di Valpantena. Considerata tra le più eleganti ville del Veronese. Affreschi interni di Giovanni Battista Cignaroli. Il parco conserva un antico cedro del Libano.",
+    architettura: "Corpo principale a tre piani con barchessa doppia. Giardino formale all'italiana con statue. Affreschi di Cignaroli nel salone principale.",
+    fonti: "IRVV cat. VR0089. Studi Veronesi VI (2021).",
+    media: { foto: 5, video: 0, doc: 1, piante: 0 },
+    tags: ["veneziana","valpantena","affreschi"]
+  },
+  {
+    id: 4, nome: "Villa Maffei", comune: "San Martino Buon Albergo", prov: "VR",
+    lat: 45.4063, lng: 11.0938,
+    epoca: "veneziana", tipologia: "Villa veneta",
+    periodo: "XVI–XVII sec.", proprietari: "Famiglia Maffei",
+    stato: "privata", visitabile: false,
+    storia: "Dimora storica della nobile famiglia Maffei, intellettuali e mecenati veronesi. Scipione Maffei (1675-1755), storico e drammaturgo, era di questa casata. La villa fu centro culturale del Veronese nel XVIII secolo.",
+    architettura: "Impianto classico veneziano con portale d'ingresso monumentale. Parco con essenze arboree storiche.",
+    fonti: "IRVV cat. VR0156. Archivio Maffei, Biblioteca Civica Verona.",
+    media: { foto: 3, video: 0, doc: 2, piante: 0 },
+    tags: ["veneziana","pianura_veronese"]
+  },
+  {
+    id: 5, nome: "Villa Pojana", comune: "Pojana Maggiore", prov: "VI",
+    lat: 45.2890, lng: 11.5230,
+    epoca: "palladiana", tipologia: "Villa palladiana UNESCO",
+    periodo: "1549-1563", proprietari: "Famiglia Pojana · Molin",
+    stato: "aperta al pubblico", visitabile: true,
+    storia: "Progettata da Andrea Palladio intorno al 1549 per Bonifacio Pojana. Una delle prime ville palladiane, con facciata sperimentale a cinque occhi. Affreschi di Anselmo Canera e Bernardino India. Patrimonio UNESCO.",
+    architettura: "Facciata con arco seriano e quattro oculi. Loggia centrale con archi a tutto sesto. Barchesse laterali. Affreschi interni di rara conservazione.",
+    fonti: "IRVV. Centro Palladiano Vicenza. UNESCO World Heritage List.",
+    media: { foto: 15, video: 3, doc: 5, piante: 2 },
+    tags: ["palladiana","UNESCO","visitabile","affreschi"]
+  },
+  {
+    id: 6, nome: "Villa Serego Alighieri", comune: "Gargagnago di Valpolicella", prov: "VR",
+    lat: 45.5580, lng: 10.9220,
+    epoca: "veneziana", tipologia: "Villa con vigneto storico",
+    periodo: "XIV sec. – oggi", proprietari: "Alighieri · Serego · Pieropan",
+    stato: "aperta al pubblico", visitabile: true,
+    storia: "Proprietà fondata dal figlio di Dante Alighieri, Pietro, nel 1353. Ancora oggi produce vino Valpolicella nella tenuta originale. La famiglia ha mantenuto continuità per 22 generazioni. Targa commemorativa con versi danteschi.",
+    architettura: "Casa colonica medievale ampliata in epoca veneziana. Cantine storiche per affinamento Amarone. Parco con viti centenarie.",
+    fonti: "Archivio famiglia Serego Alighieri. IRVV cat. VR0312.",
+    media: { foto: 7, video: 2, doc: 3, piante: 0 },
+    tags: ["veneziana","valpolicella","visitabile","dante","viticoltura"]
+  },
+  {
+    id: 7, nome: "Villa Mosconi Bertani", comune: "Arbizzano di Negrar", prov: "VR",
+    lat: 45.5320, lng: 10.9480,
+    epoca: "veneziana", tipologia: "Villa con giardino e cantina",
+    periodo: "XVIII sec.", proprietari: "Mosconi · Bertani",
+    stato: "aperta al pubblico", visitabile: true,
+    storia: "Villa settecentesca immersa nei vigneti della Valpolicella. La cantina Bertani, fondata nel 1857, ha prodotto le prime bottiglie di Amarone invecchiato. Il giardino all'italiana è tra i più curati della regione.",
+    architettura: "Facciata neoclassica con frontone. Giardino formale con fontane e statue. Cantine storiche a volta per affinamento vini.",
+    fonti: "IRVV cat. VR0298. Archivio Bertani.",
+    media: { foto: 6, video: 1, doc: 1, piante: 0 },
+    tags: ["veneziana","valpolicella","visitabile","viticoltura","giardino_storico"]
+  },
+  {
+    id: 8, nome: "Palazzo Canossa", comune: "Verona", prov: "VR",
+    lat: 45.4425, lng: 10.9920,
+    epoca: "veneziana", tipologia: "Palazzo nobiliare urbano",
+    periodo: "XVI sec.", proprietari: "Famiglia Canossa",
+    stato: "istituzionale", visitabile: false,
+    storia: "Residenza della nobile famiglia Canossa, imparentata con i Gonzaga e con Napoleone (la madre di Napoleone, Letizia Ramolino, era di origine canossiana). Oggi sede di istituzioni pubbliche veronesi.",
+    architettura: "Palazzo rinascimentale con cortile interno. Affreschi di Paolo Farinati. Scalone monumentale.",
+    fonti: "IRVV cat. VR0067. Archivio Canossa, ASVr.",
+    media: { foto: 4, video: 0, doc: 2, piante: 0 },
+    tags: ["veneziana","verona_città","nobiliare"]
+  },
+  {
+    id: 9, nome: "Villa Buri", comune: "Montorio Veronese", prov: "VR",
+    lat: 45.4020, lng: 11.1150,
+    epoca: "veneziana", tipologia: "Villa con parco",
+    periodo: "XVII–XVIII sec.", proprietari: "Famiglia Buri",
+    stato: "privata", visitabile: false,
+    storia: "Villa collinare nella fascia orientale del Veronese, con splendida vista sulla pianura verso Soave. Il parco conserva essenze arboree di notevole dimensione.",
+    architettura: "Corpo principale a due piani con barchessa. Parco romantico con cedri, sequoie e cipressi storici.",
+    fonti: "IRVV cat. VR0445.",
+    media: { foto: 2, video: 0, doc: 0, piante: 0 },
+    tags: ["veneziana","colline_orientali"]
+  },
+  {
+    id: 10, nome: "Villa Lebrecht", comune: "Illasi", prov: "VR",
+    lat: 45.4680, lng: 11.1900,
+    epoca: "ottocento", tipologia: "Villa neoclassica con parco",
+    periodo: "XIX sec.", proprietari: "Famiglia Lebrecht · Sartori",
+    stato: "privata", visitabile: false,
+    storia: "Villa neoclassica di proprietà della famiglia Lebrecht, commercianti di origine tedesca stabilitisi nel Veronese durante il periodo austriaco. Il parco ospita una straordinaria collezione di piante esotiche introdotte nel XIX secolo.",
+    architettura: "Corpo neoclassico con colonnato ionico. Parco all'inglese con laghetto artificiale, serre e piante esotiche centenarie.",
+    fonti: "IRVV cat. VR0521. Catasto austriaco 1848.",
+    media: { foto: 3, video: 0, doc: 1, piante: 0 },
+    tags: ["ottocento","val_illasi","austriaco"]
+  },
+  {
+    id: 11, nome: "Villa La Pedemonte", comune: "San Pietro in Cariano", prov: "VR",
+    lat: 45.5050, lng: 10.8980,
+    epoca: "veneziana", tipologia: "Villa con cantina storica",
+    periodo: "XVI sec.", proprietari: "Famiglia Dal Cero · Tedeschi",
+    stato: "aperta al pubblico", visitabile: true,
+    storia: "Una delle dimore storiche più rappresentative della Valpolicella classica. Le cantine sotterranee sono tra le più antiche della zona. La villa ospita attività culturali e degustazioni.",
+    architettura: "Facciata veneziana con loggia. Cantine a volta del XVI secolo. Giardino con pergolato storico.",
+    fonti: "IRVV cat. VR0289.",
+    media: { foto: 5, video: 1, doc: 1, piante: 0 },
+    tags: ["veneziana","valpolicella","visitabile","viticoltura"]
+  },
+  {
+    id: 12, nome: "Villa Rizzardi", comune: "Negrar", prov: "VR",
+    lat: 45.5420, lng: 10.9350,
+    epoca: "veneziana", tipologia: "Villa con giardino all'italiana",
+    periodo: "XVIII sec.", proprietari: "Famiglia Rizzardi",
+    stato: "aperta al pubblico", visitabile: true,
+    storia: "Il giardino Pojega, progettato dal marchese Luigi Rizzardi nel 1783, è considerato tra i più significativi esempi di giardino all'italiana nel Veneto. L'anfiteatro verde è un elemento unico in Italia.",
+    architettura: "Villa settecentesca con ampio parco. Giardino all'italiana con anfiteatro vegetale, limonaia, labirinto e fontane.",
+    fonti: "IRVV cat. VR0334. Giardini storici del Veneto.",
+    media: { foto: 9, video: 2, doc: 2, piante: 0 },
+    tags: ["veneziana","valpolicella","giardino_storico","visitabile"]
+  },
+  {
+    id: 13, nome: "Castello di Bevilacqua", comune: "Bevilacqua", prov: "VR",
+    lat: 45.2230, lng: 11.4020,
+    epoca: "medievale", tipologia: "Castello medievale",
+    periodo: "XIII–XIV sec.", proprietari: "Scaligeri · Bevilacqua · privati",
+    stato: "aperta al pubblico", visitabile: true,
+    storia: "Castello medievale costruito dagli Scaligeri nel XIV secolo. Passato alla famiglia Bevilacqua nel corso del XV secolo. Oggi ospita eventi culturali e matrimoni. Uno dei castelli meglio conservati della Pianura Padana.",
+    architettura: "Struttura quadrata con torri angolari e mastio centrale. Fossato originale. Corpo residenziale interno rinnovato nel '400.",
+    fonti: "IRVV cat. VR0712. Storia di Verona.",
+    media: { foto: 11, video: 3, doc: 4, piante: 1 },
+    tags: ["medievale","scaligera","pianura_veronese","visitabile"]
+  },
+  {
+    id: 14, nome: "Villa Spinola Franchini", comune: "Colognola ai Colli", prov: "VR",
+    lat: 45.4290, lng: 11.1820,
+    epoca: "veneziana", tipologia: "Villa veneta con parco",
+    periodo: "XVI–XVIII sec.", proprietari: "Portalupi · Spinola · Franchini",
+    stato: "privata", visitabile: false,
+    storia: "Antica proprietà della nobile famiglia Portalupi, ascritta al Consiglio di Verona dal 1439. La villa conserva elementi architettonici romanici nella struttura più antica. I Portalupi possedettero anche Villa Zanella nella stessa frazione di San Vittore.",
+    architettura: "Corpo principale cinquecentesco con barchessa. Resti di struttura romanica nella cantina. Parco con viti storiche.",
+    fonti: "IRVV cat. VR0478. Crollalanza, Dizionario storico blasonico.",
+    media: { foto: 2, video: 0, doc: 1, piante: 0 },
+    tags: ["veneziana","colognola","portalupi"]
+  },
+  {
+    id: 15, nome: "Villa del Bene", comune: "Dolcè", prov: "VR",
+    lat: 45.5890, lng: 10.8420,
+    epoca: "veneziana", tipologia: "Villa con affreschi",
+    periodo: "XVI sec.", proprietari: "Famiglia Del Bene",
+    stato: "privata", visitabile: false,
+    storia: "Villa rinascimentale nella Valle dell'Adige, nota per il ciclo di affreschi cinquecenteschi che decorano le sale interne. Costruita dai Del Bene, famiglia di banchieri fiorentini stabilitisi a Verona nel Quattrocento.",
+    architettura: "Corpo principale a due piani con loggia aperta. Affreschi attribuiti alla scuola di Paolo Veronese. Giardino terrazzato sulla riva dell'Adige.",
+    fonti: "IRVV cat. VR0198. Archivio Del Bene.",
+    media: { foto: 4, video: 0, doc: 2, piante: 0 },
+    tags: ["veneziana","adige","affreschi","rinascimento"]
+  }
+];
+
+// ═══════════════════════════════════
+// VARIABILI GLOBALE ATLANTE
+// ═══════════════════════════════════
+let atlFiltroEpoca = 'all';
+let atlVillaSelezionata = null;
+let atlTabAttiva = 'storia';
+
+const MAPTILER_KEY = 'JT0o4hy8UJpaGao8sayf';
+
+// ═══════════════════════════════════
+// MAPPA SVG — coordinate normalizzate
+// Sistema: lon/lat → x/y nel viewBox 0-800 x 0-600
+// Bounding box Veneto: lon 10.5-13.1, lat 44.7-46.7
+// ═══════════════════════════════════
+function atlLatLonToSVG(lat, lon) {
+  const x = ((lon - 10.5) / (13.1 - 10.5)) * 720 + 40;
+  const y = ((46.7 - lat) / (46.7 - 44.7)) * 540 + 30;
+  return { x: Math.round(x), y: Math.round(y) };
+}
+
+const ATL_COLORI_EPOCA = {
+  romana: '#F59E0B', medievale: '#EF4444', scaligera: '#8B5CF6',
+  veneziana: '#3B82F6', palladiana: '#06B6D4', ottocento: '#10B981'
+};
+
+function atlDisegnaPins(ville) {
+  const g = document.getElementById('atl-map-pins');
+  if (!g) return;
+  g.innerHTML = '';
+  ville.forEach(v => {
+    const { x, y } = atlLatLonToSVG(v.lat, v.lng);
+    const col = ATL_COLORI_EPOCA[v.epoca] || '#9CA3AF';
+    const sel = atlVillaSelezionata === v.id;
+    const r = sel ? 10 : 7;
+
+    const pin = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    pin.setAttribute('cursor', 'pointer');
+    pin.setAttribute('data-id', v.id);
+
+    // Alone selezione
+    if (sel) {
+      const glow = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      glow.setAttribute('cx', x); glow.setAttribute('cy', y);
+      glow.setAttribute('r', 16);
+      glow.setAttribute('fill', col); glow.setAttribute('opacity', '0.25');
+      pin.appendChild(glow);
+    }
+
+    // Cerchio pin
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', x); c.setAttribute('cy', y); c.setAttribute('r', r);
+    c.setAttribute('fill', col);
+    c.setAttribute('stroke', sel ? '#fff' : 'rgba(255,255,255,0.6)');
+    c.setAttribute('stroke-width', sel ? '2.5' : '1.5');
+    pin.appendChild(c);
+
+    // Etichetta per villa selezionata
+    if (sel) {
+      const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      lbl.setAttribute('x', x + 13); lbl.setAttribute('y', y + 4);
+      lbl.setAttribute('fill', '#E8D5A0'); lbl.setAttribute('font-size', '10');
+      lbl.setAttribute('font-family', 'serif');
+      lbl.textContent = v.nome.replace('Villa ', '');
+      pin.appendChild(lbl);
+    }
+
+    // Events
+    pin.addEventListener('click', () => atlSelezionaVilla(v.id));
+    pin.addEventListener('mouseenter', (e) => atlMapTooltip(v, x, y, true));
+    pin.addEventListener('mouseleave', () => atlMapTooltip(null, 0, 0, false));
+
+    g.appendChild(pin);
+  });
+}
+
+function atlMapTooltip(v, x, y, show) {
+  const tt = document.getElementById('atl-map-tooltip');
+  if (!tt) return;
+  if (!show || !v) { tt.style.display = 'none'; return; }
+  const bg = document.getElementById('atl-tt-bg');
+  const nome = document.getElementById('atl-tt-nome');
+  const comune = document.getElementById('atl-tt-comune');
+  const epoca = document.getElementById('atl-tt-epoca');
+  nome.textContent = v.nome;
+  comune.textContent = '📍 ' + v.comune;
+  epoca.textContent = v.epoca + ' · ' + v.periodo;
+  // Posiziona tooltip
+  const tx = x + 15 > 640 ? x - 175 : x + 15;
+  const ty = y - 50 < 10 ? y + 10 : y - 50;
+  bg.setAttribute('x', tx); bg.setAttribute('y', ty);
+  nome.setAttribute('x', tx + 8); nome.setAttribute('y', ty + 17);
+  comune.setAttribute('x', tx + 8); comune.setAttribute('y', ty + 31);
+  epoca.setAttribute('x', tx + 8); epoca.setAttribute('y', ty + 42);
+  tt.style.display = 'block';
+}
+
+function atlMapMostraTutti() {
+  document.querySelectorAll('.atl-style-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('btn-tutti-pin').classList.add('active');
+  atlDisegnaPins(ATL_VILLE);
+}
+
+function atlMapFiltroEpoca(epoca, btn) {
+  document.querySelectorAll('.atl-style-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  atlDisegnaPins(ATL_VILLE.filter(v => v.epoca === epoca));
+}
+
+// ═══════════════════════════════════
+// FUNZIONI ATLANTE
+// ═══════════════════════════════════
+
+function apriAtlante() {
+  document.getElementById('atlante-overlay').classList.add('open');
+  atlRenderLista(ATL_VILLE);
+  setTimeout(() => atlDisegnaPins(ATL_VILLE), 100);
+}
+
+function atlAttesaSDK(t) {}
+
+function chiudiAtlante() {
+  document.getElementById('atlante-overlay').classList.remove('open');
+}
+
+function atlSalvaToken() {}
+
+function atlInitMap() {}
+
+
+function atlAddMarkers(ville) {}
+
+
+
+function atlColoreEpoca(e) {
+  const c = {
+    romana:'#F59E0B', medievale:'#EF4444', scaligera:'#8B5CF6',
+    veneziana:'#3B82F6', palladiana:'#06B6D4', ottocento:'#10B981'
+  };
+  return c[e] || '#6B7280';
+}
+
+function atlIconaEpoca(e) {
+  const ic = {
+    romana:'🏛', medievale:'🏰', scaligera:'⚔', veneziana:'🦁',
+    palladiana:'🏛', ottocento:'🌿'
+  };
+  return ic[e] || '🏠';
+}
+
+function atlRenderLista(ville) {
+  const list = document.getElementById('atl-list');
+  document.getElementById('atl-count-n').textContent = ville.length;
+  if (!ville.length) {
+    list.innerHTML = '<div style="padding:1rem;color:#4B5563;font-size:12px;text-align:center">Nessuna villa trovata</div>';
+    return;
+  }
+  list.innerHTML = ville.map(v => `
+    <div class="atl-villa-card ${atlVillaSelezionata === v.id ? 'selected' : ''}"
+         onclick="atlSelezionaVilla(${v.id})">
+      <div class="atl-villa-nome">${v.nome}</div>
+      <div class="atl-villa-meta">
+        <span>📍 ${v.comune}</span>
+        <span>📅 ${v.periodo}</span>
+        ${v.visitabile ? '<span style="color:#4ADE80">✓ Visitabile</span>' : ''}
+      </div>
+      <div class="atl-villa-tags">
+        <span class="atl-tag epoca">${v.epoca}</span>
+        <span class="atl-tag tipologia">${v.tipologia.split(' ')[0]}</span>
+        ${v.media.foto ? `<span class="atl-tag doc">📷 ${v.media.foto}</span>` : ''}
+        ${v.media.doc ? `<span class="atl-tag doc">📄 ${v.media.doc}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function atlSelezionaVilla(id) {
+  atlVillaSelezionata = id;
+  const v = ATL_VILLE.find(x => x.id === id);
+  if (!v) return;
+
+  // Aggiorna lista (highlight)
+  const q = document.getElementById('atl-search').value;
+  atlFiltraConQuery(q);
+
+  // Aggiorna scheda
+  document.getElementById('atl-scheda-nome').textContent = v.nome;
+  document.getElementById('atl-scheda-grid').innerHTML = `
+    <div class="atl-scheda-field"><div class="atl-scheda-label">Comune</div><div class="atl-scheda-value">${v.comune} (${v.prov})</div></div>
+    <div class="atl-scheda-field"><div class="atl-scheda-label">Epoca</div><div class="atl-scheda-value">${v.epoca}</div></div>
+    <div class="atl-scheda-field" style="grid-column:1/-1"><div class="atl-scheda-label">Indirizzo / Località</div><div class="atl-scheda-value">${v.cartaid?.s1_loc?.indirizzo || v.comune}</div></div>
+    <div class="atl-scheda-field"><div class="atl-scheda-label">Periodo</div><div class="atl-scheda-value">${v.periodo}</div></div>
+    <div class="atl-scheda-field"><div class="atl-scheda-label">Tipologia</div><div class="atl-scheda-value">${v.tipologia}</div></div>
+    <div class="atl-scheda-field" style="grid-column:1/-1"><div class="atl-scheda-label">Proprietari storici</div><div class="atl-scheda-value">${v.proprietari}</div></div>
+    <div class="atl-scheda-field"><div class="atl-scheda-label">Stato</div><div class="atl-scheda-value">${v.stato}</div></div>
+    <div class="atl-scheda-field"><div class="atl-scheda-label">Coordinate</div><div class="atl-scheda-value">${v.lat}, ${v.lng}</div></div>
+  `;
+
+  document.getElementById('atl-tab-storia').textContent = v.storia;
+  document.getElementById('atl-tab-architettura').textContent = v.architettura;
+  document.getElementById('atl-tab-fonti').textContent = v.fonti;
+
+  // TAB CARTA ID
+  const cid = v.cartaid;
+  if (cid) {
+    const propRighe = (cid.s2_proprietari || []).map(p =>
+      `<tr><td style="color:#9CA3AF;padding:3px 6px;border-bottom:1px solid #1F2937">${p.periodo}</td>
+       <td style="color:#E5E7EB;padding:3px 6px;border-bottom:1px solid #1F2937">${p.soggetto}</td>
+       <td style="color:#6B7280;padding:3px 6px;border-bottom:1px solid #1F2937;font-size:10px">${p.fonte}</td></tr>`
+    ).join('');
+    document.getElementById('atl-tab-cartaid').innerHTML = `
+      <div style="font-size:11px;color:#6B7280;margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">§1 — Anagrafica</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:12px">
+        ${[
+          ['Denominazione', cid.s1?.denominazione],
+          ['Tipologia', cid.s1?.tipologia],
+          ['Uso attuale', cid.s1?.uso_attuale],
+          ['Epoca prevalente', cid.s1?.epoca_prevalente],
+          ['Anno costruzione', cid.s1?.anno_costruzione],
+          ['Piani', cid.s1?.piani],
+          ['Comune', cid.s1_loc?.comune + ' (' + cid.s1_loc?.prov + ')'],
+          ['Indirizzo', cid.s1_loc?.indirizzo],
+          ['Coordinate', cid.s1_loc?.lat + ', ' + cid.s1_loc?.lng],
+          ['Mappali', cid.s1_cat?.mappale],
+          ['Vincoli', cid.s1_cat?.vincoli]
+        ].map(([l,v]) => `
+          <div style="background:#1C2333;border:1px solid #2A3040;border-radius:4px;padding:5px 8px">
+            <div style="color:#4B5563;font-size:10px;margin-bottom:1px">${l}</div>
+            <div style="color:#D1D5DB;font-size:11px">${v||'—'}</div>
+          </div>`).join('')}
+      </div>
+      <div style="font-size:11px;color:#6B7280;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em">§2 — Successione proprietari</div>
+      <div style="overflow-x:auto;margin-bottom:12px">
+        <table style="width:100%;border-collapse:collapse;font-size:11px">
+          <thead><tr>
+            <th style="text-align:left;color:#4B5563;padding:3px 6px;border-bottom:1px solid #2A3040">Periodo</th>
+            <th style="text-align:left;color:#4B5563;padding:3px 6px;border-bottom:1px solid #2A3040">Proprietario</th>
+            <th style="text-align:left;color:#4B5563;padding:3px 6px;border-bottom:1px solid #2A3040">Fonte</th>
+          </tr></thead>
+          <tbody>${propRighe || '<tr><td colspan="3" style="color:#4B5563;padding:6px">Dati da inserire</td></tr>'}</tbody>
+        </table>
+      </div>
+      <div style="font-size:11px;color:#6B7280;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em">§6 — Giardino e pertinenze</div>
+      <div style="background:#1C2333;border:1px solid #2A3040;border-radius:4px;padding:8px;font-size:11px;color:#9CA3AF;margin-bottom:12px">
+        ${cid.s6_giardino?.note || '—'}
+      </div>
+      <div style="font-size:11px;color:#6B7280;margin-bottom:6px;text-transform:uppercase;letter-spacing:.08em">§7 — Documentazione Dropbox</div>
+      <div style="background:#1C2333;border:1px solid #2A3040;border-radius:4px;padding:8px;font-size:11px;color:#9CA3AF">
+        📁 ${cid.s7_docs?.dropbox_path || '—'}<br>
+        <span style="color:#6B7280">${cid.s7_docs?.note || ''}</span>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="atl-btn primary" onclick="atlEsportaCartaID(${v.id})">⬇ Esporta Carta ID</button>
+        <button class="atl-btn" onclick="atlStampaCartaID(${v.id})">🖨 Stampa</button>
+      </div>
+    `;
+  } else {
+    document.getElementById('atl-tab-cartaid').innerHTML = `
+      <div style="padding:12px;color:#4B5563;font-size:12px;text-align:center">
+        Carta Identità Digitale non ancora compilata per questa villa.<br>
+        <button class="atl-btn primary" style="margin-top:8px" onclick="alert('Funzione in sviluppo — dati via Airtable')">+ Crea Carta ID</button>
+      </div>`;
+  }
+  document.getElementById('atl-tab-media').innerHTML = `
+    <div class="atl-media-grid">
+      <div class="atl-media-item" onclick="window.open('https://www.dropbox.com','_blank')"><span class="atl-media-icon">📷</span>${v.media.foto} foto</div>
+      <div class="atl-media-item"><span class="atl-media-icon">🎬</span>${v.media.video} video</div>
+      <div class="atl-media-item"><span class="atl-media-icon">📄</span>${v.media.doc} documenti</div>
+      <div class="atl-media-item"><span class="atl-media-icon">📐</span>${v.media.piante} piante</div>
+      <div class="atl-media-item" onclick="alert('Carica foto da Dropbox')"><span class="atl-media-icon">➕</span>Aggiungi</div>
+      <div class="atl-media-item" onclick="alert('Ricerca online '+v.nome)"><span class="atl-media-icon">🔍</span>Cerca online</div>
+    </div>
+  `;
+
+  document.getElementById('atl-scheda-actions').innerHTML = `
+    <button class="atl-btn primary" onclick="atlTab('cartaid')">📋 Carta Identità</button>
+    <button class="atl-btn" onclick="window.open('https://www.google.com/search?q=${encodeURIComponent(v.nome+' '+v.comune+' storia')}','_blank')">🔍 Ricerca web</button>
+    <button class="atl-btn" onclick="window.open('https://irvv.regione.veneto.it','_blank')">📚 IRVV</button>
+    ${v.visitabile ? `<button class="atl-btn" onclick="window.open('https://www.google.com/maps/search/${encodeURIComponent(v.nome+' '+v.comune)}','_blank')">🗺 Indicazioni</button>` : ''}
+  `;
+
+  // Attiva tab corretta
+  atlTab(atlTabAttiva);
+
+  // Mostra scheda
+  document.getElementById('atl-scheda').classList.add('open');
+
+  // Aggiorna pin sulla mappa SVG
+  atlDisegnaPins(atlFiltraConQueryRitorna());
+}
+
+function atlTab(nome, btn) {
+  atlTabAttiva = nome;
+  ['storia','architettura','media','fonti','cartaid'].forEach(t => {
+    document.getElementById('atl-tab-'+t).classList.toggle('active', t === nome);
+  });
+  document.querySelectorAll('.atl-stab').forEach(b => {
+    const txt = b.textContent.toLowerCase();
+    b.classList.toggle('active',
+      (nome==='storia' && txt.includes('storia')) ||
+      (nome==='architettura' && txt.includes('architettura')) ||
+      (nome==='media' && txt.includes('media')) ||
+      (nome==='fonti' && txt.includes('fonti')) ||
+      (nome==='cartaid' && txt.includes('carta'))
+    );
+  });
+}
+
+function atlEsportaCartaID(id) {
+  const v = ATL_VILLE.find(x => x.id === id);
+  if (!v || !v.cartaid) return;
+  const cid = v.cartaid;
+  const prop = (cid.s2_proprietari||[]).map(p => `  ${p.periodo} — ${p.soggetto} (${p.fonte})`).join('\n');
+  const testo = `CARTA D'IDENTITÀ DIGITALE — ${v.nome}
+${'='.repeat(50)}
+Comune: ${v.comune} (${cid.s1_loc?.prov})
+Indirizzo: ${cid.s1_loc?.indirizzo}
+Coordinate: ${cid.s1_loc?.lat}, ${cid.s1_loc?.lng}
+Tipologia: ${cid.s1?.tipologia}
+Uso attuale: ${cid.s1?.uso_attuale}
+Epoca: ${cid.s1?.epoca_prevalente}
+Anno costruzione: ${cid.s1?.anno_costruzione}
+Mappali: ${cid.s1_cat?.mappale}
+Vincoli: ${cid.s1_cat?.vincoli}
+
+SUCCESSIONE PROPRIETARI
+${'─'.repeat(40)}
+${prop}
+
+STORIA
+${'─'.repeat(40)}
+${v.storia}
+
+ARCHITETTURA
+${'─'.repeat(40)}
+${v.architettura}
+
+GIARDINO E PERTINENZE
+${'─'.repeat(40)}
+${cid.s6_giardino?.note||'—'}
+
+DOCUMENTAZIONE DROPBOX
+${'─'.repeat(40)}
+${cid.s7_docs?.dropbox_path}
+${cid.s7_docs?.note}
+
+FONTI
+${'─'.repeat(40)}
+${v.fonti}
+
+---
+Generato da Hub Personale Multidisciplinare — ${new Date().toLocaleDateString('it-IT')}`;
+
+  const blob = new Blob([testo], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `CartaID_${v.nome.replace(/ /g,'_')}.txt`;
+  a.click();
+}
+
+function atlStampaCartaID(id) {
+  const el = document.getElementById('atl-tab-cartaid');
+  const w = window.open('','_blank');
+  w.document.write(`<html><head><title>Carta ID — ${ATL_VILLE.find(x=>x.id===id)?.nome}</title>
+  <style>body{font-family:sans-serif;padding:2rem;background:#fff;color:#111}
+  table{border-collapse:collapse;width:100%}td,th{border:1px solid #ddd;padding:6px 10px;font-size:12px}
+  h2{font-size:18px;margin-bottom:1rem}</style></head><body>
+  <h2>Carta d'Identità Digitale — ${ATL_VILLE.find(x=>x.id===id)?.nome}</h2>
+  ${el.innerHTML}</body></html>`);
+  w.print();
+}
+
+function atlSetFiltro(epoca, btn) {
+  atlFiltroEpoca = epoca;
+  document.querySelectorAll('.atl-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  atlFiltra();
+}
+
+function atlFiltra() {
+  const q = document.getElementById('atl-search').value;
+  atlFiltraConQuery(q);
+}
+
+function atlFiltraConQuery(q) {
+  const ql = q.toLowerCase();
+  let ville = ATL_VILLE;
+  if (atlFiltroEpoca !== 'all') {
+    ville = ville.filter(v => v.epoca === atlFiltroEpoca ||
+      v.tags.includes(atlFiltroEpoca));
+  }
+  if (ql) {
+    ville = ville.filter(v =>
+      v.nome.toLowerCase().includes(ql) ||
+      v.comune.toLowerCase().includes(ql) ||
+      v.proprietari.toLowerCase().includes(ql) ||
+      v.tipologia.toLowerCase().includes(ql) ||
+      v.storia.toLowerCase().includes(ql)
+    );
+  }
+  atlRenderLista(ville);
+  atlDisegnaPins(ville);
+}
+
+function atlCambiaStile(stile, btn) {}
+
+
+function atlFiltraConQueryRitorna() { return ATL_VILLE; }
+
+
+
+// Aggiorna header Hub per sezione ville
+const _atlOrigArea = AREAS.find(a => a.id === 10);
+if (_atlOrigArea) {
+  _atlOrigArea.items[0] = `Atlante interattivo — ${ATL_VILLE.length} ville Verona e provincia`;
+}
+</script>
+
+
+</body></html>
