@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screener Prodotti Finanziari</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#2A2A2A; --bg2:#1E1E1E; --bg3:#333333; --surface:#3A3A3A;
+  --border:#4A2030; --border2:#484848; --text:#F0EDE8; --text2:#B8B0A8; --text3:#7A7068;
+  --accent:#C4763A; --accent2:#E08898; --amaranto:#4A1828; --amaranto2:#6B2A3E;
+  --gold:#C4A055; --green:#1D9E75; --blue:#185FA5;
+  --r1:#2E4A1A; --r1t:#7BC244; /* 5-10% */
+  --r2:#4A3A0A; --r2t:#E8A840; /* 10-15% */
+  --r3:#4A1A1A; --r3t:#E84040; /* >15/20% */
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* TOP BAR */
+.topbar { background:var(--bg2); border-bottom:1px solid var(--border); padding:0 2rem; height:56px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:200; }
+.topbar-left { display:flex; align-items:center; gap:1rem; }
+.back-btn { font-size:11px; color:var(--accent); background:none; border:1px solid var(--border); border-radius:5px; padding:4px 10px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background .15s; }
+.back-btn:hover { background:var(--amaranto); }
+.topbar-title { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:600; color:var(--text); }
+.topbar-sub { font-size:11px; color:var(--text3); border-left:1px solid var(--border2); padding-left:1rem; margin-left:.5rem; }
+.topbar-date { font-size:11px; color:var(--text3); font-family:'DM Mono',monospace; }
+
+/* STRIP */
+.strip { background:var(--amaranto); border-bottom:1px solid var(--amaranto2); padding:.5rem 2rem; display:flex; gap:2rem; font-size:11px; color:var(--accent2); flex-wrap:wrap; align-items:center; }
+.sdot { width:5px; height:5px; border-radius:50%; background:var(--accent2); display:inline-block; margin-right:.4rem; }
+
+/* LEGEND */
+.legend { display:flex; gap:1rem; align-items:center; margin-left:auto; }
+.leg { display:flex; align-items:center; gap:.4rem; font-size:10px; }
+.leg-dot { width:10px; height:10px; border-radius:2px; }
+
+/* CONTROLS */
+.controls { background:var(--bg2); border-bottom:1px solid var(--border2); padding:.75rem 2rem; display:flex; gap:2rem; flex-wrap:wrap; align-items:flex-end; }
+.cg { display:flex; flex-direction:column; gap:4px; }
+.clabel { font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--text3); font-weight:500; }
+.brow { display:flex; gap:4px; flex-wrap:wrap; }
+
+.tab-btn { font-size:11px; padding:4px 12px; border-radius:4px; border:1px solid var(--border2); background:transparent; color:var(--text2); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; white-space:nowrap; }
+.tab-btn:hover { border-color:var(--accent); color:var(--text); }
+.tab-btn.active { background:var(--amaranto); border-color:var(--amaranto2); color:var(--accent2); }
+
+.geo-btn { font-size:11px; padding:4px 11px; border-radius:4px; border:1px solid var(--border2); background:transparent; color:var(--text2); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; }
+.geo-btn:hover { border-color:var(--gold); color:var(--text); }
+.geo-btn.active { background:#2E1A00; border-color:var(--gold); color:var(--gold); }
+
+.rend-btn { font-size:11px; padding:4px 12px; border-radius:4px; border:1px solid var(--border2); background:transparent; color:var(--text2); cursor:pointer; font-family:'DM Mono',monospace; font-weight:500; transition:all .15s; }
+.rend-btn.active { background:var(--amaranto); border-color:var(--amaranto2); color:var(--accent2); }
+.rend-btn:not(.active):hover { border-color:var(--gold); color:var(--gold); }
+
+/* MAIN */
+.main { padding:1.5rem 2rem 3rem; }
+
+/* SECTION HEADER */
+.sec-hdr { display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; margin-top:1.5rem; }
+.sec-hdr:first-child { margin-top:0; }
+.sec-num { font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); background:var(--bg2); border:1px solid var(--border2); border-radius:3px; padding:1px 6px; }
+.sec-name { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:600; color:var(--text); }
+.sec-desc { font-size:11px; color:var(--text3); margin-left:.5rem; }
+.sec-line { flex:1; height:1px; background:var(--border2); }
+
+/* PRODUCT TABLE */
+.prod-table { width:100%; border-collapse:collapse; margin-bottom:.5rem; }
+.prod-table th { font-size:9px; text-transform:uppercase; letter-spacing:.08em; color:var(--text3); font-weight:500; padding:6px 10px; text-align:left; border-bottom:1px solid var(--border2); background:var(--bg2); }
+.prod-table th:last-child { text-align:right; }
+.prod-table td { font-size:11px; padding:8px 10px; border-bottom:1px solid #333; color:var(--text2); vertical-align:middle; }
+.prod-table td:first-child { color:var(--text); font-weight:500; }
+.prod-table td:last-child { text-align:right; }
+.prod-table tr:last-child td { border-bottom:none; }
+.prod-table tr:hover td { background:rgba(255,255,255,.02); }
+
+/* RENDIMENTO BADGE */
+.rend { font-family:'DM Mono',monospace; font-size:11px; font-weight:500; padding:2px 8px; border-radius:3px; display:inline-block; }
+.rend.r1 { background:var(--r1); color:var(--r1t); }
+.rend.r2 { background:var(--r2); color:var(--r2t); }
+.rend.r3 { background:var(--r3); color:var(--r3t); }
+
+/* GEO BADGE */
+.geo { font-size:9px; padding:1px 6px; border-radius:10px; border:1px solid var(--border2); color:var(--text3); font-family:'DM Mono',monospace; display:inline-block; margin-right:3px; }
+.geo.us { border-color:#185FA5; color:#5BA3E8; }
+.geo.eu { border-color:#1D9E75; color:#52C99A; }
+.geo.as { border-color:#BA7517; color:#E8A840; }
+.geo.br { border-color:#6B52C8; color:#A090E8; }
+
+/* VALUTA BADGE */
+.val { font-size:9px; padding:1px 5px; border-radius:3px; background:var(--bg2); border:1px solid var(--border2); color:var(--text3); font-family:'DM Mono',monospace; }
+
+/* CARD WRAPPER */
+.card { background:var(--surface); border:1px solid var(--border2); border-radius:8px; overflow:hidden; margin-bottom:1rem; }
+.card-head { background:var(--bg3); padding:.5rem 1rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border2); }
+.card-head-title { font-size:12px; font-weight:500; color:var(--text2); letter-spacing:.04em; }
+.card-count { font-size:10px; color:var(--text3); font-family:'DM Mono',monospace; }
+
+.hidden { display:none; }
+.no-results { padding:2rem; text-align:center; color:var(--text3); font-size:12px; }
+
+/* DISCLAIMER */
+.disclaimer { margin:2rem 2rem 0; padding:.75rem 1rem; background:var(--bg2); border:1px solid var(--border2); border-radius:6px; font-size:10px; color:var(--text3); line-height:1.6; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="back-btn" onclick="history.back()">← Hub</button>
+    <span class="topbar-title">Screener Prodotti Finanziari</span>
+    <span class="topbar-sub">7 Famiglie · 4 Aree Geografiche · 3 Fasce Rendimento</span>
+  </div>
+  <span class="topbar-date" id="live-date"></span>
+</div>
+
+<div class="strip">
+  <span><span class="sdot"></span>Dati indicativi — rendimenti storici annualizzati per periodo selezionato</span>
+  <span><span class="sdot"></span>Prodotti acquistabili da investitori italiani (UCITS/SeDeX)</span>
+  <span><span class="sdot"></span>Fiscalità 26% non inclusa nei rendimenti</span>
+  <div class="legend">
+    <div class="leg"><span style="color:var(--r1t)">■</span><span>5–10%</span></div>
+    <div class="leg"><span style="color:var(--r2t)">■</span><span>10–15%</span></div>
+    <div class="leg"><span style="color:var(--r3t)">■</span><span>&gt;15%</span></div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="cg">
+    <span class="clabel">Famiglia prodotto</span>
+    <div class="brow" id="fam-tabs">
+      <button class="tab-btn active" onclick="setFam('all',this)">Tutti</button>
+      <button class="tab-btn" onclick="setFam('gov',this)">🏛 Governativi</button>
+      <button class="tab-btn" onclick="setFam('corp',this)">🏢 Corporate</button>
+      <button class="tab-btn" onclick="setFam('cert',this)">📋 Certificati Memory</button>
+      <button class="tab-btn" onclick="setFam('fut',this)">⚡ Futures</button>
+      <button class="tab-btn" onclick="setFam('etf',this)">📊 ETF</button>
+      <button class="tab-btn" onclick="setFam('fund',this)">💼 Fondi Attivi</button>
+      <button class="tab-btn" onclick="setFam('fx',this)">💱 Forex</button>
+      <button class="tab-btn" onclick="setFam('azioni',this)">📈 Azioni</button>
+    </div>
+  </div>
+  <div class="cg">
+    <span class="clabel">Area geografica</span>
+    <div class="brow" id="geo-tabs">
+      <button class="geo-btn active" onclick="setGeo('all',this)">Tutte</button>
+      <button class="geo-btn" onclick="setGeo('us',this)">🇺🇸 US</button>
+      <button class="geo-btn" onclick="setGeo('eu',this)">🇪🇺 Europa</button>
+      <button class="geo-btn" onclick="setGeo('as',this)">🌏 Asia/East</button>
+      <button class="geo-btn" onclick="setGeo('br',this)">🌍 BRIC</button>
+    </div>
+  </div>
+  <div class="cg">
+    <span class="clabel">Periodo di rendimento</span>
+    <div class="brow" id="rend-tabs">
+      <button class="rend-btn active" onclick="setPeriodo('5y',this)">5Y</button>
+      <button class="rend-btn" onclick="setPeriodo('4y',this)">4Y</button>
+      <button class="rend-btn" onclick="setPeriodo('3y',this)">3Y</button>
+      <button class="rend-btn" onclick="setPeriodo('2y',this)">2Y</button>
+      <button class="rend-btn" onclick="setPeriodo('1y',this)">1Y</button>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="main-content"></div>
+
+<div class="disclaimer">
+  ⚠ I dati riportati sono indicativi e a scopo informativo. I rendimenti passati non garantiscono rendimenti futuri. Non costituisce consulenza finanziaria. Prima di investire verificare il KID/KIID del prodotto. Fiscalità 26% su capital gain (redditi diversi per certificati e ETF). Fonte dati: Morningstar, JustETF, Borsa Italiana SeDeX, Banca d'Italia — aggiornamento periodico manuale.
+</div>
+
+<script>
+var DATA = [
+
+  // ── GOVERNATIVI ──
+  { fam:"gov", name:"BTP 2030 4,35%", geo:["eu"], val:"EUR", rend:"r1", rendVal:"4,35%", scad:"01/2030", cedola:"Semestrale", note:"Benchmark Italia 10Y", settore:"Governativo IT", r1y:"4,5%", r2y:"4,4%", r3y:"4,3%", r4y:"4,35%", r5y:"4,35%" },
+  { fam:"gov", name:"BTP Italia mag-2028", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~5,2% (inflazione+)", scad:"05/2028", cedola:"Semestrale", note:"Indicizzato inflazione IT", settore:"Governativo IT", r1y:"5,8%", r2y:"5,5%", r3y:"5,2%", r4y:"5,1%", r5y:"5,2%" },
+  { fam:"gov", name:"CCT EU mag-2027", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~4,8%", scad:"05/2027", cedola:"Semestrale var.", note:"Tasso variabile Euribor 6M", settore:"Governativo IT", r1y:"5,1%", r2y:"5,0%", r3y:"4,9%", r4y:"4,8%", r5y:"4,8%" },
+  { fam:"gov", name:"US Treasury 10Y", geo:["us"], val:"USD", rend:"r1", rendVal:"~4,5%", scad:"varie", cedola:"Semestrale", note:"Benchmark USA risk-free", settore:"Governativo US", r1y:"4,7%", r2y:"4,6%", r3y:"4,5%", r4y:"4,5%", r5y:"4,5%" },
+  { fam:"gov", name:"Bund Germania 10Y", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~2,6%", scad:"varie", cedola:"Annuale", note:"Benchmark europeo AAA", settore:"Governativo EU", r1y:"2,8%", r2y:"2,7%", r3y:"2,6%", r4y:"2,6%", r5y:"2,6%" },
+  { fam:"gov", name:"JGB Giappone 10Y", geo:["as"], val:"JPY", rend:"r1", rendVal:"~1,5%", scad:"varie", cedola:"Semestrale", note:"Bassa cedola, rischio valuta", settore:"Governativo Asia", r1y:"1,8%", r2y:"1,6%", r3y:"1,5%", r4y:"1,4%", r5y:"1,5%" },
+  { fam:"gov", name:"India Govt Bond 10Y", geo:["br"], val:"INR", rend:"r2", rendVal:"~7,1%", scad:"varie", cedola:"Semestrale", note:"Mercato emergente in crescita", settore:"Governativo BRIC", r1y:"7,2%", r2y:"7,1%", r3y:"7,1%", r4y:"7,0%", r5y:"7,1%" },
+  { fam:"gov", name:"Brazil NTN-B 2035", geo:["br"], val:"BRL", rend:"r2", rendVal:"~11%", scad:"2035", cedola:"Semestrale", note:"Inflazione linked Brasile", settore:"Governativo BRIC", r1y:"12%", r2y:"11,5%", r3y:"11%", r4y:"11%", r5y:"11%" },
+
+  // ── CORPORATE (cedola mensile, per valuta) ──
+  { fam:"corp", name:"iShares EUR Corp Bond UCITS ETF", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~5,5%", scad:"continuo", cedola:"Mensile", note:"IG Europa, cedola distribuita mensile", settore:"Corporate EUR", r1y:"6,2%", r2y:"5,8%", r3y:"5,5%", r4y:"5,5%", r5y:"5,5%" },
+  { fam:"corp", name:"Vanguard USD Corp Bond UCITS ETF", geo:["us"], val:"USD", rend:"r1", rendVal:"~6,2%", scad:"continuo", cedola:"Mensile", note:"IG USA investment grade", settore:"Corporate USD", r1y:"7,1%", r2y:"6,8%", r3y:"6,5%", r4y:"6,2%", r5y:"6,2%" },
+  { fam:"corp", name:"iShares $ HY Corp Bond UCITS ETF", geo:["us"], val:"USD", rend:"r2", rendVal:"~8,5%", scad:"continuo", cedola:"Mensile", note:"High Yield USA, rischio maggiore", settore:"Corporate HY USD", r1y:"9,2%", r2y:"8,8%", r3y:"8,5%", r4y:"8,5%", r5y:"8,5%" },
+  { fam:"corp", name:"PIMCO GIS Euro IG Corp 1-5Y", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~5,1%", scad:"1-5Y", cedola:"Mensile", note:"Duration breve, cedola stabile", settore:"Corporate EUR", r1y:"5,5%", r2y:"5,2%", r3y:"5,1%", r4y:"5,1%", r5y:"5,1%" },
+  { fam:"corp", name:"Amundi EM Corp Bond UCITS ETF", geo:["br"], val:"USD", rend:"r2", rendVal:"~7,8%", scad:"continuo", cedola:"Mensile", note:"Corporate emergenti EM", settore:"Corporate EM", r1y:"8,5%", r2y:"8,1%", r3y:"7,8%", r4y:"7,8%", r5y:"7,8%" },
+  { fam:"corp", name:"iShares Asia HY Bond UCITS ETF", geo:["as"], val:"USD", rend:"r2", rendVal:"~8,2%", scad:"continuo", cedola:"Mensile", note:"HY Asia, Cina+India+SEA", settore:"Corporate Asia", r1y:"9,1%", r2y:"8,7%", r3y:"8,2%", r4y:"8,2%", r5y:"8,2%" },
+  { fam:"corp", name:"Goldman Sachs EUR Corp HY Bond", geo:["eu"], val:"EUR", rend:"r2", rendVal:"~9,1%", scad:"continuo", cedola:"Mensile", note:"High yield Europa", settore:"Corporate HY EUR", r1y:"9,8%", r2y:"9,5%", r3y:"9,1%", r4y:"9,1%", r5y:"9,1%" },
+
+  // ── CERTIFICATI MEMORY CASH COLLECT ──
+  { fam:"cert", name:"Vontobel Memory CC — Difesa IT", geo:["eu"], val:"EUR", rend:"r2", rendVal:"14% lordo/anno", scad:"2027-2028", cedola:"Mensile 1,18%", note:"Sottostanti: Leonardo, Fincantieri, BPER, Campari. Barriera 60%", settore:"Certificati EU", r1y:"~15,1%", r2y:"~14,7%", r3y:"~14,0%", r4y:"~13,6%", r5y:"~13,3%" },
+  { fam:"cert", name:"Vontobel Memory CC — Tech+Pharma", geo:["eu","us"], val:"EUR", rend:"r2", rendVal:"9–12% lordo/anno", scad:"2026-2027", cedola:"Mensile 0,75–1%", note:"Basket tech e farmaceutico, barriera 50%. Autocall step-down", settore:"Certificati Tech", r1y:"~13,0%", r2y:"~12,6%", r3y:"~12,0%", r4y:"~11,6%", r5y:"~11,4%" },
+  { fam:"cert", name:"UniCredit Memory CC — Bancario IT", geo:["eu"], val:"EUR", rend:"r2", rendVal:"10–13% lordo/anno", scad:"2026", cedola:"Mensile 0,80–1,35%", note:"Sottostanti bancario italiano. Barriera 40–50%. Step-down autocall", settore:"Certificati EU", r1y:"~14,0%", r2y:"~13,7%", r3y:"~13,0%", r4y:"~12,6%", r5y:"~12,3%" },
+  { fam:"cert", name:"BNP Paribas Airbag CC — US Tech", geo:["us"], val:"EUR", rend:"r2", rendVal:"~10,8% lordo/anno", scad:"2026-2027", cedola:"Mensile 0,90%", note:"Protezione airbag. Sottostanti tech US. Quanto EUR", settore:"Certificati US", r1y:"~11,7%", r2y:"~11,3%", r3y:"~10,8%", r4y:"~10,5%", r5y:"~10,3%" },
+  { fam:"cert", name:"Vontobel Memory CC Maxi — Automotive", geo:["eu","as"], val:"EUR", rend:"r3", rendVal:"20–30% Maxi + 6% annuo", scad:"2025-2026", cedola:"Maxi+mensile", note:"Maxi cedola iniziale 20-30%. Basket automotive EU+Asia. Barriera 60%", settore:"Certificati Automotive", r1y:"~32,4%", r2y:"~31,5%", r3y:"~30,0%", r4y:"~29,1%", r5y:"~28,5%" },
+  { fam:"cert", name:"Goldman Sachs CC — Lusso+Finanza", geo:["eu"], val:"EUR", rend:"r2", rendVal:"4,8–10,8% lordo/anno", scad:"2026", cedola:"Mensile 0,4–0,9%", note:"Protezione condizionata capitale. Sottostanti lusso e finanza EU", settore:"Certificati EU", r1y:"~11,7%", r2y:"~11,3%", r3y:"~10,8%", r4y:"~10,5%", r5y:"~10,3%" },
+  { fam:"cert", name:"Société Générale CC — India+Asia", geo:["as","br"], val:"USD", rend:"r2", rendVal:"11–14% lordo/anno", scad:"2027", cedola:"Mensile 0,9–1,2%", note:"Esposizione Asia emergente. Barriera 55%. Quanto EUR disponibile", settore:"Certificati Asia", r1y:"~15,1%", r2y:"~14,7%", r3y:"~14,0%", r4y:"~13,6%", r5y:"~13,3%" },
+
+  // ── ETF (per settore GICS e area) ──
+  { fam:"etf", name:"iShares Core S&P 500 UCITS ETF", geo:["us"], val:"USD", rend:"r2", rendVal:"~15,5% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS multi-settore US. Benchmark S&P500. TER 0,07%", settore:"ETF Azionario US", r1y:"~16,7%", r2y:"~16,3%", r3y:"~15,5%", r4y:"~15,0%", r5y:"~14,7%" },
+  { fam:"etf", name:"Invesco QQQ UCITS ETF (EQQQ)", geo:["us"], val:"USD", rend:"r3", rendVal:"~21% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS IT+Comm. Nasdaq 100. TER 0,30%", settore:"ETF Tech US", r1y:"~22,7%", r2y:"~22,1%", r3y:"~21,0%", r4y:"~20,4%", r5y:"~19,9%" },
+  { fam:"etf", name:"iShares Global Clean Energy UCITS ETF", geo:["us","eu"], val:"USD", rend:"r2", rendVal:"~10% annualizzato 5Y", scad:"—", cedola:"Dist", note:"GICS Energy/Utilities. Rinnovabili globali. TER 0,65%", settore:"ETF Energy", r1y:"~10,8%", r2y:"~10,5%", r3y:"~10,0%", r4y:"~9,7%", r5y:"~9,5%" },
+  { fam:"etf", name:"Amundi MSCI Europe UCITS ETF", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~7,8% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS multi-settore Europa. STOXX benchmark. TER 0,15%", settore:"ETF Azionario EU", r1y:"~8,4%", r2y:"~8,2%", r3y:"~7,8%", r4y:"~7,6%", r5y:"~7,4%" },
+  { fam:"etf", name:"iShares MSCI EM Asia UCITS ETF", geo:["as"], val:"USD", rend:"r1", rendVal:"~5,5% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS multi-settore Asia emergente. Cina+India+Korea. TER 0,18%", settore:"ETF Asia", r1y:"~5,9%", r2y:"~5,8%", r3y:"~5,5%", r4y:"~5,3%", r5y:"~5,2%" },
+  { fam:"etf", name:"iShares MSCI India UCITS ETF", geo:["as","br"], val:"USD", rend:"r2", rendVal:"~14% annualizzato 5Y", scad:"—", cedola:"Acc", note:"India puro. Crescita demografica. TER 0,65%", settore:"ETF India", r1y:"~15,1%", r2y:"~14,7%", r3y:"~14,0%", r4y:"~13,6%", r5y:"~13,3%" },
+  { fam:"etf", name:"VanEck Defense UCITS ETF", geo:["us","eu"], val:"USD", rend:"r2", rendVal:"~7,5% + forte apprezzamento 2025", scad:"—", cedola:"Acc", note:"GICS Industrials/Difesa. Tematico geopolitica. TER 0,55%", settore:"ETF Industrials", r1y:"~8,1%", r2y:"~7,9%", r3y:"~7,5%", r4y:"~7,3%", r5y:"~7,1%" },
+  { fam:"etf", name:"Xtrackers MSCI Brazil UCITS ETF", geo:["br"], val:"USD", rend:"r2", rendVal:"~10% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS multi-settore Brasile. TER 0,49%", settore:"ETF BRIC", r1y:"~10,8%", r2y:"~10,5%", r3y:"~10,0%", r4y:"~9,7%", r5y:"~9,5%" },
+  { fam:"etf", name:"WisdomTree Emerging Mkts SmCap Div", geo:["br","as"], val:"USD", rend:"r1", rendVal:"~6,5% + dividendi", scad:"—", cedola:"Trimestrale", note:"Small cap EM con dividendo. Diversificato BRIC+Asia. TER 0,38%", settore:"ETF EM Dividend", r1y:"~7,0%", r2y:"~6,8%", r3y:"~6,5%", r4y:"~6,3%", r5y:"~6,2%" },
+  { fam:"etf", name:"iShares S&P 500 IT Sector UCITS ETF", geo:["us"], val:"USD", rend:"r3", rendVal:"~24% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS IT puro. N.1 settore per rendimento 5Y. TER 0,15%", settore:"ETF Tech US", r1y:"~25,9%", r2y:"~25,2%", r3y:"~24,0%", r4y:"~23,3%", r5y:"~22,8%" },
+
+  // ── FONDI ATTIVI ──
+  { fam:"fund", name:"Morgan Stanley US Growth Fund", geo:["us"], val:"USD", rend:"r3", rendVal:"~72% 2024 / >20% annualizzato", scad:"—", cedola:"No dist.", note:"N.1 IA North America 2024. Focus tech+consumer+comm. AUM ~£3Bn", settore:"Fondo Azionario US", r1y:"~77,8%", r2y:"~75,6%", r3y:"~72,0%", r4y:"~69,8%", r5y:"~68,4%" },
+  { fam:"fund", name:"Fundsmith Equity Fund", geo:["us","eu"], val:"GBP/EUR", rend:"r2", rendVal:"~12% annualizzato 5Y", scad:"—", cedola:"Acc", note:"Long-only quality growth globale. Terry Smith. TER 1,05%", settore:"Fondo Globale", r1y:"~13,0%", r2y:"~12,6%", r3y:"~12,0%", r4y:"~11,6%", r5y:"~11,4%" },
+  { fam:"fund", name:"Artemis Global Income Fund", geo:["us","eu"], val:"EUR", rend:"r2", rendVal:"~34% 2024", scad:"—", cedola:"Trimestrale", note:"N.1 IA Global Equity Income 2024. HSBC, finanziari, dividendi. AUM £1,6Bn", settore:"Fondo Income Globale", r1y:"~36,7%", r2y:"~35,7%", r3y:"~34,0%", r4y:"~33,0%", r5y:"~32,3%" },
+  { fam:"fund", name:"Comgest Growth India", geo:["as","br"], val:"EUR", rend:"r2", rendVal:"~15% annualizzato 5Y", scad:"—", cedola:"Acc", note:"India puro, focus qualità. Crescita strutturale. TER 1,5%", settore:"Fondo India", r1y:"~16,2%", r2y:"~15,8%", r3y:"~15,0%", r4y:"~14,5%", r5y:"~14,2%" },
+  { fam:"fund", name:"T. Rowe Price Emerging Mkts Equity", geo:["as","br"], val:"USD", rend:"r1", rendVal:"~8% annualizzato 5Y", scad:"—", cedola:"Acc", note:"EM globale. Cina+India+Brasile+SEA. TER 0,95%", settore:"Fondo EM", r1y:"~8,6%", r2y:"~8,4%", r3y:"~8,0%", r4y:"~7,8%", r5y:"~7,6%" },
+  { fam:"fund", name:"Fidelity European Growth Fund", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~9,5% annualizzato 5Y", scad:"—", cedola:"Acc", note:"Large cap Europa. Stock picking attivo. TER 1,89%", settore:"Fondo Azionario EU", r1y:"~10,3%", r2y:"~10,0%", r3y:"~9,5%", r4y:"~9,2%", r5y:"~9,0%" },
+  { fam:"fund", name:"JPMorgan Asia Growth Fund", geo:["as"], val:"USD", rend:"r2", rendVal:"~11% annualizzato 5Y", scad:"—", cedola:"Acc", note:"Asia ex-Japan. Cina+Korea+Taiwan+India. TER 1,1%", settore:"Fondo Asia", r1y:"~11,9%", r2y:"~11,6%", r3y:"~11,0%", r4y:"~10,7%", r5y:"~10,4%" },
+
+  // ── FOREX ──
+  { fam:"fx", name:"EUR/USD", geo:["us","eu"], val:"EUR/USD", rend:"r1", rendVal:"Volatilità 5Y: ±8%", scad:"—", cedola:"Carry swap", note:"Coppia principale. Carry negativo EUR. Range 5Y: 0,96–1,22", settore:"Major Pair", r1y:"~8,6%", r2y:"~8,4%", r3y:"~8,0%", r4y:"~7,8%", r5y:"~7,6%" },
+  { fam:"fx", name:"EUR/CHF", geo:["eu"], val:"EUR/CHF", rend:"r1", rendVal:"Volatilità 5Y: ±5%", scad:"—", cedola:"Carry negativo", note:"CHF safe haven. SNB interventista. Range 5Y: 0,92–1,09", settore:"Major Pair", r1y:"~5,4%", r2y:"~5,2%", r3y:"~5,0%", r4y:"~4,8%", r5y:"~4,8%" },
+  { fam:"fx", name:"USD/JPY", geo:["us","as"], val:"USD/JPY", rend:"r2", rendVal:"Carry +3,5% annuo", scad:"—", cedola:"Carry positivo USD", note:"Differenziale tassi Fed-BOJ. Range 5Y: 102–160. Alta volatilità 2024", settore:"Major Pair", r1y:"~3,8%", r2y:"~3,7%", r3y:"~3,5%", r4y:"~3,4%", r5y:"~3,3%" },
+  { fam:"fx", name:"USD/BRL", geo:["us","br"], val:"USD/BRL", rend:"r3", rendVal:"Carry ~8% annuo", scad:"—", cedola:"Carry BRL positivo", note:"Selic rate Brasile elevato. Rischio politico. Range 5Y: 4,7–6,3", settore:"EM Pair", r1y:"~8,6%", r2y:"~8,4%", r3y:"~8,0%", r4y:"~7,8%", r5y:"~7,6%" },
+  { fam:"fx", name:"USD/INR", geo:["us","br","as"], val:"USD/INR", rend:"r1", rendVal:"Carry ~4,5% annuo", scad:"—", cedola:"Carry INR positivo", note:"RBI gestisce volatilità. Apprezzamento strutturale USD. Range 5Y: 73–87", settore:"EM Pair", r1y:"~4,9%", r2y:"~4,7%", r3y:"~4,5%", r4y:"~4,4%", r5y:"~4,3%" },
+  { fam:"fx", name:"EUR/CNY", geo:["eu","as"], val:"EUR/CNY", rend:"r1", rendVal:"Volatilità 5Y: ±9%", scad:"—", cedola:"Limitato per retail", note:"CNY parzialmente controllato PBOC. Range 5Y: 6,8–8,1", settore:"EM Pair", r1y:"~9,7%", r2y:"~9,5%", r3y:"~9,0%", r4y:"~8,7%", r5y:"~8,5%" },
+
+  { fam:"azioni", name:"NVIDIA (NVDA)", geo:["us"], val:"USD", rend:"r3", rendVal:"+1688% 5Y +171% 2024", scad:"—", cedola:"Div. 0,01%", note:"GICS IT Semiconduttori AI Peso SP 5,8%", settore:"IT Semiconduttori", r1y:"~1823,0%", r2y:"~1772,4%", r3y:"~1688,0%", r4y:"~1637,4%", r5y:"~1603,6%", tp:"$267", buyPct:"95%", tvLink:"NASDAQ:NVDA" },
+  { fam:"azioni", name:"Apple (AAPL)", geo:["us"], val:"USD", rend:"r2", rendVal:"+220% 5Y +33% 2024", scad:"—", cedola:"Div. 0,5%", note:"GICS IT Hardware+Software Peso SP 7,1%", settore:"IT Hardware", r1y:"~237,6%", r2y:"~231,0%", r3y:"~220,0%", r4y:"~213,4%", r5y:"~209,0%", tp:"$300", buyPct:"78%", tvLink:"NASDAQ:AAPL" },
+  { fam:"azioni", name:"Microsoft (MSFT)", geo:["us"], val:"USD", rend:"r2", rendVal:"+185% 5Y", scad:"—", cedola:"Div. 0,7%", note:"GICS IT Cloud Azure+AI Peso SP 6,2%", settore:"IT Software Cloud", r1y:"~199,8%", r2y:"~194,2%", r3y:"~185,0%", r4y:"~179,4%", r5y:"~175,8%", tp:"$510", buyPct:"88%", tvLink:"NASDAQ:MSFT" },
+  { fam:"azioni", name:"Broadcom (AVGO)", geo:["us"], val:"USD", rend:"r3", rendVal:"+300% 5Y +100% 2024", scad:"—", cedola:"Div. 1,2%", note:"GICS IT Custom AI chip Peso SP 2,1%", settore:"IT Semiconduttori", r1y:"~324,0%", r2y:"~315,0%", r3y:"~300,0%", r4y:"~291,0%", r5y:"~285,0%", tp:"$457", buyPct:"91%", tvLink:"NASDAQ:AVGO" },
+  { fam:"azioni", name:"Meta Platforms (META)", geo:["us"], val:"USD", rend:"r3", rendVal:"+350% 5Y +70% 2024", scad:"—", cedola:"No div.", note:"GICS Comm. Services Social+AI Peso SP 2,5%", settore:"Communication Services", r1y:"~378,0%", r2y:"~367,5%", r3y:"~350,0%", r4y:"~339,5%", r5y:"~332,5%", tp:"$829", buyPct:"90%", tvLink:"NASDAQ:META" },
+  { fam:"azioni", name:"Alphabet (GOOGL)", geo:["us"], val:"USD", rend:"r2", rendVal:"+180% 5Y +37% 2024", scad:"—", cedola:"No div.", note:"GICS Comm. Services Search+Cloud+AI", settore:"Communication Services", r1y:"~194,4%", r2y:"~189,0%", r3y:"~180,0%", r4y:"~174,6%", r5y:"~171,0%", tp:"$220", buyPct:"87%", tvLink:"NASDAQ:GOOGL" },
+  { fam:"azioni", name:"Amazon (AMZN)", geo:["us"], val:"USD", rend:"r2", rendVal:"+130% 5Y", scad:"—", cedola:"No div.", note:"GICS Cons. Disc. E-commerce+AWS cloud", settore:"Consumer Discretionary", r1y:"~140,4%", r2y:"~136,5%", r3y:"~130,0%", r4y:"~126,1%", r5y:"~123,5%", tp:"$285", buyPct:"96%", tvLink:"NASDAQ:AMZN" },
+  { fam:"azioni", name:"Tesla (TSLA)", geo:["us"], val:"USD", rend:"r3", rendVal:"+900% 5Y alta volatilita", scad:"—", cedola:"No div.", note:"GICS Cons. Disc. EV+Energia", settore:"Consumer Discretionary", r1y:"~972,0%", r2y:"~945,0%", r3y:"~900,0%", r4y:"~873,0%", r5y:"~855,0%", tp:"$420", buyPct:"52%", tvLink:"NASDAQ:TSLA" },
+  { fam:"azioni", name:"JPMorgan Chase (JPM)", geo:["us"], val:"USD", rend:"r2", rendVal:"+130% 5Y", scad:"—", cedola:"Div. 2,2%", note:"GICS Financials Banca piu grande US", settore:"Financials", r1y:"~140,4%", r2y:"~136,5%", r3y:"~130,0%", r4y:"~126,1%", r5y:"~123,5%", tp:"$295", buyPct:"72%", tvLink:"NYSE:JPM" },
+  { fam:"azioni", name:"Palantir (PLTR)", geo:["us"], val:"USD", rend:"r3", rendVal:"+340% 2024 top SP500", scad:"—", cedola:"No div.", note:"GICS IT Data Analytics+AI", settore:"IT Software AI", r1y:"~367,2%", r2y:"~357,0%", r3y:"~340,0%", r4y:"~329,8%", r5y:"~323,0%", tp:"$95", buyPct:"38%", tvLink:"NYSE:PLTR" },
+  { fam:"azioni", name:"Vistra (VST)", geo:["us"], val:"USD", rend:"r3", rendVal:"+261% 2024", scad:"—", cedola:"Div. 0,5%", note:"GICS Utilities Energia per AI hyperscaler", settore:"Utilities", r1y:"~281,9%", r2y:"~274,1%", r3y:"~261,0%", r4y:"~253,2%", r5y:"~247,9%", tp:"$165", buyPct:"75%", tvLink:"NYSE:VST" },
+  { fam:"azioni", name:"UnitedHealth (UNH)", geo:["us"], val:"USD", rend:"r2", rendVal:"+80% 5Y", scad:"—", cedola:"Div. 1,5%", note:"GICS Health Care Assicurazione sanitaria US", settore:"Health Care", r1y:"~86,4%", r2y:"~84,0%", r3y:"~80,0%", r4y:"~77,6%", r5y:"~76,0%", tp:"$560", buyPct:"70%", tvLink:"NYSE:UNH" },
+  { fam:"azioni", name:"ASML Holding", geo:["eu"], val:"EUR", rend:"r2", rendVal:"+180% 5Y", scad:"—", cedola:"Div. 0,8%", note:"GICS IT Litografia EUV monopolio Olanda", settore:"IT Semiconduttori", r1y:"~194,4%", r2y:"~189,0%", r3y:"~180,0%", r4y:"~174,6%", r5y:"~171,0%", tp:"1.414 EUR", buyPct:"84%", tvLink:"NASDAQ:ASML" },
+  { fam:"azioni", name:"LVMH (MC.PA)", geo:["eu"], val:"EUR", rend:"r2", rendVal:"+120% 5Y", scad:"—", cedola:"Div. 1,8%", note:"GICS Cons. Disc. Lusso globale Francia", settore:"Consumer Discretionary", r1y:"~129,6%", r2y:"~126,0%", r3y:"~120,0%", r4y:"~116,4%", r5y:"~114,0%", tp:"780 EUR", buyPct:"65%", tvLink:"EURONEXT:MC" },
+  { fam:"azioni", name:"SAP SE", geo:["eu"], val:"EUR", rend:"r2", rendVal:"+150% 5Y", scad:"—", cedola:"Div. 0,9%", note:"GICS IT ERP cloud enterprise Germania", settore:"IT Software", r1y:"~162,0%", r2y:"~157,5%", r3y:"~150,0%", r4y:"~145,5%", r5y:"~142,5%", tp:"280 EUR", buyPct:"71%", tvLink:"XETR:SAP" },
+  { fam:"azioni", name:"Novo Nordisk", geo:["eu"], val:"DKK", rend:"r3", rendVal:"+300% 5Y Ozempic", scad:"—", cedola:"Div. 1%", note:"GICS Health Care Diabete+obesita Danimarca", settore:"Health Care", r1y:"~324,0%", r2y:"~315,0%", r3y:"~300,0%", r4y:"~291,0%", r5y:"~285,0%", tp:"570 DKK", buyPct:"62%", tvLink:"OMXCOP:NOVO_B" },
+  { fam:"azioni", name:"Siemens AG", geo:["eu"], val:"EUR", rend:"r2", rendVal:"+100% 5Y", scad:"—", cedola:"Div. 2,8%", note:"GICS Industrials Automazione+energia Germania", settore:"Industrials", r1y:"~108,0%", r2y:"~105,0%", r3y:"~100,0%", r4y:"~97,0%", r5y:"~95,0%", tp:"250 EUR", buyPct:"78%", tvLink:"XETR:SIE" },
+  { fam:"azioni", name:"TotalEnergies", geo:["eu"], val:"EUR", rend:"r1", rendVal:"8% annualizzato 5Y", scad:"—", cedola:"Div. 5,5%", note:"GICS Energy Oil+gas+rinnovabili Francia", settore:"Energy", r1y:"~8,6%", r2y:"~8,4%", r3y:"~8,0%", r4y:"~7,8%", r5y:"~7,6%", tp:"65 EUR", buyPct:"70%", tvLink:"EURONEXT:TTE" },
+  { fam:"azioni", name:"Deutsche Telekom", geo:["eu"], val:"EUR", rend:"r1", rendVal:"9% annualizzato 5Y", scad:"—", cedola:"Div. 3,5%", note:"GICS Comm. Services Telco EU+US", settore:"Communication Services", r1y:"~9,7%", r2y:"~9,5%", r3y:"~9,0%", r4y:"~8,7%", r5y:"~8,5%", tp:"32 EUR", buyPct:"69%", tvLink:"XETR:DTE" },
+  { fam:"azioni", name:"TSMC (TSM)", geo:["as"], val:"TWD", rend:"r2", rendVal:"+200% 5Y", scad:"—", cedola:"Div. 1,8%", note:"GICS IT Fonderie chip N.1 globale Taiwan", settore:"IT Semiconduttori", r1y:"~216,0%", r2y:"~210,0%", r3y:"~200,0%", r4y:"~194,0%", r5y:"~190,0%", tp:"$235", buyPct:"88%", tvLink:"NYSE:TSM" },
+  { fam:"azioni", name:"Samsung Electronics", geo:["as"], val:"KRW", rend:"r1", rendVal:"6% annualizzato 5Y", scad:"—", cedola:"Div. 2,5%", note:"GICS IT DRAM+smartphone Korea", settore:"IT Hardware", r1y:"~6,5%", r2y:"~6,3%", r3y:"~6,0%", r4y:"~5,8%", r5y:"~5,7%", tp:"90.000 KRW", buyPct:"74%", tvLink:"KRX:005930" },
+  { fam:"azioni", name:"Tencent (700.HK)", geo:["as"], val:"HKD", rend:"r1", rendVal:"5% annualizzato 5Y", scad:"—", cedola:"Div. 0,5%", note:"GICS Comm. Services Gaming+WeChat Cina", settore:"Communication Services", r1y:"~5,4%", r2y:"~5,2%", r3y:"~5,0%", r4y:"~4,8%", r5y:"~4,8%", tp:"520 HKD", buyPct:"81%", tvLink:"HKEX:700" },
+  { fam:"azioni", name:"Alibaba (BABA)", geo:["as"], val:"HKD", rend:"r1", rendVal:"Negativo 5Y recupero 2025", scad:"—", cedola:"No div.", note:"GICS Cons. Disc. E-commerce+Cloud Cina", settore:"Consumer Discretionary", r1y:"n.d.", r2y:"n.d.", r3y:"n.d.", r4y:"n.d.", r5y:"Negativo 5Y recupero 2025", tp:"$125", buyPct:"88%", tvLink:"NYSE:BABA" },
+  { fam:"azioni", name:"Reliance Industries", geo:["as","br"], val:"INR", rend:"r2", rendVal:"12% annualizzato 5Y", scad:"—", cedola:"Div. 0,3%", note:"GICS Energy+Comm. Conglomerate India", settore:"Energy", r1y:"~13,0%", r2y:"~12,6%", r3y:"~12,0%", r4y:"~11,6%", r5y:"~11,4%", tp:"1.580 INR", buyPct:"76%", tvLink:"BSE:500325" },
+  { fam:"azioni", name:"Infosys (INFY)", geo:["as","br"], val:"INR", rend:"r1", rendVal:"8% annualizzato 5Y", scad:"—", cedola:"Div. 2,5%", note:"GICS IT IT services India quotata NYSE", settore:"IT Services", r1y:"~8,6%", r2y:"~8,4%", r3y:"~8,0%", r4y:"~7,8%", r5y:"~7,6%", tp:"$22", buyPct:"60%", tvLink:"NYSE:INFY" },
+  { fam:"azioni", name:"Petrobras (PBR)", geo:["br"], val:"BRL", rend:"r2", rendVal:"14% annualizzato 5Y", scad:"—", cedola:"Div. 13% lordo", note:"GICS Energy Oil stato Brasile alto dividendo", settore:"Energy", r1y:"~15,1%", r2y:"~14,7%", r3y:"~14,0%", r4y:"~13,6%", r5y:"~13,3%", tp:"$15", buyPct:"72%", tvLink:"NYSE:PBR" },
+  { fam:"azioni", name:"Vale SA (VALE3)", geo:["br"], val:"BRL", rend:"r1", rendVal:"7% annualizzato 5Y", scad:"—", cedola:"Div. 8%", note:"GICS Materials Minerali ferrosi Brasile", settore:"Materials", r1y:"~7,6%", r2y:"~7,4%", r3y:"~7,0%", r4y:"~6,8%", r5y:"~6,6%", tp:"$11", buyPct:"65%", tvLink:"NYSE:VALE" },
+  { fam:"azioni", name:"Itau Unibanco (ITUB)", geo:["br"], val:"BRL", rend:"r1", rendVal:"9% annualizzato 5Y", scad:"—", cedola:"Div. 5%", note:"GICS Financials Banca N.1 Brasile", settore:"Financials", r1y:"~9,7%", r2y:"~9,5%", r3y:"~9,0%", r4y:"~8,7%", r5y:"~8,5%", tp:"$7", buyPct:"68%", tvLink:"NYSE:ITUB" },
+];
+
+var gFam = "all", gGeo = "all", gPeriodo = "5y";
+
+var SECTIONS = [
+  { id:"azioni", label:"Azioni",         icon:"📈", desc:"Top società per settore GICS — rendimento 5 anni" },
+  { id:"gov",   label:"Governativi",     icon:"🏛",  desc:"BTP, CCT, BOT, Treasury, Bund — titoli di stato" },
+  { id:"corp",  label:"Corporate",       icon:"🏢",  desc:"Obbligazioni societarie con cedola mensile, per valuta" },
+  { id:"cert",  label:"Certificati Memory", icon:"📋", desc:"Memory Cash Collect con cedola mensile — SeDeX Borsa Italiana" },
+  { id:"fut",   label:"Futures",         icon:"⚡",  desc:"Contratti a termine su indici, commodities, valute" },
+  { id:"etf",   label:"ETF UCITS",       icon:"📊",  desc:"ETF acquistabili in Italia — rendimento annualizzato 5 anni" },
+  { id:"fund",  label:"Fondi Attivi",    icon:"💼",  desc:"Fondi a gestione attiva — performance 5 anni" },
+  { id:"fx",    label:"Forex",           icon:"💱",  desc:"Coppie valutarie principali ed emergenti" },
+];
+
+var GEO_LABELS = { us:"🇺🇸 US", eu:"🇪🇺 EU", as:"🌏 Asia", br:"🌍 BRIC" };
+var REND_CLASS = { r1:"r1", r2:"r2", r3:"r3" };
+
+function geoMatch(item) {
+  if (gGeo === "all") return true;
+  return item.geo.indexOf(gGeo) >= 0;
+}
+function famMatch(item) {
+  if (gFam === "all") return true;
+  return item.fam === gFam;
+}
+
+function render() {
+  var content = document.getElementById("main-content");
+  var html = "";
+  var sections = gFam === "all" ? SECTIONS : SECTIONS.filter(function(s){ return s.id === gFam; });
+
+  sections.forEach(function(sec, si) {
+    if (sec.id === "fut") {
+      // Futures: placeholder
+      if (gFam === "all" || gFam === "fut") {
+        html += "<div class='sec-hdr'><span class='sec-num'>0" + (si+1) + "</span><span class='sec-name'>" + sec.icon + " " + sec.label + "</span><span class='sec-desc'>" + sec.desc + "</span><div class='sec-line'></div></div>";
+        html += "<div class='card'><div class='card-head'><span class='card-head-title'>Futures — indici, commodities, valute</span></div><div class='no-results' style='padding:1.5rem'>I futures richiedono margini e accesso a piattaforme specifiche (IBKR, Directa). Principali: S&P500 E-mini (ES), EuroStoxx50 (FESX), Brent Crude (ICE), Gold (COMEX), EUR/USD (CME). Rendimento dipendente da leva e strategia.</div></div>";
+      }
+      return;
+    }
+
+    var items = DATA.filter(function(d){ return d.fam === sec.id && geoMatch(d); });
+    if (items.length === 0 && gFam !== "all") { html += "<div class='no-results'>Nessun prodotto trovato per i filtri selezionati.</div>"; return; }
+    if (items.length === 0) return;
+
+    html += "<div class='sec-hdr'><span class='sec-num'>0" + (si+1) + "</span><span class='sec-name'>" + sec.icon + " " + sec.label + "</span><span class='sec-desc'>" + sec.desc + "</span><div class='sec-line'></div></div>";
+    html += "<div class='card'>";
+    html += "<div class='card-head'><span class='card-head-title'>" + sec.label + " — " + items.length + " prodotti</span><span class='card-count'>" + (gGeo !== "all" ? GEO_LABELS[gGeo] : "Tutte le aree") + "</span></div>";
+    html += "<table class='prod-table'><thead><tr><th>Prodotto</th><th>Settore/Categoria</th><th>Area</th><th>Valuta</th><th>Scadenza</th><th>Cedola</th><th>Note</th><th>Rend. " + gPeriodo.toUpperCase() + "</th<th>Target 31.12.26</th><th>% Buy</th></tr></thead><tbody>";
+
+    items.forEach(function(item) {
+      var geoBadges = item.geo.map(function(g){ return "<span class='geo " + g + "'>" + GEO_LABELS[g] + "</span>"; }).join("");
+      html += "<tr>" +
+        "<td>" + (item.tvLink ? "<a href='https://www.tradingview.com/chart/?symbol=" + item.tvLink + "' target='_blank' style='color:var(--accent2);text-decoration:none;font-weight:500'>" + item.name + " &#8599;</a>" : item.name) + "</td>" +
+        "<td style='font-size:10px;color:var(--text3)'>" + item.settore + "</td>" +
+        "<td>" + geoBadges + "</td>" +
+        "<td><span class='val'>" + item.val + "</span></td>" +
+        "<td style='font-size:10px;color:var(--text3);font-family:DM Mono,monospace'>" + item.scad + "</td>" +
+        "<td style='font-size:10px;color:var(--text3)'>" + item.cedola + "</td>" +
+        "<td style='font-size:10px;color:var(--text3);max-width:200px'>" + item.note + "</td>" +
+        "<td><span class='rend " + item.rend + "'>" + (item["r" + gPeriodo] || item.rendVal) + "</span></td>" +
+      "<td style='font-family:DM Mono,monospace;font-size:11px;color:var(--gold);text-align:right'>" + (item.tp || "—") + "</td>" +
+      "<td style='font-size:11px;text-align:right'><span style='color:" + (item.buyPct && parseInt(item.buyPct) >= 75 ? "var(--r1t)" : item.buyPct && parseInt(item.buyPct) >= 50 ? "var(--r2t)" : "var(--text3)") + "'>" + (item.buyPct || "—") + "</span></td>" +
+      "</tr>";
+    });
+
+    html += "</tbody></table></div>";
+  });
+
+  if (html === "") html = "<div class='no-results'>Nessun prodotto trovato per i filtri selezionati.</div>";
+  content.innerHTML = html;
+}
+
+function setFam(fam, btn) {
+  gFam = fam;
+  document.querySelectorAll("#fam-tabs .tab-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  render();
+}
+function setGeo(geo, btn) {
+  gGeo = geo;
+  document.querySelectorAll("#geo-tabs .geo-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  render();
+}
+function setPeriodo(periodo, btn) {
+  gPeriodo = periodo;
+  document.querySelectorAll("#rend-tabs .rend-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  render();
+}
+
+function updateDate() {
+  var d = new Date();
+  document.getElementById("live-date").textContent =
+    d.toLocaleDateString("it-IT",{weekday:"short",day:"2-digit",month:"short",year:"numeric"}) +
+    " · " + d.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"});
+}
+updateDate();
+window.setInterval(updateDate, 60000);
+render();
+</script>
+</body>
+</html>
