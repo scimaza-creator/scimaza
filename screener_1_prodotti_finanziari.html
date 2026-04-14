@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Screener Prodotti Finanziari</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#2A2A2A; --bg2:#1E1E1E; --bg3:#333333; --surface:#3A3A3A;
+  --border:#4A2030; --border2:#484848; --text:#F0EDE8; --text2:#B8B0A8; --text3:#7A7068;
+  --accent:#C4763A; --accent2:#E08898; --amaranto:#4A1828; --amaranto2:#6B2A3E;
+  --gold:#C4A055; --green:#1D9E75; --blue:#185FA5;
+  --r1:#2E4A1A; --r1t:#7BC244; /* 5-10% */
+  --r2:#4A3A0A; --r2t:#E8A840; /* 10-15% */
+  --r3:#4A1A1A; --r3t:#E84040; /* >15/20% */
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* TOP BAR */
+.topbar { background:var(--bg2); border-bottom:1px solid var(--border); padding:0 2rem; height:56px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:200; }
+.topbar-left { display:flex; align-items:center; gap:1rem; }
+.back-btn { font-size:11px; color:var(--accent); background:none; border:1px solid var(--border); border-radius:5px; padding:4px 10px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:background .15s; }
+.back-btn:hover { background:var(--amaranto); }
+.topbar-title { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:600; color:var(--text); }
+.topbar-sub { font-size:11px; color:var(--text3); border-left:1px solid var(--border2); padding-left:1rem; margin-left:.5rem; }
+.topbar-date { font-size:11px; color:var(--text3); font-family:'DM Mono',monospace; }
+
+/* STRIP */
+.strip { background:var(--amaranto); border-bottom:1px solid var(--amaranto2); padding:.5rem 2rem; display:flex; gap:2rem; font-size:11px; color:var(--accent2); flex-wrap:wrap; align-items:center; }
+.sdot { width:5px; height:5px; border-radius:50%; background:var(--accent2); display:inline-block; margin-right:.4rem; }
+
+/* LEGEND */
+.legend { display:flex; gap:1rem; align-items:center; margin-left:auto; }
+.leg { display:flex; align-items:center; gap:.4rem; font-size:10px; }
+.leg-dot { width:10px; height:10px; border-radius:2px; }
+
+/* CONTROLS */
+.controls { background:var(--bg2); border-bottom:1px solid var(--border2); padding:.75rem 2rem; display:flex; gap:2rem; flex-wrap:wrap; align-items:flex-end; }
+.cg { display:flex; flex-direction:column; gap:4px; }
+.clabel { font-size:10px; text-transform:uppercase; letter-spacing:.08em; color:var(--text3); font-weight:500; }
+.brow { display:flex; gap:4px; flex-wrap:wrap; }
+
+.tab-btn { font-size:11px; padding:4px 12px; border-radius:4px; border:1px solid var(--border2); background:transparent; color:var(--text2); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; white-space:nowrap; }
+.tab-btn:hover { border-color:var(--accent); color:var(--text); }
+.tab-btn.active { background:var(--amaranto); border-color:var(--amaranto2); color:var(--accent2); }
+
+.geo-btn { font-size:11px; padding:4px 11px; border-radius:4px; border:1px solid var(--border2); background:transparent; color:var(--text2); cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .15s; }
+.geo-btn:hover { border-color:var(--gold); color:var(--text); }
+.geo-btn.active { background:#2E1A00; border-color:var(--gold); color:var(--gold); }
+
+.rend-btn { font-size:10px; padding:3px 10px; border-radius:4px; border:1px solid var(--border2); background:transparent; color:var(--text3); cursor:pointer; font-family:'DM Mono',monospace; transition:all .15s; }
+.rend-btn.active.r1 { background:var(--r1); border-color:var(--r1t); color:var(--r1t); }
+.rend-btn.active.r2 { background:var(--r2); border-color:var(--r2t); color:var(--r2t); }
+.rend-btn.active.r3 { background:var(--r3); border-color:var(--r3t); color:var(--r3t); }
+.rend-btn:not(.active):hover { border-color:var(--text3); color:var(--text); }
+
+/* MAIN */
+.main { padding:1.5rem 2rem 3rem; }
+
+/* SECTION HEADER */
+.sec-hdr { display:flex; align-items:center; gap:.8rem; margin-bottom:1rem; margin-top:1.5rem; }
+.sec-hdr:first-child { margin-top:0; }
+.sec-num { font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); background:var(--bg2); border:1px solid var(--border2); border-radius:3px; padding:1px 6px; }
+.sec-name { font-family:'Cormorant Garamond',serif; font-size:18px; font-weight:600; color:var(--text); }
+.sec-desc { font-size:11px; color:var(--text3); margin-left:.5rem; }
+.sec-line { flex:1; height:1px; background:var(--border2); }
+
+/* PRODUCT TABLE */
+.prod-table { width:100%; border-collapse:collapse; margin-bottom:.5rem; }
+.prod-table th { font-size:9px; text-transform:uppercase; letter-spacing:.08em; color:var(--text3); font-weight:500; padding:6px 10px; text-align:left; border-bottom:1px solid var(--border2); background:var(--bg2); }
+.prod-table th:last-child { text-align:right; }
+.prod-table td { font-size:11px; padding:8px 10px; border-bottom:1px solid #333; color:var(--text2); vertical-align:middle; }
+.prod-table td:first-child { color:var(--text); font-weight:500; }
+.prod-table td:last-child { text-align:right; }
+.prod-table tr:last-child td { border-bottom:none; }
+.prod-table tr:hover td { background:rgba(255,255,255,.02); }
+
+/* RENDIMENTO BADGE */
+.rend { font-family:'DM Mono',monospace; font-size:11px; font-weight:500; padding:2px 8px; border-radius:3px; display:inline-block; }
+.rend.r1 { background:var(--r1); color:var(--r1t); }
+.rend.r2 { background:var(--r2); color:var(--r2t); }
+.rend.r3 { background:var(--r3); color:var(--r3t); }
+
+/* GEO BADGE */
+.geo { font-size:9px; padding:1px 6px; border-radius:10px; border:1px solid var(--border2); color:var(--text3); font-family:'DM Mono',monospace; display:inline-block; margin-right:3px; }
+.geo.us { border-color:#185FA5; color:#5BA3E8; }
+.geo.eu { border-color:#1D9E75; color:#52C99A; }
+.geo.as { border-color:#BA7517; color:#E8A840; }
+.geo.br { border-color:#6B52C8; color:#A090E8; }
+
+/* VALUTA BADGE */
+.val { font-size:9px; padding:1px 5px; border-radius:3px; background:var(--bg2); border:1px solid var(--border2); color:var(--text3); font-family:'DM Mono',monospace; }
+
+/* CARD WRAPPER */
+.card { background:var(--surface); border:1px solid var(--border2); border-radius:8px; overflow:hidden; margin-bottom:1rem; }
+.card-head { background:var(--bg3); padding:.5rem 1rem; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border2); }
+.card-head-title { font-size:12px; font-weight:500; color:var(--text2); letter-spacing:.04em; }
+.card-count { font-size:10px; color:var(--text3); font-family:'DM Mono',monospace; }
+
+.hidden { display:none; }
+.no-results { padding:2rem; text-align:center; color:var(--text3); font-size:12px; }
+
+/* DISCLAIMER */
+.disclaimer { margin:2rem 2rem 0; padding:.75rem 1rem; background:var(--bg2); border:1px solid var(--border2); border-radius:6px; font-size:10px; color:var(--text3); line-height:1.6; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <button class="back-btn" onclick="history.back()">← Hub</button>
+    <span class="topbar-title">Screener Prodotti Finanziari</span>
+    <span class="topbar-sub">7 Famiglie · 4 Aree Geografiche · 3 Fasce Rendimento</span>
+  </div>
+  <span class="topbar-date" id="live-date"></span>
+</div>
+
+<div class="strip">
+  <span><span class="sdot"></span>Dati indicativi — rendimenti storici annualizzati 5 anni</span>
+  <span><span class="sdot"></span>Prodotti acquistabili da investitori italiani (UCITS/SeDeX)</span>
+  <span><span class="sdot"></span>Fiscalità 26% non inclusa nei rendimenti</span>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:#7BC244"></div><span style="color:#7BC244">5–10% annuo</span></div>
+    <div class="leg"><div class="leg-dot" style="background:#E8A840"></div><span style="color:#E8A840">10–15% annuo</span></div>
+    <div class="leg"><div class="leg-dot" style="background:#E84040"></div><span style="color:#E84040">&gt;15–20% annuo</span></div>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="cg">
+    <span class="clabel">Famiglia prodotto</span>
+    <div class="brow" id="fam-tabs">
+      <button class="tab-btn active" onclick="setFam('all',this)">Tutti</button>
+      <button class="tab-btn" onclick="setFam('gov',this)">🏛 Governativi</button>
+      <button class="tab-btn" onclick="setFam('corp',this)">🏢 Corporate</button>
+      <button class="tab-btn" onclick="setFam('cert',this)">📋 Certificati Memory</button>
+      <button class="tab-btn" onclick="setFam('fut',this)">⚡ Futures</button>
+      <button class="tab-btn" onclick="setFam('etf',this)">📊 ETF</button>
+      <button class="tab-btn" onclick="setFam('fund',this)">💼 Fondi Attivi</button>
+      <button class="tab-btn" onclick="setFam('fx',this)">💱 Forex</button>
+    </div>
+  </div>
+  <div class="cg">
+    <span class="clabel">Area geografica</span>
+    <div class="brow" id="geo-tabs">
+      <button class="geo-btn active" onclick="setGeo('all',this)">Tutte</button>
+      <button class="geo-btn" onclick="setGeo('us',this)">🇺🇸 US</button>
+      <button class="geo-btn" onclick="setGeo('eu',this)">🇪🇺 Europa</button>
+      <button class="geo-btn" onclick="setGeo('as',this)">🌏 Asia/East</button>
+      <button class="geo-btn" onclick="setGeo('br',this)">🌍 BRIC</button>
+    </div>
+  </div>
+  <div class="cg">
+    <span class="clabel">Fascia rendimento 5Y</span>
+    <div class="brow" id="rend-tabs">
+      <button class="rend-btn active r1" onclick="setRend('all',this)">Tutte</button>
+      <button class="rend-btn r1" onclick="setRend('r1',this)">5–10%</button>
+      <button class="rend-btn r2" onclick="setRend('r2',this)">10–15%</button>
+      <button class="rend-btn r3" onclick="setRend('r3',this)">&gt;15–20%</button>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="main-content"></div>
+
+<div class="disclaimer">
+  ⚠ I dati riportati sono indicativi e a scopo informativo. I rendimenti passati non garantiscono rendimenti futuri. Non costituisce consulenza finanziaria. Prima di investire verificare il KID/KIID del prodotto. Fiscalità 26% su capital gain (redditi diversi per certificati e ETF). Fonte dati: Morningstar, JustETF, Borsa Italiana SeDeX, Banca d'Italia — aggiornamento periodico manuale.
+</div>
+
+<script>
+var DATA = [
+
+  // ── GOVERNATIVI ──
+  { fam:"gov", name:"BTP 2030 4,35%", geo:["eu"], val:"EUR", rend:"r1", rendVal:"4,35%", scad:"01/2030", cedola:"Semestrale", note:"Benchmark Italia 10Y", settore:"Governativo IT" },
+  { fam:"gov", name:"BTP Italia mag-2028", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~5,2% (inflazione+)", scad:"05/2028", cedola:"Semestrale", note:"Indicizzato inflazione IT", settore:"Governativo IT" },
+  { fam:"gov", name:"CCT EU mag-2027", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~4,8%", scad:"05/2027", cedola:"Semestrale var.", note:"Tasso variabile Euribor 6M", settore:"Governativo IT" },
+  { fam:"gov", name:"US Treasury 10Y", geo:["us"], val:"USD", rend:"r1", rendVal:"~4,5%", scad:"varie", cedola:"Semestrale", note:"Benchmark USA risk-free", settore:"Governativo US" },
+  { fam:"gov", name:"Bund Germania 10Y", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~2,6%", scad:"varie", cedola:"Annuale", note:"Benchmark europeo AAA", settore:"Governativo EU" },
+  { fam:"gov", name:"JGB Giappone 10Y", geo:["as"], val:"JPY", rend:"r1", rendVal:"~1,5%", scad:"varie", cedola:"Semestrale", note:"Bassa cedola, rischio valuta", settore:"Governativo Asia" },
+  { fam:"gov", name:"India Govt Bond 10Y", geo:["br"], val:"INR", rend:"r2", rendVal:"~7,1%", scad:"varie", cedola:"Semestrale", note:"Mercato emergente in crescita", settore:"Governativo BRIC" },
+  { fam:"gov", name:"Brazil NTN-B 2035", geo:["br"], val:"BRL", rend:"r2", rendVal:"~11%", scad:"2035", cedola:"Semestrale", note:"Inflazione linked Brasile", settore:"Governativo BRIC" },
+
+  // ── CORPORATE (cedola mensile, per valuta) ──
+  { fam:"corp", name:"iShares EUR Corp Bond UCITS ETF", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~5,5%", scad:"continuo", cedola:"Mensile", note:"IG Europa, cedola distribuita mensile", settore:"Corporate EUR" },
+  { fam:"corp", name:"Vanguard USD Corp Bond UCITS ETF", geo:["us"], val:"USD", rend:"r1", rendVal:"~6,2%", scad:"continuo", cedola:"Mensile", note:"IG USA investment grade", settore:"Corporate USD" },
+  { fam:"corp", name:"iShares $ HY Corp Bond UCITS ETF", geo:["us"], val:"USD", rend:"r2", rendVal:"~8,5%", scad:"continuo", cedola:"Mensile", note:"High Yield USA, rischio maggiore", settore:"Corporate HY USD" },
+  { fam:"corp", name:"PIMCO GIS Euro IG Corp 1-5Y", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~5,1%", scad:"1-5Y", cedola:"Mensile", note:"Duration breve, cedola stabile", settore:"Corporate EUR" },
+  { fam:"corp", name:"Amundi EM Corp Bond UCITS ETF", geo:["br"], val:"USD", rend:"r2", rendVal:"~7,8%", scad:"continuo", cedola:"Mensile", note:"Corporate emergenti EM", settore:"Corporate EM" },
+  { fam:"corp", name:"iShares Asia HY Bond UCITS ETF", geo:["as"], val:"USD", rend:"r2", rendVal:"~8,2%", scad:"continuo", cedola:"Mensile", note:"HY Asia, Cina+India+SEA", settore:"Corporate Asia" },
+  { fam:"corp", name:"Goldman Sachs EUR Corp HY Bond", geo:["eu"], val:"EUR", rend:"r2", rendVal:"~9,1%", scad:"continuo", cedola:"Mensile", note:"High yield Europa", settore:"Corporate HY EUR" },
+
+  // ── CERTIFICATI MEMORY CASH COLLECT ──
+  { fam:"cert", name:"Vontobel Memory CC — Difesa IT", geo:["eu"], val:"EUR", rend:"r2", rendVal:"14% lordo/anno", scad:"2027-2028", cedola:"Mensile 1,18%", note:"Sottostanti: Leonardo, Fincantieri, BPER, Campari. Barriera 60%", settore:"Certificati EU" },
+  { fam:"cert", name:"Vontobel Memory CC — Tech+Pharma", geo:["eu","us"], val:"EUR", rend:"r2", rendVal:"9–12% lordo/anno", scad:"2026-2027", cedola:"Mensile 0,75–1%", note:"Basket tech e farmaceutico, barriera 50%. Autocall step-down", settore:"Certificati Tech" },
+  { fam:"cert", name:"UniCredit Memory CC — Bancario IT", geo:["eu"], val:"EUR", rend:"r2", rendVal:"10–13% lordo/anno", scad:"2026", cedola:"Mensile 0,80–1,35%", note:"Sottostanti bancario italiano. Barriera 40–50%. Step-down autocall", settore:"Certificati EU" },
+  { fam:"cert", name:"BNP Paribas Airbag CC — US Tech", geo:["us"], val:"EUR", rend:"r2", rendVal:"~10,8% lordo/anno", scad:"2026-2027", cedola:"Mensile 0,90%", note:"Protezione airbag. Sottostanti tech US. Quanto EUR", settore:"Certificati US" },
+  { fam:"cert", name:"Vontobel Memory CC Maxi — Automotive", geo:["eu","as"], val:"EUR", rend:"r3", rendVal:"20–30% Maxi + 6% annuo", scad:"2025-2026", cedola:"Maxi+mensile", note:"Maxi cedola iniziale 20-30%. Basket automotive EU+Asia. Barriera 60%", settore:"Certificati Automotive" },
+  { fam:"cert", name:"Goldman Sachs CC — Lusso+Finanza", geo:["eu"], val:"EUR", rend:"r2", rendVal:"4,8–10,8% lordo/anno", scad:"2026", cedola:"Mensile 0,4–0,9%", note:"Protezione condizionata capitale. Sottostanti lusso e finanza EU", settore:"Certificati EU" },
+  { fam:"cert", name:"Société Générale CC — India+Asia", geo:["as","br"], val:"USD", rend:"r2", rendVal:"11–14% lordo/anno", scad:"2027", cedola:"Mensile 0,9–1,2%", note:"Esposizione Asia emergente. Barriera 55%. Quanto EUR disponibile", settore:"Certificati Asia" },
+
+  // ── ETF (per settore GICS e area) ──
+  { fam:"etf", name:"iShares Core S&P 500 UCITS ETF", geo:["us"], val:"USD", rend:"r2", rendVal:"~15,5% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS multi-settore US. Benchmark S&P500. TER 0,07%", settore:"ETF Azionario US" },
+  { fam:"etf", name:"Invesco QQQ UCITS ETF (EQQQ)", geo:["us"], val:"USD", rend:"r3", rendVal:"~21% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS IT+Comm. Nasdaq 100. TER 0,30%", settore:"ETF Tech US" },
+  { fam:"etf", name:"iShares Global Clean Energy UCITS ETF", geo:["us","eu"], val:"USD", rend:"r2", rendVal:"~10% annualizzato 5Y", scad:"—", cedola:"Dist", note:"GICS Energy/Utilities. Rinnovabili globali. TER 0,65%", settore:"ETF Energy" },
+  { fam:"etf", name:"Amundi MSCI Europe UCITS ETF", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~7,8% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS multi-settore Europa. STOXX benchmark. TER 0,15%", settore:"ETF Azionario EU" },
+  { fam:"etf", name:"iShares MSCI EM Asia UCITS ETF", geo:["as"], val:"USD", rend:"r1", rendVal:"~5,5% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS multi-settore Asia emergente. Cina+India+Korea. TER 0,18%", settore:"ETF Asia" },
+  { fam:"etf", name:"iShares MSCI India UCITS ETF", geo:["as","br"], val:"USD", rend:"r2", rendVal:"~14% annualizzato 5Y", scad:"—", cedola:"Acc", note:"India puro. Crescita demografica. TER 0,65%", settore:"ETF India" },
+  { fam:"etf", name:"VanEck Defense UCITS ETF", geo:["us","eu"], val:"USD", rend:"r2", rendVal:"~7,5% + forte apprezzamento 2025", scad:"—", cedola:"Acc", note:"GICS Industrials/Difesa. Tematico geopolitica. TER 0,55%", settore:"ETF Industrials" },
+  { fam:"etf", name:"Xtrackers MSCI Brazil UCITS ETF", geo:["br"], val:"USD", rend:"r2", rendVal:"~10% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS multi-settore Brasile. TER 0,49%", settore:"ETF BRIC" },
+  { fam:"etf", name:"WisdomTree Emerging Mkts SmCap Div", geo:["br","as"], val:"USD", rend:"r1", rendVal:"~6,5% + dividendi", scad:"—", cedola:"Trimestrale", note:"Small cap EM con dividendo. Diversificato BRIC+Asia. TER 0,38%", settore:"ETF EM Dividend" },
+  { fam:"etf", name:"iShares S&P 500 IT Sector UCITS ETF", geo:["us"], val:"USD", rend:"r3", rendVal:"~24% annualizzato 5Y", scad:"—", cedola:"Acc", note:"GICS IT puro. N.1 settore per rendimento 5Y. TER 0,15%", settore:"ETF Tech US" },
+
+  // ── FONDI ATTIVI ──
+  { fam:"fund", name:"Morgan Stanley US Growth Fund", geo:["us"], val:"USD", rend:"r3", rendVal:"~72% 2024 / >20% annualizzato", scad:"—", cedola:"No dist.", note:"N.1 IA North America 2024. Focus tech+consumer+comm. AUM ~£3Bn", settore:"Fondo Azionario US" },
+  { fam:"fund", name:"Fundsmith Equity Fund", geo:["us","eu"], val:"GBP/EUR", rend:"r2", rendVal:"~12% annualizzato 5Y", scad:"—", cedola:"Acc", note:"Long-only quality growth globale. Terry Smith. TER 1,05%", settore:"Fondo Globale" },
+  { fam:"fund", name:"Artemis Global Income Fund", geo:["us","eu"], val:"EUR", rend:"r2", rendVal:"~34% 2024", scad:"—", cedola:"Trimestrale", note:"N.1 IA Global Equity Income 2024. HSBC, finanziari, dividendi. AUM £1,6Bn", settore:"Fondo Income Globale" },
+  { fam:"fund", name:"Comgest Growth India", geo:["as","br"], val:"EUR", rend:"r2", rendVal:"~15% annualizzato 5Y", scad:"—", cedola:"Acc", note:"India puro, focus qualità. Crescita strutturale. TER 1,5%", settore:"Fondo India" },
+  { fam:"fund", name:"T. Rowe Price Emerging Mkts Equity", geo:["as","br"], val:"USD", rend:"r1", rendVal:"~8% annualizzato 5Y", scad:"—", cedola:"Acc", note:"EM globale. Cina+India+Brasile+SEA. TER 0,95%", settore:"Fondo EM" },
+  { fam:"fund", name:"Fidelity European Growth Fund", geo:["eu"], val:"EUR", rend:"r1", rendVal:"~9,5% annualizzato 5Y", scad:"—", cedola:"Acc", note:"Large cap Europa. Stock picking attivo. TER 1,89%", settore:"Fondo Azionario EU" },
+  { fam:"fund", name:"JPMorgan Asia Growth Fund", geo:["as"], val:"USD", rend:"r2", rendVal:"~11% annualizzato 5Y", scad:"—", cedola:"Acc", note:"Asia ex-Japan. Cina+Korea+Taiwan+India. TER 1,1%", settore:"Fondo Asia" },
+
+  // ── FOREX ──
+  { fam:"fx", name:"EUR/USD", geo:["us","eu"], val:"EUR/USD", rend:"r1", rendVal:"Volatilità 5Y: ±8%", scad:"—", cedola:"Carry swap", note:"Coppia principale. Carry negativo EUR. Range 5Y: 0,96–1,22", settore:"Major Pair" },
+  { fam:"fx", name:"EUR/CHF", geo:["eu"], val:"EUR/CHF", rend:"r1", rendVal:"Volatilità 5Y: ±5%", scad:"—", cedola:"Carry negativo", note:"CHF safe haven. SNB interventista. Range 5Y: 0,92–1,09", settore:"Major Pair" },
+  { fam:"fx", name:"USD/JPY", geo:["us","as"], val:"USD/JPY", rend:"r2", rendVal:"Carry +3,5% annuo", scad:"—", cedola:"Carry positivo USD", note:"Differenziale tassi Fed-BOJ. Range 5Y: 102–160. Alta volatilità 2024", settore:"Major Pair" },
+  { fam:"fx", name:"USD/BRL", geo:["us","br"], val:"USD/BRL", rend:"r3", rendVal:"Carry ~8% annuo", scad:"—", cedola:"Carry BRL positivo", note:"Selic rate Brasile elevato. Rischio politico. Range 5Y: 4,7–6,3", settore:"EM Pair" },
+  { fam:"fx", name:"USD/INR", geo:["us","br","as"], val:"USD/INR", rend:"r1", rendVal:"Carry ~4,5% annuo", scad:"—", cedola:"Carry INR positivo", note:"RBI gestisce volatilità. Apprezzamento strutturale USD. Range 5Y: 73–87", settore:"EM Pair" },
+  { fam:"fx", name:"EUR/CNY", geo:["eu","as"], val:"EUR/CNY", rend:"r1", rendVal:"Volatilità 5Y: ±9%", scad:"—", cedola:"Limitato per retail", note:"CNY parzialmente controllato PBOC. Range 5Y: 6,8–8,1", settore:"EM Pair" },
+];
+
+var gFam = "all", gGeo = "all", gRend = "all";
+
+var SECTIONS = [
+  { id:"gov",  label:"Governativi",          icon:"🏛",  desc:"BTP, CCT, BOT, Treasury, Bund — titoli di stato" },
+  { id:"corp", label:"Corporate",            icon:"🏢",  desc:"Obbligazioni societarie con cedola mensile, per valuta" },
+  { id:"cert", label:"Certificati Memory",   icon:"📋",  desc:"Memory Cash Collect con cedola mensile — SeDeX Borsa Italiana" },
+  { id:"fut",  label:"Futures",              icon:"⚡",  desc:"Contratti a termine su indici, commodities, valute" },
+  { id:"etf",  label:"ETF UCITS",            icon:"📊",  desc:"ETF acquistabili in Italia — rendimento annualizzato 5 anni" },
+  { id:"fund", label:"Fondi Attivi",         icon:"💼",  desc:"Fondi a gestione attiva — performance 5 anni" },
+  { id:"fx",   label:"Forex",               icon:"💱",  desc:"Coppie valutarie principali ed emergenti" },
+];
+
+var GEO_LABELS = { us:"🇺🇸 US", eu:"🇪🇺 EU", as:"🌏 Asia", br:"🌍 BRIC" };
+var REND_CLASS = { r1:"r1", r2:"r2", r3:"r3" };
+
+function geoMatch(item) {
+  if (gGeo === "all") return true;
+  return item.geo.indexOf(gGeo) >= 0;
+}
+function famMatch(item) {
+  if (gFam === "all") return true;
+  return item.fam === gFam;
+}
+function rendMatch(item) {
+  if (gRend === "all") return true;
+  return item.rend === gRend;
+}
+
+function render() {
+  var content = document.getElementById("main-content");
+  var html = "";
+  var sections = gFam === "all" ? SECTIONS : SECTIONS.filter(function(s){ return s.id === gFam; });
+
+  sections.forEach(function(sec, si) {
+    if (sec.id === "fut") {
+      // Futures: placeholder
+      if (gFam === "all" || gFam === "fut") {
+        html += "<div class='sec-hdr'><span class='sec-num'>0" + (si+1) + "</span><span class='sec-name'>" + sec.icon + " " + sec.label + "</span><span class='sec-desc'>" + sec.desc + "</span><div class='sec-line'></div></div>";
+        html += "<div class='card'><div class='card-head'><span class='card-head-title'>Futures — indici, commodities, valute</span></div><div class='no-results' style='padding:1.5rem'>I futures richiedono margini e accesso a piattaforme specifiche (IBKR, Directa). Principali: S&P500 E-mini (ES), EuroStoxx50 (FESX), Brent Crude (ICE), Gold (COMEX), EUR/USD (CME). Rendimento dipendente da leva e strategia.</div></div>";
+      }
+      return;
+    }
+
+    var items = DATA.filter(function(d){ return d.fam === sec.id && geoMatch(d) && rendMatch(d); });
+    if (items.length === 0 && gFam !== "all") { html += "<div class='no-results'>Nessun prodotto trovato per i filtri selezionati.</div>"; return; }
+    if (items.length === 0) return;
+
+    html += "<div class='sec-hdr'><span class='sec-num'>0" + (si+1) + "</span><span class='sec-name'>" + sec.icon + " " + sec.label + "</span><span class='sec-desc'>" + sec.desc + "</span><div class='sec-line'></div></div>";
+    html += "<div class='card'>";
+    html += "<div class='card-head'><span class='card-head-title'>" + sec.label + " — " + items.length + " prodotti</span><span class='card-count'>" + (gGeo !== "all" ? GEO_LABELS[gGeo] : "Tutte le aree") + "</span></div>";
+    html += "<table class='prod-table'><thead><tr><th>Prodotto</th><th>Settore/Categoria</th><th>Area</th><th>Valuta</th><th>Scadenza</th><th>Cedola</th><th>Note</th><th>Rend. 5Y</th></tr></thead><tbody>";
+
+    items.forEach(function(item) {
+      var geoBadges = item.geo.map(function(g){ return "<span class='geo " + g + "'>" + GEO_LABELS[g] + "</span>"; }).join("");
+      html += "<tr>" +
+        "<td>" + item.name + "</td>" +
+        "<td style='font-size:10px;color:var(--text3)'>" + item.settore + "</td>" +
+        "<td>" + geoBadges + "</td>" +
+        "<td><span class='val'>" + item.val + "</span></td>" +
+        "<td style='font-size:10px;color:var(--text3);font-family:DM Mono,monospace'>" + item.scad + "</td>" +
+        "<td style='font-size:10px;color:var(--text3)'>" + item.cedola + "</td>" +
+        "<td style='font-size:10px;color:var(--text3);max-width:200px'>" + item.note + "</td>" +
+        "<td><span class='rend " + item.rend + "'>" + item.rendVal + "</span></td>" +
+      "</tr>";
+    });
+
+    html += "</tbody></table></div>";
+  });
+
+  if (html === "") html = "<div class='no-results'>Nessun prodotto trovato per i filtri selezionati.</div>";
+  content.innerHTML = html;
+}
+
+function setFam(fam, btn) {
+  gFam = fam;
+  document.querySelectorAll("#fam-tabs .tab-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  render();
+}
+function setGeo(geo, btn) {
+  gGeo = geo;
+  document.querySelectorAll("#geo-tabs .geo-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  render();
+}
+function setRend(rend, btn) {
+  gRend = rend;
+  document.querySelectorAll("#rend-tabs .rend-btn").forEach(function(b){ b.classList.remove("active"); });
+  btn.classList.add("active");
+  if (rend !== "all") btn.classList.add(rend);
+  render();
+}
+
+function updateDate() {
+  var d = new Date();
+  document.getElementById("live-date").textContent =
+    d.toLocaleDateString("it-IT",{weekday:"short",day:"2-digit",month:"short",year:"numeric"}) +
+    " · " + d.toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"});
+}
+updateDate();
+window.setInterval(updateDate, 60000);
+render();
+</script>
+</body>
+</html>
