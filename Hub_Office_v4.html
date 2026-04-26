@@ -738,10 +738,10 @@ function apriScheda(id){
   // Col destra - Foto e Documenti
   var col2=document.createElement('div');col2.className='scheda-col';
 
-  col2.appendChild(sl('Foto'));
+  col2.appendChild(sl('Foto (Amazon Photos)'));
   var pg=document.createElement('div');pg.className='mg';pg.id='photoGrid';
-  var ap=document.createElement('div');ap.className='mt ma';ap.textContent='+';ap.title='Aggiungi foto';
-  ap.onclick=function(){document.getElementById('fotoInput').click();};pg.appendChild(ap);
+  var ap=document.createElement('div');ap.className='mt ma';ap.textContent='📸';ap.title='Amazon Photos';
+  ap.onclick=function(){window.open('https://www.amazon.it/photos');};pg.appendChild(ap);
   (media||[]).filter(function(m){return m.type==='image';}).forEach(function(m){
     var div=document.createElement('div');div.className='mt';
     var img=document.createElement('img');img.src=m.url;img.style.cssText='width:100%;height:100%;object-fit:cover';
@@ -749,7 +749,7 @@ function apriScheda(id){
   });
   col2.appendChild(pg);
 
-  col2.appendChild(sl('Documenti ('+(docs.length+allegati.length)+')'));
+  col2.appendChild(sl('Documenti Dropbox ('+(docs.length+allegati.length)+')'));
   var dl2=document.createElement('div');dl2.className='dl';dl2.id='docsList';
   [...docs,...allegati].forEach(function(d){
     var ext=(d.name||d.nome||'').split('.').pop().toUpperCase();
@@ -759,7 +759,7 @@ function apriScheda(id){
     dl2.appendChild(di);
   });
   var ad=document.createElement('div');ad.className='di add';ad.onclick=aggiungiAllegato;
-  ad.innerHTML='<div class="ic" style="background:var(--surface3);font-size:15px;color:var(--text3)">+</div><span class="dn" style="color:var(--text3)">Aggiungi documento...</span>';
+  ad.innerHTML='<div class="ic" style="background:var(--surface3);font-size:15px;color:var(--text3)">+</div><span class="dn" style="color:var(--text3)">Apri Dropbox per allegare...</span>';
   dl2.appendChild(ad);col2.appendChild(dl2);
 
   body.appendChild(col1);body.appendChild(col2);sc.appendChild(body);
@@ -815,20 +815,22 @@ async function aggiungiNota(){
   }catch(e){alert('Errore: '+e.message);}
 }
 
-async function aggiungiAllegato(){
-  if(!currentContact) return;
-  var nome=prompt('Nome del file:');if(!nome) return;
-  var tipo=prompt('Tipo:\n1.PDF 2.DOCX 3.XLSX 4.JPG 5.DWG 6.Altro\nNumero:');
-  var tipi=['PDF','DOCX','XLSX','JPG','DWG','Altro'];
-  var tipoStr=tipi[(parseInt(tipo)||1)-1]||'Altro';
-  var url=prompt('Link Dropbox (opzionale):');
-  var date=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
-  var allegati=[...(currentContact.allegati||[]),{nome:nome,tipo:tipoStr,url:url||'',data:date}];
-  try{
-    await sb('/rest/v1/contatti?id=eq.'+currentContact.id,'PATCH',{allegati:allegati,updated_at:new Date().toISOString()});
-    currentContact.allegati=allegati;
-    apriScheda(currentContact.id);toast('Allegato aggiunto');
-  }catch(e){alert('Errore: '+e.message);}
+function aggiungiAllegato(){
+  // Apre Dropbox online per selezionare e copiare il link del file
+  window.open('https://www.dropbox.com/home');
+  // Dopo aver copiato il link da Dropbox, lo si incolla qui
+  setTimeout(function(){
+    var url=prompt('Incolla qui il link Dropbox del file copiato:');
+    if(!url||!url.trim()) return;
+    var nome=url.split('/').pop().split('?')[0]||'file';
+    var nomeConf=prompt('Nome del file (conferma o modifica):',nome);
+    if(!nomeConf) return;
+    var date=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
+    var allegati=[...(currentContact.allegati||[]),{nome:nomeConf,tipo:'Dropbox',url:url.trim(),data:date}];
+    sb('/rest/v1/contatti?id=eq.'+currentContact.id,'PATCH',{allegati:allegati,updated_at:new Date().toISOString()})
+    .then(function(){currentContact.allegati=allegati;apriScheda(currentContact.id);toast('Allegato aggiunto');})
+    .catch(function(e){alert('Errore: '+e.message);});
+  },3000);
 }
 
 function cambiaFoto(){document.getElementById('fotoInput').click();}
