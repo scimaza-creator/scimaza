@@ -158,6 +158,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .cloud-btn.dropbox{background:var(--gold-bg2);color:var(--gold);border:.5px solid var(--gold2)}
 .cloud-btn.dropbox:hover{background:rgba(196,163,90,.25)}
 .abar{padding:.8rem 1.5rem;border-top:.5px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--surface)}
+.fin-btn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:10px 18px;border-radius:var(--radius-sm);cursor:pointer;white-space:nowrap;transition:all .15s;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);display:flex;align-items:center;gap:8px}
+.fin-btn:hover{background:var(--gold-bg2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
 .toast{position:fixed;bottom:50px;right:20px;background:var(--surface2);color:var(--text);padding:10px 18px;border-radius:8px;font-size:12px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;border:.5px solid var(--border2)}
 .toast.show{opacity:1}
 .mail-item{background:var(--surface2);border:.5px solid var(--border);border-radius:10px;padding:.8rem 1rem;margin-bottom:6px;position:relative}
@@ -228,7 +230,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <div class="section-label">Aree specialistiche</div>
   <div class="gold-line"></div>
   <div class="aree-grid">
-    <a class="area-btn" style="--accent-color:#C4A35A" href="https://www.tradingview.com" target="_blank"><div class="area-icon">📈</div><div class="area-name">Finanza</div><div class="area-desc">Mercati, portafogli, analisi</div></a>
+    <a class="area-btn" style="--accent-color:#C4A35A" href="#" onclick="mostraView('finanza');return false;"><div class="area-icon">📈</div><div class="area-name">Finanza</div><div class="area-desc">Mercati, portafogli, analisi</div></a>
     <a class="area-btn" style="--accent-color:#185FA5" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">🏛️</div><div class="area-name">Ville Storiche</div><div class="area-desc">Schede, mappe, restauro</div></a>
     <a class="area-btn" style="--accent-color:#1D9E75" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">🔨</div><div class="area-name">Cantieri</div><div class="area-desc">Preventivi, avanzamento</div></a>
     <a class="area-btn" style="--accent-color:#8B6E35" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">🏠</div><div class="area-name">Immobili</div><div class="area-desc">Patrimonio, affitti, atti</div></a>
@@ -267,6 +269,28 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
   <div class="contact-grid" id="contactGrid">
     <div class="state-msg"><div class="spinner"></div>Connessione Supabase...</div>
+  </div>
+</div>
+
+<!-- VIEW FINANZA -->
+<div id="view-finanza" class="view">
+  <div style="max-width:1300px;margin:0 auto;padding-left:1.5rem;padding-right:1.5rem">
+    <div style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem">
+      <button class="btn-back" onclick="mostraView('home')">← Scrivania</button>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold);letter-spacing:.04em">Finanza</div>
+    </div>
+    <div class="section-label">Biblioteca strumenti</div>
+    <div class="gold-line"></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:2rem">
+      <button class="fin-btn" onclick="alert('Settori World Index — in sviluppo')">📊 Settori World Index</button>
+      <button class="fin-btn" onclick="alert('ETF Merceologici — in sviluppo')">🏭 ETF Merceologici</button>
+      <button class="fin-btn" onclick="alert('Obbligazioni Governative — in sviluppo')">🏛️ Obblig. Governative</button>
+      <button class="fin-btn" onclick="alert('Obbligazioni Societarie — in sviluppo')">🏢 Obblig. Societarie</button>
+      <button class="fin-btn" onclick="alert('Certificati — in sviluppo')">📜 Certificati</button>
+      <button class="fin-btn" onclick="alert('Futures — in sviluppo')">📈 Futures</button>
+      <button class="fin-btn" onclick="alert('Fondi Attivi — in sviluppo')">💼 Fondi Attivi</button>
+      <button class="fin-btn" onclick="alert('Benchmark Mercati — in sviluppo')">🌐 Benchmark Mercati</button>
+    </div>
   </div>
 </div>
 
