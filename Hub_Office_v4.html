@@ -632,6 +632,8 @@ async function salvaContatto(){
     riv_via_pref:g('rViaPref'),riv_via:g('rVia'),riv_civico:g('rCivico'),
     riv_cap:g('rCap'),riv_comune:g('rComune'),riv_provincia:g('rProvincia'),
     riv_regione:g('rRegione'),riv_stato:g('rStato'),
+    az_cap:g('aCap'),az_comune:g('aComune'),az_provincia:g('aProvincia'),
+    az_regione:g('aRegione'),az_stato:g('aStato'),
     tipo_rapporto:g('fTipoRapporto'),progetto:g('fProgetto'),stato:g('fStato'),
     dropbox_url:g('fDropbox'),spike_email:g('fSpike'),
     updated_at:new Date().toISOString()
@@ -901,38 +903,21 @@ function apriScheda(id){
   col2.appendChild(docRow);
 
   var dl2=document.createElement('div');dl2.className='dl';dl2.id='docsList';
-  var tuttiDocs=[...docs,...allegati];
-  tuttiDocs.forEach(function(d,idx){
+  [...docs,...allegati].forEach(function(d){
     var ext=(d.name||d.nome||'').split('.').pop().toUpperCase();
     var cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
-    var di=document.createElement('div');di.className='di';di.style.cssText='display:flex;align-items:center';
-    // Tasto elimina
-    var delBtn=document.createElement('button');
-    delBtn.style.cssText='flex-shrink:0;margin-left:8px;background:none;border:none;color:var(--text2);cursor:pointer;font-size:17px;padding:0 4px;line-height:1';
-    delBtn.textContent='✕';
-    delBtn.title='Elimina allegato';
-    (function(docIdx){
-      delBtn.onclick=function(e){
-        e.stopPropagation();
-        if(!confirm('Eliminare questo allegato?')) return;
-        var newAllegati=(currentContact.allegati||[]).filter(function(_,i){return i!==docIdx-(docs||[]).length;});
-        if(docIdx<(docs||[]).length) return; // docs non eliminabili qui
-        sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{allegati:newAllegati,updated_at:new Date().toISOString()})
-        .then(function(){
-          var i=allContacts.findIndex(function(x){return x.id===cid;});
-          if(i>=0) allContacts[i].allegati=newAllegati;
-          if(currentContact&&currentContact.id===cid) currentContact.allegati=newAllegati;
-          apriScheda(cid);toast('Allegato eliminato');
-        }).catch(function(e){alert('Errore: '+e.message);});
-      };
-    })(idx);
+    var di=document.createElement('div');di.className='di';
     if(d.url){
-      (function(url){
-        di.onclick=function(){window.open(url,'_blank');};
-      })(d.url);
+      (function(url,nome){
+        di.onclick=function(){
+          var a=document.createElement('a');
+          a.href=url;a.target='_blank';
+          // Apri direttamente senza forzare download
+          a.click();
+        };
+      })(d.url,d.nome||d.name);
     }
     di.innerHTML='<div class="ic '+cls+'">'+(ext.slice(0,3)||'FILE')+'</div><span class="dn">'+(d.name||d.nome||'')+'</span><span class="dd">'+(d.date||d.data||'')+'</span>';
-    di.appendChild(delBtn);
     dl2.appendChild(di);
   });
   col2.appendChild(dl2);
@@ -1014,35 +999,46 @@ function aggiungiMediaLink(cid,tipo){
 
 
 function caricaMedia(input,cid,tipo){
-  input.value='';
-  var label=tipo==='image'?'foto':'video';
-  var url=prompt('Incolla il link Dropbox o Amazon Photos della '+label+':');
-  if(!url||!url.trim()) return;
-  var nome=url.split('/').pop().split('?')[0]||label;
+  if(!input.files||!input.files.length) return;
   var c=allContacts.find(function(x){return x.id===cid;});
   if(!c) return;
-  var media=[...(c.media||[]),{url:url.trim(),type:tipo,nome:nome}];
-  sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{media:media,updated_at:new Date().toISOString()})
-  .then(function(){
-    var idx=allContacts.findIndex(function(x){return x.id===cid;});
-    if(idx>=0) allContacts[idx].media=media;
-    if(currentContact&&currentContact.id===cid) currentContact.media=media;
-    apriScheda(cid);
-    toast((tipo==='image'?'Foto':'Video')+' allegat'+(tipo==='image'?'a':'o'));
-  })
-  .catch(function(e){alert('Errore: '+e.message);});
+  var files=Array.from(input.files);
+  var media=[...(c.media||[])];
+  var processati=0;
+  files.forEach(function(file){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      media.push({url:ev.target.result,type:tipo,nome:file.name});
+      processati++;
+      if(processati===files.length){
+        sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{media:media,updated_at:new Date().toISOString()})
+        .then(function(){
+          var idx=allContacts.findIndex(function(x){return x.id===cid;});
+          if(idx>=0) allContacts[idx].media=media;
+          if(currentContact&&currentContact.id===cid) currentContact.media=media;
+          apriScheda(cid);
+          toast((tipo==='image'?'Foto':'Video')+' allegat'+(tipo==='image'?'a':'o'));
+        })
+        .catch(function(e){alert('Errore: '+e.message);});
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
 }
 
 function caricaDocumento(input,cid){
-  // Ignora input file - usa link Dropbox
-  input.value='';
-  var url=prompt('Incolla il link Dropbox del documento:');
-  if(!url||!url.trim()) return;
-  var nome=url.split('/').pop().split('?')[0]||'documento';
+  if(!input.files||!input.files.length) return;
   var c=allContacts.find(function(x){return x.id===cid;});
   if(!c) return;
+  var files=Array.from(input.files);
+  var allegati=[...(c.allegati||[])];
   var date=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
-  var allegati=[...(c.allegati||[]),{nome:nome,tipo:nome.split('.').pop().toUpperCase(),url:url.trim(),data:date}];
+  // Salva blob URL per apertura diretta senza download
+  files.forEach(function(file){
+    var blobUrl=URL.createObjectURL(file);
+    allegati.push({nome:file.name,tipo:file.name.split('.').pop().toUpperCase(),url:blobUrl,data:date});
+  });
   sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{allegati:allegati,updated_at:new Date().toISOString()})
   .then(function(){
     var idx=allContacts.findIndex(function(x){return x.id===cid;});
@@ -1052,6 +1048,7 @@ function caricaDocumento(input,cid){
     toast('Documento allegato');
   })
   .catch(function(e){alert('Errore: '+e.message);});
+  input.value='';
 }
 
 function aggiungiAllegato(){
