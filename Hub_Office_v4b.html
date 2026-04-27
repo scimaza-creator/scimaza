@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hub Office</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0F0F0E; --surface:#1A1917; --surface2:#222120; --surface3:#2A2826;
+  --border:#2E2C2A; --border2:#3D3A37;
+  --text:#E8E4DE; --text2:#9E9A94; --text3:#5C5955;
+  --gold:#C4A35A; --gold2:#8B6E35; --gold-bg:rgba(196,163,90,0.08); --gold-bg2:rgba(196,163,90,0.15);
+  --red:#C0392B; --green:#1D9E75; --blue:#185FA5; --teal:#5DCAA5;
+  --radius:14px; --radius-sm:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:0.4}
+.topbar{position:fixed;top:0;left:0;right:0;height:52px;background:rgba(15,15,14,0.95);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 2rem;z-index:200}
+.topbar-logo{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:500;color:var(--gold);letter-spacing:.06em;cursor:pointer}
+.topbar-logo span{color:var(--text3);font-weight:300;font-size:16px;margin-left:8px;letter-spacing:.12em}
+.topbar-right{display:flex;align-items:center;gap:1.5rem}
+.topbar-clock{font-family:'DM Mono',monospace;font-size:13px;color:var(--text2);letter-spacing:.05em}
+.topbar-date{font-size:12px;color:var(--text3)}
+.view{display:none;padding-top:68px;padding-bottom:3rem;min-height:100vh;position:relative;z-index:1}
+.view.active{display:block}
+#view-home{max-width:1400px;margin:0 auto;padding-left:1.5rem;padding-right:1.5rem}
+#view-rubrica{max-width:1300px;margin:0 auto;padding-left:1.5rem;padding-right:1.5rem}
+.section-label{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.18em;color:var(--text3);margin-bottom:.75rem;margin-top:1.5rem;padding-left:2px}
+.gold-line{height:1px;background:linear-gradient(90deg,var(--gold2) 0%,transparent 100%);width:60px;margin-bottom:1.5rem;margin-top:-.5rem}
+.divider{height:.5px;background:var(--border);margin:1.5rem 0}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.tool-btn{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem .75rem 1rem;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:10px;text-decoration:none;position:relative;overflow:hidden;min-height:110px;justify-content:center}
+.tool-btn::before{content:'';position:absolute;inset:0;background:var(--gold-bg);opacity:0;transition:opacity .18s}
+.tool-btn:hover{border-color:var(--gold2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.tool-btn:hover::before{opacity:1}
+.tool-btn:active{transform:scale(.98)}
+.tool-icon{font-size:28px;line-height:1;position:relative;z-index:1}
+.tool-name{font-size:12px;font-weight:500;color:var(--text);text-align:center;line-height:1.3;position:relative;z-index:1}
+.tool-sub{font-size:10px;color:var(--text3);text-align:center;position:relative;z-index:1;margin-top:-4px}
+.tool-btn.accent-gold{border-color:rgba(196,163,90,.3)}.tool-btn.accent-gold .tool-name{color:var(--gold)}
+.tool-btn.accent-blue{border-color:rgba(24,95,165,.3)}
+.tool-btn.accent-green{border-color:rgba(29,158,117,.3)}
+.aree-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.area-btn{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1rem;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;gap:6px;text-decoration:none;position:relative;overflow:hidden;min-height:88px}
+.area-btn::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:var(--accent-color,var(--gold));opacity:.6;transition:opacity .18s}
+.area-btn:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+.area-btn:hover::after{opacity:1}
+.area-icon{font-size:20px}.area-name{font-size:12px;font-weight:500;color:var(--text);line-height:1.3}
+.area-desc{font-size:10px;color:var(--text3);line-height:1.4}
+.statusbar{position:fixed;bottom:0;left:0;right:0;height:32px;background:rgba(15,15,14,.95);border-top:.5px solid var(--border);display:flex;align-items:center;padding:0 2rem;gap:2rem;z-index:200}
+.status-item{font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;display:flex;align-items:center;gap:5px}
+.status-dot{width:5px;height:5px;border-radius:50%;background:var(--green)}
+.rub-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+.rub-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:500;color:var(--gold);letter-spacing:.04em}
+.btn-primary{background:var(--gold);color:#0F0F0E;border:none;border-radius:var(--radius-sm);padding:9px 18px;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.btn-primary:hover{background:#D4B36A;transform:translateY(-1px)}
+.btn-secondary{background:var(--surface2);color:var(--text);border:.5px solid var(--border2);border-radius:var(--radius-sm);padding:9px 18px;font-size:13px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.btn-secondary:hover{border-color:var(--gold2);background:var(--surface3)}
+.btn-back{background:transparent;color:var(--text2);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:7px 14px;font-size:12px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif}
+.btn-back:hover{color:var(--text);border-color:var(--border2)}
+.btn-danger{background:rgba(192,57,43,.15);color:#E74C3C;border:.5px solid rgba(192,57,43,.5);border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
+.btn-modifica{background:rgba(230,126,34,.15);color:#E67E22;border:.5px solid rgba(230,126,34,.5);border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
+.btn-mail-scrivi{background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);border-radius:6px;padding:5px 11px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;white-space:nowrap}
+.btn-mail-storico{background:rgba(52,152,219,.1);color:#5DADE2;border:.5px solid rgba(52,152,219,.35);border-radius:6px;padding:5px 11px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;white-space:nowrap;display:flex;align-items:center;gap:5px}
+.btn-bozze{background:rgba(241,196,15,.12);color:#F1C40F;border:.5px solid rgba(241,196,15,.4);border-radius:6px;padding:5px 11px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;white-space:nowrap}
+.mail-badge{background:#185FA5;color:#fff;font-size:10px;font-weight:600;padding:1px 6px;border-radius:8px;min-width:18px;text-align:center}
+.mail-badge.zero{background:var(--surface3);color:var(--text3)}
+.rub-toolbar{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.search-input{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 14px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;flex:1;min-width:200px;transition:border-color .15s}
+.search-input:focus{outline:none;border-color:var(--gold2)}
+.search-input::placeholder{color:var(--text3)}
+.filter-btn{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.filter-btn:hover,.filter-btn.on{border-color:var(--gold2);color:var(--gold);background:var(--gold-bg)}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.contact-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.contact-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cat-color,var(--gold));opacity:.7}
+.contact-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.c-av{width:40px;height:40px;border-radius:50%;background:var(--gold-bg2);border:.5px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);flex-shrink:0;overflow:hidden}
+.c-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.c-info{flex:1}.c-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-role{font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-cat{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;flex-shrink:0}
+.cat-fornitori{background:rgba(196,163,90,.15);color:var(--gold)}
+.cat-terzi{background:rgba(239,159,39,.15);color:#EF9F27}
+.cat-personale{background:rgba(29,158,117,.15);color:var(--green)}
+.c-divider{height:.5px;background:var(--border);margin:.75rem 0}
+.c-details{display:flex;flex-direction:column;gap:4px}
+.c-detail{font-size:11px;color:var(--text2);display:flex;align-items:center;gap:6px}
+.state-msg{text-align:center;padding:4rem 2rem;color:var(--text3);font-size:14px;grid-column:1/-1}
+.spinner{width:24px;height:24px;border:2px solid var(--border2);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:300;display:none;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:.5px solid var(--border2);border-radius:var(--radius);width:100%;max-width:760px;position:relative;animation:modalIn .2s ease}
+@keyframes modalIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.modal-close{position:absolute;top:1rem;right:1rem;background:var(--surface2);border:.5px solid var(--border);border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text2);font-size:16px;z-index:1;transition:all .15s}
+.modal-close:hover{color:var(--text);border-color:var(--border2)}
+.form-hdr{background:linear-gradient(135deg,#1A1917 0%,#222120 100%);padding:1.5rem 2rem;border-bottom:.5px solid var(--border)}
+.form-title-el{font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold);padding-right:2rem}
+.form-body{padding:1.5rem 2rem;max-height:80vh;overflow-y:auto}
+.form-section{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--gold2);padding:1rem 0 .6rem;border-bottom:.5px solid var(--border);margin-bottom:.75rem;margin-top:.5rem;display:flex;align-items:center;gap:8px}
+.form-section:first-child{margin-top:0}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.form-grid .full{grid-column:1/-1}
+.form-grid .triple{grid-column:1/-1;display:grid;grid-template-columns:90px 1fr 90px;gap:8px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg label{font-size:11px;color:var(--text2);font-weight:500;letter-spacing:.03em}
+.fg input,.fg select,.fg textarea{font-family:'DM Sans',sans-serif;font-size:12px;padding:7px 10px;border:.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);outline:none;width:100%;transition:border-color .15s}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold2)}
+.fg textarea{resize:vertical;min-height:60px}
+.fg select option{background:var(--surface2)}
+.form-footer{padding:1rem 2rem;border-top:.5px solid var(--border);display:flex;gap:10px;justify-content:flex-end;background:var(--surface)}
+.scheda-hdr{background:linear-gradient(135deg,#1A1917 0%,#222120 100%);padding:1.5rem 2rem;border-bottom:.5px solid var(--border);display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap}
+.scheda-av{width:64px;height:64px;border-radius:50%;background:var(--gold-bg2);border:1px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);flex-shrink:0;overflow:hidden;cursor:pointer}
+.scheda-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.scheda-nome{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--text)}
+.scheda-ruolo{font-size:13px;color:var(--text2);margin-top:2px}
+.scheda-body{display:grid;grid-template-columns:1fr 1fr;max-height:75vh;overflow-y:auto}
+.scheda-col{padding:1.2rem 1.5rem}
+.scheda-col:first-child{border-right:.5px solid var(--border)}
+.sl{font-size:10px;font-weight:500;color:var(--gold2);text-transform:uppercase;letter-spacing:.08em;margin:1rem 0 .5rem;padding-bottom:.4rem;border-bottom:.5px solid var(--border);display:flex;align-items:center;gap:5px}
+.sl:first-child{margin-top:0}
+.sl-dot{width:4px;height:4px;border-radius:50%;background:var(--gold2);flex-shrink:0}
+.fr{display:flex;justify-content:space-between;align-items:flex-start;padding:4px 0;border-bottom:.5px solid var(--border);gap:8px}
+.fr:last-child{border-bottom:none}
+.fl{font-size:11px;color:var(--text2);flex-shrink:0;min-width:110px}
+.fv{font-size:11px;color:var(--text);text-align:right;flex:1;word-break:break-word}
+.fv a{color:var(--gold);text-decoration:none}.fv a:hover{text-decoration:underline}
+.fv.mono{font-family:'DM Mono',monospace;font-size:10.5px}
+.phone-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:.5px solid var(--border);gap:4px}
+.phone-row:last-child{border-bottom:none}
+.phone-label{font-size:11px;color:var(--text2);flex-shrink:0;min-width:80px}
+.phone-val{font-size:11px;color:var(--text);font-family:'DM Mono',monospace;flex:1;text-align:right}
+.phone-type{font-size:9px;padding:1px 5px;border-radius:4px;background:var(--surface3);color:var(--text3)}
+.notes-box{background:var(--surface2);border-radius:var(--radius-sm);padding:.6rem .8rem;border:.5px solid var(--border);max-height:180px;overflow-y:auto}
+.ne{padding:5px 0;border-bottom:.5px solid var(--border)}.ne:last-child{border-bottom:none}
+.nd{font-size:10px;color:var(--text3);margin-bottom:2px;font-family:'DM Mono',monospace}
+.nt{font-size:11px;color:var(--text);line-height:1.5}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:6px}
+.mt{aspect-ratio:1;border-radius:7px;background:var(--surface2);border:.5px solid var(--border);overflow:hidden;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.mt img{width:100%;height:100%;object-fit:cover}
+.mt.ma{border:1.5px dashed var(--border2);background:transparent;color:var(--text3);font-size:22px}
+.tb{position:absolute;bottom:3px;right:3px;background:rgba(0,0,0,.6);color:#fff;font-size:8px;padding:1px 4px;border-radius:3px;font-family:'DM Mono',monospace}
+.dl{display:flex;flex-direction:column;gap:3px;margin-top:6px}
+.di{display:flex;align-items:center;gap:7px;padding:5px 7px;background:var(--surface2);border-radius:6px;cursor:pointer;border:.5px solid transparent}
+.di:hover{border-color:var(--border)}.di.add{border:1.5px dashed var(--border2);background:transparent}
+.ic{width:24px;height:24px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;flex-shrink:0;font-family:'DM Mono',monospace}
+.ic.pdf{background:rgba(192,57,43,.2);color:var(--red)}.ic.xls{background:rgba(29,158,117,.2);color:var(--green)}.ic.doc{background:rgba(24,95,165,.2);color:#4A9EE5}.ic.img{background:rgba(196,163,90,.2);color:var(--gold)}
+.dn{font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dd{font-size:10px;color:var(--text3);flex-shrink:0;font-family:'DM Mono',monospace}
+.ai-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+.ai-btn{font-family:'DM Sans',sans-serif;font-size:11px;padding:4px 9px;border-radius:6px;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);cursor:pointer;transition:all .15s}
+.ai-btn:hover{background:var(--gold-bg2)}
+.cloud-btn{font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;padding:6px 14px;border-radius:7px;cursor:pointer;white-space:nowrap;transition:all .12s}
+.cloud-btn.dropbox{background:var(--gold-bg2);color:var(--gold);border:.5px solid var(--gold2)}
+.cloud-btn.dropbox:hover{background:rgba(196,163,90,.25)}
+.abar{padding:.8rem 1.5rem;border-top:.5px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--surface)}
+.toast{position:fixed;bottom:50px;right:20px;background:var(--surface2);color:var(--text);padding:10px 18px;border-radius:8px;font-size:12px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;border:.5px solid var(--border2)}
+.toast.show{opacity:1}
+.mail-item{background:var(--surface2);border:.5px solid var(--border);border-radius:10px;padding:.8rem 1rem;margin-bottom:6px;position:relative}
+.mail-item.inviata{border-left:3px solid #185FA5}
+.mail-item.ricevuta{border-left:3px solid var(--green)}
+.mail-oggetto{font-size:12px;font-weight:500;color:var(--text)}
+.mail-meta{font-size:10px;color:var(--text2);line-height:1.6;margin-top:4px}
+.mail-del{position:absolute;top:8px;right:8px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px}
+.mail-del:hover{color:var(--red)}
+@media(max-width:600px){
+  .topbar{padding:0 1rem}
+  #view-home,#view-rubrica{padding-left:1rem;padding-right:1rem}
+  .tools-grid{grid-template-columns:repeat(3,1fr);gap:8px}
+  .aree-grid{grid-template-columns:repeat(2,1fr);gap:8px}
+  .tool-btn{min-height:90px;padding:.8rem .5rem}
+  .tool-icon{font-size:22px}.tool-name{font-size:11px}
+  .topbar-date{display:none}
+  .form-grid{grid-template-columns:1fr}
+  .form-grid .triple{grid-template-columns:1fr}
+  .scheda-body{grid-template-columns:1fr}
+  .scheda-col:first-child{border-right:none;border-bottom:.5px solid var(--border)}
+  .contact-grid{grid-template-columns:1fr}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.tools-grid .tool-btn{animation:fadeUp .3s ease both}
+.tools-grid .tool-btn:nth-child(1){animation-delay:.03s}.tools-grid .tool-btn:nth-child(2){animation-delay:.06s}
+.tools-grid .tool-btn:nth-child(3){animation-delay:.09s}.tools-grid .tool-btn:nth-child(4){animation-delay:.12s}
+.tools-grid .tool-btn:nth-child(5){animation-delay:.15s}.tools-grid .tool-btn:nth-child(6){animation-delay:.18s}
+.tools-grid .tool-btn:nth-child(7){animation-delay:.21s}.tools-grid .tool-btn:nth-child(8){animation-delay:.24s}
+.tools-grid .tool-btn:nth-child(9){animation-delay:.27s}.tools-grid .tool-btn:nth-child(10){animation-delay:.30s}
+</style>
+</head>
+<body>
+<div style="display:none">
+  <datalist id="listCAP"></datalist>
+  <datalist id="listComuni"></datalist>
+  <datalist id="listProvince"></datalist>
+  <datalist id="listRegioni"></datalist>
+  <datalist id="listStati"></datalist>
+</div>
+
+<div class="topbar">
+  <div class="topbar-logo" onclick="mostraView('home')">Hub Office <span>SCRIVANIA</span></div>
+  <div class="topbar-right">
+    <div class="topbar-date" id="topDate"></div>
+    <div class="topbar-clock" id="topClock"></div>
+  </div>
+</div>
+
+<div id="view-home" class="view active">
+  <div class="section-label">Accesso rapido</div>
+  <div class="gold-line"></div>
+  <div class="tools-grid">
+    <a class="tool-btn accent-gold" href="https://claude.ai" target="_blank"><div class="tool-icon">✦</div><div class="tool-name">Claude AI</div><div class="tool-sub">Copilota</div></a>
+    <a class="tool-btn" href="https://www.dropbox.com/home" target="_blank"><div class="tool-icon">📦</div><div class="tool-name">Dropbox</div><div class="tool-sub">Archivio</div></a>
+    <a class="tool-btn" href="https://app.spikenow.com" target="_blank"><div class="tool-icon">@</div><div class="tool-name">Mail</div><div class="tool-sub">Email</div></a>
+    <a class="tool-btn" href="https://app.spikenow.com" target="_blank"><div class="tool-icon">📅</div><div class="tool-name">Calendario</div><div class="tool-sub">Spike</div></a>
+    <a class="tool-btn" href="https://app.spikenow.com" target="_blank"><div class="tool-icon">📝</div><div class="tool-name">Note</div><div class="tool-sub">Spike</div></a>
+    <a class="tool-btn accent-green" href="https://earth.google.com/web/" target="_blank"><div class="tool-icon">🌍</div><div class="tool-name">Google Earth</div><div class="tool-sub">Mappe</div></a>
+    <a class="tool-btn" href="https://web.whatsapp.com" target="_blank"><div class="tool-icon">💬</div><div class="tool-name">WhatsApp</div><div class="tool-sub">Messaggi</div></a>
+    <a class="tool-btn" href="https://web.telegram.org" target="_blank"><div class="tool-icon">✈️</div><div class="tool-name">Telegram</div><div class="tool-sub">Messaggi</div></a>
+    <a class="tool-btn accent-blue" href="#" onclick="mostraView('rubrica');return false;"><div class="tool-icon">👥</div><div class="tool-name">Rubrica</div><div class="tool-sub">Contatti</div></a>
+    <a class="tool-btn" href="#" onclick="alert('Apri SoftMaker dal desktop');return false;"><div class="tool-icon">📄</div><div class="tool-name">SoftMaker</div><div class="tool-sub">Documenti</div></a>
+  </div>
+  <div class="divider"></div>
+  <div class="section-label">Aree specialistiche</div>
+  <div class="gold-line"></div>
+  <div class="aree-grid">
+    <a class="area-btn" style="--accent-color:#C4A35A" href="https://www.tradingview.com" target="_blank"><div class="area-icon">📈</div><div class="area-name">Finanza</div><div class="area-desc">Mercati, portafogli, analisi</div></a>
+    <a class="area-btn" style="--accent-color:#185FA5" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">🏛️</div><div class="area-name">Ville Storiche</div><div class="area-desc">Schede, mappe, restauro</div></a>
+    <a class="area-btn" style="--accent-color:#1D9E75" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">🔨</div><div class="area-name">Cantieri</div><div class="area-desc">Preventivi, avanzamento</div></a>
+    <a class="area-btn" style="--accent-color:#8B6E35" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">🏠</div><div class="area-name">Immobili</div><div class="area-desc">Patrimonio, affitti, atti</div></a>
+    <a class="area-btn" style="--accent-color:#C0392B" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">⚖️</div><div class="area-name">Legale</div><div class="area-desc">Contratti, normativa</div></a>
+    <a class="area-btn" style="--accent-color:#9B59B6" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">🛡️</div><div class="area-name">Assicurazioni</div><div class="area-desc">Polizze, scadenze</div></a>
+    <a class="area-btn" style="--accent-color:#E67E22" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">📊</div><div class="area-name">Fiscale</div><div class="area-desc">Scadenze, calcoli</div></a>
+    <a class="area-btn" style="--accent-color:#27AE60" href="#" onclick="mostraView('rubrica');return false;"><div class="area-icon">🌿</div><div class="area-name">Agricoltura</div><div class="area-desc">Affitti, fondi agricoli</div></a>
+    <a class="area-btn" style="--accent-color:#2980B9" href="https://claude.ai" target="_blank"><div class="area-icon">🌐</div><div class="area-name">News Globali</div><div class="area-desc">Finanza e geopolitica 24h</div></a>
+  </div>
+  <div class="divider"></div>
+  <div class="section-label">News in evidenza</div>
+  <div class="gold-line"></div>
+  <div class="tools-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+    <a class="tool-btn" href="https://www.ilsole24ore.com" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Il Sole 24 Ore</div></a>
+    <a class="tool-btn" href="https://www.ft.com" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Financial Times</div></a>
+    <a class="tool-btn" href="https://www.bloomberg.com" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Bloomberg</div></a>
+    <a class="tool-btn" href="https://www.reuters.com" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Reuters</div></a>
+    <a class="tool-btn" href="https://www.corriere.it" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Corriere</div></a>
+  </div>
+</div>
+
+<div id="view-rubrica" class="view">
+  <div class="rub-header">
+    <div style="display:flex;align-items:center;gap:1rem">
+      <button class="btn-back" onclick="mostraView('home')">← Scrivania</button>
+      <div class="rub-title">Rubrica Contatti</div>
+    </div>
+    <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
+  </div>
+  <div class="rub-toolbar">
+    <input class="search-input" type="text" placeholder="Cerca nome, cognome, azienda, professione..." id="searchInput" oninput="renderList()">
+    <button class="filter-btn on" onclick="setGruppo('tutti',this)">Tutti</button>
+    <button class="filter-btn" onclick="setGruppo('fornitori',this)">Fornitori</button>
+    <button class="filter-btn" onclick="setGruppo('terzi',this)">Terzi</button>
+    <button class="filter-btn" onclick="setGruppo('personale',this)">Personale</button>
+  </div>
+  <div class="contact-grid" id="contactGrid">
+    <div class="state-msg"><div class="spinner"></div>Connessione Supabase...</div>
+  </div>
+</div>
+
+<!-- MODAL FORM CONTATTO -->
+<div class="modal-overlay" id="modalForm">
+  <div class="modal">
+    <div class="modal-close" onclick="chiudiModalForm()">✕</div>
+    <div class="form-hdr"><div class="form-title-el" id="formTitolo">Nuovo contatto</div></div>
+    <input type="hidden" id="editId">
+    <div class="form-body">
+      <div class="form-section">🧑 Dati personali</div>
+      <div class="form-grid">
+        <div class="fg"><label>Nome *</label><input id="fNome" placeholder="Mario"></div>
+        <div class="fg"><label>Cognome *</label><input id="fCognome" placeholder="Rossi"></div>
+        <div class="fg"><label>Professione</label><input id="fProfessione" list="listProfessioni" placeholder="Architetto..."><datalist id="listProfessioni"><option value="Architetto"><option value="Ingegnere"><option value="Geometra"><option value="Notaio"><option value="Avvocato"><option value="Commercialista"><option value="Idraulico"><option value="Elettricista"><option value="Falegname"><option value="Medico base"><option value="Agronomo"></datalist></div>
+        <div class="fg"><label>Incarico</label><input id="fIncarico" placeholder="Progettista responsabile"></div>
+        <div class="fg"><label>Gruppo *</label>
+          <select id="fGruppo" onchange="aggiornaCategorie()">
+            <option value="">-- Seleziona --</option>
+            <option value="fornitori">Fornitori</option>
+            <option value="terzi">Terzi</option>
+            <option value="personale">Personale</option>
+          </select>
+        </div>
+        <div class="fg"><label>Categoria</label><input id="fCategoria" list="listCategorie" placeholder="Es. Professionisti"><datalist id="listCategorie"></datalist></div>
+      </div>
+      <div class="form-section">📍 Indirizzo</div>
+      <div class="form-grid">
+        <div class="fg full" style="display:grid;grid-template-columns:90px 1fr 60px;gap:8px">
+          <div class="fg"><label>Tipo via</label><select id="fViaPref"><option>Via</option><option>Viale</option><option>Piazza</option><option>Piazzale</option><option>Largo</option><option>Vicolo</option><option>Strada</option></select></div>
+          <div class="fg"><label>Nome via</label><input id="fVia" placeholder="Roma"></div>
+          <div class="fg"><label>N°</label><input id="fCivico" placeholder="12"></div>
+        </div>
+        <div class="fg"><label>CAP</label><input id="fCap" placeholder="37030" list="listCAP" autocomplete="off" oninput="geoByCAP()" onchange="geoByCAP()"></div>
+        <div class="fg"><label>Località</label><input id="fLocalita" placeholder="Colognola"></div>
+        <div class="fg"><label>Comune</label><input id="fComune" placeholder="Colognola ai Colli" list="listComuni" autocomplete="off" oninput="geoByComune()" onchange="geoByComune()"></div>
+        <div class="fg"><label>Provincia</label><input id="fProvincia" placeholder="VR" list="listProvince"></div>
+        <div class="fg"><label>Regione</label><input id="fRegione" placeholder="Veneto" list="listRegioni"></div>
+        <div class="fg"><label>Stato</label><input id="fStato2" value="Italia" list="listStati"></div>
+        <div class="fg full"><label>Note referenze</label><textarea id="fNoteRef" placeholder="Conosciuto tramite..."></textarea></div>
+        <div class="fg full" id="mapWrap" style="display:none;padding:10px;background:var(--surface2);border-radius:8px;border:.5px solid var(--border)"></div>
+      </div>
+      <div class="form-section">📞 Telefoni</div>
+      <div class="form-grid">
+        <div class="fg triple"><div class="fg"><label>Pref.</label><input id="fTel1Pref" list="listPref" value="+39"></div><div class="fg"><label>Telefono 1</label><input id="fTel1" placeholder="045 123 4567"></div><div class="fg"><label>Tipo</label><select id="fTel1T"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div></div>
+        <div class="fg triple"><div class="fg"><label>Pref.</label><input id="fTel2Pref" list="listPref" value="+39"></div><div class="fg"><label>Telefono 2</label><input id="fTel2" placeholder="045 765 4321"></div><div class="fg"><label>Tipo</label><select id="fTel2T"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div></div>
+        <div class="fg triple"><div class="fg"><label>Pref.</label><input id="fMob1Pref" list="listPref" value="+39"></div><div class="fg"><label>Mobile 1</label><input id="fMob1" placeholder="338 987 6543"></div><div class="fg"><label>Tipo</label><select id="fMob1T"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div></div>
+        <div class="fg triple"><div class="fg"><label>Pref.</label><input id="fMob2Pref" list="listPref" value="+39"></div><div class="fg"><label>Mobile 2</label><input id="fMob2" placeholder="347 123 9876"></div><div class="fg"><label>Tipo</label><select id="fMob2T"><option value="Lavoro">Lavoro</option><option value="Privato">Privato</option></select></div></div>
+        <div class="fg triple"><div class="fg"><label>Pref.</label><input id="fFaxPref" list="listPref" value="+39"></div><div class="fg"><label>Fax</label><input id="fFax"></div><div></div></div>
+        <datalist id="listPref"><option value="+39"><option value="+33"><option value="+41"><option value="+43"><option value="+44"><option value="+49"><option value="+34"><option value="+1"></datalist>
+      </div>
+      <div class="form-section">✉️ Email & Fiscale</div>
+      <div class="form-grid">
+        <div class="fg"><label>Email 1</label><input id="fEmail1" type="email" placeholder="mario@studio.it"></div>
+        <div class="fg"><label>Email 2</label><input id="fEmail2" type="email" placeholder="mario@gmail.com"></div>
+        <div class="fg"><label>PEC</label><input id="fPec" type="email" placeholder="mario@pec.it"></div>
+        <div class="fg"><label>Codice fiscale</label><input id="fCf" placeholder="RSSMRA70A01L781K"></div>
+      </div>
+      <div class="form-section">🏢 Azienda</div>
+      <div class="form-grid">
+        <div class="fg"><label>Ragione sociale</label><input id="fRagione" placeholder="Studio Rossi & Associati"></div>
+        <div class="fg"><label>P.IVA</label><input id="fPiva" placeholder="IT02345678901"></div>
+        <div class="fg"><label>REA</label><input id="fRea" placeholder="VR-234567"></div>
+        <div class="fg"><label>Albo professionale</label><input id="fAlbo" placeholder="Arch. VR n. 1234"></div>
+        <div class="fg"><label>Tipologia prodotti</label><input id="fProdotti" placeholder="Es. Materiali edili"></div>
+        <div class="fg full"><label>Sito web</label><input id="fSito" type="url" placeholder="https://www.studio.it"></div>
+      </div>
+      <div class="form-section">🤝 Rapporto</div>
+      <div class="form-grid">
+        <div class="fg"><label>Tipo rapporto</label><input id="fTipoRapporto" placeholder="Fornitore professionale"></div>
+        <div class="fg"><label>Progetto attivo</label><input id="fProgetto" placeholder="Villa Zanella — restauro"></div>
+        <div class="fg"><label>Stato</label><select id="fStato"><option value="Attivo">Attivo</option><option value="Inattivo">Inattivo</option><option value="In attesa">In attesa</option></select></div>
+      </div>
+      <div class="form-section">☁️ Cloud</div>
+      <div class="form-grid">
+        <div class="fg"><label>Link cartella Dropbox</label><input id="fDropbox" type="url" placeholder="https://www.dropbox.com/..."></div>
+        <div class="fg"><label>Email per Spike</label><input id="fSpike" type="email" placeholder="contatto@email.it"></div>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn-secondary" onclick="chiudiModalForm()">Annulla</button>
+      <button class="btn-primary" onclick="salvaContatto()">Salva contatto</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SCHEDA -->
+<div class="modal-overlay" id="modalScheda">
+  <div class="modal" style="max-width:900px">
+    <div class="modal-close" onclick="chiudiScheda()">✕</div>
+    <div id="schedaContent"></div>
+  </div>
+</div>
+
+<!-- MODAL STORICO MAIL -->
+<div class="modal-overlay" id="modalStorico">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-close" onclick="document.getElementById('modalStorico').classList.remove('open')">✕</div>
+    <div class="form-hdr" style="display:flex;align-items:center;justify-content:space-between">
+      <div class="form-title-el" id="storicoTitolo">Storico mail</div>
+      <button class="btn-primary" style="font-size:11px;padding:5px 12px;margin-right:2rem" onclick="apriModalRegistra()">+ Registra</button>
+    </div>
+    <div style="padding:1.2rem 2rem;max-height:65vh;overflow-y:auto" id="storicoBody"></div>
+  </div>
+</div>
+
+<!-- MODAL REGISTRA MAIL -->
+<div class="modal-overlay" id="modalRegistra">
+  <div class="modal" style="max-width:560px">
+    <div class="modal-close" onclick="document.getElementById('modalRegistra').classList.remove('open')">✕</div>
+    <div class="form-hdr"><div class="form-title-el">Registra comunicazione</div></div>
+    <div class="form-body">
+      <div class="form-grid">
+        <div class="fg full"><label>Oggetto *</label><input id="mOggetto" placeholder="Es. Preventivo Villa Zanella"></div>
+        <div class="fg"><label>Data</label><input id="mData" type="date"></div>
+        <div class="fg"><label>Tipo</label><select id="mTipo"><option value="inviata">↑ Inviata</option><option value="ricevuta">↓ Ricevuta</option></select></div>
+        <div class="fg"><label>Da</label><input id="mDa" placeholder="mittente@email.it"></div>
+        <div class="fg"><label>A</label><input id="mA" placeholder="destinatario@email.it"></div>
+        <div class="fg full"><label>CC</label><input id="mCc" placeholder="cc1@email.it, cc2@email.it"></div>
+        <div class="fg full"><label>CCN</label><input id="mCcn" placeholder="ccn@email.it"></div>
+        <div class="fg full">
+          <label>Allegati</label>
+          <div id="mAllegatiList" style="display:flex;flex-direction:column;gap:4px;margin-bottom:6px"></div>
+          <div style="display:flex;gap:8px">
+            <button type="button" class="btn-secondary" style="font-size:11px;padding:5px 12px" onclick="document.getElementById('mFileInput').click()">+ Da PC</button>
+            <button type="button" class="btn-secondary" style="font-size:11px;padding:5px 12px" onclick="aggiungiLinkMail()">+ Link Dropbox</button>
+            <input type="file" id="mFileInput" multiple style="display:none" onchange="aggiungiFileMail(this)">
+          </div>
+        </div>
+        <div class="fg full"><label>Note</label><textarea id="mNote" placeholder="Breve descrizione..."></textarea></div>
+      </div>
+    </div>
+    <div class="form-footer">
+      <button class="btn-secondary" onclick="document.getElementById('modalRegistra').classList.remove('open')">Annulla</button>
+      <button class="btn-primary" onclick="salvaMail()">Salva</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BOZZE -->
+<div class="modal-overlay" id="modalBozze">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-close" onclick="document.getElementById('modalBozze').classList.remove('open')">✕</div>
+    <div class="form-hdr"><div class="form-title-el" id="bozzeTitolo">Bozze</div></div>
+    <div style="padding:1.2rem 2rem;max-height:65vh;overflow-y:auto" id="bozzeBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="statusbar">
+  <div class="status-item"><span class="status-dot"></span> Supabase attivo</div>
+  <div class="status-item" id="sbInfo">Hub Office v4.0</div>
+  <div class="status-item" id="sbDate"></div>
+</div>
+
+<script>
+const SB_URL='https://tvyrjijzzxhfgbeuleir.supabase.co';
+const SB_KEY='sb_publishable_8gArKjuGrRl-Qiw8kiTuAQ_pPQ2Ngfr';
+
+async function sb(path,method,body){
+  method=method||'GET';
+  var opts={method:method,headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':method==='POST'?'return=representation':''}};
+  if(body) opts.body=JSON.stringify(body);
+  var r=await fetch(SB_URL+path,opts);
+  if(!r.ok){var e=await r.text();throw new Error(e);}
+  if(method==='DELETE') return null;
+  var ct=r.headers.get('content-type')||'';
+  if(ct.indexOf('json')>-1) return r.json();
+  return null;
+}
+
+var allContacts=[];
+var currentContact=null;
+var currentGruppo='tutti';
+var mailContactId=null;
+var mailAllegati=[];
+var bozzeContactId=null;
+
+var CATEGORIE={
+  fornitori:['Professionisti','Artigiani','Medici','Commerciale','Societa','Altro'],
+  terzi:['Clienti','Privati','Enti','Altro'],
+  personale:['Amici','Conoscenti','Affittuari','Vari','Altro']
+};
+
+function aggiornaCategorie(){
+  var g=document.getElementById('fGruppo').value;
+  var dl=document.getElementById('listCategorie');
+  var cats=CATEGORIE[g]||[];
+  dl.innerHTML=cats.map(function(c){return '<option value="'+c+'">';}).join('');
+}
+
+function updateTime(){
+  var now=new Date();
+  var hh=String(now.getHours()).padStart(2,'0');
+  var mm=String(now.getMinutes()).padStart(2,'0');
+  var ss=String(now.getSeconds()).padStart(2,'0');
+  var giorni=['domenica','lunedi','martedi','mercoledi','giovedi','venerdi','sabato'];
+  var mesi=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  var dateStr=giorni[now.getDay()]+' '+now.getDate()+' '+mesi[now.getMonth()]+' '+now.getFullYear();
+  document.getElementById('topClock').textContent=hh+':'+mm+':'+ss;
+  document.getElementById('topDate').textContent=dateStr;
+  document.getElementById('sbDate').textContent=dateStr+' - '+hh+':'+mm;
+}
+updateTime();
+setInterval(updateTime,1000);
+
+function mostraView(nome){
+  document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
+  document.getElementById('view-'+nome).classList.add('active');
+  if(nome==='rubrica') caricaContatti();
+}
+
+function toast(msg,dur){
+  dur=dur||2500;
+  var t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},dur);
+}
+
+async function caricaContatti(){
+  var grid=document.getElementById('contactGrid');
+  grid.innerHTML='<div class="state-msg"><div class="spinner"></div>Caricamento...</div>';
+  try{
+    var data=await sb('/rest/v1/contatti?order=cognome.asc');
+    allContacts=data||[];
+    renderList();
+    document.getElementById('sbInfo').textContent=allContacts.length+' contatti';
+  }catch(e){
+    grid.innerHTML='<div class="state-msg">Errore: '+e.message+'</div>';
+  }
+}
+
+function renderList(){
+  var q=(document.getElementById('searchInput').value||'').toLowerCase();
+  var grid=document.getElementById('contactGrid');
+  var lista=allContacts;
+  if(currentGruppo!=='tutti') lista=lista.filter(function(c){return (c.gruppo||'')===currentGruppo;});
+  if(q) lista=lista.filter(function(c){return [c.nome,c.cognome,c.professione,c.email1,c.tel1,c.mob1,c.ragione_sociale,c.categoria,c.comune].some(function(v){return (v||'').toLowerCase().indexOf(q)>-1;});});
+  if(!lista.length){grid.innerHTML='<div class="state-msg">Nessun contatto trovato.</div>';return;}
+  var catColor={fornitori:'#C4A35A',terzi:'#EF9F27',personale:'#1D9E75'};
+  var catClass={fornitori:'cat-fornitori',terzi:'cat-terzi',personale:'cat-personale'};
+  grid.innerHTML=lista.map(function(c){
+    var ini=((c.nome||'')[0]||'')+((c.cognome||'')[0]||'');
+    var col=catColor[c.gruppo]||'#C4A35A';
+    var cc=catClass[c.gruppo]||'cat-fornitori';
+    var foto=c.photo_url?'<img src="'+c.photo_url+'" alt="">':'<span>'+ini.toUpperCase()+'</span>';
+    return '<div class="contact-card" style="--cat-color:'+col+'" onclick="apriScheda(\''+c.id+'\')">'+
+      '<div class="c-top"><div class="c-av">'+foto+'</div>'+
+      '<div class="c-info"><div class="c-name">'+(c.cognome||'')+' '+(c.nome||'')+'</div>'+
+      '<div class="c-role">'+(c.professione||c.ragione_sociale||'')+'</div></div>'+
+      '<span class="c-cat '+cc+'">'+(c.gruppo||'')+'</span></div>'+
+      '<div class="c-divider"></div><div class="c-details">'+
+      (c.tel1?'<div class="c-detail">📞 '+(c.tel1_pref||'')+' '+c.tel1+'</div>':'')+
+      (c.email1?'<div class="c-detail">✉️ '+c.email1+'</div>':'')+
+      (c.comune?'<div class="c-detail">📍 '+c.comune+(c.provincia?' ('+c.provincia+')':'')+'</div>':'')+
+      '</div></div>';
+  }).join('');
+}
+
+function setGruppo(g,el){
+  currentGruppo=g;
+  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('on');});
+  el.classList.add('on');
+  renderList();
+}
+
+function apriModalNuovo(){
+  document.getElementById('formTitolo').textContent='Nuovo contatto';
+  document.getElementById('editId').value='';
+  ['fNome','fCognome','fProfessione','fIncarico','fCategoria','fVia','fCivico','fCap','fLocalita','fComune','fProvincia','fRegione','fNoteRef','fTel1','fTel2','fMob1','fMob2','fFax','fEmail1','fEmail2','fPec','fCf','fRagione','fPiva','fRea','fAlbo','fProdotti','fSito','fTipoRapporto','fProgetto','fDropbox','fSpike'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  ['fTel1Pref','fTel2Pref','fMob1Pref','fMob2Pref','fFaxPref'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='+39';});
+  document.getElementById('fStato2').value='Italia';
+  document.getElementById('fGruppo').value='';
+  document.getElementById('fStato').value='Attivo';
+  var mw=document.getElementById('mapWrap');if(mw){mw.style.display='none';mw.innerHTML='';}
+  document.getElementById('modalForm').classList.add('open');
+}
+
+function chiudiModalForm(){document.getElementById('modalForm').classList.remove('open');}
+
+async function salvaContatto(){
+  var g=function(id){return (document.getElementById(id)||{}).value||'';};
+  var nome=g('fNome').trim();
+  var cognome=g('fCognome').trim();
+  if(!nome&&!cognome){alert('Inserisci almeno nome o cognome');return;}
+  var payload={
+    nome:nome,cognome:cognome,
+    professione:g('fProfessione'),incarico:g('fIncarico'),
+    gruppo:g('fGruppo'),categoria:g('fCategoria'),
+    note_ref:g('fNoteRef'),
+    via_prefisso:g('fViaPref'),via:g('fVia'),civico:g('fCivico'),
+    cap:g('fCap'),localita:g('fLocalita'),comune:g('fComune'),
+    provincia:g('fProvincia'),regione:g('fRegione'),stato2:g('fStato2'),
+    tel1_pref:g('fTel1Pref'),tel1:g('fTel1'),tel1_t:g('fTel1T'),
+    tel2_pref:g('fTel2Pref'),tel2:g('fTel2'),tel2_t:g('fTel2T'),
+    mob1_pref:g('fMob1Pref'),mob1:g('fMob1'),mob1_t:g('fMob1T'),
+    mob2_pref:g('fMob2Pref'),mob2:g('fMob2'),mob2_t:g('fMob2T'),
+    fax_pref:g('fFaxPref'),fax:g('fFax'),
+    email1:g('fEmail1'),email2:g('fEmail2'),pec:g('fPec'),cf:g('fCf'),
+    ragione_sociale:g('fRagione'),piva:g('fPiva'),rea:g('fRea'),
+    albo:g('fAlbo'),prodotti:g('fProdotti'),
+    sito_web:g('fSito'),
+    tipo_rapporto:g('fTipoRapporto'),progetto:g('fProgetto'),stato:g('fStato'),
+    dropbox_url:g('fDropbox'),spike_email:g('fSpike'),
+    updated_at:new Date().toISOString()
+  };
+  var editId=document.getElementById('editId').value;
+  try{
+    if(editId){
+      await sb('/rest/v1/contatti?id=eq.'+editId,'PATCH',payload);
+      toast('Contatto aggiornato');
+    }else{
+      await sb('/rest/v1/contatti','POST',payload);
+      toast('Contatto salvato');
+    }
+    chiudiModalForm();
+    await caricaContatti();
+  }catch(e){alert('Errore: '+e.message);}
+}
+
+function apriScheda(id){
+  var c=allContacts.find(function(x){return x.id===id;});
+  if(!c) return;
+  currentContact=c;
+  var cid=c.id;
+  var ini=((c.nome||'')[0]||'')+((c.cognome||'')[0]||'');
+  var catClass={fornitori:'cat-fornitori',terzi:'cat-terzi',personale:'cat-personale'};
+  var catCol=catClass[c.gruppo]||'cat-fornitori';
+  var note=c.note||[];
+  var docs=c.docs||[];
+  var allegati=c.allegati||[];
+  var media=c.media||[];
+  var addr=[c.via_prefisso,c.via,c.civico,c.cap,c.comune,c.stato2].filter(Boolean).join(' ');
+  var sc=document.getElementById('schedaContent');
+  sc.innerHTML='';
+
+  // HEADER
+  var hdr=document.createElement('div');hdr.className='scheda-hdr';
+  var av=document.createElement('div');av.className='scheda-av';av.id='schedaAv';
+  av.onclick=cambiaFoto;
+  av.innerHTML=c.photo_url?'<img src="'+c.photo_url+'" alt="">':'<span>'+ini.toUpperCase()+'</span>';
+  var fi=document.createElement('input');fi.type='file';fi.id='fotoInput';fi.accept='image/*';fi.style.display='none';
+  fi.onchange=function(){uploadFoto(this);};
+  hdr.appendChild(av);hdr.appendChild(fi);
+
+  var info=document.createElement('div');info.style.flex='1';
+  info.innerHTML='<div class="scheda-nome">'+(c.cognome||'')+' '+(c.nome||'')+'</div>'+
+    '<div class="scheda-ruolo">'+[c.professione,c.incarico].filter(Boolean).join(' - ')+'</div>'+
+    '<div style="color:var(--teal);font-size:12px;margin-top:2px">'+(c.ragione_sociale||'')+'</div>'+
+    '<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">'+
+    '<span class="c-cat '+catCol+'">'+(c.gruppo||'')+'</span>'+
+    (c.categoria?'<span style="font-size:10px;padding:2px 8px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+c.categoria+'</span>':'')+
+    (c.stato?'<span style="font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(29,158,117,.15);color:var(--green)">'+c.stato+'</span>':'')+
+    '</div>';
+  hdr.appendChild(info);
+
+  // Tasti mail
+  var tw=document.createElement('div');
+  tw.style.cssText='display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex-shrink:0;margin-right:2.5rem';
+  var r1=document.createElement('div');r1.style.cssText='display:flex;gap:6px';
+  if(c.email1){
+    var bs=document.createElement('button');bs.className='btn-mail-scrivi';bs.textContent='Scrivi mail';
+    bs.onclick=function(){apriComposer(cid);};r1.appendChild(bs);
+  }
+  var bm=document.createElement('button');bm.className='btn-mail-storico';
+  bm.innerHTML='Mail <span class="mail-badge zero" id="mc_'+cid+'">0</span>';
+  bm.onclick=function(){apriStorico(cid);};r1.appendChild(bm);
+  var bb=document.createElement('button');bb.className='btn-bozze';bb.textContent='Bozze';
+  bb.onclick=function(){apriBozze(cid);};r1.appendChild(bb);
+  tw.appendChild(r1);
+  hdr.appendChild(tw);
+  sc.appendChild(hdr);
+
+  // BODY
+  var body=document.createElement('div');body.className='scheda-body';
+
+  // Col sinistra
+  var col1=document.createElement('div');col1.className='scheda-col';
+
+  function sl(t){var d=document.createElement('div');d.className='sl';d.innerHTML='<span class="sl-dot"></span>'+t;return d;}
+  function fr(l,v,mono){
+    var d=document.createElement('div');d.className='fr';
+    var ll=document.createElement('span');ll.className='fl';ll.textContent=l;
+    var vv=document.createElement('span');vv.className='fv'+(mono?' mono':'');vv.textContent=v||'—';
+    d.appendChild(ll);d.appendChild(vv);return d;
+  }
+  function frA(l,email){
+    var d=document.createElement('div');d.className='fr';
+    var ll=document.createElement('span');ll.className='fl';ll.textContent=l;
+    var vv=document.createElement('span');vv.className='fv';
+    if(email){var a=document.createElement('a');a.href='mailto:'+email;a.textContent=email;vv.appendChild(a);}
+    else{vv.textContent='—';}
+    d.appendChild(ll);d.appendChild(vv);return d;
+  }
+  function pr(l,pref,num,t){
+    var d=document.createElement('div');d.className='phone-row';
+    d.innerHTML='<span class="phone-label">'+l+'</span><span class="phone-val">'+(num?(pref||'')+' '+num:'—')+'</span><span class="phone-type">'+(t||'')+'</span>';
+    return d;
+  }
+
+  col1.appendChild(sl('Dati personali'));
+  col1.appendChild(fr('Nome',c.nome));col1.appendChild(fr('Cognome',c.cognome));
+  col1.appendChild(fr('Professione',c.professione));col1.appendChild(fr('Incarico',c.incarico));
+  col1.appendChild(fr('Categoria',c.categoria));
+
+  col1.appendChild(sl('Indirizzo'));
+  col1.appendChild(fr('Via',[c.via_prefisso,c.via,c.civico].filter(Boolean).join(' ')));
+  col1.appendChild(fr('CAP / Loc.',(c.cap||'')+' '+(c.localita||''),true));
+  col1.appendChild(fr('Comune',(c.comune||'—')+(c.provincia?' ('+c.provincia+')':'')));
+  col1.appendChild(fr('Regione / Stato',[c.regione,c.stato2].filter(Boolean).join(' / ')));
+
+  if(addr){
+    var mw=document.createElement('div');mw.style.marginTop='8px';
+    mw.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap">'+
+      '<button class="btn-primary" style="font-size:11px;padding:5px 12px" onclick="window.open(\'https://www.google.com/maps/search/'+encodeURIComponent(addr)+'\')">Google Maps</button>'+
+      '<button class="btn-secondary" style="font-size:11px;padding:5px 12px" onclick="window.open(\'https://earth.google.com/web/search/'+encodeURIComponent(addr)+'\')">Google Earth</button>'+
+      '</div>'+
+      '<div style="font-size:10px;color:var(--text3);margin-top:5px">'+addr+'</div>';
+    col1.appendChild(mw);
+  }
+  if(c.note_ref) col1.appendChild(fr('Note referenze',c.note_ref));
+
+  col1.appendChild(sl('Telefoni'));
+  col1.appendChild(pr('Telefono 1',c.tel1_pref,c.tel1,c.tel1_t));
+  col1.appendChild(pr('Telefono 2',c.tel2_pref,c.tel2,c.tel2_t));
+  col1.appendChild(pr('Mobile 1',c.mob1_pref,c.mob1,c.mob1_t));
+  col1.appendChild(pr('Mobile 2',c.mob2_pref,c.mob2,c.mob2_t));
+  col1.appendChild(pr('Fax',c.fax_pref,c.fax,''));
+
+  col1.appendChild(sl('Email'));
+  col1.appendChild(frA('Email 1',c.email1));col1.appendChild(frA('Email 2',c.email2));
+  col1.appendChild(frA('PEC',c.pec));col1.appendChild(fr('Cod. fiscale',c.cf,true));
+
+  col1.appendChild(sl('Azienda'));
+  col1.appendChild(fr('Ragione sociale',c.ragione_sociale));col1.appendChild(fr('P.IVA',c.piva,true));
+  col1.appendChild(fr('REA',c.rea,true));col1.appendChild(fr('Albo',c.albo));
+  col1.appendChild(fr('Prodotti',c.prodotti));
+  if(c.sito_web){
+    var dSito=document.createElement('div');dSito.className='fr';
+    var lSito=document.createElement('span');lSito.className='fl';lSito.textContent='Sito web';
+    var vSito=document.createElement('span');vSito.className='fv';
+    var aSito=document.createElement('a');aSito.href=c.sito_web;aSito.target='_blank';aSito.textContent=c.sito_web;
+    vSito.appendChild(aSito);dSito.appendChild(lSito);dSito.appendChild(vSito);col1.appendChild(dSito);
+  }
+
+  col1.appendChild(sl('Rapporto'));
+  col1.appendChild(fr('Tipo rapporto',c.tipo_rapporto));col1.appendChild(fr('Progetto',c.progetto));
+  var sf=fr('Stato',c.stato);sf.querySelector('.fv').style.color='var(--green)';col1.appendChild(sf);
+
+  if(c.dropbox_url){
+    col1.appendChild(sl('Cloud'));
+    var db=document.createElement('button');db.className='cloud-btn dropbox';db.textContent='Dropbox';
+    db.onclick=function(){window.open(c.dropbox_url);};col1.appendChild(db);
+  }
+
+  col1.appendChild(sl('Note cronologiche'));
+  var nb=document.createElement('div');nb.className='notes-box';nb.id='notesList';
+  if(note.length){nb.innerHTML=[...note].reverse().map(function(n){return '<div class="ne"><div class="nd">'+n.date+'</div><div class="nt">'+n.text+'</div></div>';}).join('');}
+  else{nb.innerHTML='<div class="ne"><div class="nt" style="color:var(--text3)">Nessuna nota.</div></div>';}
+  col1.appendChild(nb);
+  var nr=document.createElement('div');nr.style.cssText='display:flex;gap:6px;margin-top:6px';
+  var ni=document.createElement('input');ni.type='text';ni.id='newNote';ni.placeholder='Aggiungi nota...';
+  ni.style.cssText='flex:1;font-size:11px;padding:7px 10px;border:.5px solid var(--border);border-radius:7px;background:var(--surface2);color:var(--text);outline:none';
+  var nb2=document.createElement('button');nb2.className='btn-primary';nb2.style.cssText='font-size:11px;padding:6px 12px';nb2.textContent='+';nb2.onclick=aggiungiNota;
+  nr.appendChild(ni);nr.appendChild(nb2);col1.appendChild(nr);
+
+  col1.appendChild(sl('AI'));
+  var ar=document.createElement('div');ar.className='ai-row';
+  ['email','riassunto','lettera','promemoria'].forEach(function(t){
+    var b=document.createElement('button');b.className='ai-btn';b.textContent='✦ '+t;
+    b.onclick=function(){aiPrompt(t);};ar.appendChild(b);
+  });
+  col1.appendChild(ar);
+
+  // Col destra - Foto e Documenti
+  var col2=document.createElement('div');col2.className='scheda-col';
+
+  // INPUT FILE nascosti per foto, video
+  var inFoto=document.createElement('input');inFoto.type='file';inFoto.accept='image/*';inFoto.multiple=true;inFoto.style.display='none';
+  inFoto.onchange=function(){caricaMedia(this,cid,'image');};col2.appendChild(inFoto);
+  var inVideo=document.createElement('input');inVideo.type='file';inVideo.accept='video/*';inVideo.multiple=true;inVideo.style.display='none';
+  inVideo.onchange=function(){caricaMedia(this,cid,'video');};col2.appendChild(inVideo);
+
+  // --- FOTO + VIDEO AFFIANCATI ---
+  var mediaRow=document.createElement('div');mediaRow.style.cssText='display:grid;grid-template-columns:1fr 1fr;gap:10px';
+
+  // Foto
+  var fotoCol=document.createElement('div');
+  var fotoHdr=document.createElement('div');fotoHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:4px';
+  fotoHdr.appendChild(sl('📸 Foto'));
+  var fotoBtn=document.createElement('button');fotoBtn.className='btn-secondary';fotoBtn.style.cssText='font-size:10px;padding:2px 8px';
+  fotoBtn.textContent='+ Allega';fotoBtn.onclick=function(){inFoto.click();};fotoHdr.appendChild(fotoBtn);
+  fotoCol.appendChild(fotoHdr);
+  var pg=document.createElement('div');pg.className='mg';pg.id='photoGrid';pg.style.gridTemplateColumns='repeat(2,1fr)';
+  (media||[]).filter(function(m){return m.type==='image';}).forEach(function(m){
+    var div=document.createElement('div');div.className='mt';
+    var img=document.createElement('img');img.src=m.url;img.style.cssText='width:100%;height:100%;object-fit:cover';
+    div.appendChild(img);pg.appendChild(div);
+  });
+  if(!(media||[]).some(function(m){return m.type==='image';})){
+    var ep=document.createElement('div');ep.style.cssText='font-size:11px;color:var(--text3);padding:6px 0';ep.textContent='Nessuna foto';pg.appendChild(ep);
+  }
+  fotoCol.appendChild(pg);
+  mediaRow.appendChild(fotoCol);
+
+  // Video
+  var videoCol=document.createElement('div');
+  var videoHdr=document.createElement('div');videoHdr.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-bottom:4px';
+  videoHdr.appendChild(sl('🎥 Video'));
+  var videoBtn=document.createElement('button');videoBtn.className='btn-secondary';videoBtn.style.cssText='font-size:10px;padding:2px 8px';
+  videoBtn.textContent='+ Allega';videoBtn.onclick=function(){inVideo.click();};videoHdr.appendChild(videoBtn);
+  videoCol.appendChild(videoHdr);
+  var vg=document.createElement('div');vg.className='mg';vg.id='videoGrid';vg.style.gridTemplateColumns='repeat(2,1fr)';
+  (media||[]).filter(function(m){return m.type==='video';}).forEach(function(m){
+    var div=document.createElement('div');div.className='mt';
+    div.innerHTML='<div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--surface3);font-size:18px">🎥</div>';
+    div.title=m.nome||'';div.onclick=function(){window.open(m.url);};vg.appendChild(div);
+  });
+  if(!(media||[]).some(function(m){return m.type==='video';})){
+    var ev=document.createElement('div');ev.style.cssText='font-size:11px;color:var(--text3);padding:6px 0';ev.textContent='Nessun video';vg.appendChild(ev);
+  }
+  videoCol.appendChild(vg);
+  mediaRow.appendChild(videoCol);
+
+  col2.appendChild(mediaRow);
+
+  // DOCUMENTI
+  var docInput=document.createElement('input');docInput.type='file';docInput.multiple=true;docInput.style.display='none';
+  docInput.onchange=function(){caricaDocumento(this,cid);};col2.appendChild(docInput);
+
+  var docRow=document.createElement('div');docRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:10px;margin-bottom:4px';
+  var docSl=sl('📄 Documenti ('+(docs.length+allegati.length)+')');docRow.appendChild(docSl);
+  var docBtn=document.createElement('button');docBtn.className='btn-secondary';docBtn.style.cssText='font-size:10px;padding:3px 10px;margin-left:8px';
+  docBtn.textContent='+ Allega';docBtn.onclick=function(){docInput.click();};docRow.appendChild(docBtn);
+  col2.appendChild(docRow);
+
+  var dl2=document.createElement('div');dl2.className='dl';dl2.id='docsList';
+  [...docs,...allegati].forEach(function(d){
+    var ext=(d.name||d.nome||'').split('.').pop().toUpperCase();
+    var cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
+    var di=document.createElement('div');di.className='di';
+    if(d.url){di.onclick=function(){window.open(d.url);};}
+    di.innerHTML='<div class="ic '+cls+'">'+(ext.slice(0,3)||'FILE')+'</div><span class="dn">'+(d.name||d.nome||'')+'</span><span class="dd">'+(d.date||d.data||'')+'</span>';
+    dl2.appendChild(di);
+  });
+  col2.appendChild(dl2);
+
+  body.appendChild(col1);body.appendChild(col2);sc.appendChild(body);
+
+  // ABAR
+  var abar=document.createElement('div');abar.className='abar';
+  var back=document.createElement('button');back.className='btn-back';back.textContent='← Lista';back.onclick=chiudiScheda;
+  var mod=document.createElement('button');mod.className='btn-modifica';mod.textContent='Modifica';mod.onclick=function(){modificaContatto(cid);};
+  var del2=document.createElement('button');del2.className='btn-danger';del2.textContent='Elimina';del2.onclick=function(){eliminaContatto(cid);};
+  var ver=document.createElement('span');ver.style.cssText='margin-left:auto;font-size:10px;color:var(--text3)';ver.textContent='Hub v4.0';
+  abar.appendChild(back);abar.appendChild(mod);abar.appendChild(del2);abar.appendChild(ver);
+  sc.appendChild(abar);
+
+  document.getElementById('modalScheda').classList.add('open');
+  setTimeout(function(){aggiornaContatoreMail(cid);},300);
+}
+
+function chiudiScheda(){document.getElementById('modalScheda').classList.remove('open');currentContact=null;}
+
+function modificaContatto(id){
+  var c=allContacts.find(function(x){return x.id===id;});
+  if(!c) return;
+  chiudiScheda();
+  document.getElementById('formTitolo').textContent='Modifica: '+c.cognome+' '+c.nome;
+  document.getElementById('editId').value=id;
+  var map={fNome:'nome',fCognome:'cognome',fProfessione:'professione',fIncarico:'incarico',fGruppo:'gruppo',fCategoria:'categoria',fNoteRef:'note_ref',fViaPref:'via_prefisso',fVia:'via',fCivico:'civico',fCap:'cap',fLocalita:'localita',fComune:'comune',fProvincia:'provincia',fRegione:'regione',fStato2:'stato2',fTel1Pref:'tel1_pref',fTel1:'tel1',fTel1T:'tel1_t',fTel2Pref:'tel2_pref',fTel2:'tel2',fTel2T:'tel2_t',fMob1Pref:'mob1_pref',fMob1:'mob1',fMob1T:'mob1_t',fMob2Pref:'mob2_pref',fMob2:'mob2',fMob2T:'mob2_t',fFaxPref:'fax_pref',fFax:'fax',fEmail1:'email1',fEmail2:'email2',fPec:'pec',fCf:'cf',fRagione:'ragione_sociale',fPiva:'piva',fRea:'rea',fAlbo:'albo',fProdotti:'prodotti',fSito:'sito_web',fTipoRapporto:'tipo_rapporto',fProgetto:'progetto',fStato:'stato',fDropbox:'dropbox_url',fSpike:'spike_email'};
+  Object.keys(map).forEach(function(fId){var el=document.getElementById(fId);if(el)el.value=c[map[fId]]||'';});
+  document.getElementById('modalForm').classList.add('open');
+}
+
+async function eliminaContatto(id){
+  var c=allContacts.find(function(x){return x.id===id;});
+  if(!confirm('Eliminare '+(c?c.cognome+' '+c.nome:'questo contatto')+'?')) return;
+  try{await sb('/rest/v1/contatti?id=eq.'+id,'DELETE');chiudiScheda();toast('Eliminato');await caricaContatti();}
+  catch(e){alert('Errore: '+e.message);}
+}
+
+async function aggiungiNota(){
+  if(!currentContact) return;
+  var input=document.getElementById('newNote');
+  var text=input.value.trim();if(!text) return;
+  var dateStr=new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'short',year:'numeric'});
+  var note=[...(currentContact.note||[]),{text:text,date:dateStr}];
+  try{
+    await sb('/rest/v1/contatti?id=eq.'+currentContact.id,'PATCH',{note:note,updated_at:new Date().toISOString()});
+    currentContact.note=note;
+    var idx=allContacts.findIndex(function(x){return x.id===currentContact.id;});
+    if(idx>=0) allContacts[idx].note=note;
+    input.value='';
+    var nl=document.getElementById('notesList');
+    nl.innerHTML=[...note].reverse().map(function(n){return '<div class="ne"><div class="nd">'+n.date+'</div><div class="nt">'+n.text+'</div></div>';}).join('');
+    toast('Nota salvata');
+  }catch(e){alert('Errore: '+e.message);}
+}
+
+
+function aggiungiMediaLink(cid,tipo){
+  window.open('https://www.amazon.it/photos');
+  setTimeout(function(){
+    var url=prompt('Incolla il link Amazon Photos o Dropbox del '+(tipo==='video'?'video':'foto')+':');
+    if(!url||!url.trim()) return;
+    var nome=url.split('/').pop().split('?')[0]||tipo==='video'?'video.mp4':'foto.jpg';
+    var c=allContacts.find(function(x){return x.id===cid;});
+    if(!c) return;
+    var media=[...(c.media||[]),{url:url.trim(),type:tipo,nome:nome}];
+    sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{media:media,updated_at:new Date().toISOString()})
+    .then(function(){
+      var idx=allContacts.findIndex(function(x){return x.id===cid;});
+      if(idx>=0) allContacts[idx].media=media;
+      if(currentContact&&currentContact.id===cid) currentContact.media=media;
+      apriScheda(cid);
+      toast(tipo==='video'?'Video aggiunto':'Foto aggiunta');
+    })
+    .catch(function(e){alert('Errore: '+e.message);});
+  },3000);
+}
+
+
+function caricaMedia(input,cid,tipo){
+  if(!input.files||!input.files.length) return;
+  var c=allContacts.find(function(x){return x.id===cid;});
+  if(!c) return;
+  var files=Array.from(input.files);
+  var media=[...(c.media||[])];
+  var processati=0;
+  files.forEach(function(file){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      media.push({url:ev.target.result,type:tipo,nome:file.name});
+      processati++;
+      if(processati===files.length){
+        sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{media:media,updated_at:new Date().toISOString()})
+        .then(function(){
+          var idx=allContacts.findIndex(function(x){return x.id===cid;});
+          if(idx>=0) allContacts[idx].media=media;
+          if(currentContact&&currentContact.id===cid) currentContact.media=media;
+          apriScheda(cid);
+          toast((tipo==='image'?'Foto':'Video')+' allegat'+(tipo==='image'?'a':'o'));
+        })
+        .catch(function(e){alert('Errore: '+e.message);});
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function caricaDocumento(input,cid){
+  if(!input.files||!input.files.length) return;
+  var c=allContacts.find(function(x){return x.id===cid;});
+  if(!c) return;
+  var files=Array.from(input.files);
+  var allegati=[...(c.allegati||[])];
+  var processati=0;
+  var date=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
+  files.forEach(function(file){
+    var reader=new FileReader();
+    reader.onload=function(ev){
+      allegati.push({nome:file.name,tipo:file.name.split('.').pop().toUpperCase(),url:ev.target.result,data:date});
+      processati++;
+      if(processati===files.length){
+        sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{allegati:allegati,updated_at:new Date().toISOString()})
+        .then(function(){
+          var idx=allContacts.findIndex(function(x){return x.id===cid;});
+          if(idx>=0) allContacts[idx].allegati=allegati;
+          if(currentContact&&currentContact.id===cid) currentContact.allegati=allegati;
+          apriScheda(cid);
+          toast('Documento allegato');
+        })
+        .catch(function(e){alert('Errore: '+e.message);});
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  input.value='';
+}
+
+function aggiungiAllegato(){
+  // Apre Dropbox online per selezionare e copiare il link del file
+  window.open('https://www.dropbox.com/home');
+  // Dopo aver copiato il link da Dropbox, lo si incolla qui
+  setTimeout(function(){
+    var url=prompt('Incolla qui il link Dropbox del file copiato:');
+    if(!url||!url.trim()) return;
+    var nome=url.split('/').pop().split('?')[0]||'file';
+    var nomeConf=prompt('Nome del file (conferma o modifica):',nome);
+    if(!nomeConf) return;
+    var date=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
+    var allegati=[...(currentContact.allegati||[]),{nome:nomeConf,tipo:'Dropbox',url:url.trim(),data:date}];
+    sb('/rest/v1/contatti?id=eq.'+currentContact.id,'PATCH',{allegati:allegati,updated_at:new Date().toISOString()})
+    .then(function(){currentContact.allegati=allegati;apriScheda(currentContact.id);toast('Allegato aggiunto');})
+    .catch(function(e){alert('Errore: '+e.message);});
+  },3000);
+}
+
+function cambiaFoto(){document.getElementById('fotoInput').click();}
+
+async function uploadFoto(input){
+  if(!currentContact||!input.files[0]) return;
+  var file=input.files[0];
+  var reader=new FileReader();
+  reader.onload=async function(ev){
+    var url=ev.target.result;
+    try{
+      await sb('/rest/v1/contatti?id=eq.'+currentContact.id,'PATCH',{photo_url:url,updated_at:new Date().toISOString()});
+      currentContact.photo_url=url;
+      document.getElementById('schedaAv').innerHTML='<img src="'+url+'" alt="">';
+      toast('Foto aggiornata');
+    }catch(e){alert('Errore foto: '+e.message);}
+  };
+  reader.readAsDataURL(file);
+}
+
+function aiPrompt(tipo){
+  if(!currentContact) return;
+  var nome=(currentContact.nome||'')+' '+(currentContact.cognome||'');
+  var az=currentContact.ragione_sociale||'';
+  var pr=currentContact.progetto||'';
+  var map={
+    email:'Scrivi email professionale a '+nome+' ('+az+') riguardo: '+pr,
+    riassunto:'Riassumi il profilo di '+nome+' di '+az+', progetto: '+pr,
+    lettera:'Genera lettera formale per '+nome+' presso '+az,
+    promemoria:'Crea promemoria follow-up per '+nome+' ('+az+'): '+pr
+  };
+  navigator.clipboard.writeText(map[tipo]).then(function(){toast('Prompt copiato');}).catch(function(){alert(map[tipo]);});
+}
+
+// ===== SISTEMA MAIL =====
+function apriStorico(contactId){
+  mailContactId=contactId;
+  var c=allContacts.find(function(x){return x.id===contactId;});
+  document.getElementById('storicoTitolo').textContent='Mail: '+(c?c.cognome+' '+c.nome:'');
+  document.getElementById('modalStorico').classList.add('open');
+  caricaStorico(contactId);
+}
+
+async function caricaStorico(contactId){
+  var body=document.getElementById('storicoBody');
+  body.innerHTML='<div class="state-msg"><div class="spinner"></div>Caricamento...</div>';
+  try{
+    var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
+    if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">+ Registra</button></div>';return;}
+    body.innerHTML=mails.map(function(m){
+      var all=(m.allegati||[]).map(function(a){return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+a+'</span>';}).join(' ');
+      return '<div class="mail-item '+m.tipo+'">'+
+        '<button class="mail-del" onclick="eliminaMail(\''+m.id+'\',\''+contactId+'\')">✕</button>'+
+        '<div class="mail-oggetto">'+m.oggetto+'</div>'+
+        '<div class="mail-meta">'+
+        (m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta')+' · '+m.data+' · Da: '+m.da+' → A: '+m.a+
+        (m.cc?' · CC: '+m.cc:'')+
+        (m.note?'<br>'+m.note:'')+
+        '</div>'+
+        (all?'<div style="margin-top:5px">'+all+'</div>':'')+
+        '</div>';
+    }).join('');
+  }catch(e){body.innerHTML='<div class="state-msg">Errore: '+e.message+'</div>';}
+}
+
+async function eliminaMail(id,contactId){
+  if(!confirm('Rimuovere?')) return;
+  try{await sb('/rest/v1/mail?id=eq.'+id,'DELETE');caricaStorico(contactId);await aggiornaContatoreMail(contactId);toast('Rimossa');}
+  catch(e){alert('Errore: '+e.message);}
+}
+
+async function aggiornaContatoreMail(contactId){
+  try{
+    var el=document.getElementById('mc_'+contactId);if(!el) return;
+    var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&select=id');
+    var n=(mails||[]).length;
+    el.textContent=n;el.className='mail-badge'+(n===0?' zero':'');
+  }catch(e){}
+}
+
+function apriModalRegistra(){
+  mailAllegati=[];
+  document.getElementById('mOggetto').value='';
+  document.getElementById('mData').value=new Date().toISOString().slice(0,10);
+  document.getElementById('mTipo').value='inviata';
+  document.getElementById('mDa').value='scimaza@gmail.com';
+  var c=mailContactId?allContacts.find(function(x){return x.id===mailContactId;}):null;
+  document.getElementById('mA').value=c&&c.email1?c.email1:'';
+  document.getElementById('mCc').value='';
+  document.getElementById('mCcn').value='';
+  document.getElementById('mNote').value='';
+  renderAllegatiMail();
+  document.getElementById('modalRegistra').classList.add('open');
+}
+
+function aggiungiFileMail(input){
+  Array.from(input.files).forEach(function(file){
+    mailAllegati.push({nome:file.name,tipo:'file'});
+    renderAllegatiMail();
+  });
+  input.value='';
+}
+
+function aggiungiLinkMail(){
+  var url=prompt('Incolla il link Dropbox:');
+  if(!url||!url.trim()) return;
+  var nome=url.split('/').pop().split('?')[0]||'file';
+  mailAllegati.push({nome:nome,tipo:'dropbox',url:url.trim()});
+  renderAllegatiMail();
+}
+
+function renderAllegatiMail(){
+  var list=document.getElementById('mAllegatiList');if(!list) return;
+  list.innerHTML=mailAllegati.map(function(a,i){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--surface2);border-radius:6px;border:.5px solid var(--border)">'+
+    '<span>'+(a.tipo==='dropbox'?'📦':'📄')+'</span>'+
+    '<span style="font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+a.nome+'</span>'+
+    '<button onclick="rimuoviAllegatoMail('+i+')" style="background:none;border:none;color:var(--text3);cursor:pointer">✕</button></div>';
+  }).join('');
+}
+
+function rimuoviAllegatoMail(idx){mailAllegati.splice(idx,1);renderAllegatiMail();}
+
+async function salvaMail(){
+  var oggetto=document.getElementById('mOggetto').value.trim();
+  if(!oggetto){alert('Inserisci almeno oggetto');return;}
+  var payload={
+    contatto_id:mailContactId,
+    oggetto:oggetto,
+    data:document.getElementById('mData').value,
+    tipo:document.getElementById('mTipo').value,
+    da:document.getElementById('mDa').value.trim(),
+    a:document.getElementById('mA').value.trim(),
+    cc:document.getElementById('mCc').value.trim(),
+    ccn:document.getElementById('mCcn').value.trim(),
+    allegati:mailAllegati.map(function(a){return a.nome;}),
+    note:document.getElementById('mNote').value.trim(),
+    created_at:new Date().toISOString()
+  };
+  try{
+    await sb('/rest/v1/mail','POST',payload);
+    document.getElementById('modalRegistra').classList.remove('open');
+    caricaStorico(mailContactId);
+    await aggiornaContatoreMail(mailContactId);
+    toast('Mail registrata');
+  }catch(e){alert('Errore: '+e.message);}
+}
+
+// ===== BOZZE =====
+function apriBozze(contactId){
+  bozzeContactId=contactId;
+  var c=allContacts.find(function(x){return x.id===contactId;});
+  document.getElementById('bozzeTitolo').textContent='Bozze: '+(c?c.cognome+' '+c.nome:'');
+  renderBozze(contactId);
+  document.getElementById('modalBozze').classList.add('open');
+}
+
+function renderBozze(contactId){
+  var body=document.getElementById('bozzeBody');
+  var tutte=JSON.parse(localStorage.getItem('bozze')||'[]');
+  var bozze=tutte.filter(function(b){return b.cid===contactId;});
+  if(!bozze.length){body.innerHTML='<div class="state-msg">Nessuna bozza.<br><small style="color:var(--text3)">Salva una bozza dal compositore Gmail.</small></div>';return;}
+  body.innerHTML=bozze.map(function(b,i){
+    return '<div class="mail-item inviata">'+
+      '<div class="mail-oggetto">'+(b.oggetto||'(senza oggetto)')+'</div>'+
+      '<div class="mail-meta">A: '+(b.a||'')+' · '+b.data+'</div>'+
+      '<div style="margin-top:6px;display:flex;gap:6px">'+
+      '<button class="btn-primary" style="font-size:11px;padding:4px 10px" onclick="caricaBozza(\''+contactId+'\','+i+')">Apri e invia</button>'+
+      '<button class="btn-danger" style="font-size:11px;padding:4px 10px" onclick="eliminaBozza(\''+contactId+'\','+i+')">Elimina</button>'+
+      '</div></div>';
+  }).join('');
+}
+
+function eliminaBozza(contactId,idx){
+  var tutte=JSON.parse(localStorage.getItem('bozze')||'[]');
+  var bozze=tutte.filter(function(b){return b.cid===contactId;});
+  var toRemove=bozze[idx];
+  var nuove=tutte.filter(function(b){return b!==toRemove;});
+  localStorage.setItem('bozze',JSON.stringify(nuove));
+  renderBozze(contactId);toast('Bozza eliminata');
+}
+
+function caricaBozza(contactId,idx){
+  var tutte=JSON.parse(localStorage.getItem('bozze')||'[]');
+  var bozze=tutte.filter(function(b){return b.cid===contactId;});
+  var b=bozze[idx];if(!b) return;
+  document.getElementById('modalBozze').classList.remove('open');
+  apriComposer(contactId,b);
+}
+
+// ===== COMPOSITORE GMAIL =====
+var GMAIL_CLIENT_ID='54372302144-n9a2calup1q37aavc77hhe96f4q4lqkp.apps.googleusercontent.com';
+var gmailToken=localStorage.getItem('gmail_token')||null;
+var composerContactId=null;
+var composerAllegati=[];
+
+function apriComposer(contactId,bozza){
+  composerContactId=contactId;
+  composerAllegati=bozza&&bozza.allegati?bozza.allegati:[];
+  var c=allContacts.find(function(x){return x.id===contactId;});
+  // Apre direttamente Gmail con il destinatario precompilato
+  var email=c&&c.email1?c.email1:'';
+  if(bozza){
+    var oggetto=encodeURIComponent(bozza.oggetto||'');
+    var corpo=encodeURIComponent(bozza.testo||'');
+    window.open('https://mail.google.com/mail/?view=cm&to='+encodeURIComponent(email)+'&su='+oggetto+'&body='+corpo);
+  }else{
+    window.open('https://mail.google.com/mail/?view=cm&to='+encodeURIComponent(email));
+  }
+  // Registra apertura come bozza locale
+  if(!bozza){
+    toast('Gmail aperto — dopo invio registra la mail nello Storico');
+  }
+}
+
+// ===== GEO =====
+function geoByCAP(){
+  var val=(document.getElementById('fCap').value||'').trim();
+  if(val.length<5) return;
+  var found=COMUNI_IT.find(function(x){return x.cap===val;});
+  if(found){
+    var com=document.getElementById('fComune');var prov=document.getElementById('fProvincia');
+    var reg=document.getElementById('fRegione');var stato=document.getElementById('fStato2');
+    if(com) com.value=found.c;if(prov) prov.value=found.p;
+    if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+    aggiornaMappaForm(found.c+', '+found.p);
+  }
+}
+
+function geoByComune(){
+  var val=(document.getElementById('fComune').value||'').trim();
+  if(!val) return;
+  var found=COMUNI_IT.find(function(x){return x.c.toLowerCase()===val.toLowerCase();});
+  if(found){
+    var cap=document.getElementById('fCap');var prov=document.getElementById('fProvincia');
+    var reg=document.getElementById('fRegione');var stato=document.getElementById('fStato2');
+    if(cap) cap.value=found.cap;if(prov) prov.value=found.p;
+    if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+    aggiornaMappaForm(found.c+', '+found.p);
+  }
+}
+
+function aggiornaMappaForm(addr){
+  var wrap=document.getElementById('mapWrap');if(!wrap||!addr) return;
+  wrap.style.display='block';
+  var enc=encodeURIComponent(addr);
+  wrap.innerHTML='<div style="font-size:11px;color:var(--text2);margin-bottom:6px">📍 '+addr+'</div>'+
+    '<div style="display:flex;gap:8px">'+
+    '<button type="button" class="btn-primary" style="font-size:11px;padding:5px 12px" onclick="window.open(\'https://www.google.com/maps/search/'+enc+'\')">Google Maps</button>'+
+    '<button type="button" class="btn-secondary" style="font-size:11px;padding:5px 12px" onclick="window.open(\'https://earth.google.com/web/search/'+enc+'\')">Google Earth</button>'+
+    '</div>';
+}
+
+function popolaGeo(){
+  var dlC=document.getElementById('listComuni');
+  var dlCAP=document.getElementById('listCAP');
+  var dlP=document.getElementById('listProvince');
+  var dlR=document.getElementById('listRegioni');
+  var dlS=document.getElementById('listStati');
+  if(dlC) dlC.innerHTML=COMUNI_IT.map(function(x){return '<option value="'+x.c+'">'+x.c+' ('+x.p+') - '+x.cap+'</option>';}).join('');
+  if(dlCAP) dlCAP.innerHTML=COMUNI_IT.map(function(x){return '<option value="'+x.cap+'">'+x.cap+' - '+x.c+' ('+x.p+')</option>';}).join('');
+  var prov=[...new Set(COMUNI_IT.map(function(x){return x.p;}))].sort();
+  if(dlP) dlP.innerHTML=prov.map(function(p){return '<option value="'+p+'">';}).join('');
+  var reg=[...new Set(COMUNI_IT.map(function(x){return x.r;}))].sort();
+  if(dlR) dlR.innerHTML=reg.map(function(r){return '<option value="'+r+'">';}).join('');
+  if(dlS) dlS.innerHTML=STATI_MONDO.map(function(s){return '<option value="'+s+'">';}).join('');
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  popolaGeo();
+});
+</script>
+</body>
+</html>
+<script>
+var COMUNI_IT=[
+{c:'Abano Terme',cap:'35031',p:'PD',r:'Veneto'},{c:'Abbiategrasso',cap:'20081',p:'MI',r:'Lombardia'},
+{c:'Acireale',cap:'95024',p:'CT',r:'Sicilia'},{c:'Acqui Terme',cap:'15011',p:'AL',r:'Piemonte'},
+{c:'Adria',cap:'45011',p:'RO',r:'Veneto'},{c:'Agrigento',cap:'92100',p:'AG',r:'Sicilia'},
+{c:'Agropoli',cap:'84043',p:'SA',r:'Campania'},{c:'Alba',cap:'12051',p:'CN',r:'Piemonte'},
+{c:'Albenga',cap:'17031',p:'SV',r:'Liguria'},{c:'Alessandria',cap:'15100',p:'AL',r:'Piemonte'},
+{c:'Alghero',cap:'07041',p:'SS',r:'Sardegna'},{c:'Altamura',cap:'70022',p:'BA',r:'Puglia'},
+{c:'Ancona',cap:'60100',p:'AN',r:'Marche'},{c:'Andria',cap:'76123',p:'BT',r:'Puglia'},
+{c:'Anzio',cap:'00042',p:'RM',r:'Lazio'},{c:'Aosta',cap:'11100',p:'AO',r:'Valle Aosta'},
+{c:'Aprilia',cap:'04011',p:'LT',r:'Lazio'},{c:'Arco',cap:'38062',p:'TN',r:'Trentino-Alto Adige'},
+{c:'Arezzo',cap:'52100',p:'AR',r:'Toscana'},{c:'Arona',cap:'28041',p:'NO',r:'Piemonte'},
+{c:'Arzignano',cap:'36071',p:'VI',r:'Veneto'},{c:'Ascoli Piceno',cap:'63100',p:'AP',r:'Marche'},
+{c:'Asiago',cap:'36012',p:'VI',r:'Veneto'},{c:'Asolo',cap:'31011',p:'TV',r:'Veneto'},
+{c:'Asti',cap:'14100',p:'AT',r:'Piemonte'},{c:'Avellino',cap:'83100',p:'AV',r:'Campania'},
+{c:'Aversa',cap:'81031',p:'CE',r:'Campania'},{c:'Avezzano',cap:'67051',p:'AQ',r:'Abruzzo'},
+{c:'Bari',cap:'70100',p:'BA',r:'Puglia'},{c:'Barletta',cap:'76121',p:'BT',r:'Puglia'},
+{c:'Bassano del Grappa',cap:'36061',p:'VI',r:'Veneto'},{c:'Battipaglia',cap:'84091',p:'SA',r:'Campania'},
+{c:'Belluno',cap:'32100',p:'BL',r:'Veneto'},{c:'Benevento',cap:'82100',p:'BN',r:'Campania'},
+{c:'Bergamo',cap:'24100',p:'BG',r:'Lombardia'},{c:'Biella',cap:'13900',p:'BI',r:'Piemonte'},
+{c:'Bologna',cap:'40100',p:'BO',r:'Emilia-Romagna'},{c:'Bolzano',cap:'39100',p:'BZ',r:'Trentino-Alto Adige'},
+{c:'Bordighera',cap:'18012',p:'IM',r:'Liguria'},{c:'Bovolone',cap:'37051',p:'VR',r:'Veneto'},
+{c:'Bra',cap:'12042',p:'CN',r:'Piemonte'},{c:'Brescia',cap:'25100',p:'BS',r:'Lombardia'},
+{c:'Bressanone',cap:'39042',p:'BZ',r:'Trentino-Alto Adige'},{c:'Brindisi',cap:'72100',p:'BR',r:'Puglia'},
+{c:'Busto Arsizio',cap:'21052',p:'VA',r:'Lombardia'},{c:'Cagliari',cap:'09100',p:'CA',r:'Sardegna'},
+{c:'Caltagirone',cap:'95041',p:'CT',r:'Sicilia'},{c:'Caltanissetta',cap:'93100',p:'CL',r:'Sicilia'},
+{c:'Campobasso',cap:'86100',p:'CB',r:'Molise'},{c:'Cantù',cap:'22063',p:'CO',r:'Lombardia'},
+{c:'Carpi',cap:'41012',p:'MO',r:'Emilia-Romagna'},{c:'Carrara',cap:'54033',p:'MS',r:'Toscana'},
+{c:'Casale Monferrato',cap:'15033',p:'AL',r:'Piemonte'},{c:'Caserta',cap:'81100',p:'CE',r:'Campania'},
+{c:'Cassino',cap:'03043',p:'FR',r:'Lazio'},{c:'Castelfranco Veneto',cap:'31033',p:'TV',r:'Veneto'},
+{c:'Catania',cap:'95100',p:'CT',r:'Sicilia'},{c:'Catanzaro',cap:'88100',p:'CZ',r:'Calabria'},
+{c:'Cesena',cap:'47521',p:'FC',r:'Emilia-Romagna'},{c:'Chieti',cap:'66100',p:'CH',r:'Abruzzo'},
+{c:'Chioggia',cap:'30015',p:'VE',r:'Veneto'},{c:'Cinisello Balsamo',cap:'20092',p:'MI',r:'Lombardia'},
+{c:'Cittadella',cap:'35013',p:'PD',r:'Veneto'},{c:'Civitavecchia',cap:'00053',p:'RM',r:'Lazio'},
+{c:'Cologna Veneta',cap:'37044',p:'VR',r:'Veneto'},{c:'Colognola ai Colli',cap:'37030',p:'VR',r:'Veneto'},
+{c:'Como',cap:'22100',p:'CO',r:'Lombardia'},{c:'Conegliano',cap:'31015',p:'TV',r:'Veneto'},
+{c:'Corato',cap:'70033',p:'BA',r:'Puglia'},{c:'Cosenza',cap:'87100',p:'CS',r:'Calabria'},
+{c:'Crema',cap:'26013',p:'CR',r:'Lombardia'},{c:'Cremona',cap:'26100',p:'CR',r:'Lombardia'},
+{c:'Crotone',cap:'88900',p:'KR',r:'Calabria'},{c:'Cuneo',cap:'12100',p:'CN',r:'Piemonte'},
+{c:'Desenzano del Garda',cap:'25015',p:'BS',r:'Lombardia'},{c:'Empoli',cap:'50053',p:'FI',r:'Toscana'},
+{c:'Enna',cap:'94100',p:'EN',r:'Sicilia'},{c:'Fabriano',cap:'60044',p:'AN',r:'Marche'},
+{c:'Faenza',cap:'48018',p:'RA',r:'Emilia-Romagna'},{c:'Fano',cap:'61032',p:'PU',r:'Marche'},
+{c:'Ferrara',cap:'44100',p:'FE',r:'Emilia-Romagna'},{c:'Firenze',cap:'50100',p:'FI',r:'Toscana'},
+{c:'Foggia',cap:'71100',p:'FG',r:'Puglia'},{c:'Foligno',cap:'06034',p:'PG',r:'Umbria'},
+{c:'Forli',cap:'47100',p:'FC',r:'Emilia-Romagna'},{c:'Frosinone',cap:'03100',p:'FR',r:'Lazio'},
+{c:'Fumane',cap:'37022',p:'VR',r:'Veneto'},{c:'Garda',cap:'37016',p:'VR',r:'Veneto'},
+{c:'Genova',cap:'16100',p:'GE',r:'Liguria'},{c:'Giulianova',cap:'64021',p:'TE',r:'Abruzzo'},
+{c:'Gorizia',cap:'34170',p:'GO',r:'Friuli-Venezia Giulia'},{c:'Grosseto',cap:'58100',p:'GR',r:'Toscana'},
+{c:'Imola',cap:'40026',p:'BO',r:'Emilia-Romagna'},{c:'Imperia',cap:'18100',p:'IM',r:'Liguria'},
+{c:'Isernia',cap:'86170',p:'IS',r:'Molise'},{c:'Isola della Scala',cap:'37063',p:'VR',r:'Veneto'},
+{c:'Ivrea',cap:'10015',p:'TO',r:'Piemonte'},{c:'Jesi',cap:'60035',p:'AN',r:'Marche'},
+{c:'Jesolo',cap:'30016',p:'VE',r:'Veneto'},{c:'L Aquila',cap:'67100',p:'AQ',r:'Abruzzo'},
+{c:'La Spezia',cap:'19100',p:'SP',r:'Liguria'},{c:'Lanciano',cap:'66034',p:'CH',r:'Abruzzo'},
+{c:'Latina',cap:'04100',p:'LT',r:'Lazio'},{c:'Lavagno',cap:'37030',p:'VR',r:'Veneto'},
+{c:'Lazise',cap:'37017',p:'VR',r:'Veneto'},{c:'Lecce',cap:'73100',p:'LE',r:'Puglia'},
+{c:'Lecco',cap:'23900',p:'LC',r:'Lombardia'},{c:'Legnago',cap:'37045',p:'VR',r:'Veneto'},
+{c:'Legnano',cap:'20025',p:'MI',r:'Lombardia'},{c:'Livorno',cap:'57100',p:'LI',r:'Toscana'},
+{c:'Lodi',cap:'26900',p:'LO',r:'Lombardia'},{c:'Lucca',cap:'55100',p:'LU',r:'Toscana'},
+{c:'Macerata',cap:'62100',p:'MC',r:'Marche'},{c:'Mantova',cap:'46100',p:'MN',r:'Lombardia'},
+{c:'Marano di Valpolicella',cap:'37020',p:'VR',r:'Veneto'},{c:'Marsala',cap:'91025',p:'TP',r:'Sicilia'},
+{c:'Martina Franca',cap:'74015',p:'TA',r:'Puglia'},{c:'Massa',cap:'54100',p:'MS',r:'Toscana'},
+{c:'Matera',cap:'75100',p:'MT',r:'Basilicata'},{c:'Merano',cap:'39012',p:'BZ',r:'Trentino-Alto Adige'},
+{c:'Messina',cap:'98100',p:'ME',r:'Sicilia'},{c:'Mestre',cap:'30170',p:'VE',r:'Veneto'},
+{c:'Mezzane di Sotto',cap:'37030',p:'VR',r:'Veneto'},{c:'Milano',cap:'20100',p:'MI',r:'Lombardia'},
+{c:'Modena',cap:'41100',p:'MO',r:'Emilia-Romagna'},{c:'Modica',cap:'97015',p:'RG',r:'Sicilia'},
+{c:'Molfetta',cap:'70056',p:'BA',r:'Puglia'},{c:'Moncalieri',cap:'10024',p:'TO',r:'Piemonte'},
+{c:'Montebelluna',cap:'31044',p:'TV',r:'Veneto'},{c:'Montecchio Maggiore',cap:'36075',p:'VI',r:'Veneto'},
+{c:'Montegrotto Terme',cap:'35036',p:'PD',r:'Veneto'},{c:'Monza',cap:'20900',p:'MB',r:'Lombardia'},
+{c:'Mozzecane',cap:'37060',p:'VR',r:'Veneto'},{c:'Napoli',cap:'80100',p:'NA',r:'Campania'},
+{c:'Negrar di Valpolicella',cap:'37024',p:'VR',r:'Veneto'},{c:'Novara',cap:'28100',p:'NO',r:'Piemonte'},
+{c:'Noventa Padovana',cap:'35027',p:'PD',r:'Veneto'},{c:'Nuoro',cap:'08100',p:'NU',r:'Sardegna'},
+{c:'Oderzo',cap:'31046',p:'TV',r:'Veneto'},{c:'Olbia',cap:'07026',p:'SS',r:'Sardegna'},
+{c:'Oristano',cap:'09170',p:'OR',r:'Sardegna'},{c:'Ostuni',cap:'72017',p:'BR',r:'Puglia'},
+{c:'Padova',cap:'35100',p:'PD',r:'Veneto'},{c:'Palermo',cap:'90100',p:'PA',r:'Sicilia'},
+{c:'Parma',cap:'43100',p:'PR',r:'Emilia-Romagna'},{c:'Pavia',cap:'27100',p:'PV',r:'Lombardia'},
+{c:'Perugia',cap:'06100',p:'PG',r:'Umbria'},{c:'Pesaro',cap:'61121',p:'PU',r:'Marche'},
+{c:'Pescara',cap:'65100',p:'PE',r:'Abruzzo'},{c:'Peschiera del Garda',cap:'37019',p:'VR',r:'Veneto'},
+{c:'Piacenza',cap:'29100',p:'PC',r:'Emilia-Romagna'},{c:'Pisa',cap:'56100',p:'PI',r:'Toscana'},
+{c:'Pistoia',cap:'51100',p:'PT',r:'Toscana'},{c:'Pordenone',cap:'33170',p:'PN',r:'Friuli-Venezia Giulia'},
+{c:'Potenza',cap:'85100',p:'PZ',r:'Basilicata'},{c:'Prato',cap:'59100',p:'PO',r:'Toscana'},
+{c:'Ragusa',cap:'97100',p:'RG',r:'Sicilia'},{c:'Ravenna',cap:'48100',p:'RA',r:'Emilia-Romagna'},
+{c:'Reggio Calabria',cap:'89100',p:'RC',r:'Calabria'},{c:'Reggio Emilia',cap:'42100',p:'RE',r:'Emilia-Romagna'},
+{c:'Riccione',cap:'47838',p:'RN',r:'Emilia-Romagna'},{c:'Rieti',cap:'02100',p:'RI',r:'Lazio'},
+{c:'Rimini',cap:'47921',p:'RN',r:'Emilia-Romagna'},{c:'Riva del Garda',cap:'38066',p:'TN',r:'Trentino-Alto Adige'},
+{c:'Rivoli',cap:'10098',p:'TO',r:'Piemonte'},{c:'Roma',cap:'00100',p:'RM',r:'Lazio'},
+{c:'Rovereto',cap:'38068',p:'TN',r:'Trentino-Alto Adige'},{c:'Rovigo',cap:'45100',p:'RO',r:'Veneto'},
+{c:'Salerno',cap:'84100',p:'SA',r:'Campania'},{c:'San Bonifacio',cap:'37047',p:'VR',r:'Veneto'},
+{c:'San Giovanni Lupatoto',cap:'37057',p:'VR',r:'Veneto'},{c:'San Pietro in Cariano',cap:'37029',p:'VR',r:'Veneto'},
+{c:'Sanremo',cap:'18038',p:'IM',r:'Liguria'},{c:'Sassari',cap:'07100',p:'SS',r:'Sardegna'},
+{c:'Savona',cap:'17100',p:'SV',r:'Liguria'},{c:'Schio',cap:'36015',p:'VI',r:'Veneto'},
+{c:'Sesto San Giovanni',cap:'20099',p:'MI',r:'Lombardia'},{c:'Siena',cap:'53100',p:'SI',r:'Toscana'},
+{c:'Siracusa',cap:'96100',p:'SR',r:'Sicilia'},{c:'Soave',cap:'37038',p:'VR',r:'Veneto'},
+{c:'Sondrio',cap:'23100',p:'SO',r:'Lombardia'},{c:'Sorrento',cap:'80067',p:'NA',r:'Campania'},
+{c:'Spoleto',cap:'06049',p:'PG',r:'Umbria'},{c:'Taranto',cap:'74100',p:'TA',r:'Puglia'},
+{c:'Taormina',cap:'98039',p:'ME',r:'Sicilia'},{c:'Teramo',cap:'64100',p:'TE',r:'Abruzzo'},
+{c:'Terni',cap:'05100',p:'TR',r:'Umbria'},{c:'Terracina',cap:'04019',p:'LT',r:'Lazio'},
+{c:'Torino',cap:'10100',p:'TO',r:'Piemonte'},{c:'Torre del Greco',cap:'80059',p:'NA',r:'Campania'},
+{c:'Trani',cap:'76125',p:'BT',r:'Puglia'},{c:'Trapani',cap:'91100',p:'TP',r:'Sicilia'},
+{c:'Tregnago',cap:'37039',p:'VR',r:'Veneto'},{c:'Trento',cap:'38100',p:'TN',r:'Trentino-Alto Adige'},
+{c:'Trevenzuolo',cap:'37060',p:'VR',r:'Veneto'},{c:'Treviglio',cap:'24047',p:'BG',r:'Lombardia'},
+{c:'Treviso',cap:'31100',p:'TV',r:'Veneto'},{c:'Trieste',cap:'34100',p:'TS',r:'Friuli-Venezia Giulia'},
+{c:'Udine',cap:'33100',p:'UD',r:'Friuli-Venezia Giulia'},{c:'Valeggio sul Mincio',cap:'37067',p:'VR',r:'Veneto'},
+{c:'Varese',cap:'21100',p:'VA',r:'Lombardia'},{c:'Venezia',cap:'30100',p:'VE',r:'Veneto'},
+{c:'Verbania',cap:'28900',p:'VB',r:'Piemonte'},{c:'Vercelli',cap:'13100',p:'VC',r:'Piemonte'},
+{c:'Verona',cap:'37100',p:'VR',r:'Veneto'},{c:'Vicenza',cap:'36100',p:'VI',r:'Veneto'},
+{c:'Vigevano',cap:'27029',p:'PV',r:'Lombardia'},{c:'Villafranca di Verona',cap:'37069',p:'VR',r:'Veneto'},
+{c:'Viterbo',cap:'01100',p:'VT',r:'Lazio'},{c:'Vittoria',cap:'97019',p:'RG',r:'Sicilia'},
+{c:'Vittorio Veneto',cap:'31029',p:'TV',r:'Veneto'},{c:'Voghera',cap:'27058',p:'PV',r:'Lombardia'},
+{c:'Zevio',cap:'37059',p:'VR',r:'Veneto'},{c:'Zola Predosa',cap:'40069',p:'BO',r:'Emilia-Romagna'}
+];
+
+var STATI_MONDO=['Afghanistan','Albania','Algeria','Andorra','Angola','Arabia Saudita','Argentina','Armenia','Australia','Austria','Azerbaigian','Bahrain','Bangladesh','Belgio','Bolivia','Bosnia ed Erzegovina','Brasile','Bulgaria','Camerun','Canada','Cile','Cina','Cipro','Colombia','Corea del Sud','Croazia','Cuba','Danimarca','Ecuador','Egitto','Emirati Arabi Uniti','Estonia','Etiopia','Finlandia','Francia','Germania','Ghana','Giappone','Giordania','Grecia','Guatemala','India','Indonesia','Iran','Iraq','Irlanda','Islanda','Israele','Italia','Kazakhstan','Kenya','Kuwait','Latvia','Libano','Libia','Liechtenstein','Lituania','Lussemburgo','Macedonia del Nord','Malesia','Malta','Marocco','Messico','Moldova','Monaco','Mongolia','Montenegro','Nepal','Nigeria','Norvegia','Nuova Zelanda','Oman','Paesi Bassi','Pakistan','Panama','Paraguay','Peru','Polonia','Portogallo','Qatar','Regno Unito','Repubblica Ceca','Romania','Russia','Senegal','Serbia','Singapore','Siria','Slovenia','Somalia','Spagna','Sri Lanka','Stati Uniti','Sudan','Svezia','Svizzera','Tanzania','Thailandia','Tunisia','Turchia','Ucraina','Uganda','Ungheria','Uruguay','Venezuela','Vietnam','Zimbabwe'];
+</script>
