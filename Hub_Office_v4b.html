@@ -387,6 +387,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         <div class="fg"><label>Provincia</label><input id="rProvincia" placeholder="VR" list="listProvince"></div>
         <div class="fg"><label>Regione</label><input id="rRegione" placeholder="Veneto" list="listRegioni"></div>
         <div class="fg"><label>Stato</label><input id="rStato" value="Italia" list="listStati"></div>
+        <div class="fg full" id="mapWrapRiv" style="display:none;padding:10px;background:var(--surface2);border-radius:8px;border:.5px solid var(--border)"></div>
       </div>
       <div class="form-section">🤝 Rapporto</div>
       <div class="form-grid">
@@ -631,8 +632,6 @@ async function salvaContatto(){
     riv_via_pref:g('rViaPref'),riv_via:g('rVia'),riv_civico:g('rCivico'),
     riv_cap:g('rCap'),riv_comune:g('rComune'),riv_provincia:g('rProvincia'),
     riv_regione:g('rRegione'),riv_stato:g('rStato'),
-    az_cap:g('aCap'),az_comune:g('aComune'),az_provincia:g('aProvincia'),
-    az_regione:g('aRegione'),az_stato:g('aStato'),
     tipo_rapporto:g('fTipoRapporto'),progetto:g('fProgetto'),stato:g('fStato'),
     dropbox_url:g('fDropbox'),spike_email:g('fSpike'),
     updated_at:new Date().toISOString()
@@ -998,46 +997,35 @@ function aggiungiMediaLink(cid,tipo){
 
 
 function caricaMedia(input,cid,tipo){
-  if(!input.files||!input.files.length) return;
+  input.value='';
+  var label=tipo==='image'?'foto':'video';
+  var url=prompt('Incolla il link Dropbox o Amazon Photos della '+label+':');
+  if(!url||!url.trim()) return;
+  var nome=url.split('/').pop().split('?')[0]||label;
   var c=allContacts.find(function(x){return x.id===cid;});
   if(!c) return;
-  var files=Array.from(input.files);
-  var media=[...(c.media||[])];
-  var processati=0;
-  files.forEach(function(file){
-    var reader=new FileReader();
-    reader.onload=function(ev){
-      media.push({url:ev.target.result,type:tipo,nome:file.name});
-      processati++;
-      if(processati===files.length){
-        sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{media:media,updated_at:new Date().toISOString()})
-        .then(function(){
-          var idx=allContacts.findIndex(function(x){return x.id===cid;});
-          if(idx>=0) allContacts[idx].media=media;
-          if(currentContact&&currentContact.id===cid) currentContact.media=media;
-          apriScheda(cid);
-          toast((tipo==='image'?'Foto':'Video')+' allegat'+(tipo==='image'?'a':'o'));
-        })
-        .catch(function(e){alert('Errore: '+e.message);});
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-  input.value='';
+  var media=[...(c.media||[]),{url:url.trim(),type:tipo,nome:nome}];
+  sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{media:media,updated_at:new Date().toISOString()})
+  .then(function(){
+    var idx=allContacts.findIndex(function(x){return x.id===cid;});
+    if(idx>=0) allContacts[idx].media=media;
+    if(currentContact&&currentContact.id===cid) currentContact.media=media;
+    apriScheda(cid);
+    toast((tipo==='image'?'Foto':'Video')+' allegat'+(tipo==='image'?'a':'o'));
+  })
+  .catch(function(e){alert('Errore: '+e.message);});
 }
 
 function caricaDocumento(input,cid){
-  if(!input.files||!input.files.length) return;
+  // Ignora input file - usa link Dropbox
+  input.value='';
+  var url=prompt('Incolla il link Dropbox del documento:');
+  if(!url||!url.trim()) return;
+  var nome=url.split('/').pop().split('?')[0]||'documento';
   var c=allContacts.find(function(x){return x.id===cid;});
   if(!c) return;
-  var files=Array.from(input.files);
-  var allegati=[...(c.allegati||[])];
   var date=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
-  // Salva blob URL per apertura diretta senza download
-  files.forEach(function(file){
-    var blobUrl=URL.createObjectURL(file);
-    allegati.push({nome:file.name,tipo:file.name.split('.').pop().toUpperCase(),url:blobUrl,data:date});
-  });
+  var allegati=[...(c.allegati||[]),{nome:nome,tipo:nome.split('.').pop().toUpperCase(),url:url.trim(),data:date}];
   sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{allegati:allegati,updated_at:new Date().toISOString()})
   .then(function(){
     var idx=allContacts.findIndex(function(x){return x.id===cid;});
@@ -1047,7 +1035,6 @@ function caricaDocumento(input,cid){
     toast('Documento allegato');
   })
   .catch(function(e){alert('Errore: '+e.message);});
-  input.value='';
 }
 
 function aggiungiAllegato(){
@@ -1282,6 +1269,29 @@ function apriComposer(contactId,bozza){
 }
 
 // ===== GEO =====
+function aggiornaMappaRiv(){
+  var via=(document.getElementById('rViaPref')||{}).value||'';
+  var strada=(document.getElementById('rVia')||{}).value||'';
+  var civ=(document.getElementById('rCivico')||{}).value||'';
+  var com=(document.getElementById('rComune')||{}).value||'';
+  var addr=[via,strada,civ,com].filter(Boolean).join(' ');
+  var wrap=document.getElementById('mapWrapRiv');
+  if(!wrap) return;
+  if(!addr){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  wrap.innerHTML='';
+  var info=document.createElement('div');
+  info.style.cssText='font-size:11px;color:var(--text2);margin-bottom:6px';
+  info.textContent='Indirizzo: '+addr;
+  var btn=document.createElement('button');
+  btn.className='btn-primary';btn.type='button';
+  btn.style.cssText='font-size:11px;padding:5px 12px';
+  btn.textContent='Google Maps';
+  btn.onclick=function(){window.open('https://www.google.com/maps/search/'+encodeURIComponent(addr));};
+  wrap.appendChild(info);wrap.appendChild(btn);
+}
+
+
 function geoByCAP_riv(){
   var val=(document.getElementById('rCap').value||'').trim();
   if(val.length<5) return;
@@ -1291,6 +1301,7 @@ function geoByCAP_riv(){
     var reg=document.getElementById('rRegione');var stato=document.getElementById('rStato');
     if(com) com.value=found.c;if(prov) prov.value=found.p;
     if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+    aggiornaMappaRiv();
   }
 }
 
@@ -1303,6 +1314,7 @@ function geoByComune_riv(){
     var reg=document.getElementById('rRegione');var stato=document.getElementById('rStato');
     if(cap) cap.value=found.cap;if(prov) prov.value=found.p;
     if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+    aggiornaMappaRiv();
   }
 }
 
