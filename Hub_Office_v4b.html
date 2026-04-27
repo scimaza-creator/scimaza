@@ -746,7 +746,7 @@ function apriScheda(id){
     var mw=document.createElement('div');mw.style.marginTop='8px';
     mw.innerHTML='<div style="display:flex;gap:8px;flex-wrap:wrap">'+
       '<button class="btn-primary" style="font-size:11px;padding:5px 12px" onclick="window.open(\'https://www.google.com/maps/search/'+encodeURIComponent(addr)+'\')">Google Maps</button>'+
-      '<button class="btn-secondary" style="font-size:11px;padding:5px 12px" onclick="window.open(\'https://earth.google.com/web/search/'+encodeURIComponent(addr)+'\')">Google Earth</button>'+
+
       '</div>'+
       '<div style="font-size:10px;color:var(--text3);margin-top:5px">'+addr+'</div>';
     col1.appendChild(mw);
@@ -774,6 +774,14 @@ function apriScheda(id){
     if(c.az_cap||c.az_comune) col1.appendChild(fr('CAP / Comune',(c.az_cap||'')+' '+(c.az_comune||'')));
     if(c.az_provincia||c.az_regione) col1.appendChild(fr('Provincia / Regione',[c.az_provincia,c.az_regione].filter(Boolean).join(' / ')));
     if(c.az_stato) col1.appendChild(fr('Stato sede',c.az_stato));
+    var azAddr=[c.az_via_pref,c.az_via,c.az_civico,c.az_cap,c.az_comune,c.az_stato].filter(Boolean).join(' ');
+    if(azAddr){
+      var azMap=document.createElement('div');azMap.style.marginTop='6px';
+      var azBtn=document.createElement('button');azBtn.className='btn-primary';
+      azBtn.style.cssText='font-size:11px;padding:5px 12px';azBtn.textContent='Google Maps';
+      azBtn.onclick=function(){window.open('https://www.google.com/maps/search/'+encodeURIComponent(azAddr));};
+      azMap.appendChild(azBtn);col1.appendChild(azMap);
+    }
   }
   if(c.sito_web){
     var dSito=document.createElement('div');dSito.className='fr';
@@ -797,6 +805,14 @@ function apriScheda(id){
     if(rivAddr) col1.appendChild(fr('Sede',rivAddr));
     if(c.riv_cap||c.riv_comune) col1.appendChild(fr('CAP / Comune',(c.riv_cap||'')+' '+(c.riv_comune||'')));
     if(c.riv_stato) col1.appendChild(fr('Stato',c.riv_stato));
+    var rivFull=[c.riv_via_pref,c.riv_via,c.riv_civico,c.riv_cap,c.riv_comune,c.riv_stato].filter(Boolean).join(' ');
+    if(rivFull){
+      var rivMap=document.createElement('div');rivMap.style.marginTop='6px';
+      var rivBtn=document.createElement('button');rivBtn.className='btn-primary';
+      rivBtn.style.cssText='font-size:11px;padding:5px 12px';rivBtn.textContent='Google Maps';
+      rivBtn.onclick=function(){window.open('https://www.google.com/maps/search/'+encodeURIComponent(rivFull));};
+      rivMap.appendChild(rivBtn);col1.appendChild(rivMap);
+    }
   }
   if(c.dropbox_url){
     col1.appendChild(sl('Cloud'));
@@ -1347,7 +1363,7 @@ function aggiornaMappaForm(addr){
   wrap.innerHTML='<div style="font-size:11px;color:var(--text2);margin-bottom:6px">📍 '+addr+'</div>'+
     '<div style="display:flex;gap:8px">'+
     '<button type="button" class="btn-primary" style="font-size:11px;padding:5px 12px" onclick="window.open(\'https://www.google.com/maps/search/'+enc+'\')">Google Maps</button>'+
-    '<button type="button" class="btn-secondary" style="font-size:11px;padding:5px 12px" onclick="window.open(\'https://earth.google.com/web/search/'+enc+'\')">Google Earth</button>'+
+
     '</div>';
 }
 
