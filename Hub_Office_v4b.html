@@ -901,21 +901,38 @@ function apriScheda(id){
   col2.appendChild(docRow);
 
   var dl2=document.createElement('div');dl2.className='dl';dl2.id='docsList';
-  [...docs,...allegati].forEach(function(d){
+  var tuttiDocs=[...docs,...allegati];
+  tuttiDocs.forEach(function(d,idx){
     var ext=(d.name||d.nome||'').split('.').pop().toUpperCase();
     var cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
-    var di=document.createElement('div');di.className='di';
+    var di=document.createElement('div');di.className='di';di.style.position='relative';
+    // Tasto elimina
+    var delBtn=document.createElement('button');
+    delBtn.style.cssText='position:absolute;right:6px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:2px 5px';
+    delBtn.textContent='✕';
+    delBtn.title='Elimina allegato';
+    (function(docIdx){
+      delBtn.onclick=function(e){
+        e.stopPropagation();
+        if(!confirm('Eliminare questo allegato?')) return;
+        var newAllegati=(currentContact.allegati||[]).filter(function(_,i){return i!==docIdx-(docs||[]).length;});
+        if(docIdx<(docs||[]).length) return; // docs non eliminabili qui
+        sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{allegati:newAllegati,updated_at:new Date().toISOString()})
+        .then(function(){
+          var i=allContacts.findIndex(function(x){return x.id===cid;});
+          if(i>=0) allContacts[i].allegati=newAllegati;
+          if(currentContact&&currentContact.id===cid) currentContact.allegati=newAllegati;
+          apriScheda(cid);toast('Allegato eliminato');
+        }).catch(function(e){alert('Errore: '+e.message);});
+      };
+    })(idx);
     if(d.url){
-      (function(url,nome){
-        di.onclick=function(){
-          var a=document.createElement('a');
-          a.href=url;a.target='_blank';
-          // Apri direttamente senza forzare download
-          a.click();
-        };
-      })(d.url,d.nome||d.name);
+      (function(url){
+        di.onclick=function(){window.open(url,'_blank');};
+      })(d.url);
     }
     di.innerHTML='<div class="ic '+cls+'">'+(ext.slice(0,3)||'FILE')+'</div><span class="dn">'+(d.name||d.nome||'')+'</span><span class="dd">'+(d.date||d.data||'')+'</span>';
+    di.appendChild(delBtn);
     dl2.appendChild(di);
   });
   col2.appendChild(dl2);
