@@ -807,7 +807,16 @@ function apriScheda(id){
     var ext=(d.name||d.nome||'').split('.').pop().toUpperCase();
     var cls={PDF:'pdf',XLSX:'xls',XLS:'xls',DOCX:'doc',DOC:'doc',JPG:'img',PNG:'img'}[ext]||'doc';
     var di=document.createElement('div');di.className='di';
-    if(d.url){di.onclick=function(){window.open(d.url);};}
+    if(d.url){
+      (function(url,nome){
+        di.onclick=function(){
+          var a=document.createElement('a');
+          a.href=url;a.target='_blank';
+          // Apri direttamente senza forzare download
+          a.click();
+        };
+      })(d.url,d.nome||d.name);
+    }
     di.innerHTML='<div class="ic '+cls+'">'+(ext.slice(0,3)||'FILE')+'</div><span class="dn">'+(d.name||d.nome||'')+'</span><span class="dd">'+(d.date||d.data||'')+'</span>';
     dl2.appendChild(di);
   });
@@ -924,27 +933,21 @@ function caricaDocumento(input,cid){
   if(!c) return;
   var files=Array.from(input.files);
   var allegati=[...(c.allegati||[])];
-  var processati=0;
   var date=new Date().toLocaleDateString('it-IT',{month:'short',year:'2-digit'});
+  // Salva blob URL per apertura diretta senza download
   files.forEach(function(file){
-    var reader=new FileReader();
-    reader.onload=function(ev){
-      allegati.push({nome:file.name,tipo:file.name.split('.').pop().toUpperCase(),url:ev.target.result,data:date});
-      processati++;
-      if(processati===files.length){
-        sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{allegati:allegati,updated_at:new Date().toISOString()})
-        .then(function(){
-          var idx=allContacts.findIndex(function(x){return x.id===cid;});
-          if(idx>=0) allContacts[idx].allegati=allegati;
-          if(currentContact&&currentContact.id===cid) currentContact.allegati=allegati;
-          apriScheda(cid);
-          toast('Documento allegato');
-        })
-        .catch(function(e){alert('Errore: '+e.message);});
-      }
-    };
-    reader.readAsDataURL(file);
+    var blobUrl=URL.createObjectURL(file);
+    allegati.push({nome:file.name,tipo:file.name.split('.').pop().toUpperCase(),url:blobUrl,data:date});
   });
+  sb('/rest/v1/contatti?id=eq.'+cid,'PATCH',{allegati:allegati,updated_at:new Date().toISOString()})
+  .then(function(){
+    var idx=allContacts.findIndex(function(x){return x.id===cid;});
+    if(idx>=0) allContacts[idx].allegati=allegati;
+    if(currentContact&&currentContact.id===cid) currentContact.allegati=allegati;
+    apriScheda(cid);
+    toast('Documento allegato');
+  })
+  .catch(function(e){alert('Errore: '+e.message);});
   input.value='';
 }
 
