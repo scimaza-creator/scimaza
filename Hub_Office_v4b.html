@@ -358,6 +358,36 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
         <div class="fg"><label>Tipologia prodotti</label><input id="fProdotti" placeholder="Es. Materiali edili"></div>
         <div class="fg full"><label>Sito web</label><input id="fSito" type="url" placeholder="https://www.studio.it"></div>
       </div>
+      <div class="form-section">📍 Sede aziendale</div>
+      <div class="form-grid">
+        <div class="fg full" style="display:grid;grid-template-columns:90px 1fr 60px;gap:8px">
+          <div class="fg"><label>Tipo via</label><select id="aViaPref"><option>Via</option><option>Viale</option><option>Piazza</option><option>Piazzale</option><option>Largo</option><option>Vicolo</option><option>Strada</option></select></div>
+          <div class="fg"><label>Nome via</label><input id="aVia" placeholder="Roma"></div>
+          <div class="fg"><label>N°</label><input id="aCivico" placeholder="12"></div>
+        </div>
+        <div class="fg"><label>CAP</label><input id="aCap" placeholder="37030" list="listCAP" autocomplete="off" oninput="geoByCAP_az()" onchange="geoByCAP_az()"></div>
+        <div class="fg"><label>Comune</label><input id="aComune" placeholder="Verona" list="listComuni" autocomplete="off" oninput="geoByComune_az()" onchange="geoByComune_az()"></div>
+        <div class="fg"><label>Provincia</label><input id="aProvincia" placeholder="VR" list="listProvince"></div>
+        <div class="fg"><label>Regione</label><input id="aRegione" placeholder="Veneto" list="listRegioni"></div>
+        <div class="fg"><label>Stato</label><input id="aStato" value="Italia" list="listStati"></div>
+      </div>
+      <div class="form-section">🏪 Rivenditore di riferimento</div>
+      <div class="form-grid">
+        <div class="fg"><label>Ragione sociale</label><input id="rRagione" placeholder="Rivenditore Srl"></div>
+        <div class="fg"><label>Referente</label><input id="rReferente" placeholder="Nome Cognome"></div>
+        <div class="fg"><label>Telefono</label><input id="rTel" placeholder="045 123 4567"></div>
+        <div class="fg"><label>Email</label><input id="rEmail" type="email" placeholder="info@rivenditore.it"></div>
+        <div class="fg full" style="display:grid;grid-template-columns:90px 1fr 60px;gap:8px">
+          <div class="fg"><label>Tipo via</label><select id="rViaPref"><option>Via</option><option>Viale</option><option>Piazza</option><option>Piazzale</option><option>Largo</option><option>Vicolo</option><option>Strada</option></select></div>
+          <div class="fg"><label>Nome via</label><input id="rVia" placeholder="Roma"></div>
+          <div class="fg"><label>N°</label><input id="rCivico" placeholder="12"></div>
+        </div>
+        <div class="fg"><label>CAP</label><input id="rCap" placeholder="37030" list="listCAP" autocomplete="off" oninput="geoByCAP_riv()" onchange="geoByCAP_riv()"></div>
+        <div class="fg"><label>Comune</label><input id="rComune" placeholder="Verona" list="listComuni" autocomplete="off" oninput="geoByComune_riv()" onchange="geoByComune_riv()"></div>
+        <div class="fg"><label>Provincia</label><input id="rProvincia" placeholder="VR" list="listProvince"></div>
+        <div class="fg"><label>Regione</label><input id="rRegione" placeholder="Veneto" list="listRegioni"></div>
+        <div class="fg"><label>Stato</label><input id="rStato" value="Italia" list="listStati"></div>
+      </div>
       <div class="form-section">🤝 Rapporto</div>
       <div class="form-grid">
         <div class="fg"><label>Tipo rapporto</label><input id="fTipoRapporto" placeholder="Fornitore professionale"></div>
@@ -561,7 +591,7 @@ function setGruppo(g,el){
 function apriModalNuovo(){
   document.getElementById('formTitolo').textContent='Nuovo contatto';
   document.getElementById('editId').value='';
-  ['fNome','fCognome','fProfessione','fIncarico','fCategoria','fVia','fCivico','fCap','fLocalita','fComune','fProvincia','fRegione','fNoteRef','fTel1','fTel2','fMob1','fMob2','fFax','fEmail1','fEmail2','fPec','fCf','fRagione','fPiva','fRea','fAlbo','fProdotti','fSito','fTipoRapporto','fProgetto','fDropbox','fSpike'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
+  ['fNome','fCognome','fProfessione','fIncarico','fCategoria','fVia','fCivico','fCap','fLocalita','fComune','fProvincia','fRegione','fNoteRef','fTel1','fTel2','fMob1','fMob2','fFax','fEmail1','fEmail2','fPec','fCf','fRagione','fPiva','fRea','fAlbo','fProdotti','fSito','aVia','aCivico','aCap','aComune','aProvincia','aRegione','rRagione','rReferente','rTel','rEmail','rVia','rCivico','rCap','rComune','rProvincia','rRegione','fTipoRapporto','fProgetto','fDropbox','fSpike'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
   ['fTel1Pref','fTel2Pref','fMob1Pref','fMob2Pref','fFaxPref'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='+39';});
   document.getElementById('fStato2').value='Italia';
   document.getElementById('fGruppo').value='';
@@ -594,6 +624,15 @@ async function salvaContatto(){
     ragione_sociale:g('fRagione'),piva:g('fPiva'),rea:g('fRea'),
     albo:g('fAlbo'),prodotti:g('fProdotti'),
     sito_web:g('fSito'),
+    az_via_pref:g('aViaPref'),az_via:g('aVia'),az_civico:g('aCivico'),
+    az_cap:g('aCap'),az_comune:g('aComune'),az_provincia:g('aProvincia'),
+    az_regione:g('aRegione'),az_stato:g('aStato'),
+    riv_ragione:g('rRagione'),riv_referente:g('rReferente'),riv_tel:g('rTel'),riv_email:g('rEmail'),
+    riv_via_pref:g('rViaPref'),riv_via:g('rVia'),riv_civico:g('rCivico'),
+    riv_cap:g('rCap'),riv_comune:g('rComune'),riv_provincia:g('rProvincia'),
+    riv_regione:g('rRegione'),riv_stato:g('rStato'),
+    az_cap:g('aCap'),az_comune:g('aComune'),az_provincia:g('aProvincia'),
+    az_regione:g('aRegione'),az_stato:g('aStato'),
     tipo_rapporto:g('fTipoRapporto'),progetto:g('fProgetto'),stato:g('fStato'),
     dropbox_url:g('fDropbox'),spike_email:g('fSpike'),
     updated_at:new Date().toISOString()
@@ -729,6 +768,13 @@ function apriScheda(id){
   col1.appendChild(fr('Ragione sociale',c.ragione_sociale));col1.appendChild(fr('P.IVA',c.piva,true));
   col1.appendChild(fr('REA',c.rea,true));col1.appendChild(fr('Albo',c.albo));
   col1.appendChild(fr('Prodotti',c.prodotti));
+  if(c.az_via||c.az_comune){
+    var sedeStr=[c.az_via_pref,c.az_via,c.az_civico].filter(Boolean).join(' ');
+    if(sedeStr) col1.appendChild(fr('Sede',sedeStr));
+    if(c.az_cap||c.az_comune) col1.appendChild(fr('CAP / Comune',(c.az_cap||'')+' '+(c.az_comune||'')));
+    if(c.az_provincia||c.az_regione) col1.appendChild(fr('Provincia / Regione',[c.az_provincia,c.az_regione].filter(Boolean).join(' / ')));
+    if(c.az_stato) col1.appendChild(fr('Stato sede',c.az_stato));
+  }
   if(c.sito_web){
     var dSito=document.createElement('div');dSito.className='fr';
     var lSito=document.createElement('span');lSito.className='fl';lSito.textContent='Sito web';
@@ -741,6 +787,17 @@ function apriScheda(id){
   col1.appendChild(fr('Tipo rapporto',c.tipo_rapporto));col1.appendChild(fr('Progetto',c.progetto));
   var sf=fr('Stato',c.stato);sf.querySelector('.fv').style.color='var(--green)';col1.appendChild(sf);
 
+  if(c.riv_ragione||c.riv_comune){
+    col1.appendChild(sl('Rivenditore di riferimento'));
+    if(c.riv_ragione) col1.appendChild(fr('Ragione sociale',c.riv_ragione));
+    if(c.riv_referente) col1.appendChild(fr('Referente',c.riv_referente));
+    if(c.riv_tel) col1.appendChild(fr('Telefono',c.riv_tel));
+    if(c.riv_email) col1.appendChild(frA('Email',c.riv_email));
+    var rivAddr=[c.riv_via_pref,c.riv_via,c.riv_civico].filter(Boolean).join(' ');
+    if(rivAddr) col1.appendChild(fr('Sede',rivAddr));
+    if(c.riv_cap||c.riv_comune) col1.appendChild(fr('CAP / Comune',(c.riv_cap||'')+' '+(c.riv_comune||'')));
+    if(c.riv_stato) col1.appendChild(fr('Stato',c.riv_stato));
+  }
   if(c.dropbox_url){
     col1.appendChild(sl('Cloud'));
     var db=document.createElement('button');db.className='cloud-btn dropbox';db.textContent='Dropbox';
@@ -871,7 +928,7 @@ function modificaContatto(id){
   chiudiScheda();
   document.getElementById('formTitolo').textContent='Modifica: '+c.cognome+' '+c.nome;
   document.getElementById('editId').value=id;
-  var map={fNome:'nome',fCognome:'cognome',fProfessione:'professione',fIncarico:'incarico',fGruppo:'gruppo',fCategoria:'categoria',fNoteRef:'note_ref',fViaPref:'via_prefisso',fVia:'via',fCivico:'civico',fCap:'cap',fLocalita:'localita',fComune:'comune',fProvincia:'provincia',fRegione:'regione',fStato2:'stato2',fTel1Pref:'tel1_pref',fTel1:'tel1',fTel1T:'tel1_t',fTel2Pref:'tel2_pref',fTel2:'tel2',fTel2T:'tel2_t',fMob1Pref:'mob1_pref',fMob1:'mob1',fMob1T:'mob1_t',fMob2Pref:'mob2_pref',fMob2:'mob2',fMob2T:'mob2_t',fFaxPref:'fax_pref',fFax:'fax',fEmail1:'email1',fEmail2:'email2',fPec:'pec',fCf:'cf',fRagione:'ragione_sociale',fPiva:'piva',fRea:'rea',fAlbo:'albo',fProdotti:'prodotti',fSito:'sito_web',fTipoRapporto:'tipo_rapporto',fProgetto:'progetto',fStato:'stato',fDropbox:'dropbox_url',fSpike:'spike_email'};
+  var map={fNome:'nome',fCognome:'cognome',fProfessione:'professione',fIncarico:'incarico',fGruppo:'gruppo',fCategoria:'categoria',fNoteRef:'note_ref',fViaPref:'via_prefisso',fVia:'via',fCivico:'civico',fCap:'cap',fLocalita:'localita',fComune:'comune',fProvincia:'provincia',fRegione:'regione',fStato2:'stato2',fTel1Pref:'tel1_pref',fTel1:'tel1',fTel1T:'tel1_t',fTel2Pref:'tel2_pref',fTel2:'tel2',fTel2T:'tel2_t',fMob1Pref:'mob1_pref',fMob1:'mob1',fMob1T:'mob1_t',fMob2Pref:'mob2_pref',fMob2:'mob2',fMob2T:'mob2_t',fFaxPref:'fax_pref',fFax:'fax',fEmail1:'email1',fEmail2:'email2',fPec:'pec',fCf:'cf',fRagione:'ragione_sociale',fPiva:'piva',fRea:'rea',fAlbo:'albo',fProdotti:'prodotti',fSito:'sito_web',aViaPref:'az_via_pref',aVia:'az_via',aCivico:'az_civico',aCap:'az_cap',aComune:'az_comune',aProvincia:'az_provincia',aRegione:'az_regione',aStato:'az_stato',rRagione:'riv_ragione',rReferente:'riv_referente',rTel:'riv_tel',rEmail:'riv_email',rViaPref:'riv_via_pref',rVia:'riv_via',rCivico:'riv_civico',rCap:'riv_cap',rComune:'riv_comune',rProvincia:'riv_provincia',rRegione:'riv_regione',rStato:'riv_stato',fTipoRapporto:'tipo_rapporto',fProgetto:'progetto',fStato:'stato',fDropbox:'dropbox_url',fSpike:'spike_email'};
   Object.keys(map).forEach(function(fId){var el=document.getElementById(fId);if(el)el.value=c[map[fId]]||'';});
   document.getElementById('modalForm').classList.add('open');
 }
@@ -1209,6 +1266,54 @@ function apriComposer(contactId,bozza){
 }
 
 // ===== GEO =====
+function geoByCAP_riv(){
+  var val=(document.getElementById('rCap').value||'').trim();
+  if(val.length<5) return;
+  var found=COMUNI_IT.find(function(x){return x.cap===val;});
+  if(found){
+    var com=document.getElementById('rComune');var prov=document.getElementById('rProvincia');
+    var reg=document.getElementById('rRegione');var stato=document.getElementById('rStato');
+    if(com) com.value=found.c;if(prov) prov.value=found.p;
+    if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+  }
+}
+
+function geoByComune_riv(){
+  var val=(document.getElementById('rComune').value||'').trim();
+  if(!val) return;
+  var found=COMUNI_IT.find(function(x){return x.c.toLowerCase()===val.toLowerCase();});
+  if(found){
+    var cap=document.getElementById('rCap');var prov=document.getElementById('rProvincia');
+    var reg=document.getElementById('rRegione');var stato=document.getElementById('rStato');
+    if(cap) cap.value=found.cap;if(prov) prov.value=found.p;
+    if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+  }
+}
+
+function geoByCAP_az(){
+  var val=(document.getElementById('aCap').value||'').trim();
+  if(val.length<5) return;
+  var found=COMUNI_IT.find(function(x){return x.cap===val;});
+  if(found){
+    var com=document.getElementById('aComune');var prov=document.getElementById('aProvincia');
+    var reg=document.getElementById('aRegione');var stato=document.getElementById('aStato');
+    if(com) com.value=found.c;if(prov) prov.value=found.p;
+    if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+  }
+}
+
+function geoByComune_az(){
+  var val=(document.getElementById('aComune').value||'').trim();
+  if(!val) return;
+  var found=COMUNI_IT.find(function(x){return x.c.toLowerCase()===val.toLowerCase();});
+  if(found){
+    var cap=document.getElementById('aCap');var prov=document.getElementById('aProvincia');
+    var reg=document.getElementById('aRegione');var stato=document.getElementById('aStato');
+    if(cap) cap.value=found.cap;if(prov) prov.value=found.p;
+    if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+  }
+}
+
 function geoByCAP(){
   var val=(document.getElementById('fCap').value||'').trim();
   if(val.length<5) return;
