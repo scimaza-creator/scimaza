@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval' data: blob:;">
+
 <title>Hub Office</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Sans+3:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -1406,8 +1406,8 @@ setInterval(updateClock, 60000);
       <div class="form-grid">
         <div class="fg full" style="display:grid;grid-template-columns:90px 1fr 60px;gap:8px">
           <div class="fg"><label>Tipo via</label><select id="fViaPref"><option>Via</option><option>Viale</option><option>Piazza</option><option>Piazzale</option><option>Largo</option><option>Vicolo</option><option>Strada</option></select></div>
-          <div class="fg"><label>Nome via</label><input id="fVia" placeholder="Roma"></div>
-          <div class="fg"><label>N°</label><input id="fCivico" placeholder="12"></div>
+          <div class="fg"><label>Nome via</label><input id="fVia" placeholder="Roma" oninput="aggiornaMappaForm()" onchange="aggiornaMappaForm()"></div>
+          <div class="fg"><label>N°</label><input id="fCivico" placeholder="12" oninput="aggiornaMappaForm()" onchange="aggiornaMappaForm()"></div>
         </div>
         <div class="fg"><label>CAP</label><input id="fCap" placeholder="37030" list="listCAP" autocomplete="off" oninput="geoByCAP()" onchange="geoByCAP()"></div>
         <div class="fg"><label>Località</label><input id="fLocalita" placeholder="Colognola"></div>
@@ -2548,7 +2548,7 @@ function geoByCAP(){
     var reg=document.getElementById('fRegione');var stato=document.getElementById('fStato2');
     if(com) com.value=found.c;if(prov) prov.value=found.p;
     if(reg) reg.value=found.r;if(stato) stato.value='Italia';
-    aggiornaMappaForm(found.c+', '+found.p);
+    aggiornaMappaForm();
   }
 }
 
@@ -2561,18 +2561,31 @@ function geoByComune(){
     var reg=document.getElementById('fRegione');var stato=document.getElementById('fStato2');
     if(cap) cap.value=found.cap;if(prov) prov.value=found.p;
     if(reg) reg.value=found.r;if(stato) stato.value='Italia';
-    aggiornaMappaForm(found.c+', '+found.p);
+    aggiornaMappaForm();
   }
 }
 
-function aggiornaMappaForm(addr){
-  var wrap=document.getElementById('mapWrap');if(!wrap||!addr) return;
+function aggiornaMappaForm(){
+  var wrap=document.getElementById('mapWrap');if(!wrap) return;
+  var tipovia=(document.getElementById('fViaPref')||{}).value||'';
+  var via=(document.getElementById('fVia')||{}).value||'';
+  var civico=(document.getElementById('fCivico')||{}).value||'';
+  var cap=(document.getElementById('fCap')||{}).value||'';
+  var comune=(document.getElementById('fComune')||{}).value||'';
+  var prov=(document.getElementById('fProvincia')||{}).value||'';
+  if(!via&&!comune){wrap.style.display='none';return;}
+  var parti=[];
+  if(via) parti.push(tipovia?tipovia+' '+via+(civico?' '+civico:''):via+(civico?' '+civico:''));
+  if(cap) parti.push(cap);
+  if(comune) parti.push(comune);
+  if(prov) parti.push('('+prov+')');
+  parti.push('Italia');
+  var fullAddr=parti.join(', ');
   wrap.style.display='block';
-  var enc=encodeURIComponent(addr);
-  wrap.innerHTML='<div style="font-size:11px;color:var(--text2);margin-bottom:6px">📍 '+addr+'</div>'+
+  var enc=encodeURIComponent(fullAddr);
+  wrap.innerHTML='<div style="font-size:11px;color:var(--text2);margin-bottom:6px">📍 '+fullAddr+'</div>'+
     '<div style="display:flex;gap:8px">'+
     '<button type="button" class="btn-primary" style="font-size:11px;padding:5px 12px" onclick="window.open(\'https://www.google.com/maps/search/'+enc+'\')">Google Maps</button>'+
-
     '</div>';
 }
 
