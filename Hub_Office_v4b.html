@@ -2070,11 +2070,11 @@ function chiudiScheda(){document.getElementById('modalScheda').classList.remove(
 function modificaContatto(id){
   var c=allContacts.find(function(x){return x.id===id;});
   if(!c) return;
-  chiudiScheda();
   document.getElementById('formTitolo').textContent='Modifica: '+c.cognome+' '+c.nome;
   document.getElementById('editId').value=id;
   var map={fNome:'nome',fCognome:'cognome',fProfessione:'professione',fIncarico:'incarico',fGruppo:'gruppo',fCategoria:'categoria',fNoteRef:'note_ref',fViaPref:'via_prefisso',fVia:'via',fCivico:'civico',fCap:'cap',fLocalita:'localita',fComune:'comune',fProvincia:'provincia',fRegione:'regione',fStato2:'stato2',fTel1Pref:'tel1_pref',fTel1:'tel1',fTel1T:'tel1_t',fTel2Pref:'tel2_pref',fTel2:'tel2',fTel2T:'tel2_t',fMob1Pref:'mob1_pref',fMob1:'mob1',fMob1T:'mob1_t',fMob2Pref:'mob2_pref',fMob2:'mob2',fMob2T:'mob2_t',fFaxPref:'fax_pref',fFax:'fax',fEmail1:'email1',fEmail2:'email2',fPec:'pec',fCf:'cf',fRagione:'ragione_sociale',fPiva:'piva',fRea:'rea',fAlbo:'albo',fProdotti:'prodotti',fSito:'sito_web',aViaPref:'az_via_pref',aVia:'az_via',aCivico:'az_civico',aCap:'az_cap',aComune:'az_comune',aProvincia:'az_provincia',aRegione:'az_regione',aStato:'az_stato',rRagione:'riv_ragione',rReferente:'riv_referente',rTel:'riv_tel',rEmail:'riv_email',rViaPref:'riv_via_pref',rVia:'riv_via',rCivico:'riv_civico',rCap:'riv_cap',rComune:'riv_comune',rProvincia:'riv_provincia',rRegione:'riv_regione',rStato:'riv_stato',fTipoRapporto:'tipo_rapporto',fProgetto:'progetto',fStato:'stato',fDropbox:'dropbox_url',fSpike:'spike_email'};
   Object.keys(map).forEach(function(fId){var el=document.getElementById(fId);if(el)el.value=c[map[fId]]||'';});
+  document.getElementById('modalScheda').classList.remove('open');
   document.getElementById('modalForm').classList.add('open');
 }
 
@@ -2210,17 +2210,11 @@ function apriAiModal(tipo,label,placeholder){
   if(!currentContact) return;
   aiTipoCorrente=tipo;
   aiContactCorrente=currentContact;
-  document.getElementById('aiModalTitle').textContent=label;
-  document.getElementById('aiInput').placeholder=placeholder;
-  document.getElementById('aiInput').value='';
-  document.getElementById('aiOutput').textContent='';
-  document.getElementById('aiOutputWrap').style.display='none';
-  document.getElementById('aiCopiaBtn').style.display='none';
-  document.getElementById('aiDropboxBtn').style.display='none';
-  document.getElementById('aiGeneraBtn').style.display='';
-  document.getElementById('aiSpinner').style.display='none';
+  var t=document.getElementById('aiModalTitle');if(t) t.textContent=label;
+  var i=document.getElementById('aiInput');
+  if(i){i.placeholder=placeholder;i.value='';}
   document.getElementById('aiModal').classList.add('open');
-  setTimeout(function(){document.getElementById('aiInput').focus();},100);
+  setTimeout(function(){var inp=document.getElementById('aiInput');if(inp) inp.focus();},100);
 }
 
 function chiudiAiModal(){
