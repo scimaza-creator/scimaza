@@ -162,6 +162,17 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .abar{padding:.8rem 1.5rem;border-top:.5px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--surface)}
 .fin-btn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:10px 18px;border-radius:var(--radius-sm);cursor:pointer;white-space:nowrap;transition:all .15s;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);display:flex;align-items:center;gap:8px}
 .fin-btn:hover{background:var(--gold-bg2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.ai-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(4px)}
+.ai-modal-overlay.open{display:flex}
+.ai-modal{background:var(--surface);border:.5px solid var(--border2);border-radius:var(--radius);width:100%;max-width:700px;max-height:85vh;display:flex;flex-direction:column}
+.ai-modal-hdr{padding:1.2rem 1.5rem;border-bottom:.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.ai-modal-title{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--gold)}
+.ai-modal-body{padding:1.2rem 1.5rem;flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.ai-input-area{font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 12px;border:.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);resize:vertical;min-height:100px;width:100%;outline:none}
+.ai-input-area:focus{border-color:var(--gold2)}
+.ai-output-area{font-family:'DM Sans',sans-serif;font-size:13px;padding:10px 12px;border:.5px solid var(--border);border-radius:var(--radius-sm);background:var(--surface2);color:var(--text);min-height:150px;white-space:pre-wrap;line-height:1.6}
+.ai-spinner{display:none;text-align:center;padding:20px;color:var(--text3);font-size:13px}
+.ai-modal-footer{padding:1rem 1.5rem;border-top:.5px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
 .toast{position:fixed;bottom:50px;right:20px;background:var(--surface2);color:var(--text);padding:10px 18px;border-radius:8px;font-size:12px;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none;border:.5px solid var(--border2)}
 .toast.show{opacity:1}
 .mail-item{background:var(--surface2);border:.5px solid var(--border);border-radius:10px;padding:.8rem 1rem;margin-bottom:6px;position:relative}
@@ -1544,6 +1555,33 @@ setInterval(updateClock, 60000);
   </div>
 </div>
 
+<!-- MODAL AI -->
+<div class="ai-modal-overlay" id="aiModal">
+  <div class="ai-modal">
+    <div class="ai-modal-hdr">
+      <div class="ai-modal-title" id="aiModalTitle">✦ Genera con AI</div>
+      <div class="modal-close" onclick="chiudiAiModal()">✕</div>
+    </div>
+    <div class="ai-modal-body">
+      <div>
+        <label style="font-size:11px;color:var(--text2);font-weight:500">Scrivi i concetti di base:</label>
+        <textarea class="ai-input-area" id="aiInput" placeholder="Es. Confermare appuntamento per sopralluogo, chiedere disponibilità settimana prossima..."></textarea>
+      </div>
+      <div class="ai-spinner" id="aiSpinner">✦ Claude sta generando...</div>
+      <div id="aiOutputWrap" style="display:none">
+        <label style="font-size:11px;color:var(--text2);font-weight:500">Testo generato — puoi modificarlo:</label>
+        <div class="ai-output-area" id="aiOutput" contenteditable="true"></div>
+      </div>
+    </div>
+    <div class="ai-modal-footer">
+      <button class="btn-secondary" onclick="chiudiAiModal()">Chiudi</button>
+      <button class="btn-primary" id="aiGeneraBtn" onclick="generaAI()">✦ Genera</button>
+      <button class="btn-secondary" id="aiCopiaBtn" style="display:none" onclick="copiaAI()">📋 Copia</button>
+      <button class="btn-secondary" id="aiDropboxBtn" style="display:none" onclick="salvaDropboxAI()">📦 Salva su Dropbox</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <div class="statusbar">
@@ -1904,11 +1942,17 @@ function apriScheda(id){
   var nb2=document.createElement('button');nb2.className='btn-primary';nb2.style.cssText='font-size:11px;padding:6px 12px';nb2.textContent='+';nb2.onclick=aggiungiNota;
   nr.appendChild(ni);nr.appendChild(nb2);col1.appendChild(nr);
 
-  col1.appendChild(sl('AI'));
+  col1.appendChild(sl('✦ Assistente AI'));
   var ar=document.createElement('div');ar.className='ai-row';
-  ['email','riassunto','lettera','promemoria'].forEach(function(t){
-    var b=document.createElement('button');b.className='ai-btn';b.textContent='✦ '+t;
-    b.onclick=function(){aiPrompt(t);};ar.appendChild(b);
+  var aiConfig=[
+    {tipo:'email',label:'✦ Email',placeholder:'Concetti: oggetto, tono, richiesta principale...'},
+    {tipo:'lettera',label:'✦ Lettera',placeholder:'Concetti per la lettera: oggetto, motivo, punti chiave...'},
+    {tipo:'promemoria',label:'✦ Promemoria',placeholder:'Cosa ricordare: azione, scadenza, follow-up...'},
+    {tipo:'riassunto',label:'✦ Riassunto',placeholder:'Cosa riassumere: tutto il profilo, solo i progetti, le comunicazioni...'}
+  ];
+  aiConfig.forEach(function(cfg){
+    var b=document.createElement('button');b.className='ai-btn';b.textContent=cfg.label;
+    b.onclick=function(){apriAiModal(cfg.tipo,cfg.label,cfg.placeholder);};ar.appendChild(b);
   });
   col1.appendChild(ar);
 
@@ -2164,18 +2208,91 @@ async function uploadFoto(input){
   reader.readAsDataURL(file);
 }
 
-function aiPrompt(tipo){
+var aiTipoCorrente='';
+var aiContactCorrente=null;
+
+function apriAiModal(tipo,label,placeholder){
   if(!currentContact) return;
-  var nome=(currentContact.nome||'')+' '+(currentContact.cognome||'');
-  var az=currentContact.ragione_sociale||'';
-  var pr=currentContact.progetto||'';
-  var map={
-    email:'Scrivi email professionale a '+nome+' ('+az+') riguardo: '+pr,
-    riassunto:'Riassumi il profilo di '+nome+' di '+az+', progetto: '+pr,
-    lettera:'Genera lettera formale per '+nome+' presso '+az,
-    promemoria:'Crea promemoria follow-up per '+nome+' ('+az+'): '+pr
+  aiTipoCorrente=tipo;
+  aiContactCorrente=currentContact;
+  document.getElementById('aiModalTitle').textContent=label;
+  document.getElementById('aiInput').placeholder=placeholder;
+  document.getElementById('aiInput').value='';
+  document.getElementById('aiOutput').textContent='';
+  document.getElementById('aiOutputWrap').style.display='none';
+  document.getElementById('aiCopiaBtn').style.display='none';
+  document.getElementById('aiDropboxBtn').style.display='none';
+  document.getElementById('aiGeneraBtn').style.display='';
+  document.getElementById('aiSpinner').style.display='none';
+  document.getElementById('aiModal').classList.add('open');
+  setTimeout(function(){document.getElementById('aiInput').focus();},100);
+}
+
+function chiudiAiModal(){
+  document.getElementById('aiModal').classList.remove('open');
+}
+
+async function generaAI(){
+  var input=document.getElementById('aiInput').value.trim();
+  var c=aiContactCorrente;
+  if(!c) return;
+  var nome=(c.nome||'')+' '+(c.cognome||'');
+  var az=c.ragione_sociale||'';
+  var pr=c.progetto||'';
+  var note=(c.note||[]).map(function(n){return n.date+': '+n.text;}).join('\n');
+
+  var systemPrompts={
+    email:'Sei un assistente professionale. Scrivi una email professionale in italiano. Sii conciso, chiaro e formale. Includi oggetto e corpo.',
+    lettera:'Sei un assistente professionale. Scrivi una lettera o relazione formale in italiano. Usa un tono professionale ed elegante.',
+    promemoria:'Sei un assistente professionale. Crea un promemoria strutturato in italiano con azioni, scadenze e note.',
+    riassunto:'Sei un assistente professionale. Genera un riassunto completo e strutturato del profilo contatto in italiano, con sezioni chiare.'
   };
-  navigator.clipboard.writeText(map[tipo]).then(function(){toast('Prompt copiato');}).catch(function(){alert(map[tipo]);});
+
+  var contextMap={
+    email:'Email per: '+nome+' ('+az+'). Progetto: '+pr+'. Istruzioni: '+input,
+    lettera:'Lettera per: '+nome+' ('+az+'). Progetto: '+pr+'. Istruzioni: '+input,
+    promemoria:'Promemoria per: '+nome+' ('+az+'). Progetto: '+pr+'. Note: '+note+'. Istruzioni: '+input,
+    riassunto:'Profilo contatto:\nNome: '+nome+'\nAzienda: '+az+'\nProfessione: '+(c.professione||'')+'\nProgetto: '+pr+'\nTel: '+(c.tel1||c.mob1||'')+'\nEmail: '+(c.email1||'')+'\nComune: '+(c.comune||'')+'\nNote: '+note+'\nIstruzioni: '+input
+  };
+
+  document.getElementById('aiGeneraBtn').style.display='none';
+  document.getElementById('aiSpinner').style.display='block';
+  document.getElementById('aiOutputWrap').style.display='none';
+
+  try{
+    var resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:systemPrompts[aiTipoCorrente]||'Sei un assistente professionale.',
+        messages:[{role:'user',content:contextMap[aiTipoCorrente]||input}]
+      })
+    });
+    var data=await resp.json();
+    var testo=data.content&&data.content[0]&&data.content[0].text?data.content[0].text:'Errore nella generazione.';
+    document.getElementById('aiOutput').textContent=testo;
+    document.getElementById('aiOutputWrap').style.display='block';
+    document.getElementById('aiCopiaBtn').style.display='';
+    document.getElementById('aiDropboxBtn').style.display='';
+  }catch(e){
+    document.getElementById('aiOutput').textContent='Errore: '+e.message;
+    document.getElementById('aiOutputWrap').style.display='block';
+  }
+  document.getElementById('aiSpinner').style.display='none';
+  document.getElementById('aiGeneraBtn').style.display='';
+}
+
+function copiaAI(){
+  var testo=document.getElementById('aiOutput').textContent;
+  navigator.clipboard.writeText(testo).then(function(){toast('Testo copiato!');}).catch(function(){alert(testo);});
+}
+
+function salvaDropboxAI(){
+  toast('Apri Dropbox e salva il testo copiato');
+  window.open('https://www.dropbox.com/home');
+  copiaAI();
 }
 
 // ===== SISTEMA MAIL =====
