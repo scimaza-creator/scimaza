@@ -1435,14 +1435,15 @@ setInterval(updateClock, 60000);
       <div class="form-grid">
         <div class="fg full" style="display:grid;grid-template-columns:90px 1fr 60px;gap:8px">
           <div class="fg"><label>Tipo via</label><select id="aViaPref"><option>Via</option><option>Viale</option><option>Piazza</option><option>Piazzale</option><option>Largo</option><option>Vicolo</option><option>Strada</option></select></div>
-          <div class="fg"><label>Nome via</label><input id="aVia" placeholder="Roma"></div>
-          <div class="fg"><label>N°</label><input id="aCivico" placeholder="12"></div>
+          <div class="fg"><label>Nome via</label><input id="aVia" placeholder="Roma" oninput="geoByCAP_az()" onchange="geoByCAP_az()"></div>
+          <div class="fg"><label>N°</label><input id="aCivico" placeholder="12" oninput="geoByCAP_az()" onchange="geoByCAP_az()"></div>
         </div>
         <div class="fg"><label>CAP</label><input id="aCap" placeholder="37030" list="listCAP" autocomplete="off" oninput="geoByCAP_az()" onchange="geoByCAP_az()"></div>
         <div class="fg"><label>Comune</label><input id="aComune" placeholder="Verona" list="listComuni" autocomplete="off" oninput="geoByComune_az()" onchange="geoByComune_az()"></div>
         <div class="fg"><label>Provincia</label><input id="aProvincia" placeholder="VR" list="listProvince"></div>
         <div class="fg"><label>Regione</label><input id="aRegione" placeholder="Veneto" list="listRegioni"></div>
         <div class="fg"><label>Stato</label><input id="aStato" value="Italia" list="listStati"></div>
+        <div class="fg full" id="mapWrapAz" style="display:none;padding:10px;background:var(--surface2);border-radius:8px;border:.5px solid var(--border)"></div>
       </div>
       <div class="form-section">🏪 Rivenditore di riferimento</div>
       <div class="form-grid">
@@ -1452,8 +1453,8 @@ setInterval(updateClock, 60000);
         <div class="fg"><label>Email</label><input id="rEmail" type="email" placeholder="info@rivenditore.it"></div>
         <div class="fg full" style="display:grid;grid-template-columns:90px 1fr 60px;gap:8px">
           <div class="fg"><label>Tipo via</label><select id="rViaPref"><option>Via</option><option>Viale</option><option>Piazza</option><option>Piazzale</option><option>Largo</option><option>Vicolo</option><option>Strada</option></select></div>
-          <div class="fg"><label>Nome via</label><input id="rVia" placeholder="Roma"></div>
-          <div class="fg"><label>N°</label><input id="rCivico" placeholder="12"></div>
+          <div class="fg"><label>Nome via</label><input id="rVia" placeholder="Roma" oninput="aggiornaMappaRiv()" onchange="aggiornaMappaRiv()"></div>
+          <div class="fg"><label>N°</label><input id="rCivico" placeholder="12" oninput="aggiornaMappaRiv()" onchange="aggiornaMappaRiv()"></div>
         </div>
         <div class="fg"><label>CAP</label><input id="rCap" placeholder="37030" list="listCAP" autocomplete="off" oninput="geoByCAP_riv()" onchange="geoByCAP_riv()"></div>
         <div class="fg"><label>Comune</label><input id="rComune" placeholder="Verona" list="listComuni" autocomplete="off" oninput="geoByComune_riv()" onchange="geoByComune_riv()"></div>
@@ -2359,6 +2360,28 @@ function apriComposer(contactId,bozza){
 }
 
 // ===== GEO =====
+function aggiornaMappaAz(){
+  var via=(document.getElementById('aViaPref')||{}).value||'';
+  var strada=(document.getElementById('aVia')||{}).value||'';
+  var civ=(document.getElementById('aCivico')||{}).value||'';
+  var com=(document.getElementById('aComune')||{}).value||'';
+  var addr=[via,strada,civ,com].filter(Boolean).join(' ');
+  var wrap=document.getElementById('mapWrapAz');
+  if(!wrap) return;
+  if(!addr){wrap.style.display='none';return;}
+  wrap.style.display='block';
+  wrap.innerHTML='';
+  var info=document.createElement('div');
+  info.style.cssText='font-size:11px;color:var(--text2);margin-bottom:6px';
+  info.textContent='Indirizzo sede: '+addr;
+  var btn=document.createElement('button');
+  btn.className='btn-primary';btn.type='button';
+  btn.style.cssText='font-size:11px;padding:5px 12px';
+  btn.textContent='Google Maps';
+  btn.onclick=function(){window.open('https://www.google.com/maps/search/'+encodeURIComponent(addr));};
+  wrap.appendChild(info);wrap.appendChild(btn);
+}
+
 function aggiornaMappaRiv(){
   var via=(document.getElementById('rViaPref')||{}).value||'';
   var strada=(document.getElementById('rVia')||{}).value||'';
@@ -2417,6 +2440,7 @@ function geoByCAP_az(){
     var reg=document.getElementById('aRegione');var stato=document.getElementById('aStato');
     if(com) com.value=found.c;if(prov) prov.value=found.p;
     if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+    aggiornaMappaAz();
   }
 }
 
@@ -2429,6 +2453,7 @@ function geoByComune_az(){
     var reg=document.getElementById('aRegione');var stato=document.getElementById('aStato');
     if(cap) cap.value=found.cap;if(prov) prov.value=found.p;
     if(reg) reg.value=found.r;if(stato) stato.value='Italia';
+    aggiornaMappaAz();
   }
 }
 
