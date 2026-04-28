@@ -481,6 +481,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 }
 .article:nth-child(even) { border-right: none; }
 .article:hover { background: var(--paper2); }
+.article:hover .art-title { color: #1A1814 !important; }
+.article:hover .art-desc { color: #4A4540 !important; }
+.article:hover .art-meta { color: #6A6560 !important; }
+.article:hover .art-source { color: #8B1A1A !important; }
 .art-source {
   font-size: 9px;
   font-weight: 500;
@@ -530,6 +534,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   background: var(--paper);
 }
 .article-lead:hover { background: var(--paper2); }
+.article-lead:hover .art-title { color: #1A1814 !important; }
+.article-lead:hover .art-desc { color: #4A4540 !important; }
+.article-lead:hover .art-source { color: #8B1A1A !important; }
 .article-lead .art-title { font-size: 24px; }
 .article-lead .art-desc { font-size: 13px; max-width: 680px; }
 
@@ -626,6 +633,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   transition: all 0.15s;
 }
 .paper-card:hover { border-color: var(--accent); background: var(--paper); }
+.paper-card:hover .paper-name { color: #1A1814 !important; }
+.paper-card:hover .paper-desc { color: #4A4540 !important; }
+.paper-card:hover .paper-country { color: #6A6560 !important; }
 .paper-country {
   font-size: 9px;
   letter-spacing: 0.12em;
