@@ -972,8 +972,8 @@ setInterval(tbClock,1000);
 <!-- MASTHEAD -->
 <div class="masthead">
   <div class="masthead-title">
-    <h1>Il Giornale Finanziario Globale</h1>
-    <div class="tagline">Finanza · Economia · Geopolitica · Mercati · Mondo</div>
+    <h1>Il Giornale Finanziario Globale <span style="font-size:14px;font-weight:300;color:#AAA;letter-spacing:.05em" id="newsTime">(aggiornato alle --:--)</span></h1>
+    <div class="tagline">Finanza · Economia · Geopolitica · Mercati · Mondo · aggiornamento ogni 60 minuti</div>
   </div>
   <div class="masthead-nav">
     <button class="nav-btn active" onclick="showPanel('notizie',this)">Notizie Live</button>
@@ -1033,10 +1033,6 @@ setInterval(tbClock,1000);
 
     <!-- PANEL: NOTIZIE LIVE -->
     <div id="panel-notizie" class="panel active">
-      <div class="news-header">
-        <h2>Notizie in tempo reale</h2>
-        <span class="upd" id="newsTime"></span>
-      </div>
       <div class="news-grid">
 
         <a href="https://it.investing.com/news/economy" target="_blank" class="article-lead">
@@ -1321,7 +1317,7 @@ function updateClock() {
   const el4 = document.getElementById('footerDate');
   if (el1) el1.textContent = dateStr;
   if (el2) el2.textContent = timeStr;
-  if (el3) el3.textContent = 'Aggiornato · ' + timeStr;
+  if (el3) el3.textContent = '(aggiornato alle ' + timeStr + ' · ogni 60 min)';
   if (el4) el4.textContent = dateStr;
 }
 
@@ -1355,7 +1351,7 @@ function updateClock() {
   const el4 = document.getElementById('footerDate');
   if (el1) el1.textContent = dateStr;
   if (el2) el2.textContent = timeStr;
-  if (el3) el3.textContent = 'Aggiornato · ' + timeStr;
+  if (el3) el3.textContent = '(aggiornato alle ' + timeStr + ' · ogni 60 min)';
   if (el4) el4.textContent = dateStr;
 }
 
