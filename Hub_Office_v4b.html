@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co https://api.anthropic.com https://open.er-api.com https://claude.ai; img-src 'self' data: https:; frame-src 'none';">
 <title>Hub Office</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Source+Sans+3:wght@300;400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
@@ -1565,19 +1566,13 @@ setInterval(updateClock, 60000);
     <div class="ai-modal-body">
       <div>
         <label style="font-size:11px;color:var(--text2);font-weight:500">Scrivi i concetti di base:</label>
-        <textarea class="ai-input-area" id="aiInput" placeholder="Es. Confermare appuntamento per sopralluogo, chiedere disponibilità settimana prossima..."></textarea>
+        <textarea class="ai-input-area" id="aiInput" placeholder="Es. Confermare appuntamento per sopralluogo, chiedere disponibilità settimana prossima... Poi clicca Apri Claude AI"></textarea>
       </div>
-      <div class="ai-spinner" id="aiSpinner">✦ Claude sta generando...</div>
-      <div id="aiOutputWrap" style="display:none">
-        <label style="font-size:11px;color:var(--text2);font-weight:500">Testo generato — puoi modificarlo:</label>
-        <div class="ai-output-area" id="aiOutput" contenteditable="true"></div>
-      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">Claude AI si aprirà in una nuova scheda con il testo precompilato — potrai modificarlo e inviare.</div>
     </div>
     <div class="ai-modal-footer">
       <button class="btn-secondary" onclick="chiudiAiModal()">Chiudi</button>
-      <button class="btn-primary" id="aiGeneraBtn" onclick="generaAI()">✦ Genera</button>
-      <button class="btn-secondary" id="aiCopiaBtn" style="display:none" onclick="copiaAI()">📋 Copia</button>
-      <button class="btn-secondary" id="aiDropboxBtn" style="display:none" onclick="salvaDropboxAI()">📦 Salva su Dropbox</button>
+      <button class="btn-primary" id="aiGeneraBtn" onclick="generaAI()">✦ Apri Claude AI</button>
     </div>
   </div>
 </div>
@@ -2232,56 +2227,26 @@ function chiudiAiModal(){
   document.getElementById('aiModal').classList.remove('open');
 }
 
-async function generaAI(){
+function generaAI(){
   var input=document.getElementById('aiInput').value.trim();
   var c=aiContactCorrente;
-  if(!c) return;
+  if(!c){alert('Nessun contatto selezionato');return;}
   var nome=(c.nome||'')+' '+(c.cognome||'');
   var az=c.ragione_sociale||'';
   var pr=c.progetto||'';
-  var note=(c.note||[]).map(function(n){return n.date+': '+n.text;}).join('\n');
+  var note=(c.note||[]).slice(-3).map(function(n){return n.date+': '+n.text;}).join(' | ');
 
-  var systemPrompts={
-    email:'Sei un assistente professionale. Scrivi una email professionale in italiano. Sii conciso, chiaro e formale. Includi oggetto e corpo.',
-    lettera:'Sei un assistente professionale. Scrivi una lettera o relazione formale in italiano. Usa un tono professionale ed elegante.',
-    promemoria:'Sei un assistente professionale. Crea un promemoria strutturato in italiano con azioni, scadenze e note.',
-    riassunto:'Sei un assistente professionale. Genera un riassunto completo e strutturato del profilo contatto in italiano, con sezioni chiare.'
+  var prefissi={
+    email:'Scrivi una email professionale in italiano per '+nome+(az?' di '+az:'')+(pr?', progetto: '+pr:'')+'. Includi oggetto e corpo. Istruzioni: ',
+    lettera:'Scrivi una lettera formale in italiano per '+nome+(az?' presso '+az:'')+(pr?', progetto: '+pr:'')+'. Istruzioni: ',
+    promemoria:'Crea un promemoria strutturato in italiano per '+nome+(az?' ('+az+')':'')+(pr?', progetto: '+pr:'')+(note?', note recenti: '+note:'')+'. Istruzioni: ',
+    riassunto:'Genera un riassunto professionale completo del contatto: '+nome+(az?', '+az:'')+(c.professione?', '+c.professione:'')+(pr?', progetto: '+pr:'')+(c.comune?', '+c.comune:'')+(note?'. Note: '+note:'')+'. Istruzioni: '
   };
 
-  var contextMap={
-    email:'Email per: '+nome+' ('+az+'). Progetto: '+pr+'. Istruzioni: '+input,
-    lettera:'Lettera per: '+nome+' ('+az+'). Progetto: '+pr+'. Istruzioni: '+input,
-    promemoria:'Promemoria per: '+nome+' ('+az+'). Progetto: '+pr+'. Note: '+note+'. Istruzioni: '+input,
-    riassunto:'Profilo contatto:\nNome: '+nome+'\nAzienda: '+az+'\nProfessione: '+(c.professione||'')+'\nProgetto: '+pr+'\nTel: '+(c.tel1||c.mob1||'')+'\nEmail: '+(c.email1||'')+'\nComune: '+(c.comune||'')+'\nNote: '+note+'\nIstruzioni: '+input
-  };
-
-  document.getElementById('aiGeneraBtn').style.display='none';
-  document.getElementById('aiSpinner').style.display='block';
-  document.getElementById('aiOutputWrap').style.display='none';
-
-  try{
-    var resp=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:systemPrompts[aiTipoCorrente]||'Sei un assistente professionale.',
-        messages:[{role:'user',content:contextMap[aiTipoCorrente]||input}]
-      })
-    });
-    var data=await resp.json();
-    var testo=data.content&&data.content[0]&&data.content[0].text?data.content[0].text:'Errore nella generazione.';
-    document.getElementById('aiOutput').textContent=testo;
-    document.getElementById('aiOutputWrap').style.display='block';
-    document.getElementById('aiCopiaBtn').style.display='';
-    document.getElementById('aiDropboxBtn').style.display='';
-  }catch(e){
-    document.getElementById('aiOutput').textContent='Errore: '+e.message;
-    document.getElementById('aiOutputWrap').style.display='block';
-  }
-  document.getElementById('aiSpinner').style.display='none';
-  document.getElementById('aiGeneraBtn').style.display='';
+  var testo=(prefissi[aiTipoCorrente]||'')+input;
+  var url='https://claude.ai/new?q='+encodeURIComponent(testo);
+  window.open(url,'_blank');
+  chiudiAiModal();
 }
 
 function copiaAI(){
