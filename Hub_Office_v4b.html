@@ -291,11 +291,11 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 #view-finanza, #view-finanza * { box-sizing: border-box; }
 
 .tb-topbar{background:var(--text);color:#fff;padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between;margin-top:16px}
-.tb-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#fff;letter-spacing:.02em}
+.tb-logo{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;color:#1A1814;background:#F0EDE6;padding:6px 14px;border-radius:6px;letter-spacing:.02em}
 .tb-center{display:flex;gap:0;overflow-x:auto}
 .tab-btn2{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:8px 16px;cursor:pointer;color:#AAA;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
-.tab-btn2:hover{color:#fff}
-.tab-btn2.active2{color:#fff;border-bottom-color:#8B4513}
+.tab-btn2:hover{color:#000;background:rgba(255,255,255,0.9);border-radius:4px}
+.tab-btn2.active2{color:#000;background:#fff;border-bottom-color:#8B4513;border-radius:4px}
 .tb-clock{font-size:11px;color:#888}
 .tb-ticker{background:#111;overflow:hidden;white-space:nowrap;padding:5px 0;font-size:11px;color:#ccc}
 .tb-ticker-inner{display:inline-block;animation:tbTick 80s linear infinite}
@@ -797,24 +797,24 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
   <!-- PANEL INDICI -->
   <div id="tb-panel-indici" class="tb-panel active2">
-    <div class="sec-label2">Indici azionari principali</div>
-    <div class="tb-grid">
-      <div class="mcard2"><div class="mcard2-name">FTSE MIB</div><div class="mcard2-val">38.420</div><div class="mcard2-chg c-dn">▼ 0.72%</div></div>
-      <div class="mcard2"><div class="mcard2-name">S&P 500</div><div class="mcard2-val">5.611</div><div class="mcard2-chg c-dn">▼ 1.02%</div></div>
-      <div class="mcard2"><div class="mcard2-name">NASDAQ 100</div><div class="mcard2-val">19.280</div><div class="mcard2-chg c-dn">▼ 1.45%</div></div>
-      <div class="mcard2"><div class="mcard2-name">Dow Jones</div><div class="mcard2-val">41.580</div><div class="mcard2-chg c-dn">▼ 0.88%</div></div>
-      <div class="mcard2"><div class="mcard2-name">Euro Stoxx 50</div><div class="mcard2-val">5.190</div><div class="mcard2-chg c-up">▲ 0.31%</div></div>
-      <div class="mcard2"><div class="mcard2-name">DAX</div><div class="mcard2-val">22.450</div><div class="mcard2-chg c-up">▲ 0.18%</div></div>
-      <div class="mcard2"><div class="mcard2-name">CAC 40</div><div class="mcard2-val">7.980</div><div class="mcard2-chg c-dn">▼ 0.44%</div></div>
-      <div class="mcard2"><div class="mcard2-name">FTSE 100</div><div class="mcard2-val">8.620</div><div class="mcard2-chg c-up">▲ 0.22%</div></div>
-      <div class="mcard2"><div class="mcard2-name">Nikkei 225</div><div class="mcard2-val">35.617</div><div class="mcard2-chg c-dn">▼ 0.57%</div></div>
-      <div class="mcard2"><div class="mcard2-name">Hang Seng</div><div class="mcard2-val">23.410</div><div class="mcard2-chg c-up">▲ 1.12%</div></div>
-      <div class="mcard2"><div class="mcard2-name">VIX</div><div class="mcard2-val">21.4</div><div class="mcard2-chg c-dn">▼ 5.3%</div></div>
-      <div class="mcard2"><div class="mcard2-name">Oro ($/oz)</div><div class="mcard2-val">3.084</div><div class="mcard2-chg c-up">▲ 0.62%</div></div>
-      <div class="mcard2"><div class="mcard2-name">WTI ($/barile)</div><div class="mcard2-val">69.45</div><div class="mcard2-chg c-dn">▼ 1.23%</div></div>
-      <div class="mcard2"><div class="mcard2-name">Brent ($/barile)</div><div class="mcard2-val">73.10</div><div class="mcard2-chg c-dn">▼ 1.08%</div></div>
-      <div class="mcard2"><div class="mcard2-name">BTC</div><div class="mcard2-val">$87.240</div><div class="mcard2-chg c-dn">▼ 2.41%</div></div>
-      <div class="mcard2"><div class="mcard2-name">EUR/USD</div><div class="mcard2-val">1.0811</div><div class="mcard2-chg c-up">▲ 0.32%</div></div>
+    <div class="sec-label2">Indici azionari principali &nbsp;—&nbsp; <span id="yf-update-time" style="color:#1D9E75;font-size:9px">aggiornamento ogni 15 min</span></div>
+    <div class="tb-grid" id="yf-indici-grid">
+      <div class="mcard2" id="yf-FTSEMIB"><div class="mcard2-name">FTSE MIB</div><div class="mcard2-val" id="yf-v-FTSEMIB">38.420</div><div class="mcard2-chg c-dn" id="yf-c-FTSEMIB">▼ 0.72%</div></div>
+      <div class="mcard2" id="yf-SP500"><div class="mcard2-name">S&P 500</div><div class="mcard2-val" id="yf-v-SP500">5.611</div><div class="mcard2-chg c-dn" id="yf-c-SP500">▼ 1.02%</div></div>
+      <div class="mcard2" id="yf-NDX"><div class="mcard2-name">NASDAQ 100</div><div class="mcard2-val" id="yf-v-NDX">19.280</div><div class="mcard2-chg c-dn" id="yf-c-NDX">▼ 1.45%</div></div>
+      <div class="mcard2" id="yf-DJI"><div class="mcard2-name">Dow Jones</div><div class="mcard2-val" id="yf-v-DJI">41.580</div><div class="mcard2-chg c-dn" id="yf-c-DJI">▼ 0.88%</div></div>
+      <div class="mcard2" id="yf-STOXX"><div class="mcard2-name">Euro Stoxx 50</div><div class="mcard2-val" id="yf-v-STOXX">5.190</div><div class="mcard2-chg c-up" id="yf-c-STOXX">▲ 0.31%</div></div>
+      <div class="mcard2" id="yf-DAX"><div class="mcard2-name">DAX</div><div class="mcard2-val" id="yf-v-DAX">22.450</div><div class="mcard2-chg c-up" id="yf-c-DAX">▲ 0.18%</div></div>
+      <div class="mcard2" id="yf-CAC"><div class="mcard2-name">CAC 40</div><div class="mcard2-val" id="yf-v-CAC">7.980</div><div class="mcard2-chg c-dn" id="yf-c-CAC">▼ 0.44%</div></div>
+      <div class="mcard2" id="yf-FTSE"><div class="mcard2-name">FTSE 100</div><div class="mcard2-val" id="yf-v-FTSE">8.620</div><div class="mcard2-chg c-up" id="yf-c-FTSE">▲ 0.22%</div></div>
+      <div class="mcard2" id="yf-N225"><div class="mcard2-name">Nikkei 225</div><div class="mcard2-val" id="yf-v-N225">35.617</div><div class="mcard2-chg c-dn" id="yf-c-N225">▼ 0.57%</div></div>
+      <div class="mcard2" id="yf-HSI"><div class="mcard2-name">Hang Seng</div><div class="mcard2-val" id="yf-v-HSI">23.410</div><div class="mcard2-chg c-up" id="yf-c-HSI">▲ 1.12%</div></div>
+      <div class="mcard2" id="yf-VIX"><div class="mcard2-name">VIX</div><div class="mcard2-val" id="yf-v-VIX">21.4</div><div class="mcard2-chg c-dn" id="yf-c-VIX">▼ 5.3%</div></div>
+      <div class="mcard2" id="yf-GOLD"><div class="mcard2-name">Oro ($/oz)</div><div class="mcard2-val" id="yf-v-GOLD">3.084</div><div class="mcard2-chg c-up" id="yf-c-GOLD">▲ 0.62%</div></div>
+      <div class="mcard2" id="yf-WTI"><div class="mcard2-name">WTI ($/barile)</div><div class="mcard2-val" id="yf-v-WTI">69.45</div><div class="mcard2-chg c-dn" id="yf-c-WTI">▼ 1.23%</div></div>
+      <div class="mcard2" id="yf-BRENT"><div class="mcard2-name">Brent ($/barile)</div><div class="mcard2-val" id="yf-v-BRENT">73.10</div><div class="mcard2-chg c-dn" id="yf-c-BRENT">▼ 1.08%</div></div>
+      <div class="mcard2" id="yf-BTC"><div class="mcard2-name">BTC</div><div class="mcard2-val" id="yf-v-BTC">$87.240</div><div class="mcard2-chg c-dn" id="yf-c-BTC">▼ 2.41%</div></div>
+      <div class="mcard2" id="yf-EURUSD"><div class="mcard2-name">EUR/USD</div><div class="mcard2-val" id="yf-v-EURUSD">1.0811</div><div class="mcard2-chg c-up" id="yf-c-EURUSD">▲ 0.32%</div></div>
     </div>
     <div class="src-note2">Real-time: <a href="https://it.investing.com/markets" target="_blank">Investing.com</a> · <a href="https://it.tradingview.com/" target="_blank">TradingView</a> · <a href="https://www.baha.com/" target="_blank">Baha</a></div>
   </div>
@@ -981,6 +981,83 @@ function tbClock(){
   var el=document.getElementById('tb-clock');
   if(el) el.textContent=d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
+
+// ===== YAHOO FINANCE INDICI =====
+var YF_SYMBOLS = {
+  'FTSEMIB':   {s:'FTSEMIB.MI', dec:0},
+  'SP500':     {s:'%5EGSPC',    dec:2},
+  'NDX':       {s:'%5ENDX',     dec:2},
+  'DJI':       {s:'%5EDJI',     dec:2},
+  'STOXX':     {s:'%5ESTOXX50E',dec:2},
+  'DAX':       {s:'%5EGDAXI',   dec:2},
+  'CAC':       {s:'%5EFCHI',    dec:2},
+  'FTSE':      {s:'%5EFTSE',    dec:2},
+  'N225':      {s:'%5EN225',    dec:2},
+  'HSI':       {s:'%5EHSI',     dec:2},
+  'VIX':       {s:'%5EVIX',     dec:2},
+  'GOLD':      {s:'GC%3DF',     dec:2},
+  'WTI':       {s:'CL%3DF',     dec:2},
+  'BRENT':     {s:'BZ%3DF',     dec:2},
+  'BTC':       {s:'BTC-USD',    dec:0},
+  'EURUSD':    {s:'EURUSD%3DX', dec:4}
+};
+
+function yfFmt(val, dec){
+  if(val >= 1000) return val.toLocaleString('it-IT',{maximumFractionDigits:dec>0?dec:0});
+  return val.toFixed(dec);
+}
+
+async function yfFetchOne(id, cfg){
+  try{
+    var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'+cfg.s+'?interval=1d&range=1d';
+    var r = await fetch(url, {headers:{'Accept':'application/json'}});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    var data = await r.json();
+    var meta = data.chart.result[0].meta;
+    var price = meta.regularMarketPrice;
+    var prev  = meta.chartPreviousClose || meta.previousClose || price;
+    var chg   = price - prev;
+    var pct   = prev > 0 ? (chg/prev)*100 : 0;
+    var elV   = document.getElementById('yf-v-'+id);
+    var elC   = document.getElementById('yf-c-'+id);
+    var elCard= document.getElementById('yf-'+id);
+    if(!elV||!elC||!elCard) return;
+    var prefix = id==='BTC'?'$':'';
+    elV.textContent = prefix + yfFmt(price, cfg.dec);
+    var arrow, cls, bgCol, borderCol, textCol;
+    if(pct > 0.05){
+      arrow='▲'; cls='c-up';
+      bgCol='rgba(29,158,117,0.12)'; borderCol='rgba(29,158,117,0.5)'; textCol='#1D9E75';
+    } else if(pct < -0.05){
+      arrow='▼'; cls='c-dn';
+      bgCol='rgba(192,57,43,0.12)'; borderCol='rgba(192,57,43,0.5)'; textCol='#C0392B';
+    } else {
+      arrow='—'; cls='c-neu';
+      bgCol='rgba(230,126,34,0.12)'; borderCol='rgba(230,126,34,0.5)'; textCol='#E67E22';
+    }
+    elC.textContent = arrow+' '+Math.abs(pct).toFixed(2)+'%';
+    elC.className = 'mcard2-chg '+cls;
+    elV.style.color = textCol;
+    elCard.style.background = bgCol;
+    elCard.style.borderColor = borderCol;
+  }catch(e){ /* mantieni valore statico */ }
+}
+
+async function yfFetchAll(){
+  var ora = new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'});
+  var el = document.getElementById('yf-update-time');
+  Object.keys(YF_SYMBOLS).forEach(function(id){
+    yfFetchOne(id, YF_SYMBOLS[id]);
+  });
+  setTimeout(function(){
+    var el2 = document.getElementById('yf-update-time');
+    if(el2) el2.textContent = 'aggiornato alle '+ora+' · ogni 15 min';
+  }, 3000);
+}
+
+yfFetchAll();
+setInterval(yfFetchAll, 15*60*1000);
+
 tbConverti();
 tbClock();
 setInterval(tbClock,1000);
@@ -2420,18 +2497,16 @@ function apriComposer(contactId,bozza){
   composerContactId=contactId;
   composerAllegati=bozza&&bozza.allegati?bozza.allegati:[];
   var c=allContacts.find(function(x){return x.id===contactId;});
-  // Apre direttamente Gmail con il destinatario precompilato
-  var email=c&&c.email1?c.email1:'';
+  var email=c&&c.spike_email?c.spike_email:(c&&c.email1?c.email1:'');
   if(bozza){
     var oggetto=encodeURIComponent(bozza.oggetto||'');
     var corpo=encodeURIComponent(bozza.testo||'');
-    window.open('https://mail.google.com/mail/?view=cm&to='+encodeURIComponent(email)+'&su='+oggetto+'&body='+corpo);
+    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email)+'&subject='+oggetto+'&body='+corpo);
   }else{
-    window.open('https://mail.google.com/mail/?view=cm&to='+encodeURIComponent(email));
+    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email));
   }
-  // Registra apertura come bozza locale
   if(!bozza){
-    toast('Gmail aperto — dopo invio registra la mail nello Storico');
+    toast('Spike aperto — dopo invio registra la mail nello Storico');
   }
 }
 
