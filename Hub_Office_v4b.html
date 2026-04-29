@@ -163,6 +163,25 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .abar{padding:.8rem 1.5rem;border-top:.5px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--surface)}
 .fin-btn{font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;padding:10px 18px;border-radius:var(--radius-sm);cursor:pointer;white-space:nowrap;transition:all .15s;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);display:flex;align-items:center;gap:8px}
 .fin-btn:hover{background:var(--gold-bg2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.idx-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:600;display:none;align-items:center;justify-content:center;padding:1.5rem;backdrop-filter:blur(6px)}
+.idx-modal-overlay.open{display:flex}
+.idx-modal{background:#1A1917;border:.5px solid #3D3A37;border-radius:14px;width:100%;max-width:900px;max-height:90vh;display:flex;flex-direction:column;overflow:hidden}
+.idx-modal-hdr{padding:1rem 1.5rem;border-bottom:.5px solid #2E2C2A;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.idx-modal-name{font-family:'Cormorant Garamond',serif;font-size:22px;color:#E8E4DE}
+.idx-modal-price{font-size:28px;font-weight:500;color:#E8E4DE;font-family:'DM Mono',monospace}
+.idx-modal-chg{font-size:14px;margin-left:10px}
+.idx-range-btns{display:flex;gap:4px}
+.idx-range-btn{font-size:11px;padding:4px 10px;border-radius:6px;border:.5px solid #3D3A37;background:transparent;color:#9E9A94;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.idx-range-btn:hover,.idx-range-btn.active{background:#C4A35A;color:#0F0F0E;border-color:#C4A35A}
+.idx-modal-body{padding:1rem 1.5rem;flex:1;overflow-y:auto}
+.idx-chart-wrap{position:relative;height:380px;margin-bottom:1rem}
+.idx-stats{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-bottom:1rem}
+.idx-stat{background:#222120;border-radius:8px;padding:10px 12px;border:.5px solid #2E2C2A}
+.idx-stat-label{font-size:10px;color:#9E9A94;margin-bottom:4px;text-transform:uppercase;letter-spacing:.08em}
+.idx-stat-val{font-size:16px;font-weight:500;color:#E8E4DE}
+.idx-links{display:flex;gap:8px;flex-wrap:wrap;padding-top:.5rem;border-top:.5px solid #2E2C2A}
+.idx-link-btn{font-size:11px;padding:6px 14px;border-radius:6px;border:.5px solid #3D3A37;background:#222120;color:#C4A35A;cursor:pointer;text-decoration:none;transition:all .15s}
+.idx-link-btn:hover{border-color:#C4A35A;background:#2A2826}
 .ai-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(4px)}
 .ai-modal-overlay.open{display:flex}
 .ai-modal{background:var(--surface);border:.5px solid var(--border2);border-radius:var(--radius);width:100%;max-width:700px;max-height:85vh;display:flex;flex-direction:column}
@@ -797,22 +816,22 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <div id="tb-panel-indici" class="tb-panel active2">
     <div class="sec-label2">Indici azionari principali &nbsp;—&nbsp; <span id="yf-update-time" style="color:#1D9E75;font-size:9px">aggiornamento ogni 15 min</span></div>
     <div class="tb-grid" id="yf-indici-grid">
-      <div class="mcard2" id="yf-FTSEMIB"><div class="mcard2-name">FTSE MIB</div><div class="mcard2-val" id="yf-v-FTSEMIB">38.420</div><div class="mcard2-chg c-dn" id="yf-c-FTSEMIB">▼ 0.72%</div></div>
-      <div class="mcard2" id="yf-SP500"><div class="mcard2-name">S&P 500</div><div class="mcard2-val" id="yf-v-SP500">5.611</div><div class="mcard2-chg c-dn" id="yf-c-SP500">▼ 1.02%</div></div>
-      <div class="mcard2" id="yf-NDX"><div class="mcard2-name">NASDAQ 100</div><div class="mcard2-val" id="yf-v-NDX">19.280</div><div class="mcard2-chg c-dn" id="yf-c-NDX">▼ 1.45%</div></div>
-      <div class="mcard2" id="yf-DJI"><div class="mcard2-name">Dow Jones</div><div class="mcard2-val" id="yf-v-DJI">41.580</div><div class="mcard2-chg c-dn" id="yf-c-DJI">▼ 0.88%</div></div>
-      <div class="mcard2" id="yf-STOXX"><div class="mcard2-name">Euro Stoxx 50</div><div class="mcard2-val" id="yf-v-STOXX">5.190</div><div class="mcard2-chg c-up" id="yf-c-STOXX">▲ 0.31%</div></div>
-      <div class="mcard2" id="yf-DAX"><div class="mcard2-name">DAX</div><div class="mcard2-val" id="yf-v-DAX">22.450</div><div class="mcard2-chg c-up" id="yf-c-DAX">▲ 0.18%</div></div>
-      <div class="mcard2" id="yf-CAC"><div class="mcard2-name">CAC 40</div><div class="mcard2-val" id="yf-v-CAC">7.980</div><div class="mcard2-chg c-dn" id="yf-c-CAC">▼ 0.44%</div></div>
-      <div class="mcard2" id="yf-FTSE"><div class="mcard2-name">FTSE 100</div><div class="mcard2-val" id="yf-v-FTSE">8.620</div><div class="mcard2-chg c-up" id="yf-c-FTSE">▲ 0.22%</div></div>
-      <div class="mcard2" id="yf-N225"><div class="mcard2-name">Nikkei 225</div><div class="mcard2-val" id="yf-v-N225">35.617</div><div class="mcard2-chg c-dn" id="yf-c-N225">▼ 0.57%</div></div>
-      <div class="mcard2" id="yf-HSI"><div class="mcard2-name">Hang Seng</div><div class="mcard2-val" id="yf-v-HSI">23.410</div><div class="mcard2-chg c-up" id="yf-c-HSI">▲ 1.12%</div></div>
-      <div class="mcard2" id="yf-VIX"><div class="mcard2-name">VIX</div><div class="mcard2-val" id="yf-v-VIX">21.4</div><div class="mcard2-chg c-dn" id="yf-c-VIX">▼ 5.3%</div></div>
-      <div class="mcard2" id="yf-GOLD"><div class="mcard2-name">Oro ($/oz)</div><div class="mcard2-val" id="yf-v-GOLD">3.084</div><div class="mcard2-chg c-up" id="yf-c-GOLD">▲ 0.62%</div></div>
-      <div class="mcard2" id="yf-WTI"><div class="mcard2-name">WTI ($/barile)</div><div class="mcard2-val" id="yf-v-WTI">69.45</div><div class="mcard2-chg c-dn" id="yf-c-WTI">▼ 1.23%</div></div>
-      <div class="mcard2" id="yf-BRENT"><div class="mcard2-name">Brent ($/barile)</div><div class="mcard2-val" id="yf-v-BRENT">73.10</div><div class="mcard2-chg c-dn" id="yf-c-BRENT">▼ 1.08%</div></div>
-      <div class="mcard2" id="yf-BTC"><div class="mcard2-name">BTC</div><div class="mcard2-val" id="yf-v-BTC">$87.240</div><div class="mcard2-chg c-dn" id="yf-c-BTC">▼ 2.41%</div></div>
-      <div class="mcard2" id="yf-EURUSD"><div class="mcard2-name">EUR/USD</div><div class="mcard2-val" id="yf-v-EURUSD">1.0811</div><div class="mcard2-chg c-up" id="yf-c-EURUSD">▲ 0.32%</div></div>
+      <div class="mcard2" id="yf-FTSEMIB" onclick="apriIdxModal('FTSEMIB')" style="cursor:pointer"><div class="mcard2-name">FTSE MIB</div><div class="mcard2-val" id="yf-v-FTSEMIB">38.420</div><div class="mcard2-chg c-dn" id="yf-c-FTSEMIB">▼ 0.72%</div></div>
+      <div class="mcard2" id="yf-SP500" onclick="apriIdxModal('SP500')" style="cursor:pointer"><div class="mcard2-name">S&P 500</div><div class="mcard2-val" id="yf-v-SP500">5.611</div><div class="mcard2-chg c-dn" id="yf-c-SP500">▼ 1.02%</div></div>
+      <div class="mcard2" id="yf-NDX" onclick="apriIdxModal('NDX')" style="cursor:pointer"><div class="mcard2-name">NASDAQ 100</div><div class="mcard2-val" id="yf-v-NDX">19.280</div><div class="mcard2-chg c-dn" id="yf-c-NDX">▼ 1.45%</div></div>
+      <div class="mcard2" id="yf-DJI" onclick="apriIdxModal('DJI')" style="cursor:pointer"><div class="mcard2-name">Dow Jones</div><div class="mcard2-val" id="yf-v-DJI">41.580</div><div class="mcard2-chg c-dn" id="yf-c-DJI">▼ 0.88%</div></div>
+      <div class="mcard2" id="yf-STOXX" onclick="apriIdxModal('STOXX')" style="cursor:pointer"><div class="mcard2-name">Euro Stoxx 50</div><div class="mcard2-val" id="yf-v-STOXX">5.190</div><div class="mcard2-chg c-up" id="yf-c-STOXX">▲ 0.31%</div></div>
+      <div class="mcard2" id="yf-DAX" onclick="apriIdxModal('DAX')" style="cursor:pointer"><div class="mcard2-name">DAX</div><div class="mcard2-val" id="yf-v-DAX">22.450</div><div class="mcard2-chg c-up" id="yf-c-DAX">▲ 0.18%</div></div>
+      <div class="mcard2" id="yf-CAC" onclick="apriIdxModal('CAC')" style="cursor:pointer"><div class="mcard2-name">CAC 40</div><div class="mcard2-val" id="yf-v-CAC">7.980</div><div class="mcard2-chg c-dn" id="yf-c-CAC">▼ 0.44%</div></div>
+      <div class="mcard2" id="yf-FTSE" onclick="apriIdxModal('FTSE')" style="cursor:pointer"><div class="mcard2-name">FTSE 100</div><div class="mcard2-val" id="yf-v-FTSE">8.620</div><div class="mcard2-chg c-up" id="yf-c-FTSE">▲ 0.22%</div></div>
+      <div class="mcard2" id="yf-N225" onclick="apriIdxModal('N225')" style="cursor:pointer"><div class="mcard2-name">Nikkei 225</div><div class="mcard2-val" id="yf-v-N225">35.617</div><div class="mcard2-chg c-dn" id="yf-c-N225">▼ 0.57%</div></div>
+      <div class="mcard2" id="yf-HSI" onclick="apriIdxModal('HSI')" style="cursor:pointer"><div class="mcard2-name">Hang Seng</div><div class="mcard2-val" id="yf-v-HSI">23.410</div><div class="mcard2-chg c-up" id="yf-c-HSI">▲ 1.12%</div></div>
+      <div class="mcard2" id="yf-VIX" onclick="apriIdxModal('VIX')" style="cursor:pointer"><div class="mcard2-name">VIX</div><div class="mcard2-val" id="yf-v-VIX">21.4</div><div class="mcard2-chg c-dn" id="yf-c-VIX">▼ 5.3%</div></div>
+      <div class="mcard2" id="yf-GOLD" onclick="apriIdxModal('GOLD')" style="cursor:pointer"><div class="mcard2-name">Oro ($/oz)</div><div class="mcard2-val" id="yf-v-GOLD">3.084</div><div class="mcard2-chg c-up" id="yf-c-GOLD">▲ 0.62%</div></div>
+      <div class="mcard2" id="yf-WTI" onclick="apriIdxModal('WTI')" style="cursor:pointer"><div class="mcard2-name">WTI ($/barile)</div><div class="mcard2-val" id="yf-v-WTI">69.45</div><div class="mcard2-chg c-dn" id="yf-c-WTI">▼ 1.23%</div></div>
+      <div class="mcard2" id="yf-BRENT" onclick="apriIdxModal('BRENT')" style="cursor:pointer"><div class="mcard2-name">Brent ($/barile)</div><div class="mcard2-val" id="yf-v-BRENT">73.10</div><div class="mcard2-chg c-dn" id="yf-c-BRENT">▼ 1.08%</div></div>
+      <div class="mcard2" id="yf-BTC" onclick="apriIdxModal('BTC')" style="cursor:pointer"><div class="mcard2-name">BTC</div><div class="mcard2-val" id="yf-v-BTC">$87.240</div><div class="mcard2-chg c-dn" id="yf-c-BTC">▼ 2.41%</div></div>
+      <div class="mcard2" id="yf-EURUSD" onclick="apriIdxModal('EURUSD')" style="cursor:pointer"><div class="mcard2-name">EUR/USD</div><div class="mcard2-val" id="yf-v-EURUSD">1.0811</div><div class="mcard2-chg c-up" id="yf-c-EURUSD">▲ 0.32%</div></div>
     </div>
 
   </div>
@@ -976,6 +995,109 @@ function tbConverti(){
 }
 function tbClock(){
   var d=new Date();
+}
+
+// ===== CHART.JS CARICAMENTO =====
+var idxChartInstance = null;
+var idxCurrentSymbol = null;
+var idxCurrentId = null;
+var idxCurrentRange = '1y';
+var idxCurrentName = '';
+
+// Dati configurazione indici
+var IDX_CONFIG = {
+  'FTSEMIB': {name:'FTSE MIB',        s:'FTSEMIB.MI', inv:'https://it.investing.com/indices/it-mib-40', tv:'https://it.tradingview.com/symbols/MIL-FTSEMIB/'},
+  'SP500':   {name:'S&P 500',          s:'%5EGSPC',    inv:'https://it.investing.com/indices/us-spx-500',  tv:'https://it.tradingview.com/symbols/SP-500/'},
+  'NDX':     {name:'NASDAQ 100',       s:'%5ENDX',     inv:'https://it.investing.com/indices/nasdaq-100',   tv:'https://it.tradingview.com/symbols/NASDAQ-NDX/'},
+  'DJI':     {name:'Dow Jones',        s:'%5EDJI',     inv:'https://it.investing.com/indices/us-30',        tv:'https://it.tradingview.com/symbols/DJ-30/'},
+  'STOXX':   {name:'Euro Stoxx 50',    s:'%5ESTOXX50E',inv:'https://it.investing.com/indices/eu-stoxx50',   tv:'https://it.tradingview.com/symbols/EURONEXT-EUSTX50/'},
+  'DAX':     {name:'DAX',              s:'%5EGDAXI',   inv:'https://it.investing.com/indices/germany-30',   tv:'https://it.tradingview.com/symbols/XETR-DAX/'},
+  'CAC':     {name:'CAC 40',           s:'%5EFCHI',    inv:'https://it.investing.com/indices/france-40',    tv:'https://it.tradingview.com/symbols/EURONEXT-PX1/'},
+  'FTSE':    {name:'FTSE 100',         s:'%5EFTSE',    inv:'https://it.investing.com/indices/uk-100',       tv:'https://it.tradingview.com/symbols/LSE-UKX/'},
+  'N225':    {name:'Nikkei 225',       s:'%5EN225',    inv:'https://it.investing.com/indices/japan-ni225',  tv:'https://it.tradingview.com/symbols/TVC-NI225/'},
+  'HSI':     {name:'Hang Seng',        s:'%5EHSI',     inv:'https://it.investing.com/indices/hang-sen-40',  tv:'https://it.tradingview.com/symbols/TVC-HSI/'},
+  'VIX':     {name:'VIX',              s:'%5EVIX',     inv:'https://it.investing.com/indices/volatility-s-p-500', tv:'https://it.tradingview.com/symbols/CBOE-VIX/'},
+  'GOLD':    {name:'Oro ($/oz)',        s:'GC%3DF',     inv:'https://it.investing.com/commodities/gold',     tv:'https://it.tradingview.com/symbols/TVC-GOLD/'},
+  'WTI':     {name:'WTI Petrolio',     s:'CL%3DF',     inv:'https://it.investing.com/commodities/crude-oil', tv:'https://it.tradingview.com/symbols/TVC-USOIL/'},
+  'BRENT':   {name:'Brent Petrolio',   s:'BZ%3DF',     inv:'https://it.investing.com/commodities/brent-oil', tv:'https://it.tradingview.com/symbols/TVC-UKOIL/'},
+  'BTC':     {name:'Bitcoin (BTC)',     s:'BTC-USD',    inv:'https://it.investing.com/crypto/bitcoin/btc-usd', tv:'https://it.tradingview.com/symbols/BITSTAMP-BTCUSD/'},
+  'EURUSD':  {name:'EUR/USD',          s:'EURUSD%3DX', inv:'https://it.investing.com/currencies/eur-usd',   tv:'https://it.tradingview.com/symbols/FX-EURUSD/'}
+};
+
+function apriIdxModal(id){
+  var cfg = IDX_CONFIG[id];
+  if(!cfg) return;
+  idxCurrentId = id;
+  idxCurrentSymbol = cfg.s;
+  idxCurrentName = cfg.name;
+  document.getElementById('idxModalName').textContent = cfg.name;
+  document.getElementById('idxModalPrice').textContent = '—';
+  document.getElementById('idxModalChg').textContent = '';
+  document.getElementById('idxStats').innerHTML = '';
+  // Link analisti
+  document.getElementById('idxLinks').innerHTML =
+    '<span style="font-size:11px;color:#9E9A94;align-self:center">Analisi e previsioni analisti:</span>'+
+    '<a class="idx-link-btn" href="'+cfg.inv+'" target="_blank">📊 Investing.com</a>'+
+    '<a class="idx-link-btn" href="'+cfg.tv+'" target="_blank">📈 TradingView</a>'+
+    '<a class="idx-link-btn" href="https://finance.yahoo.com/quote/'+cfg.s.replace('%5E','^').replace('%3D','=')+'" target="_blank">🔗 Yahoo Finance</a>';
+  // Range default
+  document.querySelectorAll('.idx-range-btn').forEach(function(b){b.classList.remove('active');});
+  document.querySelectorAll('.idx-range-btn')[2].classList.add('active');
+  idxCurrentRange = '1y';
+  document.getElementById('idxModal').classList.add('open');
+  idxLoadChart();
+}
+
+function chiudiIdxModal(){
+  document.getElementById('idxModal').classList.remove('open');
+  if(idxChartInstance){idxChartInstance.destroy();idxChartInstance=null;}
+}
+
+function idxSetRange(range, btn){
+  idxCurrentRange = range;
+  document.querySelectorAll('.idx-range-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  idxLoadChart();
+}
+
+var TV_SYMBOLS={'FTSEMIB':'INDEX:FTSEMIB','SP500':'SP:SPX','NDX':'NASDAQ:NDX','DJI':'DJ:DJI','STOXX':'EURONEXT:EUSTX50','DAX':'XETR:DAX','CAC':'EURONEXT:PX1','FTSE':'LSE:UKX','N225':'TVC:NI225','HSI':'TVC:HSI','VIX':'CBOE:VIX','GOLD':'TVC:GOLD','WTI':'TVC:USOIL','BRENT':'TVC:UKOIL','BTC':'BITSTAMP:BTCUSD','EURUSD':'FX:EURUSD'};
+var TV_INTERVALS={'1mo':'D','3mo':'D','1y':'W','3y':'W','5y':'M','10y':'M'};
+
+function idxLoadChart(){
+  if(!idxCurrentId) return;
+  var tvSym = TV_SYMBOLS[idxCurrentId] || 'SP:SPX';
+  var tvInt = TV_INTERVALS[idxCurrentRange] || 'W';
+  var wrap = document.getElementById('idxChartWrap');
+  if(!wrap) return;
+  // Widget TradingView Advanced Chart - ufficiale, funziona ovunque
+  wrap.innerHTML = '';
+  var container = document.createElement('div');
+  container.className = 'tradingview-widget-container';
+  container.style.cssText = 'height:380px;width:100%';
+  var widgetDiv = document.createElement('div');
+  widgetDiv.id = 'tradingview_'+idxCurrentId;
+  widgetDiv.style.cssText = 'height:380px;width:100%';
+  container.appendChild(widgetDiv);
+  wrap.appendChild(container);
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
+  script.async = true;
+  script.innerHTML = JSON.stringify({
+    autosize: true,
+    symbol: tvSym,
+    interval: tvInt,
+    timezone: 'Europe/Rome',
+    theme: 'dark',
+    style: '1',
+    locale: 'it',
+    allow_symbol_change: false,
+    save_image: false,
+    calendar: false,
+    hide_volume: false,
+    support_host: 'https://www.tradingview.com'
+  });
+  container.appendChild(script);
 }
 
 // ===== YAHOO FINANCE INDICI =====
@@ -1634,6 +1756,39 @@ setInterval(updateClock, 60000);
     <div class="modal-close" onclick="document.getElementById('modalBozze').classList.remove('open')">✕</div>
     <div class="form-hdr"><div class="form-title-el" id="bozzeTitolo">Bozze</div></div>
     <div style="padding:1.2rem 2rem;max-height:65vh;overflow-y:auto" id="bozzeBody"></div>
+  </div>
+</div>
+
+<!-- MODAL INDICE GRAFICO -->
+<div class="idx-modal-overlay" id="idxModal">
+  <div class="idx-modal">
+    <div class="idx-modal-hdr">
+      <div>
+        <div class="idx-modal-name" id="idxModalName">S&P 500</div>
+        <div style="display:flex;align-items:center;margin-top:4px">
+          <span class="idx-modal-price" id="idxModalPrice">—</span>
+          <span class="idx-modal-chg" id="idxModalChg"></span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="idx-range-btns">
+          <button class="idx-range-btn" onclick="idxSetRange('1mo',this)">1M</button>
+          <button class="idx-range-btn" onclick="idxSetRange('3mo',this)">3M</button>
+          <button class="idx-range-btn active" onclick="idxSetRange('1y',this)">1A</button>
+          <button class="idx-range-btn" onclick="idxSetRange('3y',this)">3A</button>
+          <button class="idx-range-btn" onclick="idxSetRange('5y',this)">5A</button>
+          <button class="idx-range-btn" onclick="idxSetRange('10y',this)">10A</button>
+        </div>
+        <div class="modal-close" onclick="chiudiIdxModal()" style="position:relative;top:0;right:0">✕</div>
+      </div>
+    </div>
+    <div class="idx-modal-body">
+      <div class="idx-chart-wrap" id="idxChartWrap" style="height:380px;border-radius:8px;overflow:hidden">
+        <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#9E9A94;font-size:13px">Caricamento grafico...</div>
+      </div>
+      <div class="idx-stats" id="idxStats"></div>
+      <div class="idx-links" id="idxLinks"></div>
+    </div>
   </div>
 </div>
 
