@@ -234,6 +234,50 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .tools-grid .tool-btn:nth-child(5){animation-delay:.15s}.tools-grid .tool-btn:nth-child(6){animation-delay:.18s}
 .tools-grid .tool-btn:nth-child(7){animation-delay:.21s}.tools-grid .tool-btn:nth-child(8){animation-delay:.24s}
 .tools-grid .tool-btn:nth-child(9){animation-delay:.27s}.tools-grid .tool-btn:nth-child(10){animation-delay:.30s}
+
+/* ===== ANALISI INVESTIMENTI ===== */
+.ai-view{display:none;position:fixed;inset:0;background:#0F0E0C;z-index:200;overflow-y:auto;font-family:'DM Sans',sans-serif}
+.ai-view.open{display:block}
+.ai-header{background:#111;border-bottom:.5px solid #2E2C2A;padding:16px 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+.ai-header-title{font-family:'Cormorant Garamond',serif;font-size:22px;color:#E8E4DE;font-weight:500}
+.ai-header-sub{font-size:11px;color:#5C5955;margin-top:2px}
+.ai-close-btn{background:transparent;border:.5px solid #3D3A37;color:#9E9A94;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;transition:all .15s}
+.ai-close-btn:hover{border-color:#C4A35A;color:#C4A35A}
+.ai-body{padding:24px 2rem;max-width:1400px;margin:0 auto}
+.ai-filter-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.ai-filter-label{font-size:10px;color:#5C5955;text-transform:uppercase;letter-spacing:.1em;margin-right:4px}
+.ai-filter-btn{font-size:11px;padding:5px 12px;border-radius:6px;border:.5px solid #3D3A37;background:transparent;color:#9E9A94;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
+.ai-filter-btn:hover{border-color:#C4A35A;color:#C4A35A}
+.ai-filter-btn.active{background:#C4A35A;color:#0F0F0E;border-color:#C4A35A;font-weight:600}
+.ai-bench-row{background:#111;border:.5px solid #2E2C2A;border-radius:8px;padding:12px 16px;margin-bottom:16px}
+.ai-bench-title{font-size:10px;color:#5C5955;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.ai-bench-list{display:flex;gap:8px;flex-wrap:wrap}
+.ai-bench-tag{font-size:11px;padding:4px 10px;background:#1A1917;border:.5px solid #3D3A37;border-radius:5px;color:#C4A35A;cursor:pointer;text-decoration:none;transition:all .15s}
+.ai-bench-tag:hover{border-color:#C4A35A;background:#2A2826}
+.ai-section-title{font-family:'Cormorant Garamond',serif;font-size:17px;color:#C4A35A;margin-bottom:12px;padding-bottom:8px;border-bottom:.5px solid #2E2C2A;display:flex;align-items:center;gap:8px}
+.ai-table{width:100%;border-collapse:collapse;font-size:11px}
+.ai-table th{background:#111;color:#5C5955;font-weight:500;text-transform:uppercase;letter-spacing:.08em;padding:8px 10px;text-align:left;border-bottom:.5px solid #2E2C2A;white-space:nowrap}
+.ai-table td{padding:8px 10px;border-bottom:.5px solid #1A1917;color:#E8E4DE;vertical-align:middle}
+.ai-table tr:hover td{background:#111}
+.ai-table .ticker{font-family:'DM Mono',monospace;color:#C4A35A;font-weight:500}
+.ai-table .borsa{font-size:10px;color:#5C5955}
+.perf-pos{color:#1D9E75;font-weight:500}
+.perf-neg{color:#C0392B;font-weight:500}
+.perf-neu{color:#9E9A94}
+.reatt-verde{background:rgba(29,158,117,.2);color:#1D9E75;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:500}
+.reatt-arancio{background:rgba(230,126,34,.2);color:#E67E22;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:500}
+.reatt-giallo{background:rgba(241,196,15,.15);color:#F39C12;padding:2px 6px;border-radius:3px;font-size:10px;font-weight:500}
+.reatt-dash{color:#3D3A37;font-size:10px}
+.ai-tv-link{color:#C4A35A;text-decoration:none;font-size:10px;display:inline-flex;align-items:center;gap:3px}
+.ai-tv-link:hover{color:#fff}
+.consec-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin:0 1px}
+.consec-green{background:#1D9E75}
+.consec-red{background:#C0392B}
+.ai-rank-badge{display:inline-block;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:600;margin-left:4px}
+.rank-1{background:#C4A35A;color:#0F0F0E}
+.rank-2{background:#9E9A94;color:#0F0F0E}
+.rank-3{background:#8B6914;color:#fff}
+
 </style>
 </head>
 <body>
@@ -803,6 +847,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <button class="tab-btn2" onclick="tbShow('certificati',this)">Certificati</button>
       <button class="tab-btn2" onclick="tbShow('crypto',this)">Crypto</button>
       <button class="tab-btn2" onclick="tbShow('valute',this)">Forex + Valute</button>
+      <button class="tab-btn2" onclick="tbShow('titgov',this)">Titoli Gov.</button>
+      <button class="tab-btn2" onclick="apriAnalisiInv()" style="background:#C4A35A;color:#0F0F0E;border-radius:4px;font-weight:600">📊 Analisi Investimenti</button>
     </div>
   </div>
   <!-- TICKER TABLEAU -->
@@ -1416,6 +1462,28 @@ async function yfFetchAll(){
 yfFetchAll();
 setInterval(yfFetchAll, 15*60*1000);
 
+
+function apriAnalisiInv(){
+  document.getElementById('aiInvView').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function chiudiAnalisiInv(){
+  document.getElementById('aiInvView').classList.remove('open');
+  document.body.style.overflow='';
+}
+function aiSetSett(btn, sett){
+  document.querySelectorAll('.ai-filter-row:nth-child(1) .ai-filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+function aiSetCap(btn, cap){
+  btn.closest('.ai-filter-row').querySelectorAll('.ai-filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+function aiSetStr(btn, str){
+  btn.closest('.ai-filter-row').querySelectorAll('.ai-filter-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+}
+
 tbConverti();
 tbClock();
 setInterval(tbClock,1000);
@@ -1449,6 +1517,31 @@ setInterval(tbClock,1000);
 </div>
 
 <div class="layout">
+
+  <!-- PANEL TITOLI GOVERNATIVI -->
+  <div id="tb-panel-titgov" class="tb-panel">
+    <div class="sec-label2">Titoli di Stato — BTP · CCT · Bund · Treasury · OAT</div>
+    <table class="fin-table" style="margin-top:12px">
+      <thead><tr><th>Titolo</th><th>Paese</th><th>Scadenza</th><th>Cedola</th><th>Rendimento</th><th>Durata</th><th>Rating</th></tr></thead>
+      <tbody>
+        <tr><td><b>BTP 10Y</b></td><td>🇮🇹 Italia</td><td>2034</td><td>3.85%</td><td class="c-up">3.72%</td><td>8.4y</td><td>BBB</td></tr>
+        <tr><td><b>CCT 7Y</b></td><td>🇮🇹 Italia</td><td>2031</td><td>Var.</td><td class="c-up">3.45%</td><td>5.8y</td><td>BBB</td></tr>
+        <tr><td><b>BTP 2Y</b></td><td>🇮🇹 Italia</td><td>2026</td><td>3.10%</td><td class="c-up">3.18%</td><td>1.8y</td><td>BBB</td></tr>
+        <tr><td><b>Bund 10Y</b></td><td>🇩🇪 Germania</td><td>2034</td><td>2.50%</td><td class="c-up">2.48%</td><td>8.6y</td><td>AAA</td></tr>
+        <tr><td><b>OAT 10Y</b></td><td>🇫🇷 Francia</td><td>2034</td><td>3.00%</td><td class="c-up">3.05%</td><td>8.5y</td><td>AA-</td></tr>
+        <tr><td><b>Treasury 10Y</b></td><td>🇺🇸 USA</td><td>2034</td><td>4.25%</td><td class="c-up">4.32%</td><td>8.7y</td><td>AA+</td></tr>
+        <tr><td><b>Treasury 2Y</b></td><td>🇺🇸 USA</td><td>2026</td><td>4.50%</td><td class="c-up">4.41%</td><td>1.9y</td><td>AA+</td></tr>
+        <tr><td><b>Gilt 10Y</b></td><td>🇬🇧 UK</td><td>2034</td><td>4.00%</td><td class="c-up">4.18%</td><td>8.3y</td><td>AA-</td></tr>
+        <tr><td><b>JGB 10Y</b></td><td>🇯🇵 Giappone</td><td>2034</td><td>1.50%</td><td class="c-up">1.52%</td><td>8.8y</td><td>A+</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <a href="https://www.borsaitaliana.it/borsa/obbligazioni/titoli-di-stato/lista.html" target="_blank" class="idx-link-btn">🏛️ Borsa Italiana Gov Bonds</a>
+      <a href="https://it.tradingview.com/markets/bonds/" target="_blank" class="idx-link-btn">📈 TradingView Bonds</a>
+      <a href="https://www.mts.it/en/mts-markets/government-bonds" target="_blank" class="idx-link-btn">📊 MTS Markets</a>
+    </div>
+  </div>
+
 
   <!-- SIDEBAR -->
   <div class="sidebar">
@@ -1988,6 +2081,434 @@ setInterval(updateClock, 60000);
     <div class="modal-close" onclick="document.getElementById('modalBozze').classList.remove('open')">✕</div>
     <div class="form-hdr"><div class="form-title-el" id="bozzeTitolo">Bozze</div></div>
     <div style="padding:1.2rem 2rem;max-height:65vh;overflow-y:auto" id="bozzeBody"></div>
+  </div>
+</div>
+
+
+<!-- ===== PAGINA ANALISI INVESTIMENTI ===== -->
+<div class="ai-view" id="aiInvView">
+  <div class="ai-header">
+    <div>
+      <div class="ai-header-title">📊 Analisi Investimenti</div>
+      <div class="ai-header-sub">NYSE · NASDAQ — Large Cap · IT Sector — Aggiornamento mensile</div>
+    </div>
+    <button class="ai-close-btn" onclick="chiudiAnalisiInv()">✕ Chiudi</button>
+  </div>
+  <div class="ai-body">
+
+    <!-- FILTRI SETTORE -->
+    <div class="ai-filter-row">
+      <span class="ai-filter-label">Settore GICS:</span>
+      <button class="ai-filter-btn active" onclick="aiSetSett(this,'IT')">💻 Information Technology</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'FIN')">🏦 Financials</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'IND')">🏭 Industrials</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'HC')">🏥 Health Care</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'CD')">🛍️ Consumer Disc.</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'CS')">🛒 Consumer Staples</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'COMM')">📡 Communication</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'EN')">⚡ Energy</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'MAT')">🔩 Materials</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'UTIL')">💡 Utilities</button>
+      <button class="ai-filter-btn" onclick="aiSetSett(this,'RE')">🏢 Real Estate</button>
+    </div>
+
+    <!-- FILTRI CAPITALIZZAZIONE -->
+    <div class="ai-filter-row">
+      <span class="ai-filter-label">Capitalizzazione:</span>
+      <button class="ai-filter-btn active" onclick="aiSetCap(this,'large')">🔵 Large Cap</button>
+      <button class="ai-filter-btn" onclick="aiSetCap(this,'mid')">🟡 Mid Cap</button>
+      <button class="ai-filter-btn" onclick="aiSetCap(this,'small')">🟠 Start Up / Small Cap</button>
+    </div>
+
+    <!-- FILTRI STRUMENTO -->
+    <div class="ai-filter-row">
+      <span class="ai-filter-label">Strumento:</span>
+      <button class="ai-filter-btn active" onclick="aiSetStr(this,'azioni')">📈 Azioni</button>
+      <button class="ai-filter-btn" onclick="aiSetStr(this,'etf')">🗂️ ETF / ETC</button>
+      <button class="ai-filter-btn" onclick="aiSetStr(this,'bond')">📋 Bond Corporate</button>
+      <button class="ai-filter-btn" onclick="aiSetStr(this,'gov')">🏛️ Titoli Gov.</button>
+      <button class="ai-filter-btn" onclick="aiSetStr(this,'futures')">⚡ Futures</button>
+      <button class="ai-filter-btn" onclick="aiSetStr(this,'cert')">📜 Certificati</button>
+      <button class="ai-filter-btn" onclick="aiSetStr(this,'forex')">💱 Forex</button>
+      <button class="ai-filter-btn" onclick="aiSetStr(this,'fondi')">💼 Fondi Attivi</button>
+    </div>
+
+    <!-- BENCHMARK -->
+    <div class="ai-bench-row">
+      <div class="ai-bench-title">Benchmark di riferimento — IT Sector</div>
+      <div class="ai-bench-list"><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:NDX" target="_blank" class="ai-bench-tag" title="Indice principale tech large cap">📊 NASDAQ 100</a><a href="https://www.tradingview.com/chart/?symbol=SP:S5INFT" target="_blank" class="ai-bench-tag" title="Settore IT S&P 500">📊 S&P 500 IT</a><a href="https://www.tradingview.com/chart/?symbol=AMEX:XLK" target="_blank" class="ai-bench-tag" title="Technology Select Sector SPDR">📊 XLK ETF</a><a href="https://www.tradingview.com/chart/?symbol=AMEX:VGT" target="_blank" class="ai-bench-tag" title="Vanguard Information Technology ETF">📊 VGT ETF</a><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:QQQ" target="_blank" class="ai-bench-tag" title="Invesco NASDAQ-100 ETF">📊 QQQ ETF</a></div>
+    </div>
+
+    <!-- TABELLA TOP 20 -->
+    <div class="ai-section-title">
+      Top 20 Titoli IT · NYSE/NASDAQ · Large Cap
+      <span style="font-size:11px;color:#5C5955;font-family:'DM Sans',sans-serif;font-weight:400">Ordinati per positività annuale 5 anni (2021–2025)</span>
+    </div>
+
+    <!-- LEGENDA -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;font-size:10px;color:#5C5955">
+      <span>Reattività positiva:</span>
+      <span class="reatt-verde">&gt;20%</span>
+      <span class="reatt-arancio">15-20%</span>
+      <span class="reatt-giallo">10-15%</span>
+      <span style="margin-left:8px">Anni positivi:</span>
+      <span><span class="consec-dot consec-green" style="display:inline-block"></span> Anno positivo</span>
+      <span><span class="consec-dot consec-red" style="display:inline-block"></span> Anno negativo</span>
+    </div>
+
+    <div style="overflow-x:auto">
+    <table class="ai-table">
+      <thead>
+        <tr>
+          <th>Titolo</th>
+          <th>Anni pos.</th>
+          <th>2021</th>
+          <th>2022</th>
+          <th>2023</th>
+          <th>2024</th>
+          <th>2025</th>
+          <th>1W</th>
+          <th>1M</th>
+          <th>2M</th>
+          <th>3M</th>
+          <th>6M</th>
+          <th>1A</th>
+          <th>2A</th>
+          <th>Graf.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+      <td><span class="ticker">NVDA</span><span class="ai-rank-badge rank-1">★ 1°</span><br><span class="borsa">NVIDIA · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+125%"></span><span class="consec-dot consec-red" title="-50%"></span><span class="consec-dot consec-green" title="+239%"></span><span class="consec-dot consec-green" title="+171%"></span><span class="consec-dot consec-green" title="+85%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+125%</td>
+      <td class="perf-neg">-50%</td>
+      <td class="perf-pos">+239%</td>
+      <td class="perf-pos">+171%</td>
+      <td class="perf-pos">+85%</td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:NVDA" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">AAPL</span><span class="ai-rank-badge rank-2">★ 2°</span><br><span class="borsa">Apple · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+34%"></span><span class="consec-dot consec-red" title="-26%"></span><span class="consec-dot consec-green" title="+49%"></span><span class="consec-dot consec-green" title="+30%"></span><span class="consec-dot consec-green" title="+16%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+34%</td>
+      <td class="perf-neg">-26%</td>
+      <td class="perf-pos">+49%</td>
+      <td class="perf-pos">+30%</td>
+      <td class="perf-pos">+16%</td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:AAPL" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">MSFT</span><span class="ai-rank-badge rank-3">★ 3°</span><br><span class="borsa">Microsoft · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+53%"></span><span class="consec-dot consec-red" title="-28%"></span><span class="consec-dot consec-green" title="+58%"></span><span class="consec-dot consec-green" title="+18%"></span><span class="consec-dot consec-green" title="+14%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+53%</td>
+      <td class="perf-neg">-28%</td>
+      <td class="perf-pos">+58%</td>
+      <td class="perf-pos">+18%</td>
+      <td class="perf-pos">+14%</td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:MSFT" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">GOOGL</span><br><span class="borsa">Alphabet · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+65%"></span><span class="consec-dot consec-red" title="-39%"></span><span class="consec-dot consec-green" title="+58%"></span><span class="consec-dot consec-green" title="+35%"></span><span class="consec-dot consec-green" title="+12%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+65%</td>
+      <td class="perf-neg">-39%</td>
+      <td class="perf-pos">+58%</td>
+      <td class="perf-pos">+35%</td>
+      <td class="perf-pos">+12%</td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:GOOGL" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">META</span><br><span class="borsa">Meta · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+23%"></span><span class="consec-dot consec-red" title="-64%"></span><span class="consec-dot consec-green" title="+194%"></span><span class="consec-dot consec-green" title="+73%"></span><span class="consec-dot consec-green" title="+66%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+23%</td>
+      <td class="perf-neg">-64%</td>
+      <td class="perf-pos">+194%</td>
+      <td class="perf-pos">+73%</td>
+      <td class="perf-pos">+66%</td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:META" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">AVGO</span><br><span class="borsa">Broadcom · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+38%"></span><span class="consec-dot consec-red" title="-20%"></span><span class="consec-dot consec-green" title="+99%"></span><span class="consec-dot consec-green" title="+107%"></span><span class="consec-dot consec-green" title="+28%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+38%</td>
+      <td class="perf-neg">-20%</td>
+      <td class="perf-pos">+99%</td>
+      <td class="perf-pos">+107%</td>
+      <td class="perf-pos">+28%</td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:AVGO" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">TSM</span><br><span class="borsa">TSMC · NYSE</span></td>
+      <td><span class="consec-dot consec-green" title="+20%"></span><span class="consec-dot consec-red" title="-40%"></span><span class="consec-dot consec-green" title="+36%"></span><span class="consec-dot consec-green" title="+92%"></span><span class="consec-dot consec-green" title="+15%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+20%</td>
+      <td class="perf-neg">-40%</td>
+      <td class="perf-pos">+36%</td>
+      <td class="perf-pos">+92%</td>
+      <td class="perf-pos">+15%</td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NYSE:TSM" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">ORCL</span><br><span class="borsa">Oracle · NYSE</span></td>
+      <td><span class="consec-dot consec-green" title="+5%"></span><span class="consec-dot consec-red" title="-3%"></span><span class="consec-dot consec-green" title="+28%"></span><span class="consec-dot consec-green" title="+23%"></span><span class="consec-dot consec-green" title="+20%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+5%</td>
+      <td class="perf-neg">-3%</td>
+      <td class="perf-pos">+28%</td>
+      <td class="perf-pos">+23%</td>
+      <td class="perf-pos">+20%</td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NYSE:ORCL" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">PLTR</span><br><span class="borsa">Palantir · NYSE</span></td>
+      <td><span class="consec-dot consec-green" title="+30%"></span><span class="consec-dot consec-red" title="-66%"></span><span class="consec-dot consec-green" title="+167%"></span><span class="consec-dot consec-green" title="+340%"></span><span class="consec-dot consec-green" title="+20%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+30%</td>
+      <td class="perf-neg">-66%</td>
+      <td class="perf-pos">+167%</td>
+      <td class="perf-pos">+340%</td>
+      <td class="perf-pos">+20%</td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NYSE:PLTR" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">NOW</span><br><span class="borsa">ServiceNow · NYSE</span></td>
+      <td><span class="consec-dot consec-green" title="+30%"></span><span class="consec-dot consec-red" title="-36%"></span><span class="consec-dot consec-green" title="+82%"></span><span class="consec-dot consec-green" title="+55%"></span><span class="consec-dot consec-green" title="+14%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+30%</td>
+      <td class="perf-neg">-36%</td>
+      <td class="perf-pos">+82%</td>
+      <td class="perf-pos">+55%</td>
+      <td class="perf-pos">+14%</td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NYSE:NOW" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">CRM</span><br><span class="borsa">Salesforce · NYSE</span></td>
+      <td><span class="consec-dot consec-green" title="+12%"></span><span class="consec-dot consec-red" title="-48%"></span><span class="consec-dot consec-green" title="+98%"></span><span class="consec-dot consec-green" title="+2%"></span><span class="consec-dot consec-green" title="+10%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+12%</td>
+      <td class="perf-neg">-48%</td>
+      <td class="perf-pos">+98%</td>
+      <td class="perf-pos">+2%</td>
+      <td class="perf-pos">+10%</td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NYSE:CRM" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">CSCO</span><br><span class="borsa">Cisco · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+31%"></span><span class="consec-dot consec-red" title="-25%"></span><span class="consec-dot consec-green" title="+15%"></span><span class="consec-dot consec-green" title="+3%"></span><span class="consec-dot consec-green" title="+7%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+31%</td>
+      <td class="perf-neg">-25%</td>
+      <td class="perf-pos">+15%</td>
+      <td class="perf-pos">+3%</td>
+      <td class="perf-pos">+7%</td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:CSCO" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">AMZN</span><br><span class="borsa">Amazon · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+2%"></span><span class="consec-dot consec-red" title="-50%"></span><span class="consec-dot consec-green" title="+81%"></span><span class="consec-dot consec-green" title="+44%"></span><span class="consec-dot consec-green" title="+44%"></span> <span style="font-size:10px;color:#5C5955">4/5</span></td>
+      <td class="perf-pos">+2%</td>
+      <td class="perf-neg">-50%</td>
+      <td class="perf-pos">+81%</td>
+      <td class="perf-pos">+44%</td>
+      <td class="perf-pos">+44%</td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><span class="reatt-verde">>20%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:AMZN" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">AMD</span><br><span class="borsa">AMD · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+57%"></span><span class="consec-dot consec-red" title="-55%"></span><span class="consec-dot consec-green" title="+128%"></span><span class="consec-dot consec-green" title="+10%"></span><span class="consec-dot consec-red" title="-17%"></span> <span style="font-size:10px;color:#5C5955">3/5</span></td>
+      <td class="perf-pos">+57%</td>
+      <td class="perf-neg">-55%</td>
+      <td class="perf-pos">+128%</td>
+      <td class="perf-pos">+10%</td>
+      <td class="perf-neg">-17%</td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:AMD" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">ADBE</span><br><span class="borsa">Adobe · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+20%"></span><span class="consec-dot consec-red" title="-41%"></span><span class="consec-dot consec-green" title="+77%"></span><span class="consec-dot consec-red" title="-26%"></span><span class="consec-dot consec-green" title="+22%"></span> <span style="font-size:10px;color:#5C5955">3/5</span></td>
+      <td class="perf-pos">+20%</td>
+      <td class="perf-neg">-41%</td>
+      <td class="perf-pos">+77%</td>
+      <td class="perf-neg">-26%</td>
+      <td class="perf-pos">+22%</td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-arancio">15-20%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:ADBE" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">QCOM</span><br><span class="borsa">Qualcomm · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+73%"></span><span class="consec-dot consec-red" title="-39%"></span><span class="consec-dot consec-green" title="+30%"></span><span class="consec-dot consec-green" title="+19%"></span><span class="consec-dot consec-red" title="-12%"></span> <span style="font-size:10px;color:#5C5955">3/5</span></td>
+      <td class="perf-pos">+73%</td>
+      <td class="perf-neg">-39%</td>
+      <td class="perf-pos">+30%</td>
+      <td class="perf-pos">+19%</td>
+      <td class="perf-neg">-12%</td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:QCOM" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">MU</span><br><span class="borsa">Micron · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+32%"></span><span class="consec-dot consec-red" title="-45%"></span><span class="consec-dot consec-green" title="+69%"></span><span class="consec-dot consec-green" title="+18%"></span><span class="consec-dot consec-red" title="-23%"></span> <span style="font-size:10px;color:#5C5955">3/5</span></td>
+      <td class="perf-pos">+32%</td>
+      <td class="perf-neg">-45%</td>
+      <td class="perf-pos">+69%</td>
+      <td class="perf-pos">+18%</td>
+      <td class="perf-neg">-23%</td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:MU" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">TXN</span><br><span class="borsa">Texas Instr. · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+18%"></span><span class="consec-dot consec-red" title="-27%"></span><span class="consec-dot consec-green" title="+20%"></span><span class="consec-dot consec-red" title="-5%"></span><span class="consec-dot consec-green" title="+8%"></span> <span style="font-size:10px;color:#5C5955">3/5</span></td>
+      <td class="perf-pos">+18%</td>
+      <td class="perf-neg">-27%</td>
+      <td class="perf-pos">+20%</td>
+      <td class="perf-neg">-5%</td>
+      <td class="perf-pos">+8%</td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:TXN" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">TSLA</span><br><span class="borsa">Tesla · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+50%"></span><span class="consec-dot consec-red" title="-65%"></span><span class="consec-dot consec-green" title="+102%"></span><span class="consec-dot consec-green" title="+63%"></span><span class="consec-dot consec-red" title="-30%"></span> <span style="font-size:10px;color:#5C5955">3/5</span></td>
+      <td class="perf-pos">+50%</td>
+      <td class="perf-neg">-65%</td>
+      <td class="perf-pos">+102%</td>
+      <td class="perf-pos">+63%</td>
+      <td class="perf-neg">-30%</td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:TSLA" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr><tr>
+      <td><span class="ticker">INTC</span><br><span class="borsa">Intel · NASDAQ</span></td>
+      <td><span class="consec-dot consec-green" title="+3%"></span><span class="consec-dot consec-red" title="-47%"></span><span class="consec-dot consec-green" title="+90%"></span><span class="consec-dot consec-red" title="-60%"></span><span class="consec-dot consec-red" title="-18%"></span> <span style="font-size:10px;color:#5C5955">2/5</span></td>
+      <td class="perf-pos">+3%</td>
+      <td class="perf-neg">-47%</td>
+      <td class="perf-pos">+90%</td>
+      <td class="perf-neg">-60%</td>
+      <td class="perf-neg">-18%</td>
+      <td><span class="reatt-dash">—</span></td>
+      <td><span class="reatt-dash">—</span></td>
+      <td><span class="reatt-dash">—</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-giallo">10-15%</span></td>
+      <td><span class="reatt-dash">—</span></td>
+      <td><span class="reatt-dash">—</span></td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=NASDAQ:INTC" target="_blank" class="ai-tv-link">📈 Graf.</a></td>
+    </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- NOTE -->
+    <div style="margin-top:16px;font-size:10px;color:#3D3A37;line-height:1.6">
+      ★ Dati performance 2021-2025 indicativi — aggiornamento mensile · Reattività positiva calcolata su base storica · 
+      Clicca 📈 per aprire il grafico interattivo su TradingView · Gli altri settori GICS saranno disponibili nei prossimi aggiornamenti
+    </div>
+
   </div>
 </div>
 
