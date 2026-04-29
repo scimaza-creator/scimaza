@@ -1272,17 +1272,8 @@ function idxSetRange(range, btn){
 var TV_SYMBOLS={'FTSEMIB':'INDEX:FTSEMIB','SP500':'SP:SPX','NDX':'NASDAQ:NDX','DJI':'DJ:DJI','STOXX':'EURONEXT:EUSTX50','DAX':'XETR:DAX','CAC':'EURONEXT:PX1','FTSE':'LSE:UKX','N225':'TVC:NI225','HSI':'TVC:HSI','VIX':'CBOE:VIX','GOLD':'TVC:GOLD','WTI':'TVC:USOIL','BRENT':'TVC:UKOIL','BTC':'BITSTAMP:BTCUSD','EURUSD':'FX:EURUSD'};
 var TV_INTERVALS={'1mo':'D','3mo':'D','1y':'W','3y':'W','5y':'M','10y':'M'};
 
-function setIdxSrc(src){ idxChartSource=src; idxLoadChart(); }
 function setIdxCompare(sel){ idxCompare=Array.from(sel.selectedOptions).map(function(o){return o.value;}); idxLoadChart(); }
 
-var BAHA_SYMBOLS = {
-  'FTSEMIB':'tts-751316','SP500':'tts-751321','NDX':'tts-751307','DJI':'tts-751308',
-  'STOXX':'tts-751318','DAX':'tts-751309','CAC':'tts-751306','FTSE':'tts-751315',
-  'N225':'tts-751320','HSI':'tts-751319','VIX':'tts-751322','GOLD':'tts-751311',
-  'WTI':'tts-751310','BRENT':'tts-751305','BTC':'tts-751304','EURUSD':'tts-751313'
-};
-
-var idxChartSource = 'tv'; // 'tv' o 'baha'
 var idxCompare = []; // indici aggiuntivi per confronto
 
 function idxLoadChart(){
@@ -1291,53 +1282,55 @@ function idxLoadChart(){
   if(!wrap) return;
   var tvSym = TV_SYMBOLS[idxCurrentId] || 'SP:SPX';
   var tvInt = TV_INTERVALS[idxCurrentRange] || 'W';
-  var bahaSym = BAHA_SYMBOLS[idxCurrentId] || '';
   var cfg = IDX_CONFIG[idxCurrentId];
 
-  // Costruisce URL confronto TradingView con indici aggiuntivi
+  // URL TradingView con confronto indici aggiuntivi
   var tvUrl = 'https://www.tradingview.com/chart/?symbol='+encodeURIComponent(tvSym)+'&interval='+tvInt;
   if(idxCompare.length>0){
-    tvUrl += '&compare='+idxCompare.map(function(id){return encodeURIComponent(TV_SYMBOLS[id]||'');}).join(',');
+    tvUrl += '&compare='+idxCompare.map(function(id){
+      return encodeURIComponent(TV_SYMBOLS[id]||'');
+    }).filter(Boolean).join(',');
   }
-  // URL Baha
-  var bahaUrl = bahaSym ? 'https://www.baha.com/'+idxCurrentName.toLowerCase().replace(/[^a-z0-9]/g,'-')+'/index/chart/'+bahaSym : '';
 
-  // Selezione confronto - nomi indici disponibili
-  var compareOptions = Object.keys(IDX_CONFIG).filter(function(id){return id!==idxCurrentId;}).map(function(id){
-    var sel = idxCompare.indexOf(id)>-1 ? ' selected' : '';
+  // Selezione confronto
+  var compareOptions = Object.keys(IDX_CONFIG).filter(function(id){
+    return id!==idxCurrentId;
+  }).map(function(id){
+    var sel = idxCompare.indexOf(id)>-1?' selected':'';
     return '<option value="'+id+'"'+sel+'>'+IDX_CONFIG[id].name+'</option>';
   }).join('');
 
   wrap.innerHTML =
-    // Barra sorgente + confronto
-    '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#111;border-radius:8px 8px 0 0;border-bottom:.5px solid #2E2C2A;flex-wrap:wrap">'+
-    '<span style="font-size:10px;color:#9E9A94;text-transform:uppercase;letter-spacing:.08em">Sorgente:</span>'+
-    '<button onclick="setIdxSrc(\'tv\')" style="font-size:11px;padding:4px 10px;border-radius:5px;border:.5px solid #C4A35A;background:#C4A35A;color:#0F0F0E;cursor:pointer">📈 TradingView</button>'+
-    '<button onclick="setIdxSrc(\'baha\')" style="font-size:11px;padding:4px 10px;border-radius:5px;border:.5px solid #3D3A37;background:transparent;color:#9E9A94;cursor:pointer">📊 Baha</button>'+
-    '<span style="font-size:10px;color:#9E9A94;text-transform:uppercase;letter-spacing:.08em;margin-left:8px">Confronta con:</span>'+
+    '<div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#111;border-radius:8px 8px 0 0;border-bottom:.5px solid #2E2C2A;flex-wrap:wrap">'+
+    '<span style="font-size:10px;color:#9E9A94;text-transform:uppercase;letter-spacing:.08em">Confronta con:</span>'+
     '<select multiple onchange="setIdxCompare(this)" '+
-    'style="font-size:11px;padding:3px 6px;border-radius:5px;border:.5px solid #3D3A37;background:#1A1917;color:#E8E4DE;max-height:28px;cursor:pointer" title="Ctrl+click per selezionare più indici">'+
-    '<option value="" disabled>Seleziona...</option>'+compareOptions+'</select>'+
+    'style="font-size:11px;padding:3px 8px;border-radius:5px;border:.5px solid #3D3A37;background:#1A1917;color:#E8E4DE;cursor:pointer;min-width:160px" '+
+    'title="Ctrl+click per selezionare più indici">'+
+    '<option value="" disabled>Seleziona indice...</option>'+compareOptions+
+    '</select>'+
+    (idxCompare.length>0?
+      '<span style="font-size:11px;color:#C4A35A">+ '+idxCompare.map(function(id){return IDX_CONFIG[id].name;}).join(', ')+'</span>':
+      '<span style="font-size:11px;color:#5C5955">Nessun confronto attivo</span>')+
     '</div>'+
-    // Area grafico principale
-    '<div style="background:#1A1917;padding:16px;border-radius:0 0 8px 8px;display:flex;flex-direction:column;align-items:center;gap:14px;min-height:280px;justify-content:center">'+
-    '<div style="font-size:13px;color:#9E9A94;text-align:center">'+
-    (idxChartSource==='tv' ?
-      '📈 <strong style="color:#E8E4DE">TradingView</strong> — grafico interattivo, analisi tecnica avanzata' :
-      '📊 <strong style="color:#E8E4DE">Baha</strong> — dati storici, master data, notizie integrate')+
+    '<div style="background:#1A1917;padding:20px 16px;border-radius:0 0 8px 8px;display:flex;flex-direction:column;align-items:center;gap:16px;min-height:260px;justify-content:center">'+
+    '<div style="text-align:center">'+
+    '<div style="font-size:38px;margin-bottom:8px">📈</div>'+
+    '<div style="font-size:15px;color:#E8E4DE;font-weight:500;margin-bottom:6px">'+idxCurrentName+'</div>'+
+    '<div style="font-size:12px;color:#9E9A94;line-height:1.6">Grafico interattivo · Analisi tecnica · Dati storici fino a 10 anni'+
+    (idxCompare.length>0?'<br><span style="color:#C4A35A">Confronto con '+idxCompare.length+' indic'+(idxCompare.length>1?'i':'e')+' attivo</span>':'')+
     '</div>'+
-    (idxCompare.length>0 ? '<div style="font-size:11px;color:#C4A35A;text-align:center">Confronto attivo con: '+idxCompare.map(function(id){return IDX_CONFIG[id].name;}).join(', ')+'</div>' : '')+
-    '<a href="'+(idxChartSource==='tv' ? tvUrl : (bahaUrl||tvUrl))+'" target="_blank" '+
-    'style="background:#C4A35A;color:#0F0F0E;padding:10px 28px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;font-family:DM Sans,sans-serif;transition:opacity .15s" '+
+    '</div>'+
+    '<a href="'+tvUrl+'" target="_blank" '+
+    'style="background:#C4A35A;color:#0F0F0E;padding:11px 30px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;font-family:DM Sans,sans-serif" '+
     'onmouseover="this.style.opacity=.85" onmouseout="this.style.opacity=1">'+
-    (idxChartSource==='tv' ? '📈 Apri su TradingView' : '📊 Apri su Baha')+'</a>'+
-    '<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">'+
+    '📈 Apri su TradingView</a>'+
+    '<div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center">'+
     '<a href="'+cfg.ufficiale+'" target="_blank" style="color:#C4A35A;font-size:11px;text-decoration:none">🏛️ '+cfg.ufficiale_label+' →</a>'+
     '<a href="'+cfg.macro+'" target="_blank" style="color:#C4A35A;font-size:11px;text-decoration:none">📊 Macrotrends →</a>'+
-    (bahaUrl && idxChartSource==='tv' ? '<a href="'+bahaUrl+'" target="_blank" style="color:#C4A35A;font-size:11px;text-decoration:none">📊 Baha →</a>' : '')+
     '</div>'+
     '</div>';
 }
+
 
 // ===== YAHOO FINANCE INDICI =====
 var YF_SYMBOLS = {
