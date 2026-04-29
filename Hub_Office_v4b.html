@@ -1009,8 +1009,16 @@ function yfFmt(val, dec){
 
 async function yfFetchOne(id, cfg){
   try{
-    var url = 'https://query1.finance.yahoo.com/v8/finance/chart/'+cfg.s+'?interval=1d&range=1d';
-    var r = await fetch(url, {headers:{'Accept':'application/json'}});
+    // Prova diretta, poi proxy CORS se bloccato
+    var baseUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/'+cfg.s+'?interval=1d&range=1d';
+    var proxyUrl = 'https://corsproxy.io/?'+encodeURIComponent(baseUrl);
+    var r;
+    try{
+      r = await fetch(baseUrl, {headers:{'Accept':'application/json'}});
+      if(!r.ok) throw new Error('direct blocked');
+    }catch(e1){
+      try{ r = await fetch(proxyUrl); }catch(e2){ return; }
+    }
     if(!r.ok) throw new Error('HTTP '+r.status);
     var data = await r.json();
     var meta = data.chart.result[0].meta;
