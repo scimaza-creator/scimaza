@@ -296,7 +296,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .tab-btn2{font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:8px 16px;cursor:pointer;color:#AAA;border-bottom:3px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:'DM Sans',sans-serif;transition:all .15s;white-space:nowrap}
 .tab-btn2:hover{color:#000;background:rgba(255,255,255,0.9);border-radius:4px}
 .tab-btn2.active2{color:#000;background:#fff;border-bottom-color:#8B4513;border-radius:4px}
-.tb-clock{font-size:11px;color:#888}
 .tb-ticker{background:#111;overflow:hidden;white-space:nowrap;padding:5px 0;font-size:11px;color:#ccc}
 .tb-ticker-inner{display:inline-block;animation:tbTick 80s linear infinite}
 .tick-item2{margin-right:48px}
@@ -775,7 +774,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <button class="tab-btn2" onclick="tbShow('crypto',this)">Crypto</button>
       <button class="tab-btn2" onclick="tbShow('valute',this)">Forex + Valute</button>
     </div>
-    <div class="tb-clock" id="tb-clock"></div>
   </div>
   <!-- TICKER TABLEAU -->
   <div class="tb-ticker"><div class="tb-ticker-inner">
@@ -816,7 +814,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="mcard2" id="yf-BTC"><div class="mcard2-name">BTC</div><div class="mcard2-val" id="yf-v-BTC">$87.240</div><div class="mcard2-chg c-dn" id="yf-c-BTC">▼ 2.41%</div></div>
       <div class="mcard2" id="yf-EURUSD"><div class="mcard2-name">EUR/USD</div><div class="mcard2-val" id="yf-v-EURUSD">1.0811</div><div class="mcard2-chg c-up" id="yf-c-EURUSD">▲ 0.32%</div></div>
     </div>
-    <div class="src-note2">Real-time: <a href="https://it.investing.com/markets" target="_blank">Investing.com</a> · <a href="https://it.tradingview.com/" target="_blank">TradingView</a> · <a href="https://www.baha.com/" target="_blank">Baha</a></div>
+
   </div>
   <!-- PANEL AZIONI -->
   <div id="tb-panel-azioni" class="tb-panel">
@@ -923,7 +921,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <div class="mcard2"><div class="mcard2-name">BTC Dominance</div><div class="mcard2-val">62.4%</div><div class="mcard2-chg c-up">▲ 0.8%</div></div>
       <div class="mcard2"><div class="mcard2-name">Cap. totale</div><div class="mcard2-val">$2.84T</div><div class="mcard2-chg c-dn">▼ 2.8%</div></div>
     </div>
-    <div class="src-note2">Real-time: <a href="https://coinmarketcap.com/" target="_blank">CoinMarketCap</a> · <a href="https://alternative.me/crypto/fear-and-greed-index/" target="_blank">Fear & Greed Index</a></div>
+
   </div>
   <!-- PANEL FOREX -->
   <div id="tb-panel-valute" class="tb-panel">
@@ -978,8 +976,6 @@ function tbConverti(){
 }
 function tbClock(){
   var d=new Date();
-  var el=document.getElementById('tb-clock');
-  if(el) el.textContent=d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 
 // ===== YAHOO FINANCE INDICI =====
@@ -1076,8 +1072,8 @@ setInterval(tbClock,1000);
 <!-- MASTHEAD -->
 <div class="masthead">
   <div class="masthead-title">
-    <h1>Il Giornale Finanziario Globale <span style="font-size:14px;font-weight:300;color:#AAA;letter-spacing:.05em" id="newsTime">(aggiornato alle --:--)</span></h1>
-    <div class="tagline">Finanza · Economia · Geopolitica · Mercati · Mondo · aggiornamento ogni 60 minuti</div>
+    <h1>Il Giornale Finanziario Globale <span style="font-size:14px;font-weight:300;color:#AAA;letter-spacing:.05em" id="newsTime">— aggiornato alle --:--</span></h1>
+    <div class="tagline">Finanza · Economia · Geopolitica · Mercati · Mondo</div>
   </div>
   <div class="masthead-nav">
     <button class="nav-btn active" onclick="showPanel('notizie',this)">Notizie Live</button>
@@ -1421,7 +1417,7 @@ function updateClock() {
   const el4 = document.getElementById('footerDate');
   if (el1) el1.textContent = dateStr;
   if (el2) el2.textContent = timeStr;
-  if (el3) el3.textContent = '(aggiornato alle ' + timeStr + ' · ogni 60 min)';
+  if (el3) el3.textContent = '— aggiornato alle ' + timeStr;
   if (el4) el4.textContent = dateStr;
 }
 
@@ -1455,7 +1451,7 @@ function updateClock() {
   const el4 = document.getElementById('footerDate');
   if (el1) el1.textContent = dateStr;
   if (el2) el2.textContent = timeStr;
-  if (el3) el3.textContent = '(aggiornato alle ' + timeStr + ' · ogni 60 min)';
+  if (el3) el3.textContent = '— aggiornato alle ' + timeStr;
   if (el4) el4.textContent = dateStr;
 }
 
