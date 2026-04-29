@@ -182,6 +182,17 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .idx-links{display:flex;gap:8px;flex-wrap:wrap;padding-top:.5rem;border-top:.5px solid #2E2C2A}
 .idx-link-btn{font-size:11px;padding:6px 14px;border-radius:6px;border:.5px solid #3D3A37;background:#222120;color:#C4A35A;cursor:pointer;text-decoration:none;transition:all .15s}
 .idx-link-btn:hover{border-color:#C4A35A;background:#2A2826}
+.idx-news-box{background:#111;border:.5px solid #3D3A37;border-radius:8px;padding:14px 16px;margin-bottom:12px}
+.idx-news-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;padding-bottom:8px;border-bottom:.5px solid #2E2C2A}
+.idx-news-title{font-family:'Cormorant Garamond',serif;font-size:15px;color:#C4A35A;font-weight:500;letter-spacing:.04em}
+.idx-news-date{font-size:10px;color:#5C5955;font-family:'DM Mono',monospace}
+.idx-news-body{font-size:12px;color:#E8E4DE;line-height:1.7}
+.idx-news-body p{margin-bottom:8px}
+.idx-news-body p:last-child{margin-bottom:0}
+.idx-news-tag{display:inline-block;font-size:9px;padding:2px 8px;border-radius:4px;font-weight:500;margin-right:4px;margin-bottom:4px}
+.idx-news-tag.bull{background:rgba(29,158,117,.2);color:#1D9E75}
+.idx-news-tag.bear{background:rgba(192,57,43,.2);color:#C0392B}
+.idx-news-tag.neutral{background:rgba(158,154,148,.15);color:#9E9A94}
 .ai-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:500;display:none;align-items:center;justify-content:center;padding:2rem;backdrop-filter:blur(4px)}
 .ai-modal-overlay.open{display:flex}
 .ai-modal{background:var(--surface);border:.5px solid var(--border2);border-radius:var(--radius);width:100%;max-width:700px;max-height:85vh;display:flex;flex-direction:column}
@@ -1006,23 +1017,203 @@ var idxCurrentName = '';
 
 // Dati configurazione indici
 var IDX_CONFIG = {
-  'FTSEMIB': {name:'FTSE MIB',        s:'FTSEMIB.MI', inv:'https://it.investing.com/indices/it-mib-40', tv:'https://it.tradingview.com/symbols/MIL-FTSEMIB/'},
-  'SP500':   {name:'S&P 500',          s:'%5EGSPC',    inv:'https://it.investing.com/indices/us-spx-500',  tv:'https://it.tradingview.com/symbols/SP-500/'},
-  'NDX':     {name:'NASDAQ 100',       s:'%5ENDX',     inv:'https://it.investing.com/indices/nasdaq-100',   tv:'https://it.tradingview.com/symbols/NASDAQ-NDX/'},
-  'DJI':     {name:'Dow Jones',        s:'%5EDJI',     inv:'https://it.investing.com/indices/us-30',        tv:'https://it.tradingview.com/symbols/DJ-30/'},
-  'STOXX':   {name:'Euro Stoxx 50',    s:'%5ESTOXX50E',inv:'https://it.investing.com/indices/eu-stoxx50',   tv:'https://it.tradingview.com/symbols/EURONEXT-EUSTX50/'},
-  'DAX':     {name:'DAX',              s:'%5EGDAXI',   inv:'https://it.investing.com/indices/germany-30',   tv:'https://it.tradingview.com/symbols/XETR-DAX/'},
-  'CAC':     {name:'CAC 40',           s:'%5EFCHI',    inv:'https://it.investing.com/indices/france-40',    tv:'https://it.tradingview.com/symbols/EURONEXT-PX1/'},
-  'FTSE':    {name:'FTSE 100',         s:'%5EFTSE',    inv:'https://it.investing.com/indices/uk-100',       tv:'https://it.tradingview.com/symbols/LSE-UKX/'},
-  'N225':    {name:'Nikkei 225',       s:'%5EN225',    inv:'https://it.investing.com/indices/japan-ni225',  tv:'https://it.tradingview.com/symbols/TVC-NI225/'},
-  'HSI':     {name:'Hang Seng',        s:'%5EHSI',     inv:'https://it.investing.com/indices/hang-sen-40',  tv:'https://it.tradingview.com/symbols/TVC-HSI/'},
-  'VIX':     {name:'VIX',              s:'%5EVIX',     inv:'https://it.investing.com/indices/volatility-s-p-500', tv:'https://it.tradingview.com/symbols/CBOE-VIX/'},
-  'GOLD':    {name:'Oro ($/oz)',        s:'GC%3DF',     inv:'https://it.investing.com/commodities/gold',     tv:'https://it.tradingview.com/symbols/TVC-GOLD/'},
-  'WTI':     {name:'WTI Petrolio',     s:'CL%3DF',     inv:'https://it.investing.com/commodities/crude-oil', tv:'https://it.tradingview.com/symbols/TVC-USOIL/'},
-  'BRENT':   {name:'Brent Petrolio',   s:'BZ%3DF',     inv:'https://it.investing.com/commodities/brent-oil', tv:'https://it.tradingview.com/symbols/TVC-UKOIL/'},
-  'BTC':     {name:'Bitcoin (BTC)',     s:'BTC-USD',    inv:'https://it.investing.com/crypto/bitcoin/btc-usd', tv:'https://it.tradingview.com/symbols/BITSTAMP-BTCUSD/'},
-  'EURUSD':  {name:'EUR/USD',          s:'EURUSD%3DX', inv:'https://it.investing.com/currencies/eur-usd',   tv:'https://it.tradingview.com/symbols/FX-EURUSD/'}
+  'FTSEMIB': {name:'FTSE MIB',      s:'FTSEMIB.MI',
+    ufficiale:'https://www.borsaitaliana.it/borsa/indici/mib.html',
+    ufficiale_label:'Borsa Italiana',
+    tv:'https://it.tradingview.com/chart/?symbol=INDEX%3AFTSEMIB',
+    macro:'https://www.macrotrends.net/2481/ftse-mib-index'},
+  'SP500':   {name:'S&P 500',       s:'%5EGSPC',
+    ufficiale:'https://www.spglobal.com/spdji/en/indices/equity/sp-500/',
+    ufficiale_label:'S&P Global',
+    tv:'https://it.tradingview.com/chart/?symbol=SP%3ASPX',
+    macro:'https://www.macrotrends.net/2324/sp-500-historical-chart-data'},
+  'NDX':     {name:'NASDAQ 100',    s:'%5ENDX',
+    ufficiale:'https://www.nasdaq.com/market-activity/index/ndx',
+    ufficiale_label:'NASDAQ',
+    tv:'https://it.tradingview.com/chart/?symbol=NASDAQ%3ANDX',
+    macro:'https://www.macrotrends.net/1770/nasdaq-composite-historical-chart'},
+  'DJI':     {name:'Dow Jones',     s:'%5EDJI',
+    ufficiale:'https://www.spglobal.com/spdji/en/indices/equity/dow-jones-industrial-average/',
+    ufficiale_label:'S&P Dow Jones',
+    tv:'https://it.tradingview.com/chart/?symbol=DJ%3ADJI',
+    macro:'https://www.macrotrends.net/1319/dow-jones-100-year-historical-chart'},
+  'STOXX':   {name:'Euro Stoxx 50', s:'%5ESTOXX50E',
+    ufficiale:'https://www.stoxx.com/index-details.html?isin=EU0009658145',
+    ufficiale_label:'STOXX',
+    tv:'https://it.tradingview.com/chart/?symbol=EURONEXT%3AEUSTX50',
+    macro:'https://www.macrotrends.net/2443/euro-stoxx-50-index-historical-chart'},
+  'DAX':     {name:'DAX',           s:'%5EGDAXI',
+    ufficiale:'https://www.deutsche-boerse.com/dbg-en/market-data/indices/dax',
+    ufficiale_label:'Deutsche Börse',
+    tv:'https://it.tradingview.com/chart/?symbol=XETR%3ADAX',
+    macro:'https://www.macrotrends.net/2596/dax-index-historical-chart'},
+  'CAC':     {name:'CAC 40',        s:'%5EFCHI',
+    ufficiale:'https://live.euronext.com/en/product/indices/FR0003500008-XPAR',
+    ufficiale_label:'Euronext',
+    tv:'https://it.tradingview.com/chart/?symbol=EURONEXT%3APX1',
+    macro:'https://www.macrotrends.net/2595/cac-40-index-historical-chart'},
+  'FTSE':    {name:'FTSE 100',      s:'%5EFTSE',
+    ufficiale:'https://www.londonstockexchange.com/indices/ftse-100',
+    ufficiale_label:'London Stock Exchange',
+    tv:'https://it.tradingview.com/chart/?symbol=LSE%3AUKX',
+    macro:'https://www.macrotrends.net/2584/ftse-100-index-historical-chart'},
+  'N225':    {name:'Nikkei 225',    s:'%5EN225',
+    ufficiale:'https://indexes.nikkei.co.jp/en/nkave/index/profile?idx=nk225',
+    ufficiale_label:'Nikkei',
+    tv:'https://it.tradingview.com/chart/?symbol=TVC%3ANI225',
+    macro:'https://www.macrotrends.net/2593/nikkei-225-index-historical-chart'},
+  'HSI':     {name:'Hang Seng',     s:'%5EHSI',
+    ufficiale:'https://www.hsi.com.hk/eng/indexes/all-indexes/hsi',
+    ufficiale_label:'HSI',
+    tv:'https://it.tradingview.com/chart/?symbol=TVC%3AHSI',
+    macro:'https://www.macrotrends.net/2504/hang-seng-index-historical-chart'},
+  'VIX':     {name:'VIX',           s:'%5EVIX',
+    ufficiale:'https://www.cboe.com/tradable_products/vix/',
+    ufficiale_label:'CBOE',
+    tv:'https://it.tradingview.com/chart/?symbol=CBOE%3AVIX',
+    macro:'https://www.macrotrends.net/2591/vix-volatility-index-historical-chart'},
+  'GOLD':    {name:'Oro ($/oz)',     s:'GC%3DF',
+    ufficiale:'https://www.cmegroup.com/markets/metals/precious/gold.html',
+    ufficiale_label:'CME Group',
+    tv:'https://it.tradingview.com/chart/?symbol=TVC%3AGOLD',
+    macro:'https://www.macrotrends.net/1333/historical-gold-prices-100-year-chart'},
+  'WTI':     {name:'WTI Petrolio',  s:'CL%3DF',
+    ufficiale:'https://www.cmegroup.com/markets/energy/crude-oil/light-sweet-crude.html',
+    ufficiale_label:'CME Group',
+    tv:'https://it.tradingview.com/chart/?symbol=TVC%3AUSOIL',
+    macro:'https://www.macrotrends.net/1369/crude-oil-price-history-chart'},
+  'BRENT':   {name:'Brent Petrolio', s:'BZ%3DF',
+    ufficiale:'https://www.theice.com/products/219/Brent-Crude-Futures',
+    ufficiale_label:'ICE',
+    tv:'https://it.tradingview.com/chart/?symbol=TVC%3AUKOIL',
+    macro:'https://www.macrotrends.net/2480/brent-crude-oil-prices-10-year-daily-chart'},
+  'BTC':     {name:'Bitcoin (BTC)',  s:'BTC-USD',
+    ufficiale:'https://coinmarketcap.com/currencies/bitcoin/',
+    ufficiale_label:'CoinMarketCap',
+    tv:'https://it.tradingview.com/chart/?symbol=BITSTAMP%3ABTCUSD',
+    macro:'https://www.macrotrends.net/1332/bitcoin-price-history'},
+  'EURUSD':  {name:'EUR/USD',       s:'EURUSD%3DX',
+    ufficiale:'https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/eurofxref-graph-usd.en.html',
+    ufficiale_label:'BCE',
+    tv:'https://it.tradingview.com/chart/?symbol=FX%3AEURUSD',
+    macro:'https://www.macrotrends.net/1480/euro-dollar-exchange-rate-historical-chart'}
 };
+
+var IDX_NEWS = {
+  'FTSEMIB': {
+    sentiment: 'bull',
+    label: 'Positivo',
+    testo: `Il FTSE MIB mantiene un bias rialzista supportato dal settore bancario e dalle utility. Gli analisti di Mediobanca e Intesa indicano target a 40.000-42.000 punti entro fine 2026. Il rischio principale rimane la volatilità dello spread BTP-Bund e le politiche BCE.`,
+    outlook: `Cauto ottimismo a 3-6 mesi. Potenziale upside del 8-12% dai livelli attuali secondo consensus.`,
+    rischi: `Spread BTP, rallentamento economico europeo, tensioni geopolitiche.`
+  },
+  'SP500': {
+    sentiment: 'neutral',
+    label: 'Neutro',
+    testo: `L'S&P 500 affronta pressioni dalle valutazioni elevate e dall'incertezza sui tassi Fed. Goldman Sachs e JPMorgan divergono: target 2026 tra 5.800 e 6.500 punti. L'AI continua a sostenere il settore tech.`,
+    outlook: `Rendimenti attesi moderati a 12 mesi. Rotazione settoriale in corso da growth a value.`,
+    rischi: `Persistenza inflazione servizi, geopolitica, valutazioni tech elevate.`
+  },
+  'NDX': {
+    sentiment: 'bull',
+    label: 'Positivo',
+    testo: `Il NASDAQ 100 beneficia del ciclo AI con NVIDIA, Microsoft e Meta che trainano al rialzo. Gli analisti vedono potenziale fino a 22.000-24.000 punti a 12 mesi. Le trimestrali Q1 2026 hanno superato le attese nel 78% dei casi.`,
+    outlook: `Trend rialzista strutturale legato all'AI. Rischio correzione tecnica nel breve.`,
+    rischi: `Concentrazione in pochi titoli, regolamentazione AI, tassi alti penalizzano growth.`
+  },
+  'DJI': {
+    sentiment: 'neutral',
+    label: 'Neutro',
+    testo: `Il Dow Jones riflette una economia USA ancora solida ma in rallentamento. Il consenso degli analisti indica un range 41.000-44.000 per fine 2026. I titoli industriali e finanziari sostengono l'indice.`,
+    outlook: `Rendimento atteso in linea con crescita utili corporate (+6-8% 2026).`,
+    rischi: `Fed hawkish, recessione lieve possibile H2 2026, dollar strength.`
+  },
+  'STOXX': {
+    sentiment: 'bull',
+    label: 'Positivo',
+    testo: `L'Euro Stoxx 50 sovraperforma grazie al riarmo europeo e alla ripresa manifatturiera tedesca. Target consensus 2026: 5.500-5.800 punti. BCE accomodante favorisce le valutazioni.`,
+    outlook: `Europa offre valutazioni attraenti vs USA. Momentum positivo sostenuto da politica fiscale.`,
+    rischi: `Guerra in Ucraina, debolezza consumer, competitività cinese.`
+  },
+  'DAX': {
+    sentiment: 'bull',
+    label: 'Positivo',
+    testo: `Il DAX è trainato dalla spesa per la difesa e dalle riforme fiscali tedesche. Analisti di Deutsche Bank indicano target 24.000-26.000 per fine 2026. Il settore auto rimane sotto pressione dalla competizione cinese.`,
+    outlook: `Outperformer europeo a 12 mesi. Riforme strutturali Germania cambiano il quadro.`,
+    rischi: `Transizione auto elettrica, gas prezzi, export verso Cina in calo.`
+  },
+  'CAC': {
+    sentiment: 'neutral',
+    label: 'Neutro',
+    testo: `Il CAC 40 risente dell'incertezza politica francese e delle tensioni sul debito pubblico. Il lusso (LVMH) e l'aerospazio (Airbus) sostengono l'indice. Target 2026: 8.200-8.800 punti.`,
+    outlook: `Performance legata alla stabilità politica e alla ripresa del lusso in Asia.`,
+    rischi: `Deficit fiscale Francia, OAT spread, debolezza consumi luxury in Cina.`
+  },
+  'FTSE': {
+    sentiment: 'neutral',
+    label: 'Neutro',
+    testo: `Il FTSE 100 mantiene un profilo difensivo grazie a energia, mining e banche. La sterlina forte penalizza le multinazionali. Target 2026: 8.800-9.200 punti secondo analisti Barclays e HSBC.`,
+    outlook: `Dividend yield attraente (3.5%). Performance limitata dalla composizione settoriale.`,
+    rischi: `Brexit effetti ritardati, BoE hawkish, commodity prices.`
+  },
+  'N225': {
+    sentiment: 'bull',
+    label: 'Positivo',
+    testo: `Il Nikkei 225 beneficia della debolezza dello yen, della reflazione e delle riforme corporate governance. Target 2026: 40.000-45.000 punti. Warren Buffett ha aumentato le posizioni sulle trading house giapponesi.`,
+    outlook: `Giappone uno dei mercati più attraenti globalmente. Rialzo BoJ monitorato.`,
+    rischi: `Inversione yen carry trade, rialzi BoJ aggressivi, esposizione export verso USA.`
+  },
+  'HSI': {
+    sentiment: 'bear',
+    label: 'Cauto',
+    testo: `L'Hang Seng rimane sotto pressione per i rischi geopolitici Cina-USA e la debolezza del mercato immobiliare cinese. Alcuni analisti vedono opportunità contrarian ma il sentiment resta fragile.`,
+    outlook: `Potenziale rimbalzo su stimoli PBOC ma visibilità limitata a 12 mesi.`,
+    rischi: `Tensioni Taiwan, property crisis, deflazione in Cina, de-globalizzazione.`
+  },
+  'VIX': {
+    sentiment: 'neutral',
+    label: 'Monitoraggio',
+    testo: `Il VIX sotto 25 indica mercati relativamente calmi. Livelli sopra 30 segnalano stress. Il consenso degli strategist indica VIX in range 18-22 per i prossimi mesi in assenza di shock esogeni.`,
+    outlook: `Volatilità strutturalmente bassa favorisce strategie di vendita di opzioni.`,
+    rischi: `Shock geopolitici, dati inflazione sorprendenti, credit event.`
+  },
+  'GOLD': {
+    sentiment: 'bull',
+    label: 'Positivo',
+    testo: `L'oro supera i $3.000/oz per la prima volta nella storia, trainato da acquisti banche centrali, de-dollarizzazione e incertezza geopolitica. Goldman Sachs target $3.300-3.500 entro fine 2026.`,
+    outlook: `Tendenza rialzista strutturale. Le banche centrali emergenti continuano ad accumulare.`,
+    rischi: `Dollaro forte, tassi reali in rialzo, riduzione acquisti banche centrali.`
+  },
+  'WTI': {
+    sentiment: 'bear',
+    label: 'Cauto',
+    testo: `Il WTI sotto pressione per l'aumento produzione USA e i timori di rallentamento domanda globale. OPEC+ mantiene i tagli ma con difficoltà. Target 2026: $65-75/barile secondo IEA e Goldman.`,
+    outlook: `Surplus offerta probabile H2 2026. Transizione energetica pesa sul lungo termine.`,
+    rischi: `Escalation Medio Oriente, taglio OPEC+ aggressivo, ripresa domanda Cina.`
+  },
+  'BRENT': {
+    sentiment: 'bear',
+    label: 'Cauto',
+    testo: `Il Brent segue il WTI con un premium geopolitico per i rischi dello Stretto di Hormuz. La domanda asiatica rimane il driver principale. IEA prevede surplus nel 2026 con crescita rinnovabili.`,
+    outlook: `Range atteso $70-82/barile per 2026. Volatilità elevata per fattori geopolitici.`,
+    rischi: `Conflitti Medio Oriente, domanda Cina, produzione record USA.`
+  },
+  'BTC': {
+    sentiment: 'bull',
+    label: 'Positivo',
+    testo: `Bitcoin mantiene trend rialzista post-halving 2024. ETF spot USA hanno raccolto oltre $50 miliardi. Target analisti: $120.000-180.000 entro fine 2026 secondo Cathie Wood e Standard Chartered.`,
+    outlook: `Adozione istituzionale accelera. Halving riduce offerta. Regolamentazione USA favorevole.`,
+    rischi: `Volatilità estrema, regolamentazione avversa, correlazione con risk-off mercati.`
+  },
+  'EURUSD': {
+    sentiment: 'bull',
+    label: 'Positivo',
+    testo: `EUR/USD in rafforzamento per la divergenza politica BCE-Fed. La BCE più accomodante di quanto atteso mentre la Fed rimane cauta. Target 2026: 1.10-1.15 secondo Deutsche Bank e Societe Generale.`,
+    outlook: `Euro supportato da riduzione spread periferici e stabilità politica europea.`,
+    rischi: `Shock energetico Europa, crisi politica Francia o Italia, recessione tedesca.`
+  }
+};
+var IDX_NEWS_DATE = '29 aprile 2026';
 
 function apriIdxModal(id){
   var cfg = IDX_CONFIG[id];
@@ -1034,12 +1225,30 @@ function apriIdxModal(id){
   document.getElementById('idxModalPrice').textContent = '—';
   document.getElementById('idxModalChg').textContent = '';
   document.getElementById('idxStats').innerHTML = '';
+  // Carica report Index News
+  var news = IDX_NEWS[id];
+  var newsBox = document.getElementById('idxNewsBox');
+  if(newsBox && news){
+    newsBox.innerHTML =
+      '<div class="idx-news-header">'+
+      '<span class="idx-news-title">✦ Index News</span>'+
+      '<span class="idx-news-date">Aggiornato: '+IDX_NEWS_DATE+' · '+new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})+'</span>'+
+      '</div>'+
+      '<div class="idx-news-body">'+
+      '<p>'+news.testo+'</p>'+
+      '<p><strong style="color:#9E9A94;font-size:10px;text-transform:uppercase;letter-spacing:.08em">Outlook 3-12 mesi:</strong><br>'+news.outlook+'</p>'+
+      '<p><strong style="color:#9E9A94;font-size:10px;text-transform:uppercase;letter-spacing:.08em">Rischi principali:</strong><br>'+news.rischi+'</p>'+
+      '<div style="margin-top:8px">'+
+      '<span class="idx-news-tag '+news.sentiment+'">'+news.label+'</span>'+
+      '</div>'+
+      '</div>';
+  }
   // Link analisti
   document.getElementById('idxLinks').innerHTML =
-    '<span style="font-size:11px;color:#9E9A94;align-self:center">Analisi e previsioni analisti:</span>'+
-    '<a class="idx-link-btn" href="'+cfg.inv+'" target="_blank">📊 Investing.com</a>'+
-    '<a class="idx-link-btn" href="'+cfg.tv+'" target="_blank">📈 TradingView</a>'+
-    '<a class="idx-link-btn" href="https://finance.yahoo.com/quote/'+cfg.s.replace('%5E','^').replace('%3D','=')+'" target="_blank">🔗 Yahoo Finance</a>';
+    '<span style="font-size:11px;color:#9E9A94;align-self:center">Fonti ufficiali:</span>'+
+    '<a class="idx-link-btn" href="'+cfg.ufficiale+'" target="_blank">🏛️ '+cfg.ufficiale_label+'</a>'+
+    '<a class="idx-link-btn" href="'+cfg.tv+'" target="_blank">📈 Grafico TradingView</a>'+
+    '<a class="idx-link-btn" href="'+cfg.macro+'" target="_blank">📊 Storico Macrotrends</a>';
   // Range default
   document.querySelectorAll('.idx-range-btn').forEach(function(b){b.classList.remove('active');});
   document.querySelectorAll('.idx-range-btn')[2].classList.add('active');
@@ -1063,41 +1272,71 @@ function idxSetRange(range, btn){
 var TV_SYMBOLS={'FTSEMIB':'INDEX:FTSEMIB','SP500':'SP:SPX','NDX':'NASDAQ:NDX','DJI':'DJ:DJI','STOXX':'EURONEXT:EUSTX50','DAX':'XETR:DAX','CAC':'EURONEXT:PX1','FTSE':'LSE:UKX','N225':'TVC:NI225','HSI':'TVC:HSI','VIX':'CBOE:VIX','GOLD':'TVC:GOLD','WTI':'TVC:USOIL','BRENT':'TVC:UKOIL','BTC':'BITSTAMP:BTCUSD','EURUSD':'FX:EURUSD'};
 var TV_INTERVALS={'1mo':'D','3mo':'D','1y':'W','3y':'W','5y':'M','10y':'M'};
 
+function setIdxSrc(src){ idxChartSource=src; idxLoadChart(); }
+function setIdxCompare(sel){ idxCompare=Array.from(sel.selectedOptions).map(function(o){return o.value;}); idxLoadChart(); }
+
+var BAHA_SYMBOLS = {
+  'FTSEMIB':'tts-751316','SP500':'tts-751321','NDX':'tts-751307','DJI':'tts-751308',
+  'STOXX':'tts-751318','DAX':'tts-751309','CAC':'tts-751306','FTSE':'tts-751315',
+  'N225':'tts-751320','HSI':'tts-751319','VIX':'tts-751322','GOLD':'tts-751311',
+  'WTI':'tts-751310','BRENT':'tts-751305','BTC':'tts-751304','EURUSD':'tts-751313'
+};
+
+var idxChartSource = 'tv'; // 'tv' o 'baha'
+var idxCompare = []; // indici aggiuntivi per confronto
+
 function idxLoadChart(){
   if(!idxCurrentId) return;
-  var tvSym = TV_SYMBOLS[idxCurrentId] || 'SP:SPX';
-  var tvInt = TV_INTERVALS[idxCurrentRange] || 'W';
   var wrap = document.getElementById('idxChartWrap');
   if(!wrap) return;
-  // Widget TradingView Advanced Chart - ufficiale, funziona ovunque
-  wrap.innerHTML = '';
-  var container = document.createElement('div');
-  container.className = 'tradingview-widget-container';
-  container.style.cssText = 'height:380px;width:100%';
-  var widgetDiv = document.createElement('div');
-  widgetDiv.id = 'tradingview_'+idxCurrentId;
-  widgetDiv.style.cssText = 'height:380px;width:100%';
-  container.appendChild(widgetDiv);
-  wrap.appendChild(container);
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js';
-  script.async = true;
-  script.innerHTML = JSON.stringify({
-    autosize: true,
-    symbol: tvSym,
-    interval: tvInt,
-    timezone: 'Europe/Rome',
-    theme: 'dark',
-    style: '1',
-    locale: 'it',
-    allow_symbol_change: false,
-    save_image: false,
-    calendar: false,
-    hide_volume: false,
-    support_host: 'https://www.tradingview.com'
-  });
-  container.appendChild(script);
+  var tvSym = TV_SYMBOLS[idxCurrentId] || 'SP:SPX';
+  var tvInt = TV_INTERVALS[idxCurrentRange] || 'W';
+  var bahaSym = BAHA_SYMBOLS[idxCurrentId] || '';
+  var cfg = IDX_CONFIG[idxCurrentId];
+
+  // Costruisce URL confronto TradingView con indici aggiuntivi
+  var tvUrl = 'https://www.tradingview.com/chart/?symbol='+encodeURIComponent(tvSym)+'&interval='+tvInt;
+  if(idxCompare.length>0){
+    tvUrl += '&compare='+idxCompare.map(function(id){return encodeURIComponent(TV_SYMBOLS[id]||'');}).join(',');
+  }
+  // URL Baha
+  var bahaUrl = bahaSym ? 'https://www.baha.com/'+idxCurrentName.toLowerCase().replace(/[^a-z0-9]/g,'-')+'/index/chart/'+bahaSym : '';
+
+  // Selezione confronto - nomi indici disponibili
+  var compareOptions = Object.keys(IDX_CONFIG).filter(function(id){return id!==idxCurrentId;}).map(function(id){
+    var sel = idxCompare.indexOf(id)>-1 ? ' selected' : '';
+    return '<option value="'+id+'"'+sel+'>'+IDX_CONFIG[id].name+'</option>';
+  }).join('');
+
+  wrap.innerHTML =
+    // Barra sorgente + confronto
+    '<div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#111;border-radius:8px 8px 0 0;border-bottom:.5px solid #2E2C2A;flex-wrap:wrap">'+
+    '<span style="font-size:10px;color:#9E9A94;text-transform:uppercase;letter-spacing:.08em">Sorgente:</span>'+
+    '<button onclick="setIdxSrc(\'tv\')" style="font-size:11px;padding:4px 10px;border-radius:5px;border:.5px solid #C4A35A;background:#C4A35A;color:#0F0F0E;cursor:pointer">📈 TradingView</button>'+
+    '<button onclick="setIdxSrc(\'baha\')" style="font-size:11px;padding:4px 10px;border-radius:5px;border:.5px solid #3D3A37;background:transparent;color:#9E9A94;cursor:pointer">📊 Baha</button>'+
+    '<span style="font-size:10px;color:#9E9A94;text-transform:uppercase;letter-spacing:.08em;margin-left:8px">Confronta con:</span>'+
+    '<select multiple onchange="setIdxCompare(this)" '+
+    'style="font-size:11px;padding:3px 6px;border-radius:5px;border:.5px solid #3D3A37;background:#1A1917;color:#E8E4DE;max-height:28px;cursor:pointer" title="Ctrl+click per selezionare più indici">'+
+    '<option value="" disabled>Seleziona...</option>'+compareOptions+'</select>'+
+    '</div>'+
+    // Area grafico principale
+    '<div style="background:#1A1917;padding:16px;border-radius:0 0 8px 8px;display:flex;flex-direction:column;align-items:center;gap:14px;min-height:280px;justify-content:center">'+
+    '<div style="font-size:13px;color:#9E9A94;text-align:center">'+
+    (idxChartSource==='tv' ?
+      '📈 <strong style="color:#E8E4DE">TradingView</strong> — grafico interattivo, analisi tecnica avanzata' :
+      '📊 <strong style="color:#E8E4DE">Baha</strong> — dati storici, master data, notizie integrate')+
+    '</div>'+
+    (idxCompare.length>0 ? '<div style="font-size:11px;color:#C4A35A;text-align:center">Confronto attivo con: '+idxCompare.map(function(id){return IDX_CONFIG[id].name;}).join(', ')+'</div>' : '')+
+    '<a href="'+(idxChartSource==='tv' ? tvUrl : (bahaUrl||tvUrl))+'" target="_blank" '+
+    'style="background:#C4A35A;color:#0F0F0E;padding:10px 28px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;font-family:DM Sans,sans-serif;transition:opacity .15s" '+
+    'onmouseover="this.style.opacity=.85" onmouseout="this.style.opacity=1">'+
+    (idxChartSource==='tv' ? '📈 Apri su TradingView' : '📊 Apri su Baha')+'</a>'+
+    '<div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center">'+
+    '<a href="'+cfg.ufficiale+'" target="_blank" style="color:#C4A35A;font-size:11px;text-decoration:none">🏛️ '+cfg.ufficiale_label+' →</a>'+
+    '<a href="'+cfg.macro+'" target="_blank" style="color:#C4A35A;font-size:11px;text-decoration:none">📊 Macrotrends →</a>'+
+    (bahaUrl && idxChartSource==='tv' ? '<a href="'+bahaUrl+'" target="_blank" style="color:#C4A35A;font-size:11px;text-decoration:none">📊 Baha →</a>' : '')+
+    '</div>'+
+    '</div>';
 }
 
 // ===== YAHOO FINANCE INDICI =====
@@ -1786,6 +2025,7 @@ setInterval(updateClock, 60000);
       <div class="idx-chart-wrap" id="idxChartWrap" style="height:380px;border-radius:8px;overflow:hidden">
         <div style="display:flex;align-items:center;justify-content:center;height:100%;color:#9E9A94;font-size:13px">Caricamento grafico...</div>
       </div>
+      <div class="idx-news-box" id="idxNewsBox"></div>
       <div class="idx-stats" id="idxStats"></div>
       <div class="idx-links" id="idxLinks"></div>
     </div>
