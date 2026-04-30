@@ -1651,98 +1651,81 @@ setInterval(tbClock,1000);
 
     <!-- PANEL: NOTIZIE LIVE -->
     <div id="panel-notizie" class="panel active">
-      <div class="news-grid">
+      <div style="padding:16px 0 8px;font-size:11px;color:#5C5955;text-transform:uppercase;letter-spacing:.08em">Notizie finanziarie in tempo reale — clicca la fonte per aprirla</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:16px">
 
-        <a href="https://it.investing.com/news/economy" target="_blank" class="article-lead">
-          <div class="art-source">Economia Globale · Investing.com</div>
-          <div class="art-title">Tensioni USA-Iran sui mercati energetici: il Brent sotto pressione mentre lo Stretto di Hormuz torna al centro della geopolitica mondiale</div>
-          <div class="art-desc">I mercati petroliferi registrano volatilità crescente. Le interruzioni al traffico marittimo attraverso lo Stretto di Hormuz potrebbero avere ripercussioni ben oltre i mercati energetici, coinvolgendo l'intera supply chain globale e le valute dei paesi produttori.</div>
-          <div class="art-meta"><span>Apri su Investing.com →</span><span class="art-tag">ENERGIA</span><span class="art-tag">GEOPOLITICA</span></div>
+        <a href="https://it.investing.com/news/latest-news" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · Investing.com</div>
+          <div class="art-title">Ultime notizie finanziarie globali</div>
+          <div class="art-desc">Notizie in tempo reale su mercati, valute, commodities e macroeconomia globale.</div>
+          <div class="art-meta"><span>Apri Investing.com →</span></div>
         </a>
 
-        <a href="https://it.investing.com/news/latest-news" target="_blank" class="article">
-          <div class="art-source">Mercati · Investing.com</div>
-          <div class="art-title">NASDAQ in territorio ribassista: settore tech sotto la pressione delle valutazioni post-IA</div>
-          <div class="art-desc">Il settore tecnologico affronta la prova di valutazione più severa dall'era dotcom, con i multipli sotto pressione nonostante la narrativa dell'intelligenza artificiale.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">TECH</span></div>
+        <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · Il Sole 24 Ore</div>
+          <div class="art-title">Finanza e Mercati Italia</div>
+          <div class="art-desc">Aggiornamenti in tempo reale su Piazza Affari, BTP, spread, aziende italiane e mercati europei.</div>
+          <div class="art-meta"><span>Apri Il Sole 24 Ore →</span></div>
         </a>
 
-        <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="article">
-          <div class="art-source">Finanza · Il Sole 24 Ore</div>
-          <div class="art-title">BCE: la prossima mossa sui tassi dipenderà dai dati di inflazione di aprile</div>
-          <div class="art-desc">Il Consiglio direttivo della BCE mantiene un approccio dipendente dai dati. L'inflazione europea mostra segnali contrastanti tra area core e servizi.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">BCE</span></div>
+        <a href="https://www.reuters.com/finance" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · Reuters Finance</div>
+          <div class="art-title">Reuters Markets & Finance</div>
+          <div class="art-desc">Agenzia internazionale con breaking news su mercati globali, banche centrali e economia mondiale.</div>
+          <div class="art-meta"><span>Apri Reuters →</span></div>
         </a>
 
-        <a href="https://www.bloomberg.com/markets" target="_blank" class="article">
-          <div class="art-source">Mercati · Bloomberg</div>
-          <div class="art-title">Bond market: lo spread BTP-Bund si stabilizza sotto i 100 punti base</div>
-          <div class="art-desc">Il differenziale tra BTP decennale e Bund tedesco si contrae grazie alla stabilità politica italiana e al calo dell'avversione al rischio nell'area euro.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">OBBLIGAZIONI</span></div>
+        <a href="https://www.bloomberg.com/markets" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · Bloomberg Markets</div>
+          <div class="art-title">Bloomberg Markets</div>
+          <div class="art-desc">Dati e notizie sui mercati finanziari globali, con focus su azioni, obbligazioni, forex e commodities.</div>
+          <div class="art-meta"><span>Apri Bloomberg →</span></div>
         </a>
 
-        <a href="https://www.reuters.com/markets" target="_blank" class="article">
-          <div class="art-source">Agenzia · Reuters</div>
-          <div class="art-title">Fed: i verbali dell'ultimo FOMC confermano cautela sui tagli, inflazione servizi ancora elevata</div>
-          <div class="art-desc">I funzionari della Federal Reserve mostrano crescente preoccupazione per l'inflazione nel settore dei servizi, posticipando le aspettative di taglio dei tassi.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">FED</span></div>
+        <a href="https://www.ft.com/markets" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · Financial Times</div>
+          <div class="art-title">FT Markets</div>
+          <div class="art-desc">Analisi e notizie dai mercati finanziari internazionali del Financial Times.</div>
+          <div class="art-meta"><span>Apri FT →</span></div>
         </a>
 
-        <a href="https://www.ft.com" target="_blank" class="article">
-          <div class="art-source">Analisi · Financial Times</div>
-          <div class="art-title">La Cina accelera la de-dollarizzazione: accordi bilaterali in yuan con 40 paesi emergenti</div>
-          <div class="art-desc">La strategia di Pechino per ridurre la dipendenza dal dollaro USA si intensifica con nuovi accordi commerciali in valuta locale con partner strategici.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">CINA</span><span class="art-tag">FOREX</span></div>
+        <a href="https://www.cnbc.com/world-markets/" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · CNBC World Markets</div>
+          <div class="art-title">CNBC World Markets</div>
+          <div class="art-desc">Copertura live dei mercati mondiali con aggiornamenti su Wall Street, Europa e Asia.</div>
+          <div class="art-meta"><span>Apri CNBC →</span></div>
         </a>
 
-        <a href="https://www.cnbc.com" target="_blank" class="article">
-          <div class="art-source">TV · CNBC</div>
-          <div class="art-title">Warren Buffett aumenta la liquidità di Berkshire Hathaway: record storico di $334 miliardi in cash</div>
-          <div class="art-desc">L'oracolo di Omaha segnala prudenza sui mercati azionari USA accumulando liquidità senza precedenti, in attesa di opportunità di acquisto significative.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">AZIONI</span></div>
+        <a href="https://www.milanofinanza.it/" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · Milano Finanza</div>
+          <div class="art-title">Milano Finanza Live</div>
+          <div class="art-desc">Notizie e aggiornamenti in tempo reale dal principale quotidiano finanziario italiano.</div>
+          <div class="art-meta"><span>Apri Milano Finanza →</span></div>
         </a>
 
-        <a href="https://www.economist.com" target="_blank" class="article">
-          <div class="art-source">Geopolitica · The Economist</div>
-          <div class="art-title">L'Europa ripensa la difesa: 800 miliardi di investimenti militari cambieranno gli equilibri industriali del continente</div>
-          <div class="art-desc">Il riarmo europeo accelera dopo le pressioni americane sul burden-sharing NATO. I settori aerospazio e difesa diventano il nuovo motore di crescita industriale.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">GEOPOLITICA</span><span class="art-tag">DIFESA</span></div>
+        <a href="https://finance.yahoo.com/news/" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · Yahoo Finance News</div>
+          <div class="art-title">Yahoo Finance News</div>
+          <div class="art-desc">Aggregatore di notizie finanziarie da tutte le principali fonti internazionali.</div>
+          <div class="art-meta"><span>Apri Yahoo Finance →</span></div>
         </a>
 
-        <a href="https://www.wsj.com" target="_blank" class="article">
-          <div class="art-source">Mercati · Wall Street Journal</div>
-          <div class="art-title">Intelligenza artificiale: i costi di training dei grandi modelli superano i 10 miliardi — il mercato si consolida</div>
-          <div class="art-desc">La corsa all'IA generativa premia solo i grandi attori con bilanci solidi. Le piccole startup dell'IA vedono gli investimenti del venture capital ridursi drasticamente.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">AI</span><span class="art-tag">TECH</span></div>
+        <a href="https://www.wsj.com/news/markets" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · Wall Street Journal</div>
+          <div class="art-title">WSJ Markets</div>
+          <div class="art-desc">Notizie e analisi dai mercati finanziari del Wall Street Journal.</div>
+          <div class="art-meta"><span>Apri WSJ →</span></div>
         </a>
 
-        <a href="https://www.milanofinanza.it/" target="_blank" class="article">
-          <div class="art-source">Italia · Milano Finanza</div>
-          <div class="art-title">FTSE MIB: il settore bancario trascina al ribasso il listino milanese nonostante dati macro positivi</div>
-          <div class="art-desc">Intesa Sanpaolo e Unicredit sotto pressione dopo i dati sugli NPL. Il comparto energia tiene grazie all'andamento del petrolio nel breve termine.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">ITALIA</span><span class="art-tag">BANCHE</span></div>
+        <a href="https://www.borsaitaliana.it/notizie/notizie.htm" target="_blank" class="article" style="text-decoration:none">
+          <div class="art-source">🔴 LIVE · Borsa Italiana</div>
+          <div class="art-title">Notizie Borsa Italiana</div>
+          <div class="art-desc">Comunicati ufficiali e notizie direttamente da Borsa Italiana su titoli quotati e mercati.</div>
+          <div class="art-meta"><span>Apri Borsa Italiana →</span></div>
         </a>
 
-        <a href="https://foreignpolicy.com" target="_blank" class="article">
-          <div class="art-source">Geopolitica · Foreign Policy</div>
-          <div class="art-title">Il G7 discute nuove sanzioni alla Russia: impatto atteso su mercati energetici e materie prime</div>
-          <div class="art-desc">Le potenze occidentali esaminano un ulteriore inasprimento delle restrizioni economiche. Gas naturale e metalli industriali già in movimento preventivo.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">RUSSIA</span><span class="art-tag">G7</span></div>
-        </a>
-
-        <a href="https://intelligence.weforum.org" target="_blank" class="article">
-          <div class="art-source">Macro · World Economic Forum</div>
-          <div class="art-title">WEF: la frammentazione geopolitica costerà il 7% del PIL globale entro il 2030</div>
-          <div class="art-desc">Il nuovo rapporto del Forum Economico Mondiale quantifica l'impatto economico della de-globalizzazione sulle catene del valore mondiali e gli scambi commerciali.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">MACRO</span><span class="art-tag">WEF</span></div>
-        </a>
-
-      </div>
-      <div style="padding:12px 24px;font-size:11px;color:var(--ink3);border-top:1px solid var(--rule)">
-        Le notizie sono rappresentative delle principali fonti monitorate. Clicca su ciascun articolo per aprire la fonte originale con gli aggiornamenti in tempo reale.
       </div>
     </div>
-
     <!-- PANEL: VIDEO -->
     <div id="panel-video" class="panel">
       <div class="news-header"><h2>Canali Video Finanziari</h2><span class="upd">Migliori canali mondiali selezionati</span></div>
@@ -5378,98 +5361,20 @@ setInterval(tbClock,1000);
 
     <!-- PANEL: NOTIZIE LIVE -->
     <div id="panel-notizie" class="panel active">
-      <div class="news-grid">
-
-        <a href="https://it.investing.com/news/economy" target="_blank" class="article-lead">
-          <div class="art-source">Economia Globale · Investing.com</div>
-          <div class="art-title">Tensioni USA-Iran sui mercati energetici: il Brent sotto pressione mentre lo Stretto di Hormuz torna al centro della geopolitica mondiale</div>
-          <div class="art-desc">I mercati petroliferi registrano volatilità crescente. Le interruzioni al traffico marittimo attraverso lo Stretto di Hormuz potrebbero avere ripercussioni ben oltre i mercati energetici, coinvolgendo l'intera supply chain globale e le valute dei paesi produttori.</div>
-          <div class="art-meta"><span>Apri su Investing.com →</span><span class="art-tag">ENERGIA</span><span class="art-tag">GEOPOLITICA</span></div>
-        </a>
-
-        <a href="https://it.investing.com/news/latest-news" target="_blank" class="article">
-          <div class="art-source">Mercati · Investing.com</div>
-          <div class="art-title">NASDAQ in territorio ribassista: settore tech sotto la pressione delle valutazioni post-IA</div>
-          <div class="art-desc">Il settore tecnologico affronta la prova di valutazione più severa dall'era dotcom, con i multipli sotto pressione nonostante la narrativa dell'intelligenza artificiale.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">TECH</span></div>
-        </a>
-
-        <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="article">
-          <div class="art-source">Finanza · Il Sole 24 Ore</div>
-          <div class="art-title">BCE: la prossima mossa sui tassi dipenderà dai dati di inflazione di aprile</div>
-          <div class="art-desc">Il Consiglio direttivo della BCE mantiene un approccio dipendente dai dati. L'inflazione europea mostra segnali contrastanti tra area core e servizi.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">BCE</span></div>
-        </a>
-
-        <a href="https://www.bloomberg.com/markets" target="_blank" class="article">
-          <div class="art-source">Mercati · Bloomberg</div>
-          <div class="art-title">Bond market: lo spread BTP-Bund si stabilizza sotto i 100 punti base</div>
-          <div class="art-desc">Il differenziale tra BTP decennale e Bund tedesco si contrae grazie alla stabilità politica italiana e al calo dell'avversione al rischio nell'area euro.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">OBBLIGAZIONI</span></div>
-        </a>
-
-        <a href="https://www.reuters.com/markets" target="_blank" class="article">
-          <div class="art-source">Agenzia · Reuters</div>
-          <div class="art-title">Fed: i verbali dell'ultimo FOMC confermano cautela sui tagli, inflazione servizi ancora elevata</div>
-          <div class="art-desc">I funzionari della Federal Reserve mostrano crescente preoccupazione per l'inflazione nel settore dei servizi, posticipando le aspettative di taglio dei tassi.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">FED</span></div>
-        </a>
-
-        <a href="https://www.ft.com" target="_blank" class="article">
-          <div class="art-source">Analisi · Financial Times</div>
-          <div class="art-title">La Cina accelera la de-dollarizzazione: accordi bilaterali in yuan con 40 paesi emergenti</div>
-          <div class="art-desc">La strategia di Pechino per ridurre la dipendenza dal dollaro USA si intensifica con nuovi accordi commerciali in valuta locale con partner strategici.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">CINA</span><span class="art-tag">FOREX</span></div>
-        </a>
-
-        <a href="https://www.cnbc.com" target="_blank" class="article">
-          <div class="art-source">TV · CNBC</div>
-          <div class="art-title">Warren Buffett aumenta la liquidità di Berkshire Hathaway: record storico di $334 miliardi in cash</div>
-          <div class="art-desc">L'oracolo di Omaha segnala prudenza sui mercati azionari USA accumulando liquidità senza precedenti, in attesa di opportunità di acquisto significative.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">AZIONI</span></div>
-        </a>
-
-        <a href="https://www.economist.com" target="_blank" class="article">
-          <div class="art-source">Geopolitica · The Economist</div>
-          <div class="art-title">L'Europa ripensa la difesa: 800 miliardi di investimenti militari cambieranno gli equilibri industriali del continente</div>
-          <div class="art-desc">Il riarmo europeo accelera dopo le pressioni americane sul burden-sharing NATO. I settori aerospazio e difesa diventano il nuovo motore di crescita industriale.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">GEOPOLITICA</span><span class="art-tag">DIFESA</span></div>
-        </a>
-
-        <a href="https://www.wsj.com" target="_blank" class="article">
-          <div class="art-source">Mercati · Wall Street Journal</div>
-          <div class="art-title">Intelligenza artificiale: i costi di training dei grandi modelli superano i 10 miliardi — il mercato si consolida</div>
-          <div class="art-desc">La corsa all'IA generativa premia solo i grandi attori con bilanci solidi. Le piccole startup dell'IA vedono gli investimenti del venture capital ridursi drasticamente.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">AI</span><span class="art-tag">TECH</span></div>
-        </a>
-
-        <a href="https://www.milanofinanza.it/" target="_blank" class="article">
-          <div class="art-source">Italia · Milano Finanza</div>
-          <div class="art-title">FTSE MIB: il settore bancario trascina al ribasso il listino milanese nonostante dati macro positivi</div>
-          <div class="art-desc">Intesa Sanpaolo e Unicredit sotto pressione dopo i dati sugli NPL. Il comparto energia tiene grazie all'andamento del petrolio nel breve termine.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">ITALIA</span><span class="art-tag">BANCHE</span></div>
-        </a>
-
-        <a href="https://foreignpolicy.com" target="_blank" class="article">
-          <div class="art-source">Geopolitica · Foreign Policy</div>
-          <div class="art-title">Il G7 discute nuove sanzioni alla Russia: impatto atteso su mercati energetici e materie prime</div>
-          <div class="art-desc">Le potenze occidentali esaminano un ulteriore inasprimento delle restrizioni economiche. Gas naturale e metalli industriali già in movimento preventivo.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">RUSSIA</span><span class="art-tag">G7</span></div>
-        </a>
-
-        <a href="https://intelligence.weforum.org" target="_blank" class="article">
-          <div class="art-source">Macro · World Economic Forum</div>
-          <div class="art-title">WEF: la frammentazione geopolitica costerà il 7% del PIL globale entro il 2030</div>
-          <div class="art-desc">Il nuovo rapporto del Forum Economico Mondiale quantifica l'impatto economico della de-globalizzazione sulle catene del valore mondiali e gli scambi commerciali.</div>
-          <div class="art-meta"><span>Live →</span><span class="art-tag">MACRO</span><span class="art-tag">WEF</span></div>
-        </a>
-
-      </div>
-      <div style="padding:12px 24px;font-size:11px;color:var(--ink3);border-top:1px solid var(--rule)">
-        Le notizie sono rappresentative delle principali fonti monitorate. Clicca su ciascun articolo per aprire la fonte originale con gli aggiornamenti in tempo reale.
+      <div style="padding:16px 0 8px;font-size:11px;color:#5C5955;text-transform:uppercase;letter-spacing:.08em">Notizie finanziarie in tempo reale — clicca la fonte per aprirla</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:16px">
+        <a href="https://it.investing.com/news/latest-news" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · Investing.com</div><div class="art-title">Ultime notizie finanziarie globali</div><div class="art-meta"><span>Apri →</span></div></a>
+        <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · Il Sole 24 Ore</div><div class="art-title">Finanza e Mercati Italia</div><div class="art-meta"><span>Apri →</span></div></a>
+        <a href="https://www.reuters.com/finance" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · Reuters Finance</div><div class="art-title">Reuters Markets & Finance</div><div class="art-meta"><span>Apri →</span></div></a>
+        <a href="https://www.bloomberg.com/markets" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · Bloomberg Markets</div><div class="art-title">Bloomberg Markets</div><div class="art-meta"><span>Apri →</span></div></a>
+        <a href="https://www.ft.com/markets" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · Financial Times</div><div class="art-title">FT Markets</div><div class="art-meta"><span>Apri →</span></div></a>
+        <a href="https://www.cnbc.com/world-markets/" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · CNBC World Markets</div><div class="art-title">CNBC World Markets</div><div class="art-meta"><span>Apri →</span></div></a>
+        <a href="https://www.milanofinanza.it/" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · Milano Finanza</div><div class="art-title">Milano Finanza Live</div><div class="art-meta"><span>Apri →</span></div></a>
+        <a href="https://finance.yahoo.com/news/" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · Yahoo Finance News</div><div class="art-title">Yahoo Finance News</div><div class="art-meta"><span>Apri →</span></div></a>
+        <a href="https://www.wsj.com/news/markets" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · Wall Street Journal</div><div class="art-title">WSJ Markets</div><div class="art-meta"><span>Apri →</span></div></a>
+        <a href="https://www.borsaitaliana.it/notizie/notizie.htm" target="_blank" class="article" style="text-decoration:none"><div class="art-source">🔴 LIVE · Borsa Italiana</div><div class="art-title">Notizie Borsa Italiana</div><div class="art-meta"><span>Apri →</span></div></a>
       </div>
     </div>
-
     <!-- PANEL: VIDEO -->
     <div id="panel-video" class="panel">
       <div class="news-header"><h2>Canali Video Finanziari</h2><span class="upd">Migliori canali mondiali selezionati</span></div>
