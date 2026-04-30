@@ -1512,19 +1512,7 @@ var _toolLinks = {
   presentation: 'https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902494'
 };
 
-// Carica i link salvati da Supabase all'avvio
-async function caricaToolLinks(){
-  try{
-    var r = await fetch(SB_URL+'/rest/v1/impostazioni?select=chiave,valore&chiave=in.(toolLink_writer,toolLink_spreadsheet,toolLink_presentation)',
-      {headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
-    if(!r.ok) return;
-    var rows = await r.json();
-    rows.forEach(function(row){
-      var k = row.chiave.replace('toolLink_','');
-      if(_toolLinks.hasOwnProperty(k)) _toolLinks[k] = row.valore;
-    });
-  }catch(e){}
-}
+
 
 function apriToolLink(key){
   var url = _toolLinks[key] || '';
@@ -1567,8 +1555,6 @@ document.addEventListener('keydown', function(e){
   if(e.key==='Enter' && document.getElementById('linkPopup').classList.contains('open')) salvaLinkPopup();
 });
 
-// Carica i link all'avvio
-caricaToolLinks();
 
 tbConverti();
 tbClock();
