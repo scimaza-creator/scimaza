@@ -324,9 +324,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <a class="tool-btn" href="https://web.whatsapp.com" target="_blank"><div class="tool-icon">💬</div><div class="tool-name">WhatsApp</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn" href="https://web.telegram.org" target="_blank"><div class="tool-icon">✈️</div><div class="tool-name">Telegram</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn accent-blue" href="#" onclick="mostraView('rubrica');return false;"><div class="tool-icon">👥</div><div class="tool-name">Rubrica</div><div class="tool-sub">Contatti</div></a>
-    <a class="tool-btn" href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3901935" target="_blank"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div></a>
-    <a class="tool-btn" href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902493" target="_blank"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div></a>
-    <a class="tool-btn" href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902494" target="_blank"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div></a>
+    <div class="tool-btn" style="position:relative"><a href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3901935" target="_blank" style="display:block;text-decoration:none;color:inherit"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div></a><button class="tool-btn-edit" onclick="apriLinkPopup('writer','Writer')">✎</button></div>
+    <div class="tool-btn" style="position:relative"><a href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902493" target="_blank" style="display:block;text-decoration:none;color:inherit"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div></a><button class="tool-btn-edit" onclick="apriLinkPopup('spreadsheet','Spreadsheet')">✎</button></div>
+    <div class="tool-btn" style="position:relative"><a href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902494" target="_blank" style="display:block;text-decoration:none;color:inherit"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div></a><button class="tool-btn-edit" onclick="apriLinkPopup('presentation','Presentation')">✎</button></div>
   </div>
   <div class="divider"></div>
   <div class="section-label">Aree specialistiche</div>
@@ -1532,22 +1532,21 @@ function chiudiLinkPopup(){
   _linkPopupKey = '';
 }
 
-async function salvaLinkPopup(){
+function salvaLinkPopup(){
   var url = document.getElementById('linkPopupInput').value.trim();
   if(!url){ chiudiLinkPopup(); return; }
   if(!url.startsWith('http')) url = 'https://' + url;
-  _toolLinks[_linkPopupKey] = url;
-  // Salva su Supabase (upsert)
-  try{
-    await fetch(SB_URL+'/rest/v1/impostazioni',{
-      method:'POST',
-      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,
-               'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
-      body:JSON.stringify({chiave:'toolLink_'+_linkPopupKey, valore:url})
-    });
-  }catch(e){}
+  // Aggiorna tutti i link <a> del tasto
+  var divs = document.querySelectorAll('.tool-btn');
+  divs.forEach(function(div){
+    var btn = div.querySelector('.tool-btn-edit');
+    if(btn && btn.getAttribute('onclick') && btn.getAttribute('onclick').indexOf("'"+_linkPopupKey+"'")>-1){
+      var a = div.querySelector('a');
+      if(a) a.href = url;
+    }
+  });
   chiudiLinkPopup();
-  toast('Link salvato — ' + _linkPopupKey);
+  toast('Link aggiornato — ' + _linkPopupKey);
 }
 
 document.addEventListener('keydown', function(e){
@@ -4103,9 +4102,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <a class="tool-btn" href="https://web.whatsapp.com" target="_blank"><div class="tool-icon">💬</div><div class="tool-name">WhatsApp</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn" href="https://web.telegram.org" target="_blank"><div class="tool-icon">✈️</div><div class="tool-name">Telegram</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn accent-blue" href="#" onclick="mostraView('rubrica');return false;"><div class="tool-icon">👥</div><div class="tool-name">Rubrica</div><div class="tool-sub">Contatti</div></a>
-    <a class="tool-btn" href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3901935" target="_blank"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div></a>
-    <a class="tool-btn" href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902493" target="_blank"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div></a>
-    <a class="tool-btn" href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902494" target="_blank"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div></a>
+    <div class="tool-btn" style="position:relative"><a href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3901935" target="_blank" style="display:block;text-decoration:none;color:inherit"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div></a><button class="tool-btn-edit" onclick="apriLinkPopup('writer','Writer')">✎</button></div>
+    <div class="tool-btn" style="position:relative"><a href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902493" target="_blank" style="display:block;text-decoration:none;color:inherit"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div></a><button class="tool-btn-edit" onclick="apriLinkPopup('spreadsheet','Spreadsheet')">✎</button></div>
+    <div class="tool-btn" style="position:relative"><a href="https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902494" target="_blank" style="display:block;text-decoration:none;color:inherit"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div></a><button class="tool-btn-edit" onclick="apriLinkPopup('presentation','Presentation')">✎</button></div>
   </div>
   <div class="divider"></div>
   <div class="section-label">Aree specialistiche</div>
