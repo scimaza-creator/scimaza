@@ -278,6 +278,20 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .rank-2{background:#9E9A94;color:#0F0F0E}
 .rank-3{background:#8B6914;color:#fff}
 
+
+.link-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:900;display:none;align-items:center;justify-content:center}
+.link-popup-overlay.open{display:flex}
+.link-popup-box{background:#1A1917;border:.5px solid #3D3A37;border-radius:10px;padding:20px 24px;width:360px;font-family:'DM Sans',sans-serif}
+.link-popup-title{font-size:13px;color:#C4A35A;font-weight:600;margin-bottom:12px;letter-spacing:.04em}
+.link-popup-input{width:100%;background:#111;border:.5px solid #3D3A37;border-radius:6px;color:#E8E4DE;font-size:12px;padding:8px 10px;outline:none;box-sizing:border-box;font-family:'DM Mono',monospace}
+.link-popup-input:focus{border-color:#C4A35A}
+.link-popup-actions{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}
+.link-popup-ok{background:#C4A35A;color:#0F0F0E;border:none;border-radius:6px;padding:6px 18px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.link-popup-ok:hover{opacity:.85}
+.link-popup-cancel{background:transparent;color:#9E9A94;border:.5px solid #3D3A37;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.link-popup-cancel:hover{border-color:#C4A35A;color:#C4A35A}
+.tool-btn-edit{position:absolute;top:4px;right:4px;font-size:9px;background:rgba(196,163,90,.15);color:#C4A35A;border:none;border-radius:3px;padding:1px 4px;cursor:pointer;opacity:0;transition:opacity .15s;font-family:'DM Sans',sans-serif}
+.tool-btn:hover .tool-btn-edit{opacity:1}
 </style>
 </head>
 <body>
@@ -310,9 +324,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <a class="tool-btn" href="https://web.whatsapp.com" target="_blank"><div class="tool-icon">💬</div><div class="tool-name">WhatsApp</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn" href="https://web.telegram.org" target="_blank"><div class="tool-icon">✈️</div><div class="tool-name">Telegram</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn accent-blue" href="#" onclick="mostraView('rubrica');return false;"><div class="tool-icon">👥</div><div class="tool-name">Rubrica</div><div class="tool-sub">Contatti</div></a>
-    <a class="tool-btn" href="https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?" target="_blank"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div></a>
-    <a class="tool-btn" href="https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?" target="_blank"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div></a>
-    <a class="tool-btn" href="https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?" target="_blank"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div></a>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('writer','Writer',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('writer','Writer — Scrittura')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('spreadsheet','Spreadsheet',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('spreadsheet','Spreadsheet — Calcolo')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('presentation','Presentation',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('presentation','Presentation — Presentazioni')">✎</button></div>
   </div>
   <div class="divider"></div>
   <div class="section-label">Aree specialistiche</div>
@@ -1490,6 +1504,54 @@ function aiSetStr(btn, str){
   if(panel) panel.style.display='block';
 }
 
+
+// ===== GESTIONE LINK PERSONALIZZATI TASTI =====
+var _linkPopupKey = '';
+var _defaultLinks = {
+  writer: 'https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?',
+  spreadsheet: 'https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?',
+  presentation: 'https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?'
+};
+
+function getToolLink(key){
+  try{ return localStorage.getItem('toolLink_'+key) || _defaultLinks[key] || ''; }
+  catch(e){ return _defaultLinks[key] || ''; }
+}
+
+function apriToolLink(key, nome, el){
+  var url = getToolLink(key);
+  if(!url){ apriLinkPopup(key, nome); return; }
+  window.open(url, '_blank');
+}
+
+function apriLinkPopup(key, titolo){
+  _linkPopupKey = key;
+  document.getElementById('linkPopupTitle').textContent = '✦ Inserisci link — ' + titolo;
+  document.getElementById('linkPopupInput').value = getToolLink(key);
+  document.getElementById('linkPopup').classList.add('open');
+  setTimeout(function(){ document.getElementById('linkPopupInput').select(); }, 100);
+}
+
+function chiudiLinkPopup(){
+  document.getElementById('linkPopup').classList.remove('open');
+  _linkPopupKey = '';
+}
+
+function salvaLinkPopup(){
+  var url = document.getElementById('linkPopupInput').value.trim();
+  if(!url){ chiudiLinkPopup(); return; }
+  if(!url.startsWith('http')) url = 'https://' + url;
+  try{ localStorage.setItem('toolLink_'+_linkPopupKey, url); }catch(e){}
+  chiudiLinkPopup();
+  toast('Link salvato — ' + _linkPopupKey);
+}
+
+// Invio con Enter nel popup
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape') chiudiLinkPopup();
+  if(e.key==='Enter' && document.getElementById('linkPopup').classList.contains('open')) salvaLinkPopup();
+});
+
 tbConverti();
 tbClock();
 setInterval(tbClock,1000);
@@ -2518,6 +2580,18 @@ setInterval(updateClock, 60000);
       Clicca 📈 per aprire il grafico interattivo su TradingView · Gli altri settori GICS saranno disponibili nei prossimi aggiornamenti
     </div>
 
+  </div>
+</div>
+
+<!-- POPUP LINK PERSONALIZZATO -->
+<div class="link-popup-overlay" id="linkPopup">
+  <div class="link-popup-box">
+    <div class="link-popup-title" id="linkPopupTitle">✦ Inserisci link</div>
+    <input class="link-popup-input" id="linkPopupInput" type="url" placeholder="https://..." />
+    <div class="link-popup-actions">
+      <button class="link-popup-cancel" onclick="chiudiLinkPopup()">Annulla</button>
+      <button class="link-popup-ok" onclick="salvaLinkPopup()">OK</button>
+    </div>
   </div>
 </div>
 
@@ -4025,9 +4099,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <a class="tool-btn" href="https://web.whatsapp.com" target="_blank"><div class="tool-icon">💬</div><div class="tool-name">WhatsApp</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn" href="https://web.telegram.org" target="_blank"><div class="tool-icon">✈️</div><div class="tool-name">Telegram</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn accent-blue" href="#" onclick="mostraView('rubrica');return false;"><div class="tool-icon">👥</div><div class="tool-name">Rubrica</div><div class="tool-sub">Contatti</div></a>
-    <a class="tool-btn" href="https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?" target="_blank"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div></a>
-    <a class="tool-btn" href="https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?" target="_blank"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div></a>
-    <a class="tool-btn" href="https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?" target="_blank"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div></a>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('writer','Writer',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('writer','Writer — Scrittura')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('spreadsheet','Spreadsheet',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('spreadsheet','Spreadsheet — Calcolo')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('presentation','Presentation',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('presentation','Presentation — Presentazioni')">✎</button></div>
   </div>
   <div class="divider"></div>
   <div class="section-label">Aree specialistiche</div>
@@ -6231,6 +6305,18 @@ setInterval(updateClock, 60000);
       Clicca 📈 per aprire il grafico interattivo su TradingView · Gli altri settori GICS saranno disponibili nei prossimi aggiornamenti
     </div>
 
+  </div>
+</div>
+
+<!-- POPUP LINK PERSONALIZZATO -->
+<div class="link-popup-overlay" id="linkPopup">
+  <div class="link-popup-box">
+    <div class="link-popup-title" id="linkPopupTitle">✦ Inserisci link</div>
+    <input class="link-popup-input" id="linkPopupInput" type="url" placeholder="https://..." />
+    <div class="link-popup-actions">
+      <button class="link-popup-cancel" onclick="chiudiLinkPopup()">Annulla</button>
+      <button class="link-popup-ok" onclick="salvaLinkPopup()">OK</button>
+    </div>
   </div>
 </div>
 
