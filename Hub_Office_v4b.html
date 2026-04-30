@@ -324,9 +324,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <a class="tool-btn" href="https://web.whatsapp.com" target="_blank"><div class="tool-icon">💬</div><div class="tool-name">WhatsApp</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn" href="https://web.telegram.org" target="_blank"><div class="tool-icon">✈️</div><div class="tool-name">Telegram</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn accent-blue" href="#" onclick="mostraView('rubrica');return false;"><div class="tool-icon">👥</div><div class="tool-name">Rubrica</div><div class="tool-sub">Contatti</div></a>
-    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('writer','Writer',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('writer','Writer — Scrittura')">✎</button></div>
-    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('spreadsheet','Spreadsheet',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('spreadsheet','Spreadsheet — Calcolo')">✎</button></div>
-    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('presentation','Presentation',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('presentation','Presentation — Presentazioni')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('writer')" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('writer','Writer — Scrittura')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('spreadsheet')" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('spreadsheet','Spreadsheet — Calcolo')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('presentation')" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('presentation','Presentation — Presentazioni')">✎</button></div>
   </div>
   <div class="divider"></div>
   <div class="section-label">Aree specialistiche</div>
@@ -1505,29 +1505,38 @@ function aiSetStr(btn, str){
 }
 
 
-// ===== GESTIONE LINK PERSONALIZZATI TASTI =====
+// ===== GESTIONE LINK PERSONALIZZATI TASTI (Supabase) =====
 var _linkPopupKey = '';
-var _defaultLinks = {
+var _toolLinks = {
   writer: 'https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?',
   spreadsheet: 'https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?',
   presentation: 'https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?'
 };
 
-function getToolLink(key){
-  try{ return localStorage.getItem('toolLink_'+key) || _defaultLinks[key] || ''; }
-  catch(e){ return _defaultLinks[key] || ''; }
+// Carica i link salvati da Supabase all'avvio
+async function caricaToolLinks(){
+  try{
+    var r = await fetch(SB_URL+'/rest/v1/impostazioni?select=chiave,valore&chiave=in.(toolLink_writer,toolLink_spreadsheet,toolLink_presentation)',
+      {headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY}});
+    if(!r.ok) return;
+    var rows = await r.json();
+    rows.forEach(function(row){
+      var k = row.chiave.replace('toolLink_','');
+      if(_toolLinks.hasOwnProperty(k)) _toolLinks[k] = row.valore;
+    });
+  }catch(e){}
 }
 
-function apriToolLink(key, nome, el){
-  var url = getToolLink(key);
-  if(!url){ apriLinkPopup(key, nome); return; }
+function apriToolLink(key){
+  var url = _toolLinks[key] || '';
+  if(!url){ apriLinkPopup(key, key); return; }
   window.open(url, '_blank');
 }
 
 function apriLinkPopup(key, titolo){
   _linkPopupKey = key;
   document.getElementById('linkPopupTitle').textContent = '✦ Inserisci link — ' + titolo;
-  document.getElementById('linkPopupInput').value = getToolLink(key);
+  document.getElementById('linkPopupInput').value = _toolLinks[key] || '';
   document.getElementById('linkPopup').classList.add('open');
   setTimeout(function(){ document.getElementById('linkPopupInput').select(); }, 100);
 }
@@ -1537,20 +1546,31 @@ function chiudiLinkPopup(){
   _linkPopupKey = '';
 }
 
-function salvaLinkPopup(){
+async function salvaLinkPopup(){
   var url = document.getElementById('linkPopupInput').value.trim();
   if(!url){ chiudiLinkPopup(); return; }
   if(!url.startsWith('http')) url = 'https://' + url;
-  try{ localStorage.setItem('toolLink_'+_linkPopupKey, url); }catch(e){}
+  _toolLinks[_linkPopupKey] = url;
+  // Salva su Supabase (upsert)
+  try{
+    await fetch(SB_URL+'/rest/v1/impostazioni',{
+      method:'POST',
+      headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,
+               'Content-Type':'application/json','Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({chiave:'toolLink_'+_linkPopupKey, valore:url})
+    });
+  }catch(e){}
   chiudiLinkPopup();
   toast('Link salvato — ' + _linkPopupKey);
 }
 
-// Invio con Enter nel popup
 document.addEventListener('keydown', function(e){
   if(e.key==='Escape') chiudiLinkPopup();
   if(e.key==='Enter' && document.getElementById('linkPopup').classList.contains('open')) salvaLinkPopup();
 });
+
+// Carica i link all'avvio
+caricaToolLinks();
 
 tbConverti();
 tbClock();
@@ -4099,9 +4119,9 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <a class="tool-btn" href="https://web.whatsapp.com" target="_blank"><div class="tool-icon">💬</div><div class="tool-name">WhatsApp</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn" href="https://web.telegram.org" target="_blank"><div class="tool-icon">✈️</div><div class="tool-name">Telegram</div><div class="tool-sub">Messaggi</div></a>
     <a class="tool-btn accent-blue" href="#" onclick="mostraView('rubrica');return false;"><div class="tool-icon">👥</div><div class="tool-name">Rubrica</div><div class="tool-sub">Contatti</div></a>
-    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('writer','Writer',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('writer','Writer — Scrittura')">✎</button></div>
-    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('spreadsheet','Spreadsheet',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('spreadsheet','Spreadsheet — Calcolo')">✎</button></div>
-    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('presentation','Presentation',this)" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('presentation','Presentation — Presentazioni')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('writer')" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📝</div><div class="tool-name">Writer</div><div class="tool-sub">Scrittura</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('writer','Writer — Scrittura')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('spreadsheet')" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📊</div><div class="tool-name">Spreadsheet</div><div class="tool-sub">Calcolo</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('spreadsheet','Spreadsheet — Calcolo')">✎</button></div>
+    <div class="tool-btn" style="position:relative;cursor:pointer" onclick="apriToolLink('presentation')" title="Clicca per aprire · Tasto destro per cambiare link"><div class="tool-icon">📽️</div><div class="tool-name">Presentation</div><div class="tool-sub">Presentazioni</div><button class="tool-btn-edit" onclick="event.stopPropagation();apriLinkPopup('presentation','Presentation — Presentazioni')">✎</button></div>
   </div>
   <div class="divider"></div>
   <div class="section-label">Aree specialistiche</div>
