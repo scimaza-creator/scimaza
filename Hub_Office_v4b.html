@@ -1505,12 +1505,11 @@ function aiSetStr(btn, str){
 }
 
 
-// ===== GESTIONE LINK PERSONALIZZATI TASTI (Supabase) =====
-var _linkPopupKey = '';
+// ===== LINK TASTI TOOLS =====
 var _toolLinks = {
-  writer: 'https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?',
-  spreadsheet: 'https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?',
-  presentation: 'https://docspace-lyx99i.onlyoffice.com/rooms/personal/filter?'
+  writer: 'https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3901935',
+  spreadsheet: 'https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902493',
+  presentation: 'https://docspace-ik8nvk.onlyoffice.com/doceditor?fileId=3902494'
 };
 
 // Carica i link salvati da Supabase all'avvio
@@ -1529,8 +1528,7 @@ async function caricaToolLinks(){
 
 function apriToolLink(key){
   var url = _toolLinks[key] || '';
-  if(!url){ apriLinkPopup(key, key); return; }
-  window.open(url, '_blank');
+  if(url) window.open(url, '_blank');
 }
 
 function apriLinkPopup(key, titolo){
