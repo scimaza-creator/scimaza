@@ -300,6 +300,27 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .banner-reg-ok{background:#C4A35A;color:#0F0F0E;border:none;border-radius:6px;padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
 .banner-reg-skip{background:transparent;color:#5C5955;border:.5px solid #3D3A37;border-radius:6px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif}
 .banner-reg-skip:hover{color:#9E9A94}
+
+.mail-scheda-item{background:var(--surface);border:.5px solid var(--border);border-radius:6px;padding:10px 12px;margin-bottom:6px;cursor:pointer;transition:all .15s}
+.mail-scheda-item:hover{border-color:#3498DB;background:var(--surface2)}
+.mail-scheda-tipo{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.mail-scheda-tipo.inviata{color:#3498DB}
+.mail-scheda-tipo.ricevuta{color:#1D9E75}
+.mail-scheda-oggetto{font-size:12px;color:var(--text);font-weight:500;margin-bottom:3px}
+.mail-scheda-meta{font-size:10px;color:var(--text3)}
+.mail-scheda-allegati{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
+.mail-scheda-all-tag{font-size:9px;padding:2px 6px;border-radius:3px;background:var(--surface3);color:var(--text2)}
+.mail-detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:700;display:none;align-items:center;justify-content:center;padding:1.5rem}
+.mail-detail-overlay.open{display:flex}
+.mail-detail-box{background:#1A1917;border:.5px solid #2E2C2A;border-radius:12px;width:100%;max-width:640px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
+.mail-detail-hdr{padding:14px 18px;border-bottom:.5px solid #2E2C2A;display:flex;justify-content:space-between;align-items:flex-start}
+.mail-detail-obj{font-size:15px;color:#E8E4DE;font-weight:500;flex:1;margin-right:12px}
+.mail-detail-body{padding:16px 18px;overflow-y:auto;flex:1}
+.mail-detail-meta{font-size:11px;color:#5C5955;margin-bottom:12px;line-height:1.8}
+.mail-detail-note{font-size:12px;color:#E8E4DE;line-height:1.7;background:var(--surface);padding:12px;border-radius:6px;margin-bottom:12px;white-space:pre-wrap}
+.mail-detail-allega{display:flex;gap:6px;flex-wrap:wrap}
+.mail-detail-all-btn{font-size:11px;padding:5px 10px;background:var(--surface2);border:.5px solid var(--border);border-radius:5px;color:#C4A35A;cursor:pointer;text-decoration:none;transition:all .15s}
+.mail-detail-all-btn:hover{border-color:#C4A35A}
 </style>
 </head>
 <body>
@@ -1527,6 +1548,34 @@ var _toolLinks = {
 
 
 
+
+function apriDettaglioMail(m){
+  document.getElementById('mailDetailObj').textContent = m.oggetto || '(senza oggetto)';
+  var tipoTxt = m.tipo==='inviata' ? '↑ Inviata' : '↓ Ricevuta';
+  document.getElementById('mailDetailMeta').innerHTML =
+    '<b>'+tipoTxt+'</b> · '+m.data+'<br>'+
+    'Da: '+(m.da||'—')+'<br>'+
+    'A: '+(m.a||'—')+
+    (m.cc?'<br>CC: '+m.cc:'')+
+    (m.ccn?'<br>CCN: '+m.ccn:'');
+  var noteEl = document.getElementById('mailDetailNote');
+  if(m.note){ noteEl.textContent=m.note; noteEl.style.display='block'; }
+  else { noteEl.style.display='none'; }
+  var allegaEl = document.getElementById('mailDetailAllega');
+  allegaEl.innerHTML = '';
+  if(m.allegati && m.allegati.length){
+    m.allegati.forEach(function(a){
+      var btn = document.createElement('span');
+      btn.className='mail-detail-all-btn';
+      btn.textContent = '📎 '+a;
+      allegaEl.appendChild(btn);
+    });
+  } else {
+    allegaEl.innerHTML='<span style="font-size:11px;color:var(--text3)">Nessun allegato</span>';
+  }
+  document.getElementById('mailDetailOverlay').classList.add('open');
+}
+
 function apriRegistraDaBanner(){
   var banner = document.getElementById('bannerRegistra');
   var cid = banner ? banner._contactId : null;
@@ -2545,6 +2594,21 @@ setInterval(updateClock, 60000);
   </div>
 </div>
 
+<!-- MODAL DETTAGLIO MAIL SCHEDA -->
+<div class="mail-detail-overlay" id="mailDetailOverlay">
+  <div class="mail-detail-box">
+    <div class="mail-detail-hdr">
+      <div class="mail-detail-obj" id="mailDetailObj"></div>
+      <div class="modal-close" onclick="document.getElementById('mailDetailOverlay').classList.remove('open')" style="position:relative;top:0;right:0">✕</div>
+    </div>
+    <div class="mail-detail-body">
+      <div class="mail-detail-meta" id="mailDetailMeta"></div>
+      <div class="mail-detail-note" id="mailDetailNote"></div>
+      <div class="mail-detail-allega" id="mailDetailAllega"></div>
+    </div>
+  </div>
+</div>
+
 <!-- BANNER REGISTRA MAIL INVIATA -->
 <div class="banner-registra" id="bannerRegistra">
   <div style="font-size:20px">✉️</div>
@@ -3085,6 +3149,42 @@ function apriScheda(id){
     dl2.appendChild(di);
   });
   col2.appendChild(dl2);
+
+  // SEZIONE MAIL STORICO
+  var mailRow=document.createElement('div');mailRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:12px;margin-bottom:6px';
+  var mailSl=sl('✉️ Mail');mailRow.appendChild(mailSl);
+  var mailBtn=document.createElement('button');mailBtn.className='btn-secondary';mailBtn.style.cssText='font-size:10px;padding:3px 10px;margin-left:8px';
+  mailBtn.textContent='+ Registra';
+  mailBtn.onclick=function(){apriModalRegistra(cid);};
+  mailRow.appendChild(mailBtn);
+  col2.appendChild(mailRow);
+
+  var mailList=document.createElement('div');mailList.id='mailSchedaList_'+cid;
+  mailList.innerHTML='<div style="font-size:11px;color:var(--text3);padding:4px 0">Caricamento...</div>';
+  col2.appendChild(mailList);
+
+  // Carica mail del contatto
+  sb('/rest/v1/mail?contatto_id=eq.'+cid+'&order=data.desc').then(function(mails){
+    if(!mails||!mails.length){
+      mailList.innerHTML='<div style="font-size:11px;color:var(--text3);padding:4px 0">Nessuna mail registrata</div>';
+      return;
+    }
+    mailList.innerHTML='';
+    mails.forEach(function(m){
+      var item=document.createElement('div');item.className='mail-scheda-item';
+      var tipoTxt=m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta';
+      var allTags=(m.allegati||[]).map(function(a){return '<span class="mail-scheda-all-tag">📎 '+a+'</span>';}).join('');
+      item.innerHTML=
+        '<div class="mail-scheda-tipo '+(m.tipo||'inviata')+'">'+tipoTxt+'</div>'+
+        '<div class="mail-scheda-oggetto">'+(m.oggetto||'—')+'</div>'+
+        '<div class="mail-scheda-meta">'+m.data+' · '+(m.tipo==='inviata'?'A: '+m.a:'Da: '+m.da)+'</div>'+
+        (allTags?'<div class="mail-scheda-allegati">'+allTags+'</div>':'');
+      item.onclick=function(){apriDettaglioMail(m);};
+      mailList.appendChild(item);
+    });
+  }).catch(function(){
+    mailList.innerHTML='<div style="font-size:11px;color:var(--text3)">Errore caricamento</div>';
+  });
 
   body.appendChild(col1);body.appendChild(col2);sc.appendChild(body);
 
