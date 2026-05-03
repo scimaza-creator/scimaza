@@ -1553,7 +1553,7 @@ function apriDettaglioMail(m){
   document.getElementById('mailDetailObj').textContent = m.oggetto || '(senza oggetto)';
   var tipoTxt = m.tipo==='inviata' ? '↑ Inviata' : '↓ Ricevuta';
   document.getElementById('mailDetailMeta').innerHTML =
-    '<b>'+tipoTxt+'</b> · '+m.data+'<br>'+
+    '<b>'+tipoTxt+'</b> · '+(m.data||'')+(m.ora?' '+m.ora:'')+'<br>'+
     'Da: '+(m.da||'—')+'<br>'+
     'A: '+(m.a||'—')+
     (m.cc?'<br>CC: '+m.cc:'')+
@@ -2118,6 +2118,7 @@ setInterval(updateClock, 60000);
       <div class="form-grid">
         <div class="fg full"><label>Oggetto *</label><input id="mOggetto" placeholder="Es. Preventivo Villa Zanella"></div>
         <div class="fg"><label>Data</label><input id="mData" type="date"></div>
+        <div class="fg"><label>Ora</label><input id="mOra" type="time" placeholder="HH:MM"></div>
         <div class="fg"><label>Tipo</label><select id="mTipo"><option value="inviata">↑ Inviata</option><option value="ricevuta">↓ Ricevuta</option></select></div>
         <div class="fg"><label>Da</label><input id="mDa" placeholder="mittente@email.it"></div>
         <div class="fg"><label>A</label><input id="mA" placeholder="destinatario@email.it"></div>
@@ -3177,7 +3178,7 @@ function apriScheda(id){
       item.innerHTML=
         '<div class="mail-scheda-tipo '+(m.tipo||'inviata')+'">'+tipoTxt+'</div>'+
         '<div class="mail-scheda-oggetto">'+(m.oggetto||'—')+'</div>'+
-        '<div class="mail-scheda-meta">'+m.data+' · '+(m.tipo==='inviata'?'A: '+m.a:'Da: '+m.da)+'</div>'+
+        '<div class="mail-scheda-meta">'+(m.data||'')+(m.ora?' '+m.ora:'')+' · '+(m.tipo==='inviata'?'A: '+m.a:'Da: '+m.da)+'</div>'+
         (allTags?'<div class="mail-scheda-allegati">'+allTags+'</div>':'');
       item.onclick=function(){apriDettaglioMail(m);};
       mailList.appendChild(item);
@@ -3493,6 +3494,7 @@ async function salvaMail(){
     cc:document.getElementById('mCc').value.trim(),
     ccn:document.getElementById('mCcn').value.trim(),
     allegati:mailAllegati.map(function(a){return a.nome;}),
+    ora:document.getElementById('mOra')?document.getElementById('mOra').value:'',
     note:document.getElementById('mNote').value.trim(),
     created_at:new Date().toISOString()
   };
@@ -5841,6 +5843,7 @@ setInterval(updateClock, 60000);
       <div class="form-grid">
         <div class="fg full"><label>Oggetto *</label><input id="mOggetto" placeholder="Es. Preventivo Villa Zanella"></div>
         <div class="fg"><label>Data</label><input id="mData" type="date"></div>
+        <div class="fg"><label>Ora</label><input id="mOra" type="time" placeholder="HH:MM"></div>
         <div class="fg"><label>Tipo</label><select id="mTipo"><option value="inviata">↑ Inviata</option><option value="ricevuta">↓ Ricevuta</option></select></div>
         <div class="fg"><label>Da</label><input id="mDa" placeholder="mittente@email.it"></div>
         <div class="fg"><label>A</label><input id="mA" placeholder="destinatario@email.it"></div>
@@ -6481,6 +6484,7 @@ async function salvaMail(){
     cc:document.getElementById('mCc').value.trim(),
     ccn:document.getElementById('mCcn').value.trim(),
     allegati:mailAllegati.map(function(a){return a.nome;}),
+    ora:document.getElementById('mOra')?document.getElementById('mOra').value:'',
     note:document.getElementById('mNote').value.trim(),
     created_at:new Date().toISOString()
   };
