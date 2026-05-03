@@ -2118,7 +2118,7 @@ setInterval(updateClock, 60000);
 <div class="modal-overlay" id="modalRegistra">
   <div class="modal" style="max-width:560px">
     <div class="modal-close" onclick="document.getElementById('modalRegistra').classList.remove('open')">✕</div>
-    <div class="form-hdr"><div class="form-title-el">Registra comunicazione</div></div>
+    <div class="form-hdr"><div class="form-title-el">✉ Scrivi / Registra Mail</div></div>
     <div class="form-body">
       <div class="form-grid">
         <div class="fg full"><label>Oggetto *</label><input id="mOggetto" placeholder="Es. Preventivo Villa Zanella"></div>
@@ -3171,7 +3171,7 @@ function apriScheda(id){
   var mailRow=document.createElement('div');mailRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:12px;margin-bottom:6px';
   var mailSl=sl('✉️ Mail');mailRow.appendChild(mailSl);
   var mailBtn=document.createElement('button');mailBtn.className='btn-secondary';mailBtn.style.cssText='font-size:10px;padding:3px 10px;margin-left:8px';
-  mailBtn.textContent='+ Registra';
+  mailBtn.textContent='✉ Scrivi Mail';
   mailBtn.onclick=function(){apriModalRegistra(cid);};
   mailRow.appendChild(mailBtn);
   col2.appendChild(mailRow);
@@ -3457,7 +3457,12 @@ function apriModalRegistra(contactId){
   if(contactId) mailContactId=contactId;
   mailAllegati=[];
   document.getElementById('mOggetto').value='';
-  document.getElementById('mData').value=new Date().toISOString().slice(0,10);
+  var oggi=new Date();
+  document.getElementById('mGiorno').value=oggi.getDate();
+  document.getElementById('mMese').value=oggi.getMonth()+1;
+  document.getElementById('mAnno').value=oggi.getFullYear();
+  document.getElementById('mOra').value=oggi.getHours();
+  document.getElementById('mMinuti').value=String(oggi.getMinutes()).padStart(2,'0');
   document.getElementById('mTipo').value='inviata';
   document.getElementById('mDa').value='scimaza@gmail.com';
   var c=mailContactId?allContacts.find(function(x){return x.id===mailContactId;}):null;
@@ -5866,7 +5871,7 @@ setInterval(updateClock, 60000);
 <div class="modal-overlay" id="modalRegistra">
   <div class="modal" style="max-width:560px">
     <div class="modal-close" onclick="document.getElementById('modalRegistra').classList.remove('open')">✕</div>
-    <div class="form-hdr"><div class="form-title-el">Registra comunicazione</div></div>
+    <div class="form-hdr"><div class="form-title-el">✉ Scrivi / Registra Mail</div></div>
     <div class="form-body">
       <div class="form-grid">
         <div class="fg full"><label>Oggetto *</label><input id="mOggetto" placeholder="Es. Preventivo Villa Zanella"></div>
@@ -6470,7 +6475,12 @@ async function aggiornaContatoreMail(contactId){
 function apriModalRegistra(){
   mailAllegati=[];
   document.getElementById('mOggetto').value='';
-  document.getElementById('mData').value=new Date().toISOString().slice(0,10);
+  var oggi=new Date();
+  document.getElementById('mGiorno').value=oggi.getDate();
+  document.getElementById('mMese').value=oggi.getMonth()+1;
+  document.getElementById('mAnno').value=oggi.getFullYear();
+  document.getElementById('mOra').value=oggi.getHours();
+  document.getElementById('mMinuti').value=String(oggi.getMinutes()).padStart(2,'0');
   document.getElementById('mTipo').value='inviata';
   document.getElementById('mDa').value='scimaza@gmail.com';
   var c=mailContactId?allContacts.find(function(x){return x.id===mailContactId;}):null;
