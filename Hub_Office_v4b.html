@@ -2108,7 +2108,7 @@ setInterval(updateClock, 60000);
     <div class="modal-close" onclick="document.getElementById('modalStorico').classList.remove('open')">✕</div>
     <div class="form-hdr" style="display:flex;align-items:center;justify-content:space-between">
       <div class="form-title-el" id="storicoTitolo">Storico mail</div>
-      <button class="btn-primary" style="font-size:11px;padding:5px 12px;margin-right:2rem" onclick="apriModalRegistra()">+ Registra</button>
+      <button class="btn-primary" style="font-size:11px;padding:5px 12px;margin-right:2rem" onclick="apriModalRegistra()">✉ Scrivi Mail</button>
     </div>
     <div style="padding:1.2rem 2rem;max-height:65vh;overflow-y:auto" id="storicoBody"></div>
   </div>
@@ -2122,19 +2122,8 @@ setInterval(updateClock, 60000);
     <div class="form-body">
       <div class="form-grid">
         <div class="fg full"><label>Oggetto *</label><input id="mOggetto" placeholder="Es. Preventivo Villa Zanella"></div>
-        <div class="fg"><label>Data (gg/mm/aaaa) · Ora (hh:mm)</label>
-          <div style="display:flex;gap:6px;align-items:center">
-            <input id="mGiorno" type="number" min="1" max="31" placeholder="gg" style="width:52px;text-align:center">
-            <span style="color:var(--text3)">/</span>
-            <input id="mMese" type="number" min="1" max="12" placeholder="mm" style="width:52px;text-align:center">
-            <span style="color:var(--text3)">/</span>
-            <input id="mAnno" type="number" min="2020" max="2099" placeholder="aaaa" style="width:68px;text-align:center">
-            <span style="color:var(--text3);margin-left:6px">H</span>
-            <input id="mOra" type="number" min="0" max="23" placeholder="hh" style="width:48px;text-align:center">
-            <span style="color:var(--text3)">:</span>
-            <input id="mMinuti" type="number" min="0" max="59" placeholder="mm" style="width:48px;text-align:center">
-          </div>
-        </div>
+        <div class="fg"><label>Data</label><input id="mData" type="date"></div>
+        <div class="fg"><label>Ora</label><input id="mOra" type="time"></div>
         <div class="fg"><label>Tipo</label><select id="mTipo"><option value="inviata">↑ Inviata</option><option value="ricevuta">↓ Ricevuta</option></select></div>
         <div class="fg"><label>Da</label><input id="mDa" placeholder="mittente@email.it"></div>
         <div class="fg"><label>A</label><input id="mA" placeholder="destinatario@email.it"></div>
@@ -3170,10 +3159,7 @@ function apriScheda(id){
   // SEZIONE MAIL STORICO
   var mailRow=document.createElement('div');mailRow.style.cssText='display:flex;align-items:center;justify-content:space-between;margin-top:12px;margin-bottom:6px';
   var mailSl=sl('✉️ Mail');mailRow.appendChild(mailSl);
-  var mailBtn=document.createElement('button');mailBtn.className='btn-secondary';mailBtn.style.cssText='font-size:10px;padding:3px 10px;margin-left:8px';
-  mailBtn.textContent='✉ Scrivi Mail';
-  mailBtn.onclick=function(){apriModalRegistra(cid);};
-  mailRow.appendChild(mailBtn);
+
   col2.appendChild(mailRow);
 
   var mailList=document.createElement('div');mailList.id='mailSchedaList_'+cid;
@@ -3421,7 +3407,7 @@ async function caricaStorico(contactId){
   body.innerHTML='<div class="state-msg"><div class="spinner"></div>Caricamento...</div>';
   try{
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
-    if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">+ Registra</button></div>';return;}
+    if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
     body.innerHTML=mails.map(function(m){
       var all=(m.allegati||[]).map(function(a){return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+a+'</span>';}).join(' ');
       return '<div class="mail-item '+m.tipo+'">'+
@@ -3457,12 +3443,8 @@ function apriModalRegistra(contactId){
   if(contactId) mailContactId=contactId;
   mailAllegati=[];
   document.getElementById('mOggetto').value='';
-  var oggi=new Date();
-  document.getElementById('mGiorno').value=oggi.getDate();
-  document.getElementById('mMese').value=oggi.getMonth()+1;
-  document.getElementById('mAnno').value=oggi.getFullYear();
-  document.getElementById('mOra').value=oggi.getHours();
-  document.getElementById('mMinuti').value=String(oggi.getMinutes()).padStart(2,'0');
+  document.getElementById('mData').value=new Date().toISOString().slice(0,10);
+  document.getElementById('mOra').value=new Date().toTimeString().slice(0,5);
   document.getElementById('mTipo').value='inviata';
   document.getElementById('mDa').value='scimaza@gmail.com';
   var c=mailContactId?allContacts.find(function(x){return x.id===mailContactId;}):null;
@@ -3515,19 +3497,8 @@ async function salvaMail(){
     cc:document.getElementById('mCc').value.trim(),
     ccn:document.getElementById('mCcn').value.trim(),
     allegati:mailAllegati.map(function(a){return a.nome;}),
-    data:(function(){
-      var g=document.getElementById('mGiorno').value;
-      var m=document.getElementById('mMese').value;
-      var a=document.getElementById('mAnno').value;
-      if(g&&m&&a) return (g.length<2?'0'+g:g)+'/'+(m.length<2?'0'+m:m)+'/'+a;
-      return '';
-    })(),
-    ora:(function(){
-      var h=document.getElementById('mOra').value;
-      var min=document.getElementById('mMinuti').value;
-      if(h!==''&&min!=='') return (h.length<2?'0'+h:h)+':'+(min.length<2?'0'+min:min);
-      return '';
-    })(),
+    data:document.getElementById('mData').value,
+    ora:document.getElementById('mOra').value,
     note:document.getElementById('mNote').value.trim(),
     created_at:new Date().toISOString()
   };
@@ -5861,7 +5832,7 @@ setInterval(updateClock, 60000);
     <div class="modal-close" onclick="document.getElementById('modalStorico').classList.remove('open')">✕</div>
     <div class="form-hdr" style="display:flex;align-items:center;justify-content:space-between">
       <div class="form-title-el" id="storicoTitolo">Storico mail</div>
-      <button class="btn-primary" style="font-size:11px;padding:5px 12px;margin-right:2rem" onclick="apriModalRegistra()">+ Registra</button>
+      <button class="btn-primary" style="font-size:11px;padding:5px 12px;margin-right:2rem" onclick="apriModalRegistra()">✉ Scrivi Mail</button>
     </div>
     <div style="padding:1.2rem 2rem;max-height:65vh;overflow-y:auto" id="storicoBody"></div>
   </div>
@@ -5875,19 +5846,8 @@ setInterval(updateClock, 60000);
     <div class="form-body">
       <div class="form-grid">
         <div class="fg full"><label>Oggetto *</label><input id="mOggetto" placeholder="Es. Preventivo Villa Zanella"></div>
-        <div class="fg"><label>Data (gg/mm/aaaa) · Ora (hh:mm)</label>
-          <div style="display:flex;gap:6px;align-items:center">
-            <input id="mGiorno" type="number" min="1" max="31" placeholder="gg" style="width:52px;text-align:center">
-            <span style="color:var(--text3)">/</span>
-            <input id="mMese" type="number" min="1" max="12" placeholder="mm" style="width:52px;text-align:center">
-            <span style="color:var(--text3)">/</span>
-            <input id="mAnno" type="number" min="2020" max="2099" placeholder="aaaa" style="width:68px;text-align:center">
-            <span style="color:var(--text3);margin-left:6px">H</span>
-            <input id="mOra" type="number" min="0" max="23" placeholder="hh" style="width:48px;text-align:center">
-            <span style="color:var(--text3)">:</span>
-            <input id="mMinuti" type="number" min="0" max="59" placeholder="mm" style="width:48px;text-align:center">
-          </div>
-        </div>
+        <div class="fg"><label>Data</label><input id="mData" type="date"></div>
+        <div class="fg"><label>Ora</label><input id="mOra" type="time"></div>
         <div class="fg"><label>Tipo</label><select id="mTipo"><option value="inviata">↑ Inviata</option><option value="ricevuta">↓ Ricevuta</option></select></div>
         <div class="fg"><label>Da</label><input id="mDa" placeholder="mittente@email.it"></div>
         <div class="fg"><label>A</label><input id="mA" placeholder="destinatario@email.it"></div>
@@ -6440,7 +6400,7 @@ async function caricaStorico(contactId){
   body.innerHTML='<div class="state-msg"><div class="spinner"></div>Caricamento...</div>';
   try{
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
-    if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">+ Registra</button></div>';return;}
+    if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
     body.innerHTML=mails.map(function(m){
       var all=(m.allegati||[]).map(function(a){return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+a+'</span>';}).join(' ');
       return '<div class="mail-item '+m.tipo+'">'+
@@ -6475,12 +6435,8 @@ async function aggiornaContatoreMail(contactId){
 function apriModalRegistra(){
   mailAllegati=[];
   document.getElementById('mOggetto').value='';
-  var oggi=new Date();
-  document.getElementById('mGiorno').value=oggi.getDate();
-  document.getElementById('mMese').value=oggi.getMonth()+1;
-  document.getElementById('mAnno').value=oggi.getFullYear();
-  document.getElementById('mOra').value=oggi.getHours();
-  document.getElementById('mMinuti').value=String(oggi.getMinutes()).padStart(2,'0');
+  document.getElementById('mData').value=new Date().toISOString().slice(0,10);
+  document.getElementById('mOra').value=new Date().toTimeString().slice(0,5);
   document.getElementById('mTipo').value='inviata';
   document.getElementById('mDa').value='scimaza@gmail.com';
   var c=mailContactId?allContacts.find(function(x){return x.id===mailContactId;}):null;
@@ -6533,19 +6489,8 @@ async function salvaMail(){
     cc:document.getElementById('mCc').value.trim(),
     ccn:document.getElementById('mCcn').value.trim(),
     allegati:mailAllegati.map(function(a){return a.nome;}),
-    data:(function(){
-      var g=document.getElementById('mGiorno').value;
-      var m=document.getElementById('mMese').value;
-      var a=document.getElementById('mAnno').value;
-      if(g&&m&&a) return (g.length<2?'0'+g:g)+'/'+(m.length<2?'0'+m:m)+'/'+a;
-      return '';
-    })(),
-    ora:(function(){
-      var h=document.getElementById('mOra').value;
-      var min=document.getElementById('mMinuti').value;
-      if(h!==''&&min!=='') return (h.length<2?'0'+h:h)+':'+(min.length<2?'0'+min:min);
-      return '';
-    })(),
+    data:document.getElementById('mData').value,
+    ora:document.getElementById('mOra').value,
     note:document.getElementById('mNote').value.trim(),
     created_at:new Date().toISOString()
   };
