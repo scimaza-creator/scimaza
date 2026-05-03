@@ -865,8 +865,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
     <div class="section-label">Biblioteca strumenti</div>
     <div class="gold-line"></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.5rem">
-      <button class="fin-btn" onclick="alert('Settori World Index — in sviluppo')">📊 Settori World Index</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem">
+      <button class="fin-btn" id="btn-settori-world" onclick="toggleSettoriWorld(this)">📊 Settori World Index</button>
       <button class="fin-btn" onclick="alert('ETF Merceologici — in sviluppo')">🏭 ETF Merceologici</button>
       <button class="fin-btn" onclick="alert('Obbligazioni Governative — in sviluppo')">🏛️ Obblig. Governative</button>
       <button class="fin-btn" onclick="alert('Obbligazioni Societarie — in sviluppo')">🏢 Obblig. Societarie</button>
@@ -874,11 +874,104 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <button class="fin-btn" onclick="alert('Futures — in sviluppo')">📈 Futures</button>
       <button class="fin-btn" onclick="alert('Fondi Attivi — in sviluppo')">💼 Fondi Attivi</button>
       <button class="fin-btn" onclick="alert('Benchmark Mercati — in sviluppo')">🌐 Benchmark Mercati</button>
-
     </div>
+
+    <!-- PANNELLO SETTORI WORLD INDEX GICS -->
+    <div id="gics-panel" style="display:none;margin-bottom:1.5rem">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:.75rem;letter-spacing:.08em">GICS — 11 MACRO SETTORI · Clicca un settore per vedere i sotto-settori e i benchmark</div>
+      <div id="gics-settori-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:8px;margin-bottom:1rem"></div>
+      <div id="gics-subsector-panel" style="display:none;background:var(--surface);border:.5px solid var(--border2);border-radius:var(--radius);padding:1.2rem 1.5rem;margin-top:.5rem;animation:modalIn .2s ease">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem">
+          <div id="gics-sub-title" style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold)"></div>
+          <button onclick="chiudiSubsector()" style="background:var(--surface2);border:.5px solid var(--border);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--text2);cursor:pointer">✕ chiudi</button>
+        </div>
+        <div id="gics-sub-natura" style="font-size:11px;color:var(--text3);margin-bottom:.75rem"></div>
+        <div id="gics-sub-sottosettori" style="margin-bottom:1rem"></div>
+        <div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--gold2);margin-bottom:.5rem">Benchmark internazionali</div>
+        <div id="gics-sub-benchmark" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+      </div>
+    </div>
+
     <div class="divider"></div>
   </div>
 
+<script>
+var GICS_DATA = [
+  {id:'EN',num:'01',nome:'Energy',ita:'Energia',icona:'⚡',colore:'#E67E22',natura:'Estrattivo / Manifatturiero',
+   sottosettori:[{n:'Oil, Gas & Combustibili',d:'Estrazione, raffinazione e trasporto di idrocarburi'},{n:'Attrezzature e Servizi Energetici',d:'Aziende che forniscono trivelle e supporto tecnico'}],
+   benchmark:[{label:'S&P 500 Energy',url:'https://www.tradingview.com/chart/?symbol=SP:S5ENRS'},{label:'XLE ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLE'},{label:'STOXX EU Oil & Gas',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX4P'},{label:'MSCI World Energy',url:'https://www.tradingview.com/chart/?symbol=TVC:WORLD'},{label:'Dow Jones US Oil & Gas',url:'https://www.tradingview.com/chart/?symbol=TVC:DJUSEN'}]},
+  {id:'MAT',num:'02',nome:'Materials',ita:'Materiali',icona:'🔩',colore:'#8E44AD',natura:'Manifatturiero / Estrattivo',
+   sottosettori:[{n:'Chimica',d:'Fertilizzanti, gas industriali, specialità chimiche'},{n:'Metalli e Miniere',d:'Oro, rame, acciaio e litio'},{n:'Materiali da Costruzione',d:'Cemento, vetro e legno'},{n:'Packaging e Carta',d:'Imballaggi, cartone, produzione carta'}],
+   benchmark:[{label:'S&P 500 Materials',url:'https://www.tradingview.com/chart/?symbol=SP:S5MATR'},{label:'XLB ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLB'},{label:'STOXX EU Basic Resources',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX3P'},{label:'MSCI World Materials',url:'https://www.tradingview.com/chart/?symbol=TVC:WORLD'},{label:'Dow Jones US Basic Materials',url:'https://www.tradingview.com/chart/?symbol=TVC:DJUSBM'}]},
+  {id:'IND',num:'03',nome:'Industrials',ita:'Industriali',icona:'🏭',colore:'#2980B9',natura:'Manifatturiero / Servizi',
+   sottosettori:[{n:'Beni di Capitale',d:'Aerospazio e difesa, edilizia, macchinari agricoli'},{n:'Trasporti',d:'Compagnie aeree, logistica, ferrovie e spedizioni marittime'},{n:'Servizi Professionali',d:'Consulenza, agenzie di rating e servizi ambientali'}],
+   benchmark:[{label:'S&P 500 Industrials',url:'https://www.tradingview.com/chart/?symbol=SP:S5INDU'},{label:'XLI ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLI'},{label:'STOXX EU Industrial G&S',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX7P'},{label:'MSCI World Industrials',url:'https://www.tradingview.com/chart/?symbol=TVC:WORLD'},{label:'DAX esposizione industriale',url:'https://www.tradingview.com/chart/?symbol=XETR:DAX'}]},
+  {id:'CD',num:'04',nome:'Consumer Discretionary',ita:'Beni Voluttuari',icona:'🛍️',colore:'#E74C3C',natura:'Manifatturiero / Servizi',
+   sottosettori:[{n:'Automobili e Componenti',d:'Produttori di auto e pneumatici'},{n:'Beni Durevoli di Consumo',d:'Abbigliamento di lusso, arredamento, elettrodomestici'},{n:'Servizi ai Consumatori',d:'Hotel, ristoranti, tempo libero e viaggi'},{n:'Retail',d:'E-commerce e grandi magazzini'}],
+   benchmark:[{label:'S&P 500 Cons. Discret.',url:'https://www.tradingview.com/chart/?symbol=SP:S5COND'},{label:'XLY ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLY'},{label:'STOXX EU Retail',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX6P'},{label:'MSCI World Cons. Discret.',url:'https://www.tradingview.com/chart/?symbol=TVC:WORLD'},{label:'Dow Jones US Cons. Services',url:'https://www.tradingview.com/chart/?symbol=TVC:DJUSCY'}]},
+  {id:'CS',num:'05',nome:'Consumer Staples',ita:'Beni di Consumo Base',icona:'🛒',colore:'#27AE60',natura:'Manifatturiero / Distribuzione',
+   sottosettori:[{n:'Alimentari e Bevande',d:'Produttori di cibo, soft drink e alcolici'},{n:'Prodotti per la Casa e Personali',d:'Igiene, cosmesi e detersivi'},{n:'Tabacco',d:'Produzione di sigarette e prodotti correlati'},{n:'Distribuzione alimentare',d:'Supermercati, ipermercati, discount'}],
+   benchmark:[{label:'S&P 500 Cons. Staples',url:'https://www.tradingview.com/chart/?symbol=SP:S5CONS'},{label:'XLP ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLP'},{label:'STOXX EU Food & Bev.',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX3P'},{label:'MSCI World Cons. Staples',url:'https://www.tradingview.com/chart/?symbol=TVC:WORLD'},{label:'Dow Jones US Food & Beverage',url:'https://www.tradingview.com/chart/?symbol=TVC:DJUSFB'}]},
+  {id:'HC',num:'06',nome:'Health Care',ita:'Salute',icona:'🏥',colore:'#16A085',natura:'Manifatturiero / Servizi',
+   sottosettori:[{n:'Farmaceutica e Biotecnologia',d:'Ricerca e produzione di farmaci'},{n:'Attrezzature e Servizi Sanitari',d:'Macchinari diagnostici, ospedali e cliniche'}],
+   benchmark:[{label:'S&P 500 Health Care',url:'https://www.tradingview.com/chart/?symbol=SP:S5HLTH'},{label:'XLV ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLV'},{label:'NASDAQ Biotechnology NBI',url:'https://www.tradingview.com/chart/?symbol=NASDAQ:NBI'},{label:'STOXX EU Health Care',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX8P'},{label:'MSCI World Health Care',url:'https://www.tradingview.com/chart/?symbol=TVC:WORLD'}]},
+  {id:'FIN',num:'07',nome:'Financials',ita:'Finanza',icona:'🏦',colore:'#C4A35A',natura:'Servizi Finanziari',
+   sottosettori:[{n:'Banche',d:"Banche commerciali, d'investimento e regionali"},{n:'Assicurazioni',d:'Vita, danni, salute e riassicurazioni'},{n:'Mercati dei Capitali',d:'Borse valori, gestione patrimoniale e brokeraggio'},{n:'Fintech e Pagamenti',d:'Sistemi di pagamento, crypto exchange regolamentati'}],
+   benchmark:[{label:'S&P 500 Financials',url:'https://www.tradingview.com/chart/?symbol=SP:S5FINL'},{label:'XLF ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLF'},{label:'KBW Bank Index BKX',url:'https://www.tradingview.com/chart/?symbol=TVC:BKX'},{label:'STOXX EU Banks SX7P',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX7P'},{label:'EURO STOXX Banks',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX7E'}]},
+  {id:'IT',num:'08',nome:'Information Technology',ita:'Tecnologia',icona:'💻',colore:'#185FA5',natura:'Servizi / Manifatturiero',
+   sottosettori:[{n:'Software e Servizi',d:'Cloud computing, sicurezza informatica, software gestionale'},{n:'Hardware e Apparecchiature',d:'PC, smartphone, infrastrutture di rete'},{n:'Semiconduttori',d:'Produttori di chip e macchinari per la litografia'}],
+   benchmark:[{label:'S&P 500 IT',url:'https://www.tradingview.com/chart/?symbol=SP:S5INFT'},{label:'XLK ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLK'},{label:'NASDAQ-100',url:'https://www.tradingview.com/chart/?symbol=NASDAQ:NDX'},{label:'Philadelphia SOX Semicon.',url:'https://www.tradingview.com/chart/?symbol=NASDAQ:SOX'},{label:'STOXX EU Technology',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX8P'}]},
+  {id:'COMM',num:'09',nome:'Communication Services',ita:'Comunicazione',icona:'📡',colore:'#9B59B6',natura:'Servizi',
+   sottosettori:[{n:'Media e Intrattenimento',d:'Streaming, social media, videogiochi e pubblicità'},{n:'Servizi di Telecomunicazione',d:'Operatori telefonici (fissi e mobili) e infrastrutture fibra'}],
+   benchmark:[{label:'S&P 500 Comm. Services',url:'https://www.tradingview.com/chart/?symbol=SP:S5TELS'},{label:'XLC ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLC'},{label:'STOXX EU Telecom',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX4P'},{label:'Dow Jones US Telecom',url:'https://www.tradingview.com/chart/?symbol=TVC:DJUSTEL'},{label:'MSCI World Comm. Services',url:'https://www.tradingview.com/chart/?symbol=TVC:WORLD'}]},
+  {id:'UTIL',num:'10',nome:'Utilities',ita:'Servizi Pubblici',icona:'💡',colore:'#F39C12',natura:'Infrastrutture / Servizi',
+   sottosettori:[{n:'Elettricità',d:'Produttori e distributori di energia elettrica'},{n:'Gas e Acqua',d:'Infrastrutture per la distribuzione idrica e del gas naturale'},{n:'Energie Rinnovabili',d:'Sottosettore in forte crescita dedicato a solare ed eolico'}],
+   benchmark:[{label:'S&P 500 Utilities',url:'https://www.tradingview.com/chart/?symbol=SP:S5UTIL'},{label:'XLU ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLU'},{label:'STOXX EU Utilities SX6P',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX6P'},{label:'Dow Jones US Utilities',url:'https://www.tradingview.com/chart/?symbol=TVC:DJUSUT'},{label:'MSCI World Utilities',url:'https://www.tradingview.com/chart/?symbol=TVC:WORLD'}]},
+  {id:'RE',num:'11',nome:'Real Estate',ita:'Immobiliare',icona:'🏢',colore:'#1ABC9C',natura:'Infrastrutture / Servizi',
+   sottosettori:[{n:'REITs — Equity Real Estate Investment Trusts',d:'Fondi che possiedono uffici, centri commerciali o data center'},{n:'Gestione e Sviluppo Immobiliare',d:'Aziende che costruiscono e gestiscono complessi immobiliari'}],
+   benchmark:[{label:'S&P 500 Real Estate',url:'https://www.tradingview.com/chart/?symbol=SP:S5REAL'},{label:'XLRE ETF',url:'https://www.tradingview.com/chart/?symbol=AMEX:XLRE'},{label:'Dow Jones US REIT',url:'https://www.tradingview.com/chart/?symbol=TVC:DJUSRE'},{label:'FTSE EPRA/NAREIT Global',url:'https://www.tradingview.com/chart/?symbol=TVC:EPRA'},{label:'STOXX EU Real Estate',url:'https://www.tradingview.com/chart/?symbol=STOXX:SX86P'}]}
+];
+
+function toggleSettoriWorld(btn){
+  var panel=document.getElementById('gics-panel');
+  var aperto=panel.style.display!=='none';
+  if(aperto){panel.style.display='none';btn.style.borderColor='';btn.style.color='';return;}
+  panel.style.display='block';
+  btn.style.borderColor='var(--gold2)';btn.style.color='var(--gold)';
+  var grid=document.getElementById('gics-settori-grid');
+  if(grid.innerHTML==='')renderGicsGrid();
+}
+function renderGicsGrid(){
+  var grid=document.getElementById('gics-settori-grid');
+  grid.innerHTML=GICS_DATA.map(function(s){
+    return '<button onclick="apriSubsector(''+s.id+'')" style="background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:.85rem .75rem;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;overflow:hidden;min-height:90px;justify-content:center;text-align:center;width:100%">'+
+    '<div style="position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;background:'+s.colore+'"></div>'+
+    '<div style="font-size:22px">'+s.icona+'</div>'+
+    '<div style="font-size:12px;font-weight:500;color:var(--text);line-height:1.3">'+s.nome+'</div>'+
+    '<div style="font-size:10px;color:var(--text3)">'+s.ita+'</div>'+
+    '<div style="font-size:9px;background:rgba(0,0,0,.3);color:var(--text3);padding:1px 6px;border-radius:4px;margin-top:2px">'+s.num+'</div>'+
+    '</button>';
+  }).join('');
+}
+function apriSubsector(id){
+  var s=GICS_DATA.find(function(x){return x.id===id;});
+  if(!s)return;
+  document.getElementById('gics-sub-title').innerHTML=s.icona+' '+s.nome+' <span style="font-size:14px;color:var(--text2)">— '+s.ita+'</span>';
+  document.getElementById('gics-sub-natura').textContent='Natura: '+s.natura;
+  document.getElementById('gics-sub-sottosettori').innerHTML=s.sottosettori.map(function(sub){
+    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:.5px solid var(--border)">'+
+    '<div style="width:6px;height:6px;border-radius:50%;background:'+s.colore+';flex-shrink:0;margin-top:5px"></div>'+
+    '<div><div style="font-size:12px;font-weight:500;color:var(--text)">'+sub.n+'</div>'+
+    '<div style="font-size:11px;color:var(--text2);margin-top:2px">'+sub.d+'</div></div></div>';
+  }).join('');
+  document.getElementById('gics-sub-benchmark').innerHTML=s.benchmark.map(function(b){
+    return '<a href="'+b.url+'" target="_blank" style="background:var(--surface2);border:.5px solid var(--border2);border-radius:6px;padding:4px 10px;font-size:11px;color:var(--gold);text-decoration:none;white-space:nowrap">📊 '+b.label+'</a>';
+  }).join('');
+  document.getElementById('gics-subsector-panel').style.display='block';
+  document.getElementById('gics-subsector-panel').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function chiudiSubsector(){document.getElementById('gics-subsector-panel').style.display='none';}
+</script>
 
 <div id="giornale-section"></div>
   <div id="tableau-section" style="margin-top:8px">
