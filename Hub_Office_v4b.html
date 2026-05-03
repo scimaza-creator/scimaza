@@ -292,6 +292,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .link-popup-cancel:hover{border-color:#C4A35A;color:#C4A35A}
 .tool-btn-edit{position:absolute;top:4px;right:4px;font-size:9px;background:rgba(196,163,90,.15);color:#C4A35A;border:none;border-radius:3px;padding:1px 4px;cursor:pointer;opacity:0;transition:opacity .15s;font-family:'DM Sans',sans-serif}
 .tool-btn:hover .tool-btn-edit{opacity:1}
+
+.banner-registra{position:fixed;bottom:24px;right:24px;background:#1A1917;border:.5px solid #C4A35A;border-radius:10px;padding:14px 18px;display:none;align-items:center;gap:12px;z-index:800;box-shadow:0 8px 32px rgba(0,0,0,.5);font-family:'DM Sans',sans-serif}
+.banner-registra-text{font-size:12px;color:#E8E4DE;line-height:1.4}
+.banner-registra-text strong{color:#C4A35A;display:block;margin-bottom:2px}
+.banner-registra-btns{display:flex;gap:8px}
+.banner-reg-ok{background:#C4A35A;color:#0F0F0E;border:none;border-radius:6px;padding:6px 14px;font-size:11px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.banner-reg-skip{background:transparent;color:#5C5955;border:.5px solid #3D3A37;border-radius:6px;padding:6px 12px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif}
+.banner-reg-skip:hover{color:#9E9A94}
 </style>
 </head>
 <body>
@@ -1518,6 +1526,19 @@ var _toolLinks = {
 
 
 
+
+function apriRegistraDaBanner(){
+  var banner = document.getElementById('bannerRegistra');
+  var cid = banner ? banner._contactId : null;
+  chiudiBanner();
+  if(cid) apriModalRegistra(cid);
+  else apriModalRegistra();
+}
+function chiudiBanner(){
+  var banner = document.getElementById('bannerRegistra');
+  if(banner) banner.style.display='none';
+}
+
 function apriToolLink(key){
   var url = _toolLinks[key] || '';
   if(url) window.open(url, '_blank');
@@ -2524,6 +2545,19 @@ setInterval(updateClock, 60000);
   </div>
 </div>
 
+<!-- BANNER REGISTRA MAIL INVIATA -->
+<div class="banner-registra" id="bannerRegistra">
+  <div style="font-size:20px">✉️</div>
+  <div class="banner-registra-text">
+    <strong>Mail inviata da Spike?</strong>
+    Registrala subito nello storico del contatto
+  </div>
+  <div class="banner-registra-btns">
+    <button class="banner-reg-ok" onclick="apriRegistraDaBanner()">Registra</button>
+    <button class="banner-reg-skip" onclick="chiudiBanner()">Dopo</button>
+  </div>
+</div>
+
 <!-- MODAL INDICE GRAFICO -->
 <div class="idx-modal-overlay" id="idxModal">
   <div class="idx-modal">
@@ -3302,7 +3336,8 @@ async function aggiornaContatoreMail(contactId){
   }catch(e){}
 }
 
-function apriModalRegistra(){
+function apriModalRegistra(contactId){
+  if(contactId) mailContactId=contactId;
   mailAllegati=[];
   document.getElementById('mOggetto').value='';
   document.getElementById('mData').value=new Date().toISOString().slice(0,10);
@@ -3430,9 +3465,14 @@ function apriComposer(contactId,bozza){
   }else{
     window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email));
   }
-  if(!bozza){
-    toast('Spike aperto — dopo invio registra la mail nello Storico');
-  }
+  // Banner "Registra mail inviata" appare dopo 3 secondi
+  setTimeout(function(){
+    var banner = document.getElementById('bannerRegistra');
+    if(banner){
+      banner.style.display='flex';
+      banner._contactId = contactId;
+    }
+  }, 3000);
 }
 
 // ===== GEO =====
@@ -6413,9 +6453,14 @@ function apriComposer(contactId,bozza){
   }else{
     window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email));
   }
-  if(!bozza){
-    toast('Spike aperto — dopo invio registra la mail nello Storico');
-  }
+  // Banner "Registra mail inviata" appare dopo 3 secondi
+  setTimeout(function(){
+    var banner = document.getElementById('bannerRegistra');
+    if(banner){
+      banner.style.display='flex';
+      banner._contactId = contactId;
+    }
+  }, 3000);
 }
 
 // ===== GEO =====
