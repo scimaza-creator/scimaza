@@ -1568,6 +1568,11 @@ function apriDettaglioMail(m){
       var btn = document.createElement('span');
       btn.className='mail-detail-all-btn';
       btn.textContent = '📎 '+a;
+      // Se è un URL apri direttamente, altrimenti mostra testo
+      if(a.startsWith('http')){
+        btn.style.cursor='pointer';
+        btn.onclick=function(){window.open(a,'_blank');};
+      }
       allegaEl.appendChild(btn);
     });
   } else {
@@ -2117,8 +2122,19 @@ setInterval(updateClock, 60000);
     <div class="form-body">
       <div class="form-grid">
         <div class="fg full"><label>Oggetto *</label><input id="mOggetto" placeholder="Es. Preventivo Villa Zanella"></div>
-        <div class="fg"><label>Data</label><input id="mData" type="date"></div>
-        <div class="fg"><label>Ora</label><input id="mOra" type="time" placeholder="HH:MM"></div>
+        <div class="fg"><label>Data (gg/mm/aaaa) · Ora (hh:mm)</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="mGiorno" type="number" min="1" max="31" placeholder="gg" style="width:52px;text-align:center">
+            <span style="color:var(--text3)">/</span>
+            <input id="mMese" type="number" min="1" max="12" placeholder="mm" style="width:52px;text-align:center">
+            <span style="color:var(--text3)">/</span>
+            <input id="mAnno" type="number" min="2020" max="2099" placeholder="aaaa" style="width:68px;text-align:center">
+            <span style="color:var(--text3);margin-left:6px">H</span>
+            <input id="mOra" type="number" min="0" max="23" placeholder="hh" style="width:48px;text-align:center">
+            <span style="color:var(--text3)">:</span>
+            <input id="mMinuti" type="number" min="0" max="59" placeholder="mm" style="width:48px;text-align:center">
+          </div>
+        </div>
         <div class="fg"><label>Tipo</label><select id="mTipo"><option value="inviata">↑ Inviata</option><option value="ricevuta">↓ Ricevuta</option></select></div>
         <div class="fg"><label>Da</label><input id="mDa" placeholder="mittente@email.it"></div>
         <div class="fg"><label>A</label><input id="mA" placeholder="destinatario@email.it"></div>
@@ -3178,7 +3194,7 @@ function apriScheda(id){
       item.innerHTML=
         '<div class="mail-scheda-tipo '+(m.tipo||'inviata')+'">'+tipoTxt+'</div>'+
         '<div class="mail-scheda-oggetto">'+(m.oggetto||'—')+'</div>'+
-        '<div class="mail-scheda-meta">'+(m.data||'')+(m.ora?' '+m.ora:'')+' · '+(m.tipo==='inviata'?'A: '+m.a:'Da: '+m.da)+'</div>'+
+        '<div class="mail-scheda-meta">'+(m.data||'')+(m.ora?' &nbsp;'+m.ora:'')+' · '+(m.tipo==='inviata'?'A: '+m.a:'Da: '+m.da)+'</div>'+
         (allTags?'<div class="mail-scheda-allegati">'+allTags+'</div>':'');
       item.onclick=function(){apriDettaglioMail(m);};
       mailList.appendChild(item);
@@ -3487,14 +3503,26 @@ async function salvaMail(){
   var payload={
     contatto_id:mailContactId,
     oggetto:oggetto,
-    data:document.getElementById('mData').value,
+
     tipo:document.getElementById('mTipo').value,
     da:document.getElementById('mDa').value.trim(),
     a:document.getElementById('mA').value.trim(),
     cc:document.getElementById('mCc').value.trim(),
     ccn:document.getElementById('mCcn').value.trim(),
     allegati:mailAllegati.map(function(a){return a.nome;}),
-    ora:document.getElementById('mOra')?document.getElementById('mOra').value:'',
+    data:(function(){
+      var g=document.getElementById('mGiorno').value;
+      var m=document.getElementById('mMese').value;
+      var a=document.getElementById('mAnno').value;
+      if(g&&m&&a) return (g.length<2?'0'+g:g)+'/'+(m.length<2?'0'+m:m)+'/'+a;
+      return '';
+    })(),
+    ora:(function(){
+      var h=document.getElementById('mOra').value;
+      var min=document.getElementById('mMinuti').value;
+      if(h!==''&&min!=='') return (h.length<2?'0'+h:h)+':'+(min.length<2?'0'+min:min);
+      return '';
+    })(),
     note:document.getElementById('mNote').value.trim(),
     created_at:new Date().toISOString()
   };
@@ -5842,8 +5870,19 @@ setInterval(updateClock, 60000);
     <div class="form-body">
       <div class="form-grid">
         <div class="fg full"><label>Oggetto *</label><input id="mOggetto" placeholder="Es. Preventivo Villa Zanella"></div>
-        <div class="fg"><label>Data</label><input id="mData" type="date"></div>
-        <div class="fg"><label>Ora</label><input id="mOra" type="time" placeholder="HH:MM"></div>
+        <div class="fg"><label>Data (gg/mm/aaaa) · Ora (hh:mm)</label>
+          <div style="display:flex;gap:6px;align-items:center">
+            <input id="mGiorno" type="number" min="1" max="31" placeholder="gg" style="width:52px;text-align:center">
+            <span style="color:var(--text3)">/</span>
+            <input id="mMese" type="number" min="1" max="12" placeholder="mm" style="width:52px;text-align:center">
+            <span style="color:var(--text3)">/</span>
+            <input id="mAnno" type="number" min="2020" max="2099" placeholder="aaaa" style="width:68px;text-align:center">
+            <span style="color:var(--text3);margin-left:6px">H</span>
+            <input id="mOra" type="number" min="0" max="23" placeholder="hh" style="width:48px;text-align:center">
+            <span style="color:var(--text3)">:</span>
+            <input id="mMinuti" type="number" min="0" max="59" placeholder="mm" style="width:48px;text-align:center">
+          </div>
+        </div>
         <div class="fg"><label>Tipo</label><select id="mTipo"><option value="inviata">↑ Inviata</option><option value="ricevuta">↓ Ricevuta</option></select></div>
         <div class="fg"><label>Da</label><input id="mDa" placeholder="mittente@email.it"></div>
         <div class="fg"><label>A</label><input id="mA" placeholder="destinatario@email.it"></div>
@@ -6477,14 +6516,26 @@ async function salvaMail(){
   var payload={
     contatto_id:mailContactId,
     oggetto:oggetto,
-    data:document.getElementById('mData').value,
+
     tipo:document.getElementById('mTipo').value,
     da:document.getElementById('mDa').value.trim(),
     a:document.getElementById('mA').value.trim(),
     cc:document.getElementById('mCc').value.trim(),
     ccn:document.getElementById('mCcn').value.trim(),
     allegati:mailAllegati.map(function(a){return a.nome;}),
-    ora:document.getElementById('mOra')?document.getElementById('mOra').value:'',
+    data:(function(){
+      var g=document.getElementById('mGiorno').value;
+      var m=document.getElementById('mMese').value;
+      var a=document.getElementById('mAnno').value;
+      if(g&&m&&a) return (g.length<2?'0'+g:g)+'/'+(m.length<2?'0'+m:m)+'/'+a;
+      return '';
+    })(),
+    ora:(function(){
+      var h=document.getElementById('mOra').value;
+      var min=document.getElementById('mMinuti').value;
+      if(h!==''&&min!=='') return (h.length<2?'0'+h:h)+':'+(min.length<2?'0'+min:min);
+      return '';
+    })(),
     note:document.getElementById('mNote').value.trim(),
     created_at:new Date().toISOString()
   };
