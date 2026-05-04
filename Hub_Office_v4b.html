@@ -3667,6 +3667,20 @@ async function salvaMail(){
   };
   try{
     await sb('/rest/v1/mail','POST',payload);
+    // Archivia anche nei contatti in CC (se presenti in rubrica)
+    if(payload.cc){
+      var ccEmails=payload.cc.split(/[,;]/).map(function(e){return e.trim().toLowerCase();}).filter(Boolean);
+      for(var i=0;i<ccEmails.length;i++){
+        var ccEmail=ccEmails[i];
+        var ccContact=allContacts.find(function(x){
+          return (x.email1&&x.email1.toLowerCase()===ccEmail)||(x.email2&&x.email2.toLowerCase()===ccEmail);
+        });
+        if(ccContact&&ccContact.id!==mailContactId){
+          await sb('/rest/v1/mail','POST',Object.assign({},payload,{contatto_id:ccContact.id}));
+          await aggiornaContatoreMail(ccContact.id);
+        }
+      }
+    }
     document.getElementById('modalRegistra').classList.remove('open');
     caricaStorico(mailContactId);
     await aggiornaContatoreMail(mailContactId);
@@ -6659,6 +6673,20 @@ async function salvaMail(){
   };
   try{
     await sb('/rest/v1/mail','POST',payload);
+    // Archivia anche nei contatti in CC (se presenti in rubrica)
+    if(payload.cc){
+      var ccEmails=payload.cc.split(/[,;]/).map(function(e){return e.trim().toLowerCase();}).filter(Boolean);
+      for(var j=0;j<ccEmails.length;j++){
+        var ccContactMatch=allContacts.find(function(x){
+          var em=ccEmails[j];
+          return (x.email1&&x.email1.toLowerCase()===em)||(x.email2&&x.email2.toLowerCase()===em);
+        });
+        if(ccContactMatch&&ccContactMatch.id!==mailContactId){
+          await sb('/rest/v1/mail','POST',Object.assign({},payload,{contatto_id:ccContactMatch.id}));
+          await aggiornaContatoreMail(ccContactMatch.id);
+        }
+      }
+    }
     document.getElementById('modalRegistra').classList.remove('open');
     caricaStorico(mailContactId);
     await aggiornaContatoreMail(mailContactId);
