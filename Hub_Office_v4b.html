@@ -3674,9 +3674,22 @@ async function caricaStorico(contactId){
 
   // Sync Gmail automatico se token valido e contatto ha email
   var c=allContacts.find(function(x){return x.id===contactId;});
+  // Se contatto non è ancora in memoria (appena creato), lo carica da Supabase
+  if(!c){
+    try{
+      var fresh=await sb('/rest/v1/contatti?id=eq.'+contactId);
+      if(fresh&&fresh.length){ c=fresh[0]; allContacts.push(c); }
+    }catch(e3){}
+  }
   var emailContatto=c&&(c.email1||c.spike_email||'');
   if(emailContatto && typeof gmailTokenValido==='function' && gmailTokenValido()){
-    try{ await gmailSyncContatto(contactId, emailContatto); }catch(e2){}
+    body.innerHTML='<div class="state-msg"><div class="spinner"></div>Sincronizzazione mail Gmail...</div>';
+    try{ await gmailSyncContatto(contactId, emailContatto); }catch(e2){
+      console.warn('Sync Gmail fallito:', e2.message);
+    }
+  } else if(emailContatto && typeof gmailTokenValido==='function' && !gmailTokenValido()){
+    // Gmail non autorizzato — continua a mostrare mail già in Supabase
+    console.info('Gmail non autorizzato — storico solo da Supabase');
   }
 
   try{
@@ -3711,7 +3724,9 @@ async function caricaStorico(contactId){
 // Sync Gmail per singolo contatto — cerca tutte le mail scambiate con quella email
 async function gmailSyncContatto(contactId, email){
   if(!gmailTokenValido()) return;
-  // Calcola timestamp Unix di 24 mesi fa
+  // Normalizza email (rimuovi spazi, lowercase)
+  email = (email||'').trim().toLowerCase();
+  if(!email) return;
   // 24 mesi scorrevoli da oggi — esatti al giorno
   var d24m = new Date(); d24m.setMonth(d24m.getMonth() - 24);
   var after24m = Math.floor(d24m.getTime() / 1000);
@@ -4534,13 +4549,11 @@ async function gmailPollRicezioni() {
 
 // ===== BANNER GMAIL E STATO =====
 function aggiornaBannerGmail() {
-  var banner = document.getElementById('gmailBanner');
-  if (!banner) return;
-  if (gmailTokenValido()) {
-    banner.style.display = 'none';
-  } else {
-    banner.style.display = 'flex';
-  }
+  ['gmailBanner','gmailBanner2'].forEach(function(id){
+    var banner = document.getElementById(id);
+    if (!banner) return;
+    banner.style.display = gmailTokenValido() ? 'none' : 'flex';
+  });
 }
 
 // ===== SINCRONIZZA RICEZIONI MANUALE =====
@@ -5028,6 +5041,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <a href="https://app.spikenow.com/compose" target="_blank" class="btn-primary" style="background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);text-decoration:none;display:flex;align-items:center;gap:6px">✉ Scrivi Mail</a>
+      <button class="btn-secondary" onclick="caricaContatti()" style="font-size:12px;display:flex;align-items:center;gap:6px">↺ Aggiorna</button>
+      <button class="btn-secondary" id="btnSincronizza2" onclick="sincronizzaRicezioni(this)" style="font-size:12px;display:flex;align-items:center;gap:6px">⟳ Sincronizza mail</button>
       <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
     </div>
   </div>
@@ -5037,6 +5052,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <button class="filter-btn" onclick="setGruppo('fornitori',this)">Fornitori</button>
     <button class="filter-btn" onclick="setGruppo('terzi',this)">Terzi</button>
     <button class="filter-btn" onclick="setGruppo('personale',this)">Personale</button>
+  </div>
+  <div id="gmailBanner2" style="display:none;background:rgba(196,163,90,0.08);border:.5px solid rgba(196,163,90,0.3);border-radius:8px;padding:8px 14px;margin-bottom:12px;align-items:center;gap:10px;flex-wrap:wrap">
+    <span style="font-size:12px;color:var(--text2)">✉ Gmail non autorizzato — per inviare e sincronizzare le mail</span>
+    <button onclick="gmailAutorizza()" style="font-size:11px;padding:4px 12px;border-radius:6px;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);cursor:pointer;white-space:nowrap">Autorizza Gmail</button>
   </div>
   <div class="contact-grid" id="contactGrid">
     <div class="state-msg"><div class="spinner"></div>Connessione Supabase...</div>
