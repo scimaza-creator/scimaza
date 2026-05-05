@@ -384,19 +384,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 </div>
 
-<div id="view-rubrica" class="view">
+<div id="view-rubrica-old" class="view" style="display:none!important">
   <div class="rub-header">
-    <div style="display:flex;align-items:center;gap:1rem">
-      <button class="btn-back" onclick="mostraView('home')">← Scrivania</button>
-      <div class="rub-title">Rubrica Contatti</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <a href="https://app.spikenow.com/compose" target="_blank" class="btn-primary" style="background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);text-decoration:none;display:flex;align-items:center;gap:6px">✉ Scrivi Mail</a>
-      <button class="btn-secondary" onclick="caricaContatti()" style="font-size:12px;display:flex;align-items:center;gap:6px">↺ Aggiorna</button>
-      <button class="btn-secondary" id="btnSincronizza" onclick="sincronizzaRicezioni(this)" style="font-size:12px;display:flex;align-items:center;gap:6px">⟳ Sincronizza mail</button>
-      <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
-    </div>
-  </div>
   <div class="rub-toolbar">
     <input class="search-input" type="text" placeholder="Cerca nome, cognome, azienda, professione..." id="searchInput" oninput="renderList()">
     <button class="filter-btn on" onclick="setGruppo('tutti',this)">Tutti</button>
@@ -7419,25 +7408,7 @@ var composerContactId=null;
 var composerAllegati=[];
 
 function apriComposer(contactId,bozza){
-  composerContactId=contactId;
-  composerAllegati=bozza&&bozza.allegati?bozza.allegati:[];
-  var c=allContacts.find(function(x){return x.id===contactId;});
-  var email=c&&c.spike_email?c.spike_email:(c&&c.email1?c.email1:'');
-  if(bozza){
-    var oggetto=encodeURIComponent(bozza.oggetto||'');
-    var corpo=encodeURIComponent(bozza.testo||'');
-    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email)+'&subject='+oggetto+'&body='+corpo);
-  }else{
-    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email));
-  }
-  // Banner "Registra mail inviata" appare dopo 3 secondi
-  setTimeout(function(){
-    var banner = document.getElementById('bannerRegistra');
-    if(banner){
-      banner.style.display='flex';
-      banner._contactId = contactId;
-    }
-  }, 3000);
+  apriGmail(contactId,bozza);
 }
 
 // ===== GEO =====
