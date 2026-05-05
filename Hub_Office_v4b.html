@@ -3593,7 +3593,11 @@ async function caricaStorico(contactId){
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
     if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
     body.innerHTML=mails.map(function(m){
-      var all=(m.allegati||[]).map(function(a){return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+a+'</span>';}).join(' ');
+      var all=(m.allegati||[]).map(function(a){
+        if(a.indexOf('||')>-1){var pts=a.split('||');var nome=pts[0];var url=pts.slice(1).join('||');
+          return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);text-decoration:none;border:.5px solid var(--gold2);display:inline-block">&#128230; '+nome+' &#8599;</a>';}
+        return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">&#128196; '+a+'</span>';
+      }).join(' ');
       return '<div class="mail-item '+m.tipo+'">'+
         '<button class="mail-del" onclick="eliminaMail(\''+m.id+'\',\''+contactId+'\')">✕</button>'+
         '<div class="mail-oggetto">'+m.oggetto+'</div>'+
@@ -4122,7 +4126,12 @@ function gmailCostruisciRaw(a,cc,oggetto,corpo){
     lines.push('Content-Transfer-Encoding: base64');
     lines.push('');lines.push(gmailBase64(corpoHtml));
   }
-  return btoa(lines.join('\r\n')).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  var rawMsg=lines.join('\r\n');
+  // Converti in bytes UTF-8 poi base64 — gestisce Unicode nel corpo
+  var bytes=new TextEncoder().encode(rawMsg);
+  var binary='';
+  bytes.forEach(function(b){binary+=String.fromCharCode(b);});
+  return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
 
 async function gmailInvia(){
@@ -6836,7 +6845,11 @@ async function caricaStorico(contactId){
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
     if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
     body.innerHTML=mails.map(function(m){
-      var all=(m.allegati||[]).map(function(a){return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+a+'</span>';}).join(' ');
+      var all=(m.allegati||[]).map(function(a){
+        if(a.indexOf('||')>-1){var pts=a.split('||');var nome=pts[0];var url=pts.slice(1).join('||');
+          return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);text-decoration:none;border:.5px solid var(--gold2);display:inline-block">&#128230; '+nome+' &#8599;</a>';}
+        return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">&#128196; '+a+'</span>';
+      }).join(' ');
       return '<div class="mail-item '+m.tipo+'">'+
         '<button class="mail-del" onclick="eliminaMail(\''+m.id+'\',\''+contactId+'\')">✕</button>'+
         '<div class="mail-oggetto">'+m.oggetto+'</div>'+
