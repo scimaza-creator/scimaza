@@ -80,12 +80,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .contact-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
 .contact-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cat-color,var(--gold));opacity:.7}
 .contact-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
 .c-av{width:40px;height:40px;border-radius:50%;background:var(--gold-bg2);border:.5px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);flex-shrink:0;overflow:hidden}
 .c-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .c-info{flex:1;min-width:0}.c-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .c-role{font-size:11px;color:var(--text2);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.c-cat{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;flex-shrink:0;align-self:flex-start;margin-top:2px}
+.c-cat{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;flex-shrink:0}
 .cat-fornitori{background:rgba(196,163,90,.15);color:var(--gold)}
 .cat-terzi{background:rgba(239,159,39,.15);color:#EF9F27}
 .cat-personale{background:rgba(29,158,117,.15);color:var(--green)}
@@ -310,7 +310,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .mail-scheda-meta{font-size:10px;color:var(--text3)}
 .mail-scheda-allegati{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
 .mail-scheda-all-tag{font-size:9px;padding:2px 6px;border-radius:3px;background:var(--surface3);color:var(--text2)}
-.mail-scheda-corpo{font-size:10px;color:var(--text3);margin-top:3px;line-height:1.4;font-style:italic}
 .mail-detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:700;display:none;align-items:center;justify-content:center;padding:1.5rem}
 .mail-detail-overlay.open{display:flex}
 .mail-detail-box{background:#1A1917;border:.5px solid #2E2C2A;border-radius:12px;width:100%;max-width:640px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
@@ -384,18 +383,25 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 </div>
 
-<div id="view-rubrica-old" class="view" style="display:none!important">
+<div id="view-rubrica" class="view">
   <div class="rub-header">
+    <div style="display:flex;align-items:center;gap:1rem">
+      <button class="btn-back" onclick="mostraView('home')">← Scrivania</button>
+      <div class="rub-title">Rubrica Contatti</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <a href="https://app.spikenow.com/compose" target="_blank" class="btn-primary" style="background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);text-decoration:none;display:flex;align-items:center;gap:6px">✉ Scrivi Mail</a>
+      <button class="btn-secondary" onclick="caricaContatti()" style="font-size:12px;display:flex;align-items:center;gap:6px">&#8634; Aggiorna</button>
+      <span id="gmailStatusDot" style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px"><span id="gmailDot" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;transition:background .3s"></span><span id="gmailDotLabel" style="font-size:10px">Gmail</span></span>
+      <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
+    </div>
+  </div>
   <div class="rub-toolbar">
     <input class="search-input" type="text" placeholder="Cerca nome, cognome, azienda, professione..." id="searchInput" oninput="renderList()">
     <button class="filter-btn on" onclick="setGruppo('tutti',this)">Tutti</button>
     <button class="filter-btn" onclick="setGruppo('fornitori',this)">Fornitori</button>
     <button class="filter-btn" onclick="setGruppo('terzi',this)">Terzi</button>
     <button class="filter-btn" onclick="setGruppo('personale',this)">Personale</button>
-  </div>
-  <div id="gmailBanner" style="display:none;background:rgba(196,163,90,0.08);border:.5px solid rgba(196,163,90,0.3);border-radius:8px;padding:8px 14px;margin-bottom:12px;display:none;align-items:center;gap:10px;flex-wrap:wrap">
-    <span style="font-size:12px;color:var(--text2)">✉ Gmail non autorizzato — per inviare e sincronizzare le mail</span>
-    <button onclick="gmailAutorizza()" style="font-size:11px;padding:4px 12px;border-radius:6px;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);cursor:pointer;white-space:nowrap">Autorizza Gmail</button>
   </div>
   <div class="contact-grid" id="contactGrid">
     <div class="state-msg"><div class="spinner"></div>Connessione Supabase...</div>
@@ -1729,30 +1735,15 @@ function apriDettaglioMail(m){
   allegaEl.innerHTML = '';
   if(m.allegati && m.allegati.length){
     m.allegati.forEach(function(a){
-      if(a.indexOf('||') > -1){
-        // Formato: nome||url — link Dropbox cliccabile
-        var parts = a.split('||');
-        var nome = parts[0];
-        var url = parts.slice(1).join('||'); // url potrebbe contenere ||
-        var btn = document.createElement('a');
-        btn.className='mail-detail-all-btn';
-        btn.href = url;
-        btn.target = '_blank';
-        btn.textContent = '📦 '+nome+' ↗';
-        btn.style.cssText = 'color:var(--gold);text-decoration:none;cursor:pointer';
-        allegaEl.appendChild(btn);
-      } else if(a.startsWith('http')){
-        var btn = document.createElement('a');
-        btn.className='mail-detail-all-btn';
-        btn.href = a; btn.target = '_blank';
-        btn.textContent = '🔗 '+a;
-        allegaEl.appendChild(btn);
-      } else {
-        var btn = document.createElement('span');
-        btn.className='mail-detail-all-btn';
-        btn.textContent = '📎 '+a;
-        allegaEl.appendChild(btn);
+      var btn = document.createElement('span');
+      btn.className='mail-detail-all-btn';
+      btn.textContent = '📎 '+a;
+      // Se è un URL apri direttamente, altrimenti mostra testo
+      if(a.startsWith('http')){
+        btn.style.cursor='pointer';
+        btn.onclick=function(){window.open(a,'_blank');};
       }
+      allegaEl.appendChild(btn);
     });
   } else {
     allegaEl.innerHTML='<span style="font-size:11px;color:var(--text3)">Nessun allegato</span>';
@@ -2919,14 +2910,7 @@ setInterval(updateTime,1000);
 function mostraView(nome){
   document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
   document.getElementById('view-'+nome).classList.add('active');
-  if(nome==='rubrica'){
-    caricaContatti();
-    // Aggiorna badge Gmail e mostra banner se non autorizzato
-    setTimeout(function(){
-      aggiornaStatoGmail && aggiornaStatoGmail();
-      aggiornaBannerGmail && aggiornaBannerGmail();
-    }, 300);
-  }
+  if(nome==='rubrica') caricaContatti();
 }
 
 function toast(msg,dur){
@@ -2937,8 +2921,6 @@ function toast(msg,dur){
 }
 
 async function caricaContatti(){
-  // Polling Gmail ricezioni (silenzioso, solo se token valido)
-  setTimeout(function(){ gmailPollRicezioni && gmailPollRicezioni(); }, 2000);
   var grid=document.getElementById('contactGrid');
   grid.innerHTML='<div class="state-msg"><div class="spinner"></div>Caricamento...</div>';
   try{
@@ -2965,77 +2947,33 @@ function renderList(){
     var col=catColor[c.gruppo]||'#C4A35A';
     var cc=catClass[c.gruppo]||'cat-fornitori';
     var foto=c.photo_url?'<img src="'+c.photo_url+'" alt="">':'<span>'+ini.toUpperCase()+'</span>';
-    // Stato attivo/inattivo
     var statoHtml='';
-    if(c.stato&&c.stato!=='Attivo'){
-      statoHtml='<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(192,57,43,.15);color:#C0392B;font-weight:500;margin-left:4px">'+c.stato+'</span>';
-    } else if(c.stato==='Attivo'){
-      statoHtml='<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(29,158,117,.15);color:#1D9E75;font-weight:500;margin-left:4px">Attivo</span>';
-    }
-    // Categoria badge
+    if(c.stato==='Attivo') statoHtml='<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(29,158,117,.15);color:#1D9E75;font-weight:500">Attivo</span>';
+    else if(c.stato) statoHtml='<span style="font-size:9px;padding:1px 6px;border-radius:3px;background:rgba(192,57,43,.15);color:#C0392B;font-weight:500">'+c.stato+'</span>';
     var catBadge=c.categoria?'<span style="font-size:9px;padding:1px 7px;border-radius:3px;background:var(--surface3);color:var(--text2);border:.5px solid var(--border2)">'+c.categoria+'</span>':'';
-    // Data aggiornamento formato italiano
+    var _sitoUrl=c.sito_web?(c.sito_web.match(/^https?:\/\//)? c.sito_web:'https://'+c.sito_web):'';
+    var azHtml=c.ragione_sociale?(_sitoUrl?'<div style="font-size:10px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#127970; <a href="'+_sitoUrl+'" target="_blank" onclick="event.stopPropagation()" style="color:var(--teal);text-decoration:none;font-weight:500">'+c.ragione_sociale+' <span style="font-size:8px;color:var(--text3)">&#8599;</span></a></div>':'<div style="font-size:10px;color:var(--teal);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#127970; '+c.ragione_sociale+'</div>'):'';
     var updHtml='';
-    if(c.updated_at){
-      try{
-        var d=new Date(c.updated_at);
-        var gg=String(d.getDate()).padStart(2,'0');
-        var mm=String(d.getMonth()+1).padStart(2,'0');
-        var aa=String(d.getFullYear()).slice(2);
-        var hh=String(d.getHours()).padStart(2,'0');
-        var mi=String(d.getMinutes()).padStart(2,'0');
-        updHtml='<div class="c-detail" style="color:var(--text3);font-size:10px;font-family:\'DM Mono\',monospace;margin-top:2px">🕐 '+gg+'/'+mm+'/'+aa+' '+hh+':'+mi+'</div>';
-      }catch(e){}
-    }
-    var _sitoUrl=c.sito_web?(c.sito_web.match(/^https?:\/\//)?c.sito_web:'https://'+c.sito_web):'';
-    var azHtml=c.ragione_sociale?(_sitoUrl?
-      '<div style="font-size:10px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#127970; <a href="'+_sitoUrl+'" target="_blank" onclick="event.stopPropagation()" style="color:var(--teal);text-decoration:none;font-weight:500" title="'+_sitoUrl+'">'+c.ragione_sociale+' <span style="font-size:8px;color:var(--text3)">&#8599;</span></a></div>':
-      '<div style="font-size:10px;color:var(--teal);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#127970; '+c.ragione_sociale+'</div>'
-    ):'';
+    if(c.updated_at){try{var d=new Date(c.updated_at);var gg=String(d.getDate()).padStart(2,'0');var mm=String(d.getMonth()+1).padStart(2,'0');var aa=String(d.getFullYear()).slice(2);var hh=String(d.getHours()).padStart(2,'0');var mi=String(d.getMinutes()).padStart(2,'0');updHtml='<div class="c-detail" style="color:var(--text3);font-size:10px;margin-top:2px">&#128336; '+gg+'/'+mm+'/'+aa+' '+hh+':'+mi+'</div>';}catch(e){}}
     return '<div class="contact-card" style="--cat-color:'+col+'" onclick="apriScheda(\''+c.id+'\')">'+
       '<div class="c-top"><div class="c-av">'+foto+'</div>'+
       '<div class="c-info">'+
         '<div class="c-name">'+(c.cognome||'')+' '+(c.nome||'')+'</div>'+
         '<div class="c-role">'+
-          (function(){
-            var p=c.professione||'';
-            var i=c.incarico||'';
-            if(p&&i) return p+' · '+i;
-            if(p) return p;
-            if(i) return i;
-            return '<span style="color:var(--text3)">&#x2014;</span>';
-          })()+
+          (c.professione||'')+
+          (c.incarico&&c.professione?' \u00b7 ':'')+
+          (c.incarico||'')+
+          (!c.professione&&!c.incarico&&c.ragione_sociale?c.ragione_sociale:'')+
         '</div>'+
         azHtml+
-        '<div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">'+
-          catBadge+statoHtml+
-        '</div>'+
+        '<div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">'+catBadge+statoHtml+'</div>'+
       '</div>'+
       '<span class="c-cat '+cc+'">'+(c.gruppo||'')+'</span></div>'+
       '<div class="c-divider"></div><div class="c-details">'+
-      (c.tel1?'<div class="c-detail">&#9742; '+(c.tel1_pref&&c.tel1_pref!=='+39'?c.tel1_pref+' ':'')+c.tel1+'</div>':'')+
-      (c.mob1?'<div class="c-detail">&#9990; '+(c.mob1_pref&&c.mob1_pref!=='+39'?c.mob1_pref+' ':'')+c.mob1+'</div>':'')+
-      (c.email1?'<div class="c-detail"><a href="#" onclick="event.stopPropagation();apriGmail(\''+c.id+'\');return false;" style="color:var(--text2);text-decoration:none;display:flex;align-items:center;gap:6px" title="Scrivi mail">@ <span style="color:var(--text2)">'+c.email1+'</span></a></div>':'')+
-      (function(){
-        var parti=[];
-        if(c.via_prefisso&&c.via) parti.push(c.via_prefisso+' '+c.via+(c.civico?' '+c.civico:''));
-        else if(c.via) parti.push(c.via+(c.civico?' '+c.civico:''));
-        if(c.cap) parti.push(c.cap);
-        if(c.localita) parti.push(c.localita);
-        else if(c.comune) parti.push(c.comune);
-        if(c.provincia) parti.push('('+c.provincia+')');
-        if(!parti.length) return '';
-        var addr=parti.join(', ');
-        var url='https://www.google.com/maps/search/'+encodeURIComponent(addr+', Italia');
-        return '<div class="c-detail" style="margin-top:1px">'+
-          '<a href="'+url+'" target="_blank" '+
-          'onclick="event.stopPropagation()" '+
-          'style="color:var(--teal);text-decoration:none;font-size:10.5px;display:flex;align-items:flex-start;gap:5px;line-height:1.4" '+
-          'title="Apri su Google Maps">'+
-          '&#128205; <span style="flex:1;word-break:break-word">'+addr+'</span>'+
-          '<span style="font-size:9px;color:var(--text3);flex-shrink:0;margin-top:1px">&#8599;</span>'+
-          '</a></div>';
-      })()+
+      (c.tel1?'<div class="c-detail">&#9742; '+(c.tel1_pref&&c.tel1_pref!=="+39"?c.tel1_pref+" ":"")+c.tel1+'</div>':'')+
+      (c.mob1?'<div class="c-detail">&#9990; '+(c.mob1_pref&&c.mob1_pref!=="+39"?c.mob1_pref+" ":"")+c.mob1+'</div>':'')+
+      (c.email1?'<div class="c-detail"><a href="#" onclick="event.stopPropagation();apriGmail(\''+c.id+'\');return false;" style="color:var(--text2);text-decoration:none;display:flex;align-items:center;gap:6px">@ <span>'+c.email1+'</span></a></div>':'')+
+      (function(){var p=[];if(c.via_prefisso&&c.via)p.push(c.via_prefisso+' '+c.via+(c.civico?' '+c.civico:''));else if(c.via)p.push(c.via+(c.civico?' '+c.civico:''));if(c.cap)p.push(c.cap);if(c.localita)p.push(c.localita);else if(c.comune)p.push(c.comune);if(c.provincia)p.push('('+c.provincia+')');if(!p.length)return '';var addr=p.join(', ');var url='https://www.google.com/maps/search/'+encodeURIComponent(addr+', Italia');return '<div class="c-detail"><a href="'+url+'" target="_blank" onclick="event.stopPropagation()" style="color:var(--teal);text-decoration:none;font-size:10.5px;display:flex;align-items:flex-start;gap:5px" title="Apri su Google Maps">&#128205; <span style="flex:1;word-break:break-word">'+addr+'</span><span style="font-size:9px;color:var(--text3)">&#8599;</span></a></div>';})()+
       updHtml+
       '</div></div>';
   }).join('');
@@ -3422,20 +3360,11 @@ function apriScheda(id){
     mails.forEach(function(m){
       var item=document.createElement('div');item.className='mail-scheda-item';
       var tipoTxt=m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta';
-      var allTags=(m.allegati||[]).map(function(a){
-        if(a.indexOf('||')>-1){
-          var parts=a.split('||');
-          var nome=parts[0];var url=parts[1];
-          return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" class="mail-scheda-all-tag" style="color:var(--gold);text-decoration:none">📦 '+nome+' ↗</a>';
-        }
-        return '<span class="mail-scheda-all-tag">📎 '+a+'</span>';
-      }).join('');
-      var corpoPreview=m.note&&m.note.length>0?'<div class="mail-scheda-corpo">'+m.note.substring(0,120)+(m.note.length>120?'…':'')+'</div>':'';
+      var allTags=(m.allegati||[]).map(function(a){return '<span class="mail-scheda-all-tag">📎 '+a+'</span>';}).join('');
       item.innerHTML=
         '<div class="mail-scheda-tipo '+(m.tipo||'inviata')+'">'+tipoTxt+'</div>'+
         '<div class="mail-scheda-oggetto">'+(m.oggetto||'—')+'</div>'+
         '<div class="mail-scheda-meta">'+(m.data||'')+(m.ora?' &nbsp;'+m.ora:'')+' · '+(m.tipo==='inviata'?'A: '+m.a:'Da: '+m.da)+'</div>'+
-        corpoPreview+
         (allTags?'<div class="mail-scheda-allegati">'+allTags+'</div>':'');
       item.onclick=function(){apriDettaglioMail(m);};
       mailList.appendChild(item);
@@ -3660,131 +3589,23 @@ function apriStorico(contactId){
 async function caricaStorico(contactId){
   var body=document.getElementById('storicoBody');
   body.innerHTML='<div class="state-msg"><div class="spinner"></div>Caricamento...</div>';
-
-  // Sync Gmail automatico se token valido e contatto ha email
-  var c=allContacts.find(function(x){return x.id===contactId;});
-  // Se contatto non è ancora in memoria (appena creato), lo carica da Supabase
-  if(!c){
-    try{
-      var fresh=await sb('/rest/v1/contatti?id=eq.'+contactId);
-      if(fresh&&fresh.length){ c=fresh[0]; allContacts.push(c); }
-    }catch(e3){}
-  }
-  var emailContatto=c&&(c.email1||c.spike_email||'');
-  if(emailContatto && typeof gmailTokenValido==='function' && gmailTokenValido()){
-    body.innerHTML='<div class="state-msg"><div class="spinner"></div>Sincronizzazione mail Gmail...</div>';
-    try{ await gmailSyncContatto(contactId, emailContatto); }catch(e2){
-      console.warn('Sync Gmail fallito:', e2.message);
-    }
-  } else if(emailContatto && typeof gmailTokenValido==='function' && !gmailTokenValido()){
-    // Gmail non autorizzato — continua a mostrare mail già in Supabase
-    console.info('Gmail non autorizzato — storico solo da Supabase');
-  }
-
   try{
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
-    if(!mails||!mails.length){
-      body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriGmail(\''+contactId+'\')">✉ Scrivi Mail</button></div>';
-      return;
-    }
+    if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
     body.innerHTML=mails.map(function(m){
-      var all=(m.allegati||[]).map(function(a){
-        if(a.indexOf('||')>-1){
-          var parts=a.split('||');var nome=parts[0];var url=parts.slice(1).join('||');
-          return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);text-decoration:none;border:.5px solid var(--gold2)">📦 '+nome+' ↗</a>';
-        }
-        return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">📎 '+a+'</span>';
-      }).join(' ');
-      return '<div class="mail-item '+(m.tipo||'inviata')+'">'+
+      var all=(m.allegati||[]).map(function(a){return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+a+'</span>';}).join(' ');
+      return '<div class="mail-item '+m.tipo+'">'+
         '<button class="mail-del" onclick="eliminaMail(\''+m.id+'\',\''+contactId+'\')">✕</button>'+
-        '<div class="mail-oggetto">'+(m.oggetto||'(senza oggetto)')+'</div>'+
+        '<div class="mail-oggetto">'+m.oggetto+'</div>'+
         '<div class="mail-meta">'+
-        (m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta')+' · '+(m.data||'')+' '+(m.ora||'')+
-        ' · '+(m.tipo==='inviata'?'A: '+(m.a||''):'Da: '+(m.da||''))+
+        (m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta')+' · '+m.data+' · Da: '+m.da+' → A: '+m.a+
         (m.cc?' · CC: '+m.cc:'')+
+        (m.note?'<br>'+m.note:'')+
         '</div>'+
-        (m.note?'<div style="font-size:10px;color:var(--text3);margin-top:3px;font-style:italic">'+m.note.substring(0,120)+(m.note.length>120?'…':'')+'</div>':'')+
-        (all?'<div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:4px">'+all+'</div>':'')+
+        (all?'<div style="margin-top:5px">'+all+'</div>':'')+
         '</div>';
     }).join('');
   }catch(e){body.innerHTML='<div class="state-msg">Errore: '+e.message+'</div>';}
-}
-
-// Sync Gmail per singolo contatto — cerca tutte le mail scambiate con quella email
-async function gmailSyncContatto(contactId, email){
-  if(!gmailTokenValido()) return;
-  // Normalizza email (rimuovi spazi, lowercase)
-  email = (email||'').trim().toLowerCase();
-  if(!email) return;
-  // 24 mesi scorrevoli da oggi — esatti al giorno
-  var d24m = new Date(); d24m.setMonth(d24m.getMonth() - 24);
-  var after24m = Math.floor(d24m.getTime() / 1000);
-  var trovati=[];
-  for(var qi=0;qi<2;qi++){
-    var baseQ=(qi===0?'from:'+email:'to:'+email)+' after:'+after24m;
-    var pageToken=null;
-    do {
-      try{
-        var url='https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=200&q='+encodeURIComponent(baseQ);
-        if(pageToken) url+='&pageToken='+pageToken;
-        var resp=await fetch(url,{headers:{'Authorization':'Bearer '+gmailAccessToken}});
-        if(!resp.ok) break;
-        var data=await resp.json();
-        if(data.messages) trovati=trovati.concat(data.messages);
-        pageToken=data.nextPageToken||null;
-      }catch(e){ break; }
-    } while(pageToken);
-  }
-  // Deduplica
-  var seen={};
-  trovati=trovati.filter(function(m){if(seen[m.id])return false;seen[m.id]=true;return true;});
-  if(!trovati.length) return;
-
-  // gmail_id già archiviati
-  var esistenti=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&select=gmail_id');
-  var esistentiIds={};
-  (esistenti||[]).forEach(function(r){if(r.gmail_id)esistentiIds[r.gmail_id]=true;});
-
-  var nuovi=0;
-  for(var i=0;i<trovati.length;i++){
-    var msgId=trovati[i].id;
-    if(esistentiIds[msgId]) continue;
-    try{
-      var msgResp=await fetch(
-        'https://gmail.googleapis.com/gmail/v1/users/me/messages/'+msgId+
-        '?format=metadata&metadataHeaders=From&metadataHeaders=To&metadataHeaders=Subject&metadataHeaders=Date',
-        {headers:{'Authorization':'Bearer '+gmailAccessToken}}
-      );
-      if(!msgResp.ok) continue;
-      var msg=await msgResp.json();
-      var hdr={};
-      ((msg.payload&&msg.payload.headers)||[]).forEach(function(h){hdr[h.name.toLowerCase()]=h.value;});
-      var fromRaw=hdr['from']||'';
-      var fromEmail=(fromRaw.match(/<([^>]+)>/)||[null,fromRaw])[1].toLowerCase().trim();
-      var tipo=fromEmail==='scimaza@gmail.com'?'inviata':'ricevuta';
-      // Allegati — nomi file
-      var allegatiNomi=[];
-      if(msg.payload&&msg.payload.parts){
-        msg.payload.parts.forEach(function(p){if(p.filename&&p.filename.length>0)allegatiNomi.push(p.filename);});
-      }
-      var dataStr=hdr['date']?new Date(hdr['date']).toISOString():new Date().toISOString();
-      await sb('/rest/v1/mail','POST',{
-        contatto_id:contactId,
-        oggetto:hdr['subject']||'(senza oggetto)',
-        tipo:tipo,
-        da:fromRaw,
-        a:hdr['to']||'',
-        allegati:allegatiNomi,
-        data:dataStr.slice(0,10),
-        ora:dataStr.slice(11,16),
-        note:null,
-        gmail_id:msgId,
-        created_at:new Date().toISOString()
-      });
-      nuovi++;
-    }catch(e){}
-  }
-  if(nuovi>0) await aggiornaContatoreMail(contactId);
 }
 
 async function eliminaMail(id,contactId){
@@ -3937,7 +3758,25 @@ var composerContactId=null;
 var composerAllegati=[];
 
 function apriComposer(contactId,bozza){
-  apriGmail(contactId,bozza);
+  composerContactId=contactId;
+  composerAllegati=bozza&&bozza.allegati?bozza.allegati:[];
+  var c=allContacts.find(function(x){return x.id===contactId;});
+  var email=c&&c.spike_email?c.spike_email:(c&&c.email1?c.email1:'');
+  if(bozza){
+    var oggetto=encodeURIComponent(bozza.oggetto||'');
+    var corpo=encodeURIComponent(bozza.testo||'');
+    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email)+'&subject='+oggetto+'&body='+corpo);
+  }else{
+    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email));
+  }
+  // Banner "Registra mail inviata" appare dopo 3 secondi
+  setTimeout(function(){
+    var banner = document.getElementById('bannerRegistra');
+    if(banner){
+      banner.style.display='flex';
+      banner._contactId = contactId;
+    }
+  }, 3000);
 }
 
 // ===== GEO =====
@@ -4107,455 +3946,242 @@ document.addEventListener('DOMContentLoaded',function(){
   popolaGeo();
 });
 </script>
-
 <!-- ===== MODAL COMPOSITORE GMAIL ===== -->
 <div class="modal-overlay" id="modalGmail" style="z-index:400">
   <div class="modal" style="max-width:620px">
-    <div class="modal-close" onclick="chiudiGmail()">✕</div>
+    <div class="modal-close" onclick="chiudiGmail()">&#x2715;</div>
     <div class="form-hdr" style="display:flex;align-items:center;gap:10px">
-      <div style="font-size:18px">✉</div>
+      <div style="font-size:18px">&#9993;</div>
       <div>
         <div class="form-title-el" style="font-size:18px">Nuova mail</div>
         <div style="font-size:11px;color:var(--text3);margin-top:1px">da <span style="color:var(--gold)">scimaza@gmail.com</span>
-          <span id="gmailAuthStatus" style="margin-left:8px;font-size:10px;color:var(--text3)">● non autorizzato</span>
+          <span id="gmailAuthStatus" style="margin-left:8px;font-size:10px;color:var(--text3)">&#x25CF; non autorizzato</span>
         </div>
       </div>
-      <button onclick="gmailAutorizza()" id="btnGmailAuth"
-        style="margin-left:auto;font-size:11px;padding:5px 12px;border-radius:6px;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);cursor:pointer;white-space:nowrap">
-        Autorizza Gmail
-      </button>
+      <button onclick="gmailAutorizza()" id="btnGmailAuth" style="margin-left:auto;font-size:11px;padding:5px 12px;border-radius:6px;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);cursor:pointer">Autorizza Gmail</button>
     </div>
     <div class="form-body" style="padding:1.2rem 1.5rem">
       <div class="form-grid">
-        <div class="fg full">
-          <label>A</label>
-          <input id="gA" type="email" placeholder="destinatario@email.it">
-        </div>
-        <div class="fg full">
-          <label>CC</label>
-          <input id="gCc" type="email" placeholder="cc@email.it">
-        </div>
-        <div class="fg full">
-          <label>Oggetto</label>
-          <input id="gOgg" placeholder="Oggetto della mail">
-        </div>
-        <div class="fg full">
-          <label>Corpo</label>
-          <textarea id="gCorpo" style="min-height:180px;font-size:13px;line-height:1.6" placeholder="Scrivi qui il testo della mail..."></textarea>
-        </div>
+        <div class="fg full"><label>A</label><input id="gA" type="email" placeholder="destinatario@email.it"></div>
+        <div class="fg full"><label>CC</label><input id="gCc" type="email" placeholder="cc@email.it"></div>
+        <div class="fg full"><label>Oggetto</label><input id="gOgg" placeholder="Oggetto della mail"></div>
+        <div class="fg full"><label>Corpo</label><textarea id="gCorpo" style="min-height:180px;font-size:13px;line-height:1.6" placeholder="Scrivi qui il testo della mail..."></textarea></div>
       </div>
-      <!-- Allegati -->
       <div style="margin-top:10px">
         <div style="font-size:11px;color:var(--text2);margin-bottom:6px;font-weight:500">Allegati</div>
         <div id="gAllegatiList" style="display:flex;flex-direction:column;gap:4px;margin-bottom:6px"></div>
         <div style="display:flex;gap:8px">
-          <label style="cursor:pointer;font-size:11px;padding:5px 11px;border-radius:6px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2)">
-            📎 File <input type="file" multiple style="display:none" onchange="gAggiungiFile(this)">
-          </label>
-          <button onclick="gAggiungiDropbox()" style="font-size:11px;padding:5px 11px;border-radius:6px;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);cursor:pointer">
-            📦 Link Dropbox
-          </button>
+          <label style="cursor:pointer;font-size:11px;padding:5px 11px;border-radius:6px;border:.5px solid var(--border2);background:var(--surface2);color:var(--text2)">&#128206; File <input type="file" multiple style="display:none" onchange="gAggiungiFile(this)"></label>
+          <button onclick="gAggiungiDropbox()" style="font-size:11px;padding:5px 11px;border-radius:6px;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);cursor:pointer">&#128230; Link Dropbox</button>
         </div>
       </div>
-      <div id="gInvioStatus" style="display:none;margin-top:10px;font-size:12px;color:var(--text2);text-align:center;padding:8px;background:var(--surface2);border-radius:6px"></div>
+      <div id="gInvioStatus" style="display:none;margin-top:10px;font-size:12px;text-align:center;padding:8px;background:var(--surface2);border-radius:6px"></div>
     </div>
     <div class="form-footer">
       <button class="btn-secondary" onclick="chiudiGmail()">Annulla</button>
-      <a href="https://app.spikenow.com/compose" target="_blank"
-         id="btnSpikeFallback"
-         style="font-size:12px;padding:8px 14px;border-radius:6px;border:.5px solid rgba(52,152,219,.4);background:rgba(52,152,219,.1);color:#3498DB;text-decoration:none;display:flex;align-items:center;gap:5px">
-        ✈ Apri in Spike
-      </a>
+      <a href="https://app.spikenow.com/compose" target="_blank" id="btnSpikeFallback" style="font-size:12px;padding:8px 14px;border-radius:6px;border:.5px solid rgba(52,152,219,.4);background:rgba(52,152,219,.1);color:#3498DB;text-decoration:none;display:flex;align-items:center;gap:5px">&#x2708; Spike</a>
       <button class="btn-primary" onclick="gmailInvia()" id="btnGmailInvia">Invia</button>
     </div>
   </div>
 </div>
 
 <script>
-// ===== GMAIL OAUTH2 + INVIO + POLLING =====
-var GMAIL_CLIENT_ID = '54372302144-n9a2calup1q37aavc77hhe96f4q4lqkp.apps.googleusercontent.com';
-var GMAIL_SCOPES = 'https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly';
-var gmailAccessToken = localStorage.getItem('gmail_access_token') || null;
-var gmailTokenExpiry = parseInt(localStorage.getItem('gmail_token_expiry') || '0');
-var gmailContactId = null;
-var gAllegati = [];
+// ===== GMAIL SYSTEM =====
+var GMAIL_CLIENT_ID='54372302144-n9a2calup1q37aavc77hhe96f4q4lqkp.apps.googleusercontent.com';
+var GMAIL_SCOPES='https://www.googleapis.com/auth/gmail.send https://www.googleapis.com/auth/gmail.readonly';
+var gmailAccessToken=localStorage.getItem('gmail_access_token')||null;
+var gmailTokenExpiry=parseInt(localStorage.getItem('gmail_token_expiry')||'0');
+var gmailContactId=null;
+var gAllegati=[];
 
-function gmailTokenValido() {
-  return !!(gmailAccessToken) && (gmailTokenExpiry - Date.now() > 60000);
+function gmailTokenValido(){
+  return !!(gmailAccessToken)&&(gmailTokenExpiry-Date.now()>60000);
 }
 
-function aggiornaStatoGmail() {
-  var st = document.getElementById('gmailAuthStatus');
-  var btn = document.getElementById('btnGmailAuth');
-  if (!st || !btn) return;
-  if (gmailTokenValido()) {
-    st.textContent = '● autorizzato';
-    st.style.color = 'var(--green)';
-    btn.style.display = 'none';
-  } else {
-    st.textContent = '● non autorizzato';
-    st.style.color = 'var(--text3)';
-    btn.style.display = '';
-  }
+function aggiornaStatoGmail(){
+  var st=document.getElementById('gmailAuthStatus');
+  var btn=document.getElementById('btnGmailAuth');
+  var dot=document.getElementById('gmailDot');
+  var lbl=document.getElementById('gmailDotLabel');
+  var ok=gmailTokenValido();
+  if(st){st.textContent=ok?'● autorizzato':'● non autorizzato';st.style.color=ok?'var(--green)':'var(--text3)';}
+  if(btn)btn.style.display=ok?'none':'';
+  if(dot)dot.style.background=ok?'#1D9E75':'#666';
+  if(lbl)lbl.style.color=ok?'#1D9E75':'var(--text3)';
 }
 
-function gmailAutorizza() {
-  var w = 520, h = 640;
-  var left = (screen.width - w) / 2, top = (screen.height - h) / 2;
-  var redirectUri = window.location.href.split('?')[0].split('#')[0];
-  var url = 'https://accounts.google.com/o/oauth2/v2/auth' +
-    '?client_id=' + encodeURIComponent(GMAIL_CLIENT_ID) +
-    '&redirect_uri=' + encodeURIComponent(redirectUri) +
-    '&response_type=token' +
-    '&scope=' + encodeURIComponent(GMAIL_SCOPES) +
-    '&prompt=consent';
-  var popup = window.open(url, 'gmailAuth', 'width='+w+',height='+h+',left='+left+',top='+top);
-  var timer = setInterval(function() {
-    try {
-      if (!popup || popup.closed) { clearInterval(timer); return; }
-      var hash = popup.location.hash;
-      if (hash && hash.indexOf('access_token') > -1) {
-        clearInterval(timer);
-        popup.close();
-        var params = {};
-        hash.replace(/^#/, '').split('&').forEach(function(p) {
-          var kv = p.split('='); params[kv[0]] = decodeURIComponent(kv[1] || '');
-        });
-        gmailAccessToken = params['access_token'];
-        var expiresIn = parseInt(params['expires_in'] || '3600') * 1000;
-        gmailTokenExpiry = Date.now() + expiresIn;
-        localStorage.setItem('gmail_access_token', gmailAccessToken);
-        localStorage.setItem('gmail_token_expiry', gmailTokenExpiry.toString());
+function gmailAutorizza(){
+  var w=520,h=640,left=(screen.width-w)/2,top=(screen.height-h)/2;
+  var redirectUri=window.location.href.split('?')[0].split('#')[0];
+  var url='https://accounts.google.com/o/oauth2/v2/auth?client_id='+encodeURIComponent(GMAIL_CLIENT_ID)+'&redirect_uri='+encodeURIComponent(redirectUri)+'&response_type=token&scope='+encodeURIComponent(GMAIL_SCOPES)+'&prompt=consent';
+  var popup=window.open(url,'gmailAuth','width='+w+',height='+h+',left='+left+',top='+top);
+  var timer=setInterval(function(){
+    try{
+      if(!popup||popup.closed){clearInterval(timer);return;}
+      var hash=popup.location.hash;
+      if(hash&&hash.indexOf('access_token')>-1){
+        clearInterval(timer);popup.close();
+        var params={};
+        hash.replace(/^#/,'').split('&').forEach(function(p){var kv=p.split('=');params[kv[0]]=decodeURIComponent(kv[1]||'');});
+        gmailAccessToken=params['access_token'];
+        var expiresIn=parseInt(params['expires_in']||'3600')*1000;
+        gmailTokenExpiry=Date.now()+expiresIn;
+        localStorage.setItem('gmail_access_token',gmailAccessToken);
+        localStorage.setItem('gmail_token_expiry',gmailTokenExpiry.toString());
         aggiornaStatoGmail();
-        aggiornaBannerGmail && aggiornaBannerGmail();
-        toast('Gmail autorizzato ✓');
+        if(typeof toast==='function')toast('Gmail autorizzato ✓');
       }
-    } catch(e) { /* cross-origin, attendi */ }
-  }, 500);
+    }catch(e){}
+  },500);
 }
 
-function apriGmail(contactId, bozza) {
-  gmailContactId = contactId;
-  gAllegati = [];
-  var c = contactId ? allContacts.find(function(x){ return x.id === contactId; }) : null;
-  var emailDest = c ? (c.spike_email || c.email1 || '') : '';
-  document.getElementById('gA').value = emailDest;
-  document.getElementById('gCc').value = '';
-  document.getElementById('gOgg').value = bozza && bozza.oggetto ? bozza.oggetto : '';
-  document.getElementById('gCorpo').value = bozza && bozza.testo ? bozza.testo : '';
-  document.getElementById('gAllegatiList').innerHTML = '';
-  document.getElementById('gInvioStatus').style.display = 'none';
-  // aggiorna spike link con destinatario
-  var spikeBtn = document.getElementById('btnSpikeFallback');
-  if (spikeBtn && emailDest) {
-    spikeBtn.href = 'https://app.spikenow.com/compose?to=' + encodeURIComponent(emailDest) +
-      (bozza && bozza.oggetto ? '&subject=' + encodeURIComponent(bozza.oggetto) : '');
-  }
+function apriGmail(contactId,bozza){
+  gmailContactId=contactId;gAllegati=[];
+  var c=contactId?allContacts.find(function(x){return x.id===contactId;}):null;
+  var emailDest=c?(c.spike_email||c.email1||''):'';
+  document.getElementById('gA').value=emailDest;
+  document.getElementById('gCc').value='';
+  document.getElementById('gOgg').value=bozza&&bozza.oggetto?bozza.oggetto:'';
+  document.getElementById('gCorpo').value=bozza&&bozza.testo?bozza.testo:'';
+  document.getElementById('gAllegatiList').innerHTML='';
+  document.getElementById('gInvioStatus').style.display='none';
+  var spikeBtn=document.getElementById('btnSpikeFallback');
+  if(spikeBtn&&emailDest)spikeBtn.href='https://app.spikenow.com/compose?to='+encodeURIComponent(emailDest);
   aggiornaStatoGmail();
   document.getElementById('modalGmail').classList.add('open');
 }
 
-function chiudiGmail() {
-  document.getElementById('modalGmail').classList.remove('open');
+function chiudiGmail(){document.getElementById('modalGmail').classList.remove('open');}
+
+function gAggiungiFile(input){
+  Array.from(input.files).forEach(function(f){gAllegati.push({nome:f.name,tipo:'file',file:f});});
+  input.value='';gRenderAllegati();
 }
 
-function gAggiungiFile(input) {
-  Array.from(input.files).forEach(function(f) {
-    gAllegati.push({ nome: f.name, tipo: 'file', file: f });
-  });
-  input.value = '';
+function gAggiungiDropbox(){
+  var url=prompt('Incolla il link Dropbox:');
+  if(!url||!url.trim())return;
+  var nome=url.split('/').pop().split('?')[0]||'file';
+  gAllegati.push({nome:nome,tipo:'dropbox',url:url.trim()});
   gRenderAllegati();
 }
 
-function gAggiungiDropbox() {
-  var url = prompt('Incolla il link Dropbox:');
-  if (!url || !url.trim()) return;
-  var nome = url.split('/').pop().split('?')[0] || 'file';
-  gAllegati.push({ nome: nome, tipo: 'dropbox', url: url.trim() });
-  gRenderAllegati();
-}
-
-function gRenderAllegati() {
-  var list = document.getElementById('gAllegatiList');
-  list.innerHTML = gAllegati.map(function(a, i) {
-    return '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--surface2);border-radius:6px;border:.5px solid var(--border)">' +
-      '<span>' + (a.tipo === 'dropbox' ? '📦' : '📄') + '</span>' +
-      '<span style="font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + a.nome + '</span>' +
-      '<button onclick="gRimuoviAllegato(' + i + ')" style="background:none;border:none;color:var(--text3);cursor:pointer">✕</button>' +
-      '</div>';
+function gRenderAllegati(){
+  var list=document.getElementById('gAllegatiList');
+  list.innerHTML=gAllegati.map(function(a,i){
+    return '<div style="display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--surface2);border-radius:6px;border:.5px solid var(--border)">'+
+      '<span>'+(a.tipo==='dropbox'?'&#128230;':'&#128196;')+'</span>'+
+      '<span style="font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+a.nome+'</span>'+
+      '<button onclick="gRimuoviAllegato('+i+')" style="background:none;border:none;color:var(--text3);cursor:pointer">&#x2715;</button></div>';
   }).join('');
 }
 
-function gRimuoviAllegato(i) { gAllegati.splice(i, 1); gRenderAllegati(); }
+function gRimuoviAllegato(i){gAllegati.splice(i,1);gRenderAllegati();}
 
-function gmailBase64(str) {
-  // Gestisce Unicode correttamente
-  var bytes = new TextEncoder().encode(str);
-  var binary = '';
-  bytes.forEach(function(b){ binary += String.fromCharCode(b); });
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+function gmailBase64(str){
+  var bytes=new TextEncoder().encode(str);
+  var binary='';
+  bytes.forEach(function(b){binary+=String.fromCharCode(b);});
+  return btoa(binary).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
 
-function gmailBase64Binary(b64str) {
-  // Allegati binari: già in base64 standard da FileReader — li lasciamo intatti nelle lines
-  // Il remapping +→- /→_ avviene solo sul messaggio finale
-  return b64str;
-}
-
-function gmailCostruisciRaw(a, cc, oggetto, corpo) {
-  var boundary = 'boundary_hub_' + Date.now();
-  var fileAllegati = gAllegati.filter(function(x){ return x.tipo === 'file' && x._b64; });
-  var dropboxAllegati = gAllegati.filter(function(x){ return x.tipo === 'dropbox' && x.url; });
-  var hasFileAttach = fileAllegati.length > 0;
-
-  // Aggiunge link Dropbox in fondo al corpo HTML
-  var corpoHtml = corpo.replace(/\n/g, '<br>');
-  if (dropboxAllegati.length > 0) {
-    corpoHtml += '<br><br><hr style="border:none;border-top:1px solid #ccc;margin:12px 0">';
-    corpoHtml += '<p style="font-size:12px;color:#555;margin:0 0 6px">Allegati Dropbox:</p>';
-    dropboxAllegati.forEach(function(al) {
-      corpoHtml += '<p style="margin:4px 0"><a href="' + al.url + '" style="color:#0066cc">' + al.nome + '</a></p>';
-    });
+function gmailCostruisciRaw(a,cc,oggetto,corpo){
+  var boundary='boundary_hub_'+Date.now();
+  var fileAllegati=gAllegati.filter(function(x){return x.tipo==='file'&&x._b64;});
+  var dropboxAllegati=gAllegati.filter(function(x){return x.tipo==='dropbox'&&x.url;});
+  var corpoHtml=corpo.replace(/\n/g,'<br>');
+  if(dropboxAllegati.length>0){
+    corpoHtml+='<br><br><hr style="border:none;border-top:1px solid #ccc;margin:12px 0">';
+    corpoHtml+='<p style="font-size:12px;color:#555;margin:0 0 6px">Allegati Dropbox:</p>';
+    dropboxAllegati.forEach(function(al){corpoHtml+='<p style="margin:4px 0"><a href="'+al.url+'" style="color:#0066cc">'+al.nome+'</a></p>';});
   }
-
-  var lines = [];
+  var lines=[];
   lines.push('From: scimaza@gmail.com');
-  lines.push('To: ' + a);
-  if (cc) lines.push('Cc: ' + cc);
-  lines.push('Subject: =?UTF-8?B?' + btoa(unescape(encodeURIComponent(oggetto))) + '?=');
+  lines.push('To: '+a);
+  if(cc)lines.push('Cc: '+cc);
+  lines.push('Subject: =?UTF-8?B?'+btoa(unescape(encodeURIComponent(oggetto)))+'?=');
   lines.push('MIME-Version: 1.0');
-
-  if (hasFileAttach) {
-    lines.push('Content-Type: multipart/mixed; boundary="' + boundary + '"');
-    lines.push('');
-    lines.push('--' + boundary);
+  if(fileAllegati.length>0){
+    lines.push('Content-Type: multipart/mixed; boundary="'+boundary+'"');
+    lines.push('');lines.push('--'+boundary);
     lines.push('Content-Type: text/html; charset="UTF-8"');
     lines.push('Content-Transfer-Encoding: base64');
-    lines.push('');
-    lines.push(gmailBase64(corpoHtml));
-    fileAllegati.forEach(function(al) {
-      var mimeType = al.nome.toLowerCase().endsWith('.pdf') ? 'application/pdf' :
-                     al.nome.toLowerCase().endsWith('.docx') ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' :
-                     al.nome.toLowerCase().endsWith('.xlsx') ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' :
-                     'application/octet-stream';
-      lines.push('--' + boundary);
-      var nomeEnc = '=?UTF-8?B?' + btoa(unescape(encodeURIComponent(al.nome))) + '?=';
-      lines.push('Content-Type: ' + mimeType + '; name="' + nomeEnc + '"');
+    lines.push('');lines.push(gmailBase64(corpoHtml));
+    fileAllegati.forEach(function(al){
+      var mt=al.nome.toLowerCase().endsWith('.pdf')?'application/pdf':'application/octet-stream';
+      var nomeEnc='=?UTF-8?B?'+btoa(unescape(encodeURIComponent(al.nome)))+'?=';
+      lines.push('--'+boundary);
+      lines.push('Content-Type: '+mt+'; name="'+nomeEnc+'"');
       lines.push('Content-Transfer-Encoding: base64');
-      lines.push('Content-Disposition: attachment; filename="' + nomeEnc + '"');
-      lines.push('');
-      lines.push(gmailBase64Binary(al._b64));
+      lines.push('Content-Disposition: attachment; filename="'+nomeEnc+'"');
+      lines.push('');lines.push(al._b64);
     });
-    lines.push('--' + boundary + '--');
-  } else {
+    lines.push('--'+boundary+'--');
+  }else{
     lines.push('Content-Type: text/html; charset="UTF-8"');
     lines.push('Content-Transfer-Encoding: base64');
-    lines.push('');
-    lines.push(gmailBase64(corpoHtml));
+    lines.push('');lines.push(gmailBase64(corpoHtml));
   }
-  // Messaggio MIME finale: gli allegati sono già in base64 standard,
-  // gli header e il corpo HTML sono ASCII/base64 puro.
-  // Il join produce ASCII puro — btoa è sicuro.
-  // Tutto il messaggio MIME è ASCII puro: header ASCII + contenuto già in base64
-  // btoa è sicuro su ASCII puro, poi rimappiamo per URL-safe base64
-  var rawMsg = lines.join('\r\n');
-  return btoa(rawMsg).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return btoa(lines.join('\r\n')).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
 
-async function gmailInvia() {
-  if (!gmailTokenValido()) {
-    toast('Autorizza prima Gmail ↑');
-    gmailAutorizza();
-    return;
-  }
-  var a = document.getElementById('gA').value.trim();
-  var cc = document.getElementById('gCc').value.trim();
-  var ogg = document.getElementById('gOgg').value.trim();
-  var corpo = document.getElementById('gCorpo').value.trim();
-  if (!a || !ogg) { toast('Inserisci destinatario e oggetto'); return; }
-
-  var st = document.getElementById('gInvioStatus');
-  st.style.display = 'block';
-  st.textContent = 'Preparazione allegati...';
-
-  // Leggi file allegati in base64
-  await Promise.all(gAllegati.map(function(al) {
-    return new Promise(function(res) {
-      if (al.tipo !== 'file' || !al.file) { res(); return; }
-      var r = new FileReader();
-      r.onload = function(e) {
-        al._b64 = e.target.result.split(',')[1];
-        res();
-      };
+async function gmailInvia(){
+  if(!gmailTokenValido()){toast('Autorizza prima Gmail');gmailAutorizza();return;}
+  var a=document.getElementById('gA').value.trim();
+  var cc=document.getElementById('gCc').value.trim();
+  var ogg=document.getElementById('gOgg').value.trim();
+  var corpo=document.getElementById('gCorpo').value.trim();
+  if(!a||!ogg){toast('Inserisci destinatario e oggetto');return;}
+  var st=document.getElementById('gInvioStatus');
+  st.style.display='block';st.textContent='Preparazione allegati...';st.style.color='var(--text2)';
+  await Promise.all(gAllegati.map(function(al){
+    return new Promise(function(res){
+      if(al.tipo!=='file'||!al.file){res();return;}
+      var r=new FileReader();
+      r.onload=function(e){al._b64=e.target.result.split(',')[1];res();};
       r.readAsDataURL(al.file);
     });
   }));
-
-  st.textContent = 'Invio in corso...';
-
-  try {
-    var raw = gmailCostruisciRaw(a, cc, ogg, corpo);
-    var resp = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
-      method: 'POST',
-      headers: {
-        'Authorization': 'Bearer ' + gmailAccessToken,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ raw: raw })
+  st.textContent='Invio in corso...';
+  try{
+    var raw=gmailCostruisciRaw(a,cc,ogg,corpo);
+    var resp=await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+gmailAccessToken,'Content-Type':'application/json'},
+      body:JSON.stringify({raw:raw})
     });
-    if (!resp.ok) {
-      var err = await resp.json();
-      throw new Error(err.error && err.error.message ? err.error.message : 'Errore invio');
-    }
-    st.textContent = '✓ Mail inviata!';
-    st.style.color = 'var(--green)';
-
-    // Archivia in Supabase
-    var now = new Date();
-    // Allegati: array di stringhe — file come "nome.pdf", dropbox come "nome||url"
-    var allegatiLog = gAllegati.map(function(x){
-      return x.tipo === 'dropbox' ? (x.nome + '||' + x.url) : x.nome;
-    });
-    var payload = {
-      contatto_id: gmailContactId,
-      oggetto: ogg,
-      tipo: 'inviata',
-      da: 'scimaza@gmail.com',
-      a: a,
-      cc: cc || null,
-      allegati: allegatiLog,
-      data: now.toISOString().slice(0, 10),
-      ora: now.toTimeString().slice(0, 5),
-      note: corpo || null,
-      created_at: now.toISOString()
-    };
-    var archiviatoOk = false;
-    try {
-      await sb('/rest/v1/mail', 'POST', payload);
-      if (gmailContactId) await aggiornaContatoreMail(gmailContactId);
-      archiviatoOk = true;
-    } catch(e2) {
-      console.warn('Archiviazione Supabase fallita:', e2.message);
-    }
-
-    setTimeout(function() {
-      chiudiGmail();
-      toast(archiviatoOk ? 'Mail inviata e archiviata ✓' : 'Mail inviata ✓ (archiviazione fallita)');
-    }, 1200);
-  } catch(e) {
-    st.textContent = '✗ ' + e.message;
-    st.style.color = 'var(--red)';
-  }
+    if(!resp.ok){var err=await resp.json();throw new Error(err.error&&err.error.message?err.error.message:'Errore invio');}
+    st.textContent='✓ Mail inviata!';st.style.color='var(--green)';
+    var now=new Date();
+    var allegatiLog=gAllegati.map(function(x){return x.tipo==='dropbox'?(x.nome+'||'+x.url):x.nome;});
+    try{
+      await sb('/rest/v1/mail','POST',{
+        contatto_id:gmailContactId,oggetto:ogg,tipo:'inviata',
+        da:'scimaza@gmail.com',a:a,cc:cc||null,
+        allegati:allegatiLog,
+        data:now.toISOString().slice(0,10),
+        ora:now.toTimeString().slice(0,5),
+        note:corpo||null,
+        created_at:now.toISOString()
+      });
+      if(gmailContactId)await aggiornaContatoreMail(gmailContactId);
+      setTimeout(function(){chiudiGmail();toast('Mail inviata e archiviata ✓');},1200);
+    }catch(e2){setTimeout(function(){chiudiGmail();toast('Mail inviata ✓ (archiviazione fallita)');},1200);}
+  }catch(e){st.textContent='✗ '+e.message;st.style.color='var(--red)';}
 }
 
-// ===== POLLING RICEZIONI GMAIL =====
-var gmailPollingFatto = false;
+// Override apriComposer
+function apriComposer(contactId,bozza){apriGmail(contactId,bozza);}
 
-async function gmailPollRicezioni() {
-  if (!gmailTokenValido() || gmailPollingFatto) return;
-  gmailPollingFatto = true;
-  try {
-    // Cerca le ultime 50 mail ricevute nell'ultima settimana
-    var after = Math.floor((Date.now() - 7 * 24 * 3600 * 1000) / 1000);
-    var listResp = await fetch(
-      'https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=50&q=in:inbox+after:' + after,
-      { headers: { 'Authorization': 'Bearer ' + gmailAccessToken } }
-    );
-    if (!listResp.ok) return;
-    var listData = await listResp.json();
-    if (!listData.messages || !listData.messages.length) return;
-
-    // Raccoglie email di tutti i contatti in rubrica
-    var emailMap = {};
-    allContacts.forEach(function(c) {
-      if (c.email1) emailMap[c.email1.toLowerCase()] = c.id;
-      if (c.email2) emailMap[c.email2.toLowerCase()] = c.id;
-      if (c.spike_email) emailMap[c.spike_email.toLowerCase()] = c.id;
-    });
-
-    // Per ogni messaggio, legge header e archivia se mittente è in rubrica
-    for (var i = 0; i < Math.min(listData.messages.length, 30); i++) {
-      var msgId = listData.messages[i].id;
-      try {
-        var msgResp = await fetch(
-          'https://gmail.googleapis.com/gmail/v1/users/me/messages/' + msgId + '?format=metadata&metadataHeaders=From&metadataHeaders=Subject&metadataHeaders=Date',
-          { headers: { 'Authorization': 'Bearer ' + gmailAccessToken } }
-        );
-        if (!msgResp.ok) continue;
-        var msg = await msgResp.json();
-        var headers = {};
-        (msg.payload && msg.payload.headers ? msg.payload.headers : []).forEach(function(h) {
-          headers[h.name.toLowerCase()] = h.value;
-        });
-        var fromRaw = headers['from'] || '';
-        var fromEmail = (fromRaw.match(/<([^>]+)>/) || [null, fromRaw])[1].toLowerCase().trim();
-        var contactId = emailMap[fromEmail];
-        if (!contactId) continue;
-
-        // Controlla se già archiviata (per gmail_id)
-        var esistente = await sb('/rest/v1/mail?gmail_id=eq.' + msgId + '&select=id', 'GET');
-        if (esistente && esistente.length > 0) continue;
-
-        var dataStr = headers['date'] ? new Date(headers['date']).toISOString() : new Date().toISOString();
-        var payload = {
-          contatto_id: contactId,
-          oggetto: headers['subject'] || '(senza oggetto)',
-          tipo: 'ricevuta',
-          da: fromRaw,
-          a: 'scimaza@gmail.com',
-          allegati: [],
-          data: dataStr.slice(0, 10),
-          ora: dataStr.slice(11, 16),
-          note: null,
-          gmail_id: msgId,
-          created_at: new Date().toISOString()
-        };
-        await sb('/rest/v1/mail', 'POST', payload);
-        await aggiornaContatoreMail(contactId);
-      } catch(e) { /* skip singolo messaggio */ }
-    }
-    toast('Ricezioni aggiornate ✓');
-  } catch(e) { /* polling silenzioso */ }
-}
-
-// ===== BANNER GMAIL E STATO =====
-function aggiornaBannerGmail() {
-  var ok = gmailTokenValido();
-  ['gmailBanner','gmailBanner2'].forEach(function(id){
-    var banner = document.getElementById(id);
-    if (!banner) return;
-    banner.style.display = ok ? 'none' : 'flex';
-  });
-  // Aggiorna dot indicator
-  var dot = document.getElementById('gmailDot');
-  var lbl = document.getElementById('gmailDotLabel');
-  if(dot) dot.style.background = ok ? '#1D9E75' : '#666';
-  if(lbl) lbl.style.color = ok ? '#1D9E75' : 'var(--text3)';
-}
-
-// ===== SINCRONIZZA RICEZIONI MANUALE =====
-async function sincronizzaRicezioni(btn) {
-  if (!gmailTokenValido()) {
-    toast('Autorizza Gmail prima di sincronizzare');
-    gmailAutorizza();
-    return;
-  }
-  if (btn) { btn.textContent = '⟳ Sincronizzazione...'; btn.disabled = true; }
-  gmailPollingFatto = false; // resetta flag per permettere nuovo polling
-  await gmailPollRicezioni();
-  if (btn) { btn.textContent = '⟳ Sincronizza mail'; btn.disabled = false; }
-  await caricaContatti();
-}
-
-// Override di apriComposer — ora usa il modal interno
-function apriComposer(contactId, bozza) {
-  apriGmail(contactId, bozza);
-}
-
+// Aggiorna dot Gmail all'apertura rubrica
+var _mostraViewOrig=mostraView;
+mostraView=function(nome){
+  _mostraViewOrig(nome);
+  if(nome==='rubrica')setTimeout(aggiornaStatoGmail,300);
+};
 </script>
 
-</body>
-</html>
+</body></html>
 <script>
 var COMUNI_IT=[
 {c:'Abano Terme',cap:'35031',p:'PD',r:'Veneto'},{c:'Abbiategrasso',cap:'20081',p:'MI',r:'Lombardia'},
@@ -4750,12 +4376,12 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .contact-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
 .contact-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cat-color,var(--gold));opacity:.7}
 .contact-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
+.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
 .c-av{width:40px;height:40px;border-radius:50%;background:var(--gold-bg2);border:.5px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);flex-shrink:0;overflow:hidden}
 .c-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 .c-info{flex:1;min-width:0}.c-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .c-role{font-size:11px;color:var(--text2);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.c-cat{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;flex-shrink:0;align-self:flex-start;margin-top:2px}
+.c-cat{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;flex-shrink:0}
 .cat-fornitori{background:rgba(196,163,90,.15);color:var(--gold)}
 .cat-terzi{background:rgba(239,159,39,.15);color:#EF9F27}
 .cat-personale{background:rgba(29,158,117,.15);color:var(--green)}
@@ -5018,12 +4644,8 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <a href="https://app.spikenow.com/compose" target="_blank" class="btn-primary" style="background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);text-decoration:none;display:flex;align-items:center;gap:6px">✉ Scrivi Mail</a>
-      <button class="btn-secondary" onclick="caricaContatti()" style="font-size:12px;display:flex;align-items:center;gap:6px">↺ Aggiorna</button>
-      <button class="btn-secondary" id="btnSincronizza2" onclick="sincronizzaRicezioni(this)" style="font-size:12px;display:flex;align-items:center;gap:6px">⟳ Sincronizza mail</button>
-      <span id="gmailStatusDot" style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px">
-        <span id="gmailDot" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block"></span>
-        <span id="gmailDotLabel">Gmail</span>
-      </span>
+      <button class="btn-secondary" onclick="caricaContatti()" style="font-size:12px;display:flex;align-items:center;gap:6px">&#8634; Aggiorna</button>
+      <span id="gmailStatusDot" style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px"><span id="gmailDot" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;transition:background .3s"></span><span id="gmailDotLabel" style="font-size:10px">Gmail</span></span>
       <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
     </div>
   </div>
@@ -5033,10 +4655,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <button class="filter-btn" onclick="setGruppo('fornitori',this)">Fornitori</button>
     <button class="filter-btn" onclick="setGruppo('terzi',this)">Terzi</button>
     <button class="filter-btn" onclick="setGruppo('personale',this)">Personale</button>
-  </div>
-  <div id="gmailBanner2" style="display:none;background:rgba(196,163,90,0.08);border:.5px solid rgba(196,163,90,0.3);border-radius:8px;padding:8px 14px;margin-bottom:12px;align-items:center;gap:10px;flex-wrap:wrap">
-    <span style="font-size:12px;color:var(--text2)">✉ Gmail non autorizzato — per inviare e sincronizzare le mail</span>
-    <button onclick="gmailAutorizza()" style="font-size:11px;padding:4px 12px;border-radius:6px;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);cursor:pointer;white-space:nowrap">Autorizza Gmail</button>
   </div>
   <div class="contact-grid" id="contactGrid">
     <div class="state-msg"><div class="spinner"></div>Connessione Supabase...</div>
@@ -7214,46 +6832,20 @@ function apriStorico(contactId){
 async function caricaStorico(contactId){
   var body=document.getElementById('storicoBody');
   body.innerHTML='<div class="state-msg"><div class="spinner"></div>Caricamento...</div>';
-
-  // Sync Gmail automatico se token valido e contatto ha email
-  var c=allContacts.find(function(x){return x.id===contactId;});
-  if(!c){
-    try{
-      var fresh=await sb('/rest/v1/contatti?id=eq.'+contactId);
-      if(fresh&&fresh.length){ c=fresh[0]; allContacts.push(c); }
-    }catch(e3){}
-  }
-  var emailContatto=c&&(c.email1||c.spike_email||'');
-  if(emailContatto && typeof gmailTokenValido==='function' && gmailTokenValido()){
-    body.innerHTML='<div class="state-msg"><div class="spinner"></div>Sincronizzazione Gmail...</div>';
-    try{ await gmailSyncContatto(contactId, emailContatto); }
-    catch(e2){ console.warn('Sync Gmail fallito:', e2.message); }
-  }
-
   try{
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
-    if(!mails||!mails.length){
-      body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriGmail(\''+contactId+'\')">✉ Scrivi Mail</button></div>';
-      return;
-    }
+    if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
     body.innerHTML=mails.map(function(m){
-      var all=(m.allegati||[]).map(function(a){
-        if(a.indexOf('||')>-1){
-          var parts=a.split('||');var nome=parts[0];var url=parts.slice(1).join('||');
-          return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);text-decoration:none;border:.5px solid var(--gold2)">📦 '+nome+' ↗</a>';
-        }
-        return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">📎 '+a+'</span>';
-      }).join(' ');
-      return '<div class="mail-item '+(m.tipo||'inviata')+'">'+
+      var all=(m.allegati||[]).map(function(a){return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+a+'</span>';}).join(' ');
+      return '<div class="mail-item '+m.tipo+'">'+
         '<button class="mail-del" onclick="eliminaMail(\''+m.id+'\',\''+contactId+'\')">✕</button>'+
-        '<div class="mail-oggetto">'+(m.oggetto||'(senza oggetto)')+'</div>'+
+        '<div class="mail-oggetto">'+m.oggetto+'</div>'+
         '<div class="mail-meta">'+
-        (m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta')+' · '+(m.data||'')+' '+(m.ora||'')+
-        ' · '+(m.tipo==='inviata'?'A: '+(m.a||''):'Da: '+(m.da||''))+
+        (m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta')+' · '+m.data+' · Da: '+m.da+' → A: '+m.a+
         (m.cc?' · CC: '+m.cc:'')+
+        (m.note?'<br>'+m.note:'')+
         '</div>'+
-        (m.note?'<div style="font-size:10px;color:var(--text3);margin-top:3px;font-style:italic">'+m.note.substring(0,120)+(m.note.length>120?'…':'')+'</div>':'')+
-        (all?'<div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:4px">'+all+'</div>':'')+
+        (all?'<div style="margin-top:5px">'+all+'</div>':'')+
         '</div>';
     }).join('');
   }catch(e){body.innerHTML='<div class="state-msg">Errore: '+e.message+'</div>';}
@@ -7408,7 +7000,25 @@ var composerContactId=null;
 var composerAllegati=[];
 
 function apriComposer(contactId,bozza){
-  apriGmail(contactId,bozza);
+  composerContactId=contactId;
+  composerAllegati=bozza&&bozza.allegati?bozza.allegati:[];
+  var c=allContacts.find(function(x){return x.id===contactId;});
+  var email=c&&c.spike_email?c.spike_email:(c&&c.email1?c.email1:'');
+  if(bozza){
+    var oggetto=encodeURIComponent(bozza.oggetto||'');
+    var corpo=encodeURIComponent(bozza.testo||'');
+    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email)+'&subject='+oggetto+'&body='+corpo);
+  }else{
+    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email));
+  }
+  // Banner "Registra mail inviata" appare dopo 3 secondi
+  setTimeout(function(){
+    var banner = document.getElementById('bannerRegistra');
+    if(banner){
+      banner.style.display='flex';
+      banner._contactId = contactId;
+    }
+  }, 3000);
 }
 
 // ===== GEO =====
