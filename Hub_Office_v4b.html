@@ -392,6 +392,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <a href="https://app.spikenow.com/compose" target="_blank" class="btn-primary" style="background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);text-decoration:none;display:flex;align-items:center;gap:6px">✉ Scrivi Mail</a>
+      <button class="btn-secondary" id="btnSincronizza" onclick="sincronizzaRicezioni(this)" style="font-size:12px;display:flex;align-items:center;gap:6px">⟳ Sincronizza mail</button>
       <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
     </div>
   </div>
@@ -1734,15 +1735,30 @@ function apriDettaglioMail(m){
   allegaEl.innerHTML = '';
   if(m.allegati && m.allegati.length){
     m.allegati.forEach(function(a){
-      var btn = document.createElement('span');
-      btn.className='mail-detail-all-btn';
-      btn.textContent = '📎 '+a;
-      // Se è un URL apri direttamente, altrimenti mostra testo
-      if(a.startsWith('http')){
-        btn.style.cursor='pointer';
-        btn.onclick=function(){window.open(a,'_blank');};
+      if(a.indexOf('||') > -1){
+        // Formato: nome||url — link Dropbox cliccabile
+        var parts = a.split('||');
+        var nome = parts[0];
+        var url = parts.slice(1).join('||'); // url potrebbe contenere ||
+        var btn = document.createElement('a');
+        btn.className='mail-detail-all-btn';
+        btn.href = url;
+        btn.target = '_blank';
+        btn.textContent = '📦 '+nome+' ↗';
+        btn.style.cssText = 'color:var(--gold);text-decoration:none;cursor:pointer';
+        allegaEl.appendChild(btn);
+      } else if(a.startsWith('http')){
+        var btn = document.createElement('a');
+        btn.className='mail-detail-all-btn';
+        btn.href = a; btn.target = '_blank';
+        btn.textContent = '🔗 '+a;
+        allegaEl.appendChild(btn);
+      } else {
+        var btn = document.createElement('span');
+        btn.className='mail-detail-all-btn';
+        btn.textContent = '📎 '+a;
+        allegaEl.appendChild(btn);
       }
-      allegaEl.appendChild(btn);
     });
   } else {
     allegaEl.innerHTML='<span style="font-size:11px;color:var(--text3)">Nessun allegato</span>';
@@ -4392,6 +4408,20 @@ async function gmailPollRicezioni() {
     }
     toast('Ricezioni aggiornate ✓');
   } catch(e) { /* polling silenzioso */ }
+}
+
+// ===== SINCRONIZZA RICEZIONI MANUALE =====
+async function sincronizzaRicezioni(btn) {
+  if (!gmailTokenValido()) {
+    toast('Autorizza Gmail prima di sincronizzare');
+    gmailAutorizza();
+    return;
+  }
+  if (btn) { btn.textContent = '⟳ Sincronizzazione...'; btn.disabled = true; }
+  gmailPollingFatto = false; // resetta flag per permettere nuovo polling
+  await gmailPollRicezioni();
+  if (btn) { btn.textContent = '⟳ Sincronizza mail'; btn.disabled = false; }
+  await caricaContatti();
 }
 
 // Override di apriComposer — ora usa il modal interno
