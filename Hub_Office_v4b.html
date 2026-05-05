@@ -2266,7 +2266,7 @@ setInterval(updateClock, 60000);
 
 <!-- MODAL SCHEDA -->
 <div class="modal-overlay" id="modalScheda">
-  <div class="modal" style="max-width:900px">
+  <div class="modal" style="max-width:1100px">
     <div class="modal-close" onclick="chiudiScheda()">✕</div>
     <div id="schedaContent"></div>
   </div>
@@ -2274,7 +2274,7 @@ setInterval(updateClock, 60000);
 
 <!-- MODAL STORICO MAIL -->
 <div class="modal-overlay" id="modalStorico">
-  <div class="modal" style="max-width:680px">
+  <div class="modal" style="max-width:800px">
     <div class="modal-close" onclick="document.getElementById('modalStorico').classList.remove('open')">✕</div>
     <div class="form-hdr" style="display:flex;align-items:center;justify-content:space-between">
       <div class="form-title-el" id="storicoTitolo">Storico mail</div>
@@ -3593,7 +3593,10 @@ async function caricaStorico(contactId){
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
     if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
     body.innerHTML=mails.map(function(m){
-      var all=(m.allegati||[]).map(function(a){
+      // Normalizza allegati — Supabase può restituirli come array o stringa
+      var _all=m.allegati||[];
+      if(typeof _all==='string'){try{_all=JSON.parse(_all);}catch(e){_all=_all.replace(/^\{|\}$/g,'').split(',').map(function(s){return s.replace(/^"|"$/g,'').trim();}).filter(Boolean);}}
+      var all=_all.map(function(a){
         if(a.indexOf('||')>-1){var pts=a.split('||');var nome=pts[0];var url=pts.slice(1).join('||');
           return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);text-decoration:none;border:.5px solid var(--gold2);display:inline-block">&#128230; '+nome+' &#8599;</a>';}
         return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">&#128196; '+a+'</span>';
@@ -4159,7 +4162,12 @@ async function gmailInvia(){
       headers:{'Authorization':'Bearer '+gmailAccessToken,'Content-Type':'application/json'},
       body:JSON.stringify({raw:raw})
     });
-    if(!resp.ok){var err=await resp.json();throw new Error(err.error&&err.error.message?err.error.message:'Errore invio');}
+    if(!resp.ok){
+      var errBody=await resp.text();
+      var errMsg='Errore invio HTTP '+resp.status;
+      try{var errJ=JSON.parse(errBody);errMsg=errJ.error&&errJ.error.message?errJ.error.message:errMsg;}catch(ex){}
+      throw new Error(errMsg);
+    }
     st.textContent='✓ Mail inviata!';st.style.color='var(--green)';
     var now=new Date();
     var allegatiLog=gAllegati.map(function(x){return x.tipo==='dropbox'?(x.nome+'||'+x.url):x.nome;});
@@ -6263,7 +6271,7 @@ setInterval(updateClock, 60000);
 
 <!-- MODAL SCHEDA -->
 <div class="modal-overlay" id="modalScheda">
-  <div class="modal" style="max-width:900px">
+  <div class="modal" style="max-width:1100px">
     <div class="modal-close" onclick="chiudiScheda()">✕</div>
     <div id="schedaContent"></div>
   </div>
@@ -6271,7 +6279,7 @@ setInterval(updateClock, 60000);
 
 <!-- MODAL STORICO MAIL -->
 <div class="modal-overlay" id="modalStorico">
-  <div class="modal" style="max-width:680px">
+  <div class="modal" style="max-width:800px">
     <div class="modal-close" onclick="document.getElementById('modalStorico').classList.remove('open')">✕</div>
     <div class="form-hdr" style="display:flex;align-items:center;justify-content:space-between">
       <div class="form-title-el" id="storicoTitolo">Storico mail</div>
@@ -6845,7 +6853,10 @@ async function caricaStorico(contactId){
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
     if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
     body.innerHTML=mails.map(function(m){
-      var all=(m.allegati||[]).map(function(a){
+      // Normalizza allegati — Supabase può restituirli come array o stringa
+      var _all=m.allegati||[];
+      if(typeof _all==='string'){try{_all=JSON.parse(_all);}catch(e){_all=_all.replace(/^\{|\}$/g,'').split(',').map(function(s){return s.replace(/^"|"$/g,'').trim();}).filter(Boolean);}}
+      var all=_all.map(function(a){
         if(a.indexOf('||')>-1){var pts=a.split('||');var nome=pts[0];var url=pts.slice(1).join('||');
           return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);text-decoration:none;border:.5px solid var(--gold2);display:inline-block">&#128230; '+nome+' &#8599;</a>';}
         return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">&#128196; '+a+'</span>';
