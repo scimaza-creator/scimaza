@@ -383,7 +383,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 </div>
 
-<div id="view-rubrica" class="view">
+<div id="view-rubrica-hidden" style="display:none!important" class="view">
   <div class="rub-header">
     <div style="display:flex;align-items:center;gap:1rem">
       <button class="btn-back" onclick="mostraView('home')">← Scrivania</button>
@@ -2910,7 +2910,12 @@ setInterval(updateTime,1000);
 function mostraView(nome){
   document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
   document.getElementById('view-'+nome).classList.add('active');
-  if(nome==='rubrica') caricaContatti();
+  if(nome==='rubrica'){
+    caricaContatti();
+    setTimeout(function(){
+      if(typeof aggiornaStatoGmail==='function') aggiornaStatoGmail();
+    },400);
+  }
 }
 
 function toast(msg,dur){
@@ -3765,25 +3770,7 @@ var composerContactId=null;
 var composerAllegati=[];
 
 function apriComposer(contactId,bozza){
-  composerContactId=contactId;
-  composerAllegati=bozza&&bozza.allegati?bozza.allegati:[];
-  var c=allContacts.find(function(x){return x.id===contactId;});
-  var email=c&&c.spike_email?c.spike_email:(c&&c.email1?c.email1:'');
-  if(bozza){
-    var oggetto=encodeURIComponent(bozza.oggetto||'');
-    var corpo=encodeURIComponent(bozza.testo||'');
-    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email)+'&subject='+oggetto+'&body='+corpo);
-  }else{
-    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email));
-  }
-  // Banner "Registra mail inviata" appare dopo 3 secondi
-  setTimeout(function(){
-    var banner = document.getElementById('bannerRegistra');
-    if(banner){
-      banner.style.display='flex';
-      banner._contactId = contactId;
-    }
-  }, 3000);
+  apriGmail(contactId,bozza);
 }
 
 // ===== GEO =====
@@ -7024,25 +7011,7 @@ var composerContactId=null;
 var composerAllegati=[];
 
 function apriComposer(contactId,bozza){
-  composerContactId=contactId;
-  composerAllegati=bozza&&bozza.allegati?bozza.allegati:[];
-  var c=allContacts.find(function(x){return x.id===contactId;});
-  var email=c&&c.spike_email?c.spike_email:(c&&c.email1?c.email1:'');
-  if(bozza){
-    var oggetto=encodeURIComponent(bozza.oggetto||'');
-    var corpo=encodeURIComponent(bozza.testo||'');
-    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email)+'&subject='+oggetto+'&body='+corpo);
-  }else{
-    window.open('https://app.spikenow.com/compose?to='+encodeURIComponent(email));
-  }
-  // Banner "Registra mail inviata" appare dopo 3 secondi
-  setTimeout(function(){
-    var banner = document.getElementById('bannerRegistra');
-    if(banner){
-      banner.style.display='flex';
-      banner._contactId = contactId;
-    }
-  }, 3000);
+  apriGmail(contactId,bozza);
 }
 
 // ===== GEO =====
