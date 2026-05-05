@@ -4549,11 +4549,17 @@ async function gmailPollRicezioni() {
 
 // ===== BANNER GMAIL E STATO =====
 function aggiornaBannerGmail() {
+  var ok = gmailTokenValido();
   ['gmailBanner','gmailBanner2'].forEach(function(id){
     var banner = document.getElementById(id);
     if (!banner) return;
-    banner.style.display = gmailTokenValido() ? 'none' : 'flex';
+    banner.style.display = ok ? 'none' : 'flex';
   });
+  // Aggiorna dot indicator
+  var dot = document.getElementById('gmailDot');
+  var lbl = document.getElementById('gmailDotLabel');
+  if(dot) dot.style.background = ok ? '#1D9E75' : '#666';
+  if(lbl) lbl.style.color = ok ? '#1D9E75' : 'var(--text3)';
 }
 
 // ===== SINCRONIZZA RICEZIONI MANUALE =====
@@ -5043,6 +5049,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
       <a href="https://app.spikenow.com/compose" target="_blank" class="btn-primary" style="background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);text-decoration:none;display:flex;align-items:center;gap:6px">✉ Scrivi Mail</a>
       <button class="btn-secondary" onclick="caricaContatti()" style="font-size:12px;display:flex;align-items:center;gap:6px">↺ Aggiorna</button>
       <button class="btn-secondary" id="btnSincronizza2" onclick="sincronizzaRicezioni(this)" style="font-size:12px;display:flex;align-items:center;gap:6px">⟳ Sincronizza mail</button>
+      <span id="gmailStatusDot" style="font-size:11px;color:var(--text3);display:flex;align-items:center;gap:4px">
+        <span id="gmailDot" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block"></span>
+        <span id="gmailDotLabel">Gmail</span>
+      </span>
       <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
     </div>
   </div>
@@ -7233,20 +7243,46 @@ function apriStorico(contactId){
 async function caricaStorico(contactId){
   var body=document.getElementById('storicoBody');
   body.innerHTML='<div class="state-msg"><div class="spinner"></div>Caricamento...</div>';
+
+  // Sync Gmail automatico se token valido e contatto ha email
+  var c=allContacts.find(function(x){return x.id===contactId;});
+  if(!c){
+    try{
+      var fresh=await sb('/rest/v1/contatti?id=eq.'+contactId);
+      if(fresh&&fresh.length){ c=fresh[0]; allContacts.push(c); }
+    }catch(e3){}
+  }
+  var emailContatto=c&&(c.email1||c.spike_email||'');
+  if(emailContatto && typeof gmailTokenValido==='function' && gmailTokenValido()){
+    body.innerHTML='<div class="state-msg"><div class="spinner"></div>Sincronizzazione Gmail...</div>';
+    try{ await gmailSyncContatto(contactId, emailContatto); }
+    catch(e2){ console.warn('Sync Gmail fallito:', e2.message); }
+  }
+
   try{
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
-    if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
+    if(!mails||!mails.length){
+      body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriGmail(\''+contactId+'\')">✉ Scrivi Mail</button></div>';
+      return;
+    }
     body.innerHTML=mails.map(function(m){
-      var all=(m.allegati||[]).map(function(a){return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+a+'</span>';}).join(' ');
-      return '<div class="mail-item '+m.tipo+'">'+
+      var all=(m.allegati||[]).map(function(a){
+        if(a.indexOf('||')>-1){
+          var parts=a.split('||');var nome=parts[0];var url=parts.slice(1).join('||');
+          return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);text-decoration:none;border:.5px solid var(--gold2)">📦 '+nome+' ↗</a>';
+        }
+        return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">📎 '+a+'</span>';
+      }).join(' ');
+      return '<div class="mail-item '+(m.tipo||'inviata')+'">'+
         '<button class="mail-del" onclick="eliminaMail(\''+m.id+'\',\''+contactId+'\')">✕</button>'+
-        '<div class="mail-oggetto">'+m.oggetto+'</div>'+
+        '<div class="mail-oggetto">'+(m.oggetto||'(senza oggetto)')+'</div>'+
         '<div class="mail-meta">'+
-        (m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta')+' · '+m.data+' · Da: '+m.da+' → A: '+m.a+
+        (m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta')+' · '+(m.data||'')+' '+(m.ora||'')+
+        ' · '+(m.tipo==='inviata'?'A: '+(m.a||''):'Da: '+(m.da||''))+
         (m.cc?' · CC: '+m.cc:'')+
-        (m.note?'<br>'+m.note:'')+
         '</div>'+
-        (all?'<div style="margin-top:5px">'+all+'</div>':'')+
+        (m.note?'<div style="font-size:10px;color:var(--text3);margin-top:3px;font-style:italic">'+m.note.substring(0,120)+(m.note.length>120?'…':'')+'</div>':'')+
+        (all?'<div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:4px">'+all+'</div>':'')+
         '</div>';
     }).join('');
   }catch(e){body.innerHTML='<div class="state-msg">Errore: '+e.message+'</div>';}
