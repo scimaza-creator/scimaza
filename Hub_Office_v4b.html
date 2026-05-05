@@ -76,16 +76,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .search-input::placeholder{color:var(--text3)}
 .filter-btn{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;white-space:nowrap}
 .filter-btn:hover,.filter-btn.on{border-color:var(--gold2);color:var(--gold);background:var(--gold-bg)}
-.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
 .contact-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
 .contact-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cat-color,var(--gold));opacity:.7}
 .contact-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
 .c-av{width:40px;height:40px;border-radius:50%;background:var(--gold-bg2);border:.5px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);flex-shrink:0;overflow:hidden}
 .c-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.c-info{flex:1}.c-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.c-role{font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.c-cat{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;flex-shrink:0}
+.c-info{flex:1;min-width:0}.c-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-role{font-size:11px;color:var(--text2);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.c-cat{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;flex-shrink:0;align-self:flex-start;margin-top:2px}
 .cat-fornitori{background:rgba(196,163,90,.15);color:var(--gold)}
 .cat-terzi{background:rgba(239,159,39,.15);color:#EF9F27}
 .cat-personale{background:rgba(29,158,117,.15);color:var(--green)}
@@ -2976,11 +2976,15 @@ function renderList(){
       '<div class="c-top"><div class="c-av">'+foto+'</div>'+
       '<div class="c-info">'+
         '<div class="c-name">'+(c.cognome||'')+' '+(c.nome||'')+'</div>'+
-        '<div class="c-role" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px">'+
-          (c.professione?'<span>'+c.professione+'</span>':'')+
-          (c.incarico&&c.professione?'<span style="color:var(--text3)">&#xB7;</span>':'')+
-          (c.incarico?'<span style="color:var(--text2)">'+c.incarico+'</span>':'')+
-          (!c.professione&&!c.incarico?'<span style="color:var(--text3)">&#x2014;</span>':'')+
+        '<div class="c-role">'+
+          (function(){
+            var p=c.professione||'';
+            var i=c.incarico||'';
+            if(p&&i) return p+' · '+i;
+            if(p) return p;
+            if(i) return i;
+            return '<span style="color:var(--text3)">&#x2014;</span>';
+          })()+
         '</div>'+
         azHtml+
         '<div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">'+
@@ -4176,16 +4180,16 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .search-input::placeholder{color:var(--text3)}
 .filter-btn{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;white-space:nowrap}
 .filter-btn:hover,.filter-btn.on{border-color:var(--gold2);color:var(--gold);background:var(--gold-bg)}
-.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:12px}
 .contact-card{background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);padding:1.1rem 1.2rem;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
 .contact-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cat-color,var(--gold));opacity:.7}
 .contact-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.c-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.75rem}
 .c-av{width:40px;height:40px;border-radius:50%;background:var(--gold-bg2);border:.5px solid var(--gold2);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);flex-shrink:0;overflow:hidden}
 .c-av img{width:100%;height:100%;object-fit:cover;border-radius:50%}
-.c-info{flex:1}.c-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.c-role{font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.c-cat{font-size:10px;padding:2px 8px;border-radius:4px;font-weight:500;flex-shrink:0}
+.c-info{flex:1;min-width:0}.c-name{font-size:14px;font-weight:500;color:var(--text);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-role{font-size:11px;color:var(--text2);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.c-cat{font-size:10px;padding:2px 7px;border-radius:4px;font-weight:500;flex-shrink:0;align-self:flex-start;margin-top:2px}
 .cat-fornitori{background:rgba(196,163,90,.15);color:var(--gold)}
 .cat-terzi{background:rgba(239,159,39,.15);color:#EF9F27}
 .cat-personale{background:rgba(29,158,117,.15);color:var(--green)}
