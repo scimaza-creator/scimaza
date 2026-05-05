@@ -2967,26 +2967,47 @@ function renderList(){
         updHtml='<div class="c-detail" style="color:var(--text3);font-size:10px;font-family:\'DM Mono\',monospace;margin-top:2px">🕐 '+gg+'/'+mm+'/'+aa+' '+hh+':'+mi+'</div>';
       }catch(e){}
     }
+    var azHtml=c.ragione_sociale?'<div style="font-size:10px;color:var(--teal);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#127970; '+c.ragione_sociale+'</div>':'';
     return '<div class="contact-card" style="--cat-color:'+col+'" onclick="apriScheda(\''+c.id+'\')">'+
       '<div class="c-top"><div class="c-av">'+foto+'</div>'+
       '<div class="c-info">'+
         '<div class="c-name">'+(c.cognome||'')+' '+(c.nome||'')+'</div>'+
         '<div class="c-role" style="display:flex;align-items:center;flex-wrap:wrap;gap:3px">'+
           (c.professione?'<span>'+c.professione+'</span>':'')+
-          (c.incarico&&c.professione?'<span style="color:var(--text3)">·</span>':'')+
+          (c.incarico&&c.professione?'<span style="color:var(--text3)">&#xB7;</span>':'')+
           (c.incarico?'<span style="color:var(--text2)">'+c.incarico+'</span>':'')+
-          (!c.professione&&!c.incarico&&c.ragione_sociale?'<span>'+c.ragione_sociale+'</span>':'')+
+          (!c.professione&&!c.incarico?'<span style="color:var(--text3)">&#x2014;</span>':'')+
         '</div>'+
+        azHtml+
         '<div style="display:flex;align-items:center;gap:4px;margin-top:3px;flex-wrap:wrap">'+
           catBadge+statoHtml+
         '</div>'+
       '</div>'+
       '<span class="c-cat '+cc+'">'+(c.gruppo||'')+'</span></div>'+
       '<div class="c-divider"></div><div class="c-details">'+
-      (c.tel1?'<div class="c-detail">📞 '+(c.tel1_pref&&c.tel1_pref!=='+39'?c.tel1_pref+' ':'')+c.tel1+'</div>':'')+
-      (c.mob1?'<div class="c-detail">📱 '+(c.mob1_pref&&c.mob1_pref!=='+39'?c.mob1_pref+' ':'')+c.mob1+'</div>':'')+
-      (c.email1?'<div class="c-detail">✉️ '+c.email1+'</div>':'')+
-      (c.comune?'<div class="c-detail">📍 '+c.comune+(c.provincia?' ('+c.provincia+')':'')+'</div>':'')+
+      (c.tel1?'<div class="c-detail">&#9742; '+(c.tel1_pref&&c.tel1_pref!=='+39'?c.tel1_pref+' ':'')+c.tel1+'</div>':'')+
+      (c.mob1?'<div class="c-detail">&#9990; '+(c.mob1_pref&&c.mob1_pref!=='+39'?c.mob1_pref+' ':'')+c.mob1+'</div>':'')+
+      (c.email1?'<div class="c-detail">@ '+c.email1+'</div>':'')+
+      (function(){
+        var parti=[];
+        if(c.via_prefisso&&c.via) parti.push(c.via_prefisso+' '+c.via+(c.civico?' '+c.civico:''));
+        else if(c.via) parti.push(c.via+(c.civico?' '+c.civico:''));
+        if(c.cap) parti.push(c.cap);
+        if(c.localita) parti.push(c.localita);
+        else if(c.comune) parti.push(c.comune);
+        if(c.provincia) parti.push('('+c.provincia+')');
+        if(!parti.length) return '';
+        var addr=parti.join(', ');
+        var url='https://www.google.com/maps/search/'+encodeURIComponent(addr+', Italia');
+        return '<div class="c-detail" style="margin-top:1px">'+
+          '<a href="'+url+'" target="_blank" '+
+          'onclick="event.stopPropagation()" '+
+          'style="color:var(--teal);text-decoration:none;font-size:10.5px;display:flex;align-items:flex-start;gap:5px;line-height:1.4" '+
+          'title="Apri su Google Maps">'+
+          '&#128205; <span style="flex:1;word-break:break-word">'+addr+'</span>'+
+          '<span style="font-size:9px;color:var(--text3);flex-shrink:0;margin-top:1px">&#8599;</span>'+
+          '</a></div>';
+      })()+
       updHtml+
       '</div></div>';
   }).join('');
