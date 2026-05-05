@@ -392,6 +392,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <a href="https://app.spikenow.com/compose" target="_blank" class="btn-primary" style="background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);text-decoration:none;display:flex;align-items:center;gap:6px">✉ Scrivi Mail</a>
+      <button class="btn-secondary" onclick="caricaContatti()" style="font-size:12px;display:flex;align-items:center;gap:6px">↺ Aggiorna</button>
       <button class="btn-secondary" id="btnSincronizza" onclick="sincronizzaRicezioni(this)" style="font-size:12px;display:flex;align-items:center;gap:6px">⟳ Sincronizza mail</button>
       <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
     </div>
@@ -402,6 +403,10 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <button class="filter-btn" onclick="setGruppo('fornitori',this)">Fornitori</button>
     <button class="filter-btn" onclick="setGruppo('terzi',this)">Terzi</button>
     <button class="filter-btn" onclick="setGruppo('personale',this)">Personale</button>
+  </div>
+  <div id="gmailBanner" style="display:none;background:rgba(196,163,90,0.08);border:.5px solid rgba(196,163,90,0.3);border-radius:8px;padding:8px 14px;margin-bottom:12px;display:none;align-items:center;gap:10px;flex-wrap:wrap">
+    <span style="font-size:12px;color:var(--text2)">✉ Gmail non autorizzato — per inviare e sincronizzare le mail</span>
+    <button onclick="gmailAutorizza()" style="font-size:11px;padding:4px 12px;border-radius:6px;border:.5px solid var(--gold2);background:var(--gold-bg);color:var(--gold);cursor:pointer;white-space:nowrap">Autorizza Gmail</button>
   </div>
   <div class="contact-grid" id="contactGrid">
     <div class="state-msg"><div class="spinner"></div>Connessione Supabase...</div>
@@ -2925,7 +2930,14 @@ setInterval(updateTime,1000);
 function mostraView(nome){
   document.querySelectorAll('.view').forEach(function(v){v.classList.remove('active');});
   document.getElementById('view-'+nome).classList.add('active');
-  if(nome==='rubrica') caricaContatti();
+  if(nome==='rubrica'){
+    caricaContatti();
+    // Aggiorna badge Gmail e mostra banner se non autorizzato
+    setTimeout(function(){
+      aggiornaStatoGmail && aggiornaStatoGmail();
+      aggiornaBannerGmail && aggiornaBannerGmail();
+    }, 300);
+  }
 }
 
 function toast(msg,dur){
@@ -4136,6 +4148,7 @@ function gmailAutorizza() {
         localStorage.setItem('gmail_access_token', gmailAccessToken);
         localStorage.setItem('gmail_token_expiry', gmailTokenExpiry.toString());
         aggiornaStatoGmail();
+        aggiornaBannerGmail && aggiornaBannerGmail();
         toast('Gmail autorizzato ✓');
       }
     } catch(e) { /* cross-origin, attendi */ }
@@ -4197,8 +4210,16 @@ function gRenderAllegati() {
 function gRimuoviAllegato(i) { gAllegati.splice(i, 1); gRenderAllegati(); }
 
 function gmailBase64(str) {
-  return btoa(unescape(encodeURIComponent(str)))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  // Gestisce Unicode correttamente
+  var bytes = new TextEncoder().encode(str);
+  var binary = '';
+  bytes.forEach(function(b){ binary += String.fromCharCode(b); });
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function gmailBase64Binary(b64str) {
+  // Per allegati binari già in base64 — passa direttamente senza re-encoding
+  return b64str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 function gmailCostruisciRaw(a, cc, oggetto, corpo) {
@@ -4242,7 +4263,7 @@ function gmailCostruisciRaw(a, cc, oggetto, corpo) {
       lines.push('Content-Transfer-Encoding: base64');
       lines.push('Content-Disposition: attachment; filename="' + al.nome + '"');
       lines.push('');
-      lines.push(al._b64);
+      lines.push(gmailBase64Binary(al._b64));
     });
     lines.push('--' + boundary + '--');
   } else {
@@ -4408,6 +4429,17 @@ async function gmailPollRicezioni() {
     }
     toast('Ricezioni aggiornate ✓');
   } catch(e) { /* polling silenzioso */ }
+}
+
+// ===== BANNER GMAIL E STATO =====
+function aggiornaBannerGmail() {
+  var banner = document.getElementById('gmailBanner');
+  if (!banner) return;
+  if (gmailTokenValido()) {
+    banner.style.display = 'none';
+  } else {
+    banner.style.display = 'flex';
+  }
 }
 
 // ===== SINCRONIZZA RICEZIONI MANUALE =====
