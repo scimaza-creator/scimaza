@@ -2967,8 +2967,9 @@ function renderList(){
         updHtml='<div class="c-detail" style="color:var(--text3);font-size:10px;font-family:\'DM Mono\',monospace;margin-top:2px">🕐 '+gg+'/'+mm+'/'+aa+' '+hh+':'+mi+'</div>';
       }catch(e){}
     }
-    var azHtml=c.ragione_sociale?(c.sito_web?
-      '<div style="font-size:10px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#127970; <a href="'+c.sito_web+'" target="_blank" onclick="event.stopPropagation()" style="color:var(--teal);text-decoration:none;font-weight:500" title="'+c.sito_web+'">'+c.ragione_sociale+' <span style="font-size:8px;color:var(--text3)">&#8599;</span></a></div>':
+    var _sitoUrl=c.sito_web?(c.sito_web.match(/^https?:\/\//)?c.sito_web:'https://'+c.sito_web):'';
+    var azHtml=c.ragione_sociale?(_sitoUrl?
+      '<div style="font-size:10px;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#127970; <a href="'+_sitoUrl+'" target="_blank" onclick="event.stopPropagation()" style="color:var(--teal);text-decoration:none;font-weight:500" title="'+_sitoUrl+'">'+c.ragione_sociale+' <span style="font-size:8px;color:var(--text3)">&#8599;</span></a></div>':
       '<div style="font-size:10px;color:var(--teal);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">&#127970; '+c.ragione_sociale+'</div>'
     ):'';
     return '<div class="contact-card" style="--cat-color:'+col+'" onclick="apriScheda(\''+c.id+'\')">'+
