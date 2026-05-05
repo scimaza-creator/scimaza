@@ -3671,23 +3671,116 @@ function apriStorico(contactId){
 async function caricaStorico(contactId){
   var body=document.getElementById('storicoBody');
   body.innerHTML='<div class="state-msg"><div class="spinner"></div>Caricamento...</div>';
+
+  // Sync Gmail automatico se token valido e contatto ha email
+  var c=allContacts.find(function(x){return x.id===contactId;});
+  var emailContatto=c&&(c.email1||c.spike_email||'');
+  if(emailContatto && typeof gmailTokenValido==='function' && gmailTokenValido()){
+    try{ await gmailSyncContatto(contactId, emailContatto); }catch(e2){}
+  }
+
   try{
     var mails=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&order=data.desc,created_at.desc');
-    if(!mails||!mails.length){body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriModalRegistra()">✉ Scrivi Mail</button></div>';return;}
+    if(!mails||!mails.length){
+      body.innerHTML='<div class="state-msg">Nessuna mail registrata.<br><br><button class="btn-primary" style="font-size:11px;margin-top:8px" onclick="apriGmail(\''+contactId+'\')">✉ Scrivi Mail</button></div>';
+      return;
+    }
     body.innerHTML=mails.map(function(m){
-      var all=(m.allegati||[]).map(function(a){return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">'+a+'</span>';}).join(' ');
-      return '<div class="mail-item '+m.tipo+'">'+
+      var all=(m.allegati||[]).map(function(a){
+        if(a.indexOf('||')>-1){
+          var parts=a.split('||');var nome=parts[0];var url=parts.slice(1).join('||');
+          return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" style="font-size:10px;padding:2px 7px;border-radius:4px;background:var(--gold-bg);color:var(--gold);text-decoration:none;border:.5px solid var(--gold2)">📦 '+nome+' ↗</a>';
+        }
+        return '<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:var(--surface3);color:var(--text2)">📎 '+a+'</span>';
+      }).join(' ');
+      return '<div class="mail-item '+(m.tipo||'inviata')+'">'+
         '<button class="mail-del" onclick="eliminaMail(\''+m.id+'\',\''+contactId+'\')">✕</button>'+
-        '<div class="mail-oggetto">'+m.oggetto+'</div>'+
+        '<div class="mail-oggetto">'+(m.oggetto||'(senza oggetto)')+'</div>'+
         '<div class="mail-meta">'+
-        (m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta')+' · '+m.data+' · Da: '+m.da+' → A: '+m.a+
+        (m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta')+' · '+(m.data||'')+' '+(m.ora||'')+
+        ' · '+(m.tipo==='inviata'?'A: '+(m.a||''):'Da: '+(m.da||''))+
         (m.cc?' · CC: '+m.cc:'')+
-        (m.note?'<br>'+m.note:'')+
         '</div>'+
-        (all?'<div style="margin-top:5px">'+all+'</div>':'')+
+        (m.note?'<div style="font-size:10px;color:var(--text3);margin-top:3px;font-style:italic">'+m.note.substring(0,120)+(m.note.length>120?'…':'')+'</div>':'')+
+        (all?'<div style="margin-top:5px;display:flex;flex-wrap:wrap;gap:4px">'+all+'</div>':'')+
         '</div>';
     }).join('');
   }catch(e){body.innerHTML='<div class="state-msg">Errore: '+e.message+'</div>';}
+}
+
+// Sync Gmail per singolo contatto — cerca tutte le mail scambiate con quella email
+async function gmailSyncContatto(contactId, email){
+  if(!gmailTokenValido()) return;
+  // Calcola timestamp Unix di 24 mesi fa
+  // 24 mesi scorrevoli da oggi — esatti al giorno
+  var d24m = new Date(); d24m.setMonth(d24m.getMonth() - 24);
+  var after24m = Math.floor(d24m.getTime() / 1000);
+  var trovati=[];
+  for(var qi=0;qi<2;qi++){
+    var baseQ=(qi===0?'from:'+email:'to:'+email)+' after:'+after24m;
+    var pageToken=null;
+    do {
+      try{
+        var url='https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=200&q='+encodeURIComponent(baseQ);
+        if(pageToken) url+='&pageToken='+pageToken;
+        var resp=await fetch(url,{headers:{'Authorization':'Bearer '+gmailAccessToken}});
+        if(!resp.ok) break;
+        var data=await resp.json();
+        if(data.messages) trovati=trovati.concat(data.messages);
+        pageToken=data.nextPageToken||null;
+      }catch(e){ break; }
+    } while(pageToken);
+  }
+  // Deduplica
+  var seen={};
+  trovati=trovati.filter(function(m){if(seen[m.id])return false;seen[m.id]=true;return true;});
+  if(!trovati.length) return;
+
+  // gmail_id già archiviati
+  var esistenti=await sb('/rest/v1/mail?contatto_id=eq.'+contactId+'&select=gmail_id');
+  var esistentiIds={};
+  (esistenti||[]).forEach(function(r){if(r.gmail_id)esistentiIds[r.gmail_id]=true;});
+
+  var nuovi=0;
+  for(var i=0;i<trovati.length;i++){
+    var msgId=trovati[i].id;
+    if(esistentiIds[msgId]) continue;
+    try{
+      var msgResp=await fetch(
+        'https://gmail.googleapis.com/gmail/v1/users/me/messages/'+msgId+
+        '?format=metadata&metadataHeaders=From&metadataHeaders=To&metadataHeaders=Subject&metadataHeaders=Date',
+        {headers:{'Authorization':'Bearer '+gmailAccessToken}}
+      );
+      if(!msgResp.ok) continue;
+      var msg=await msgResp.json();
+      var hdr={};
+      ((msg.payload&&msg.payload.headers)||[]).forEach(function(h){hdr[h.name.toLowerCase()]=h.value;});
+      var fromRaw=hdr['from']||'';
+      var fromEmail=(fromRaw.match(/<([^>]+)>/)||[null,fromRaw])[1].toLowerCase().trim();
+      var tipo=fromEmail==='scimaza@gmail.com'?'inviata':'ricevuta';
+      // Allegati — nomi file
+      var allegatiNomi=[];
+      if(msg.payload&&msg.payload.parts){
+        msg.payload.parts.forEach(function(p){if(p.filename&&p.filename.length>0)allegatiNomi.push(p.filename);});
+      }
+      var dataStr=hdr['date']?new Date(hdr['date']).toISOString():new Date().toISOString();
+      await sb('/rest/v1/mail','POST',{
+        contatto_id:contactId,
+        oggetto:hdr['subject']||'(senza oggetto)',
+        tipo:tipo,
+        da:fromRaw,
+        a:hdr['to']||'',
+        allegati:allegatiNomi,
+        data:dataStr.slice(0,10),
+        ora:dataStr.slice(11,16),
+        note:null,
+        gmail_id:msgId,
+        created_at:new Date().toISOString()
+      });
+      nuovi++;
+    }catch(e){}
+  }
+  if(nuovi>0) await aggiornaContatoreMail(contactId);
 }
 
 async function eliminaMail(id,contactId){
@@ -4218,8 +4311,9 @@ function gmailBase64(str) {
 }
 
 function gmailBase64Binary(b64str) {
-  // Per allegati binari già in base64 — passa direttamente senza re-encoding
-  return b64str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  // Allegati binari: già in base64 standard da FileReader — li lasciamo intatti nelle lines
+  // Il remapping +→- /→_ avviene solo sul messaggio finale
+  return b64str;
 }
 
 function gmailCostruisciRaw(a, cc, oggetto, corpo) {
@@ -4259,9 +4353,10 @@ function gmailCostruisciRaw(a, cc, oggetto, corpo) {
                      al.nome.toLowerCase().endsWith('.xlsx') ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' :
                      'application/octet-stream';
       lines.push('--' + boundary);
-      lines.push('Content-Type: ' + mimeType + '; name="' + al.nome + '"');
+      var nomeEnc = '=?UTF-8?B?' + btoa(unescape(encodeURIComponent(al.nome))) + '?=';
+      lines.push('Content-Type: ' + mimeType + '; name="' + nomeEnc + '"');
       lines.push('Content-Transfer-Encoding: base64');
-      lines.push('Content-Disposition: attachment; filename="' + al.nome + '"');
+      lines.push('Content-Disposition: attachment; filename="' + nomeEnc + '"');
       lines.push('');
       lines.push(gmailBase64Binary(al._b64));
     });
@@ -4272,7 +4367,13 @@ function gmailCostruisciRaw(a, cc, oggetto, corpo) {
     lines.push('');
     lines.push(gmailBase64(corpoHtml));
   }
-  return gmailBase64(lines.join('\r\n'));
+  // Messaggio MIME finale: gli allegati sono già in base64 standard,
+  // gli header e il corpo HTML sono ASCII/base64 puro.
+  // Il join produce ASCII puro — btoa è sicuro.
+  // Tutto il messaggio MIME è ASCII puro: header ASCII + contenuto già in base64
+  // btoa è sicuro su ASCII puro, poi rimappiamo per URL-safe base64
+  var rawMsg = lines.join('\r\n');
+  return btoa(rawMsg).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }
 
 async function gmailInvia() {
