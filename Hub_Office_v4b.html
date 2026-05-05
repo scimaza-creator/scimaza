@@ -310,6 +310,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .mail-scheda-meta{font-size:10px;color:var(--text3)}
 .mail-scheda-allegati{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px}
 .mail-scheda-all-tag{font-size:9px;padding:2px 6px;border-radius:3px;background:var(--surface3);color:var(--text2)}
+.mail-scheda-corpo{font-size:10px;color:var(--text3);margin-top:3px;line-height:1.4;font-style:italic}
 .mail-detail-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:700;display:none;align-items:center;justify-content:center;padding:1.5rem}
 .mail-detail-overlay.open{display:flex}
 .mail-detail-box{background:#1A1917;border:.5px solid #2E2C2A;border-radius:12px;width:100%;max-width:640px;max-height:85vh;display:flex;flex-direction:column;overflow:hidden}
@@ -3404,11 +3405,20 @@ function apriScheda(id){
     mails.forEach(function(m){
       var item=document.createElement('div');item.className='mail-scheda-item';
       var tipoTxt=m.tipo==='inviata'?'↑ Inviata':'↓ Ricevuta';
-      var allTags=(m.allegati||[]).map(function(a){return '<span class="mail-scheda-all-tag">📎 '+a+'</span>';}).join('');
+      var allTags=(m.allegati||[]).map(function(a){
+        if(a.indexOf('||')>-1){
+          var parts=a.split('||');
+          var nome=parts[0];var url=parts[1];
+          return '<a href="'+url+'" target="_blank" onclick="event.stopPropagation()" class="mail-scheda-all-tag" style="color:var(--gold);text-decoration:none">📦 '+nome+' ↗</a>';
+        }
+        return '<span class="mail-scheda-all-tag">📎 '+a+'</span>';
+      }).join('');
+      var corpoPreview=m.note&&m.note.length>0?'<div class="mail-scheda-corpo">'+m.note.substring(0,120)+(m.note.length>120?'…':'')+'</div>':'';
       item.innerHTML=
         '<div class="mail-scheda-tipo '+(m.tipo||'inviata')+'">'+tipoTxt+'</div>'+
         '<div class="mail-scheda-oggetto">'+(m.oggetto||'—')+'</div>'+
         '<div class="mail-scheda-meta">'+(m.data||'')+(m.ora?' &nbsp;'+m.ora:'')+' · '+(m.tipo==='inviata'?'A: '+m.a:'Da: '+m.da)+'</div>'+
+        corpoPreview+
         (allTags?'<div class="mail-scheda-allegati">'+allTags+'</div>':'');
       item.onclick=function(){apriDettaglioMail(m);};
       mailList.appendChild(item);
@@ -4177,37 +4187,53 @@ function gmailBase64(str) {
 
 function gmailCostruisciRaw(a, cc, oggetto, corpo) {
   var boundary = 'boundary_hub_' + Date.now();
-  var hasAttach = gAllegati.filter(function(x){ return x.tipo === 'file' && x._b64; }).length > 0;
+  var fileAllegati = gAllegati.filter(function(x){ return x.tipo === 'file' && x._b64; });
+  var dropboxAllegati = gAllegati.filter(function(x){ return x.tipo === 'dropbox' && x.url; });
+  var hasFileAttach = fileAllegati.length > 0;
+
+  // Aggiunge link Dropbox in fondo al corpo HTML
+  var corpoHtml = corpo.replace(/\n/g, '<br>');
+  if (dropboxAllegati.length > 0) {
+    corpoHtml += '<br><br><hr style="border:none;border-top:1px solid #ccc;margin:12px 0">';
+    corpoHtml += '<p style="font-size:12px;color:#555;margin:0 0 6px">Allegati Dropbox:</p>';
+    dropboxAllegati.forEach(function(al) {
+      corpoHtml += '<p style="margin:4px 0"><a href="' + al.url + '" style="color:#0066cc">' + al.nome + '</a></p>';
+    });
+  }
+
   var lines = [];
   lines.push('From: scimaza@gmail.com');
   lines.push('To: ' + a);
   if (cc) lines.push('Cc: ' + cc);
   lines.push('Subject: =?UTF-8?B?' + btoa(unescape(encodeURIComponent(oggetto))) + '?=');
   lines.push('MIME-Version: 1.0');
-  if (hasAttach) {
+
+  if (hasFileAttach) {
     lines.push('Content-Type: multipart/mixed; boundary="' + boundary + '"');
     lines.push('');
     lines.push('--' + boundary);
-    lines.push('Content-Type: text/plain; charset="UTF-8"');
+    lines.push('Content-Type: text/html; charset="UTF-8"');
     lines.push('Content-Transfer-Encoding: base64');
     lines.push('');
-    lines.push(gmailBase64(corpo));
-    gAllegati.forEach(function(al) {
-      if (al.tipo === 'file' && al._b64) {
-        lines.push('--' + boundary);
-        lines.push('Content-Type: application/octet-stream; name="' + al.nome + '"');
-        lines.push('Content-Transfer-Encoding: base64');
-        lines.push('Content-Disposition: attachment; filename="' + al.nome + '"');
-        lines.push('');
-        lines.push(al._b64);
-      }
+    lines.push(gmailBase64(corpoHtml));
+    fileAllegati.forEach(function(al) {
+      var mimeType = al.nome.toLowerCase().endsWith('.pdf') ? 'application/pdf' :
+                     al.nome.toLowerCase().endsWith('.docx') ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' :
+                     al.nome.toLowerCase().endsWith('.xlsx') ? 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' :
+                     'application/octet-stream';
+      lines.push('--' + boundary);
+      lines.push('Content-Type: ' + mimeType + '; name="' + al.nome + '"');
+      lines.push('Content-Transfer-Encoding: base64');
+      lines.push('Content-Disposition: attachment; filename="' + al.nome + '"');
+      lines.push('');
+      lines.push(al._b64);
     });
     lines.push('--' + boundary + '--');
   } else {
-    lines.push('Content-Type: text/plain; charset="UTF-8"');
+    lines.push('Content-Type: text/html; charset="UTF-8"');
     lines.push('Content-Transfer-Encoding: base64');
     lines.push('');
-    lines.push(gmailBase64(corpo));
+    lines.push(gmailBase64(corpoHtml));
   }
   return gmailBase64(lines.join('\r\n'));
 }
@@ -4262,6 +4288,10 @@ async function gmailInvia() {
 
     // Archivia in Supabase
     var now = new Date();
+    // Allegati: array di stringhe — file come "nome.pdf", dropbox come "nome||url"
+    var allegatiLog = gAllegati.map(function(x){
+      return x.tipo === 'dropbox' ? (x.nome + '||' + x.url) : x.nome;
+    });
     var payload = {
       contatto_id: gmailContactId,
       oggetto: ogg,
@@ -4269,18 +4299,25 @@ async function gmailInvia() {
       da: 'scimaza@gmail.com',
       a: a,
       cc: cc || null,
-      allegati: gAllegati.map(function(x){ return x.nome; }),
+      allegati: allegatiLog,
       data: now.toISOString().slice(0, 10),
       ora: now.toTimeString().slice(0, 5),
-      note: null,
+      note: corpo || null,
       created_at: now.toISOString()
     };
+    var archiviatoOk = false;
     try {
       await sb('/rest/v1/mail', 'POST', payload);
       if (gmailContactId) await aggiornaContatoreMail(gmailContactId);
-    } catch(e2) { /* non blocca */ }
+      archiviatoOk = true;
+    } catch(e2) {
+      console.warn('Archiviazione Supabase fallita:', e2.message);
+    }
 
-    setTimeout(function() { chiudiGmail(); toast('Mail inviata e archiviata ✓'); }, 1200);
+    setTimeout(function() {
+      chiudiGmail();
+      toast(archiviatoOk ? 'Mail inviata e archiviata ✓' : 'Mail inviata ✓ (archiviazione fallita)');
+    }, 1200);
   } catch(e) {
     st.textContent = '✗ ' + e.message;
     st.style.color = 'var(--red)';
