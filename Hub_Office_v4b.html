@@ -392,7 +392,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     <div style="display:flex;align-items:center;gap:8px">
       <a href="https://app.spikenow.com/compose" target="_blank" class="btn-primary" style="background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);text-decoration:none;display:flex;align-items:center;gap:6px">✉ Scrivi Mail</a>
       <button class="btn-secondary" onclick="caricaContatti()" style="font-size:12px">&#8634; Aggiorna</button>
-      <span style="font-size:10px;display:flex;align-items:center;gap:4px"><span id="gmailDot" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block"></span><span id="gmailDotLabel" style="color:var(--text3)">Gmail</span></span>
+      <span style="font-size:10px;display:flex;align-items:center;gap:4px"><span id="gmailDot" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block;transition:background .3s"></span><span id="gmailDotLabel" style="color:var(--text3)">Gmail</span></span>
       <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
     </div>
   </div>
@@ -3949,7 +3949,6 @@ document.addEventListener('DOMContentLoaded',function(){
   popolaGeo();
 });
 </script>
-<!-- MODAL COMPOSITORE GMAIL -->
 <div class="modal-overlay" id="modalGmail" style="z-index:400">
   <div class="modal" style="max-width:620px">
     <div class="modal-close" onclick="chiudiGmail()">&#x2715;</div>
@@ -4156,10 +4155,9 @@ async function gmailInvia(){
       if(gmailContactId)await aggiornaContatoreMail(gmailContactId);
     }catch(e2){}
     setTimeout(function(){chiudiGmail();toast('Mail inviata ✓');},1200);
-  }catch(e){st.textContent='✗ '+e.message;st.style.color='var(--red)';}
+  }catch(e){st.textContent='✕ '+e.message;st.style.color='var(--red)';}
 }
 
-// Override apriComposer — usa Gmail interno
 function apriComposer(contactId,bozza){apriGmail(contactId,bozza);}
 </script>
 
@@ -4576,7 +4574,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 </div>
 
-<div id="view-home" class="view active">
+<div id="view-home-2" class="view" style="display:none!important">
   <div class="section-label">Accesso rapido</div>
   <div class="gold-line"></div>
   <div class="tools-grid">
@@ -4619,7 +4617,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
 </div>
 
-<div id="view-rubrica" class="view">
+<div id="view-rubrica-2" class="view" style="display:none!important">
   <div class="rub-header">
     <div style="display:flex;align-items:center;gap:1rem">
       <button class="btn-back" onclick="mostraView('home')">← Scrivania</button>
@@ -4627,8 +4625,6 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
     </div>
     <div style="display:flex;align-items:center;gap:8px">
       <a href="https://app.spikenow.com/compose" target="_blank" class="btn-primary" style="background:rgba(52,152,219,.15);color:#3498DB;border:.5px solid rgba(52,152,219,.5);text-decoration:none;display:flex;align-items:center;gap:6px">✉ Scrivi Mail</a>
-      <button class="btn-secondary" onclick="caricaContatti()" style="font-size:12px">&#8634; Aggiorna</button>
-      <span style="font-size:10px;display:flex;align-items:center;gap:4px"><span id="gmailDot" style="width:8px;height:8px;border-radius:50%;background:#666;display:inline-block"></span><span id="gmailDotLabel" style="color:var(--text3)">Gmail</span></span>
       <button class="btn-primary" onclick="apriModalNuovo()">+ Nuovo contatto</button>
     </div>
   </div>
@@ -5090,7 +5086,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .back-bar a:hover { text-decoration: underline; }
 
 </style>
-<div id="view-finanza" class="view">
+<div id="view-finanza-2" class="view" style="display:none!important">
   <!-- BARRA FISSA FINANZA -->
   <div style="position:sticky;top:52px;z-index:150;background:var(--surface);border-bottom:.5px solid var(--border);padding:10px 1.5rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <button class="btn-back" onclick="mostraView('home')">← Scrivania</button>
