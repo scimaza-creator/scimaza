@@ -374,12 +374,362 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   <div class="divider"></div>
   <div class="section-label">News in evidenza</div>
   <div class="gold-line"></div>
+<<<<<<< HEAD
   <div class="tools-grid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
     <a class="tool-btn" href="https://www.ilsole24ore.com" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Il Sole 24 Ore</div></a>
     <a class="tool-btn" href="https://www.ft.com" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Financial Times</div></a>
     <a class="tool-btn" href="https://www.bloomberg.com" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Bloomberg</div></a>
     <a class="tool-btn" href="https://www.reuters.com" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Reuters</div></a>
     <a class="tool-btn" href="https://www.corriere.it" target="_blank"><div class="tool-icon">📰</div><div class="tool-name">Corriere</div></a>
+=======
+
+  <!-- GIORNALE FINANZIARIO GLOBALE INLINE -->
+  <div style="background:var(--surface);border:.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem">
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-title">
+    <h1>Il Giornale Finanziario Globale <span style="font-size:14px;font-weight:300;color:#AAA;letter-spacing:.05em" id="newsTime">— aggiornato alle --:--</span></h1>
+    <div class="tagline">Finanza · Economia · Geopolitica · Mercati · Mondo</div>
+  </div>
+  <div class="masthead-nav">
+    <button class="nav-btn active" onclick="showPanel('notizie',this)">Notizie Live</button>
+    <button class="nav-btn" onclick="showPanel('video',this)">Video & Canali</button>
+    <button class="nav-btn" onclick="showPanel('italiani',this)">Quotidiani Italiani</button>
+    <button class="nav-btn" onclick="showPanel('europei',this)">Quotidiani Europei</button>
+    <button class="nav-btn" onclick="showPanel('mondiali',this)">Quotidiani Mondiali</button>
+    <button class="nav-btn" onclick="showPanel('finanza',this)">Fonti Finanziarie</button>
+    <button class="nav-btn" onclick="showPanel('agenzie',this)">Agenzie Stampa</button>
+  </div>
+</div>
+
+<div class="back-bar">
+  <a href="#" onclick="apriFile('Hub_Personale_Multidisciplinare.html');return false;">← Hub Principale</a>
+  <a href="#" onclick="apriFile('Tableau_Finanziario.html');return false;">📊 Tableau Finanziario</a>
+  <a href="https://it.investing.com" target="_blank">Investing.com ↗</a>
+  <a href="https://it.tradingview.com" target="_blank">TradingView ↗</a>
+  <a href="https://www.baha.com" target="_blank">Baha ↗</a>
+</div>
+
+<div class="layout">
+
+  <!-- PANEL TITOLI GOVERNATIVI -->
+  <div id="tb-panel-titgov" class="tb-panel" style="display:none!important">
+    <div class="sec-label2">Titoli di Stato — BTP · CCT · Bund · Treasury · OAT</div>
+    <table class="fin-table" style="margin-top:12px">
+      <thead><tr><th>Titolo</th><th>Paese</th><th>Scadenza</th><th>Cedola</th><th>Rendimento</th><th>Durata</th><th>Rating</th></tr></thead>
+      <tbody>
+        <tr><td><b>BTP 10Y</b></td><td>🇮🇹 Italia</td><td>2034</td><td>3.85%</td><td class="c-up">3.72%</td><td>8.4y</td><td>BBB</td></tr>
+        <tr><td><b>CCT 7Y</b></td><td>🇮🇹 Italia</td><td>2031</td><td>Var.</td><td class="c-up">3.45%</td><td>5.8y</td><td>BBB</td></tr>
+        <tr><td><b>BTP 2Y</b></td><td>🇮🇹 Italia</td><td>2026</td><td>3.10%</td><td class="c-up">3.18%</td><td>1.8y</td><td>BBB</td></tr>
+        <tr><td><b>Bund 10Y</b></td><td>🇩🇪 Germania</td><td>2034</td><td>2.50%</td><td class="c-up">2.48%</td><td>8.6y</td><td>AAA</td></tr>
+        <tr><td><b>OAT 10Y</b></td><td>🇫🇷 Francia</td><td>2034</td><td>3.00%</td><td class="c-up">3.05%</td><td>8.5y</td><td>AA-</td></tr>
+        <tr><td><b>Treasury 10Y</b></td><td>🇺🇸 USA</td><td>2034</td><td>4.25%</td><td class="c-up">4.32%</td><td>8.7y</td><td>AA+</td></tr>
+        <tr><td><b>Treasury 2Y</b></td><td>🇺🇸 USA</td><td>2026</td><td>4.50%</td><td class="c-up">4.41%</td><td>1.9y</td><td>AA+</td></tr>
+        <tr><td><b>Gilt 10Y</b></td><td>🇬🇧 UK</td><td>2034</td><td>4.00%</td><td class="c-up">4.18%</td><td>8.3y</td><td>AA-</td></tr>
+        <tr><td><b>JGB 10Y</b></td><td>🇯🇵 Giappone</td><td>2034</td><td>1.50%</td><td class="c-up">1.52%</td><td>8.8y</td><td>A+</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <a href="https://www.borsaitaliana.it/borsa/obbligazioni/titoli-di-stato/lista.html" target="_blank" class="idx-link-btn">🏛️ Borsa Italiana Gov Bonds</a>
+      <a href="https://it.tradingview.com/markets/bonds/" target="_blank" class="idx-link-btn">📈 TradingView Bonds</a>
+      <a href="https://www.mts.it/en/mts-markets/government-bonds" target="_blank" class="idx-link-btn">📊 MTS Markets</a>
+    </div>
+>>>>>>> parent of c81c924 (Add files via upload)
+  </div>
+</div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Fonti principali</div>
+      <a href="https://it.investing.com/news/latest-news" target="_blank" class="sb-link"><span class="sb-flag">📊</span><span class="sb-name">Investing.com</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="sb-link"><span class="sb-flag">🇮🇹</span><span class="sb-name">Il Sole 24 Ore</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.bloomberg.com/markets" target="_blank" class="sb-link"><span class="sb-flag">🌐</span><span class="sb-name">Bloomberg</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.reuters.com/markets" target="_blank" class="sb-link"><span class="sb-flag">📰</span><span class="sb-name">Reuters</span><span class="sb-cat gen">Agenzia</span></a>
+      <a href="https://www.ft.com/markets" target="_blank" class="sb-link"><span class="sb-flag">🇬🇧</span><span class="sb-name">Financial Times</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.cnbc.com/world/?region=world" target="_blank" class="sb-link"><span class="sb-flag">📺</span><span class="sb-name">CNBC</span><span class="sb-cat fin">TV</span></a>
+      <a href="https://www.wsj.com/markets" target="_blank" class="sb-link"><span class="sb-flag">🇺🇸</span><span class="sb-name">Wall Street Journal</span><span class="sb-cat fin">Fin</span></a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Notizie per categoria</div>
+      <a href="https://it.investing.com/news/economy" target="_blank" class="sb-link"><span class="sb-flag">📈</span><span class="sb-name">Economia globale</span><span class="sb-cat eco">Eco</span></a>
+      <a href="https://it.investing.com/news/forex-news" target="_blank" class="sb-link"><span class="sb-flag">💱</span><span class="sb-name">Forex & Valute</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://it.investing.com/news/commodities-news" target="_blank" class="sb-link"><span class="sb-flag">🛢</span><span class="sb-name">Materie prime</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://it.investing.com/news/cryptocurrency-news" target="_blank" class="sb-link"><span class="sb-flag">₿</span><span class="sb-name">Criptovalute</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://cbonds.it/news/" target="_blank" class="sb-link"><span class="sb-flag">🏦</span><span class="sb-name">Obbligazioni</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.milanofinanza.it/" target="_blank" class="sb-link"><span class="sb-flag">🇮🇹</span><span class="sb-name">Milano Finanza</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.teleborsa.it/" target="_blank" class="sb-link"><span class="sb-flag">📡</span><span class="sb-name">Teleborsa</span><span class="sb-cat fin">Fin</span></a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Geopolitica & Macro</div>
+      <a href="https://www.economist.com" target="_blank" class="sb-link"><span class="sb-flag">🌐</span><span class="sb-name">The Economist</span><span class="sb-cat gen">Geo</span></a>
+      <a href="https://foreignpolicy.com" target="_blank" class="sb-link"><span class="sb-flag">🌍</span><span class="sb-name">Foreign Policy</span><span class="sb-cat gen">Geo</span></a>
+      <a href="https://intelligence.weforum.org" target="_blank" class="sb-link"><span class="sb-flag">🏛</span><span class="sb-name">WEF Intelligence</span><span class="sb-cat eco">Macro</span></a>
+      <a href="https://www.imf.org/en/News" target="_blank" class="sb-link"><span class="sb-flag">💰</span><span class="sb-name">FMI News</span><span class="sb-cat eco">Macro</span></a>
+      <a href="https://www.worldbank.org/en/news" target="_blank" class="sb-link"><span class="sb-flag">🌍</span><span class="sb-name">World Bank</span><span class="sb-cat eco">Macro</span></a>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- PANEL: NOTIZIE LIVE -->
+    <div id="panel-notizie" class="panel active">
+      <div class="news-header"><h2>Notizie Live</h2><span class="upd">Fonti finanziarie in tempo reale</span></div>
+      <div class="papers-grid">
+        <a href="https://it.investing.com/news/latest-news" target="_blank" class="paper-card"><div class="paper-country">Globale · Real-time</div><div class="paper-name">Investing.com</div><div class="paper-desc">Ultime notizie finanziarie globali in tempo reale</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Mercati</span><span class="p-tag">Forex</span></div></a>
+        <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="paper-card"><div class="paper-country">Milano · Economico</div><div class="paper-name">Il Sole 24 Ore</div><div class="paper-desc">Finanza e mercati italiani aggiornati in tempo reale</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Italia</span><span class="p-tag">BTP</span></div></a>
+        <a href="https://www.reuters.com/finance" target="_blank" class="paper-card"><div class="paper-country">Londra · Agenzia</div><div class="paper-name">Reuters Finance</div><div class="paper-desc">Agenzia internazionale con breaking news sui mercati globali</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Banche Centrali</span></div></a>
+        <a href="https://www.bloomberg.com/markets" target="_blank" class="paper-card"><div class="paper-country">New York · Finanziario</div><div class="paper-name">Bloomberg Markets</div><div class="paper-desc">Dati e notizie sui mercati finanziari globali</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Azioni</span><span class="p-tag">Bond</span></div></a>
+        <a href="https://www.ft.com/markets" target="_blank" class="paper-card"><div class="paper-country">Londra · Finanziario</div><div class="paper-name">Financial Times</div><div class="paper-desc">Analisi e notizie dai mercati internazionali</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Analisi</span></div></a>
+        <a href="https://www.cnbc.com/world-markets/" target="_blank" class="paper-card"><div class="paper-country">New York · TV</div><div class="paper-name">CNBC World Markets</div><div class="paper-desc">Copertura live dei mercati mondiali Wall Street e Asia</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">USA</span><span class="p-tag">Asia</span></div></a>
+        <a href="https://www.milanofinanza.it/" target="_blank" class="paper-card"><div class="paper-country">Milano · Finanziario</div><div class="paper-name">Milano Finanza</div><div class="paper-desc">Notizie e aggiornamenti live dal mercato finanziario italiano</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Borsa</span></div></a>
+        <a href="https://finance.yahoo.com/news/" target="_blank" class="paper-card"><div class="paper-country">Globale · Aggregatore</div><div class="paper-name">Yahoo Finance News</div><div class="paper-desc">Aggregatore di notizie finanziarie da tutte le fonti principali</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Multi-fonte</span></div></a>
+        <a href="https://www.wsj.com/news/markets" target="_blank" class="paper-card"><div class="paper-country">New York · Finanziario</div><div class="paper-name">Wall Street Journal</div><div class="paper-desc">Notizie e analisi dai mercati finanziari americani</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">USA</span></div></a>
+        <a href="https://www.borsaitaliana.it/notizie/notizie.htm" target="_blank" class="paper-card"><div class="paper-country">Milano · Ufficiale</div><div class="paper-name">Borsa Italiana News</div><div class="paper-desc">Comunicati ufficiali e notizie da Borsa Italiana</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Ufficiale</span><span class="p-tag">MIB</span></div></a>
+      </div>
+    </div>
+    <!-- PANEL: VIDEO -->
+    <div id="panel-video" class="panel">
+      <div class="news-header"><h2>Canali Video Finanziari</h2><span class="upd">Migliori canali mondiali selezionati</span></div>
+
+      <div class="section-divider">Canali internazionali di riferimento</div>
+      <div class="video-grid">
+        <a href="https://www.youtube.com/@Bloomberg" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#1A1814"><div class="video-thumb-bg">📊</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Bloomberg · YouTube</div><div class="video-title">Bloomberg Markets & Finance — Live</div><div class="video-meta">Analisi istituzionale · Interviste CEO · Macro globale</div></div>
+        </a>
+        <a href="https://www.youtube.com/@CNBC" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#001F5B"><div class="video-thumb-bg">📺</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">CNBC · YouTube</div><div class="video-title">CNBC Markets — Breaking News</div><div class="video-meta">Mercati USA · Wall Street · Fed · Earnings</div></div>
+        </a>
+        <a href="https://www.youtube.com/@TheEconomist" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#E03131"><div class="video-thumb-bg">🌐</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">The Economist · YouTube</div><div class="video-title">The Economist — Analisi Geopolitica</div><div class="video-meta">Economia globale · Politica · Scenari strategici</div></div>
+        </a>
+        <a href="https://www.youtube.com/@FinancialTimes" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#F7C59F"><div class="video-thumb-bg">🏦</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Financial Times · YouTube</div><div class="video-title">FT News & Analysis</div><div class="video-meta">Finanza UK ed europea · Corporate news</div></div>
+        </a>
+        <a href="https://www.youtube.com/@Reuters" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#FF6B35"><div class="video-thumb-bg">📡</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Reuters · YouTube</div><div class="video-title">Reuters — News Mondiali in Video</div><div class="video-meta">Breaking news · Geopolitica · Economia</div></div>
+        </a>
+        <a href="https://www.youtube.com/@wsj" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#2D4A8A"><div class="video-thumb-bg">📰</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Wall Street Journal · YouTube</div><div class="video-title">WSJ — Markets & Business</div><div class="video-meta">Azioni USA · Business · Tecnologia</div></div>
+        </a>
+      </div>
+
+      <div class="section-divider">Analisi e formazione finanziaria</div>
+      <div class="video-grid">
+        <a href="https://www.youtube.com/@SvenCarlin" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#2D5A27"><div class="video-thumb-bg">📚</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Sven Carlin Ph.D.</div><div class="video-title">Value Investing — Analisi Fondamentale</div><div class="video-meta">Il migliore per value investing · Dati e ricerca</div></div>
+        </a>
+        <a href="https://www.youtube.com/@BenFelixCSI" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#1A3A5C"><div class="video-thumb-bg">🎓</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Ben Felix</div><div class="video-title">Evidence-Based Investing</div><div class="video-meta">Ricerca accademica applicata · ETF · Portafogli</div></div>
+        </a>
+        <a href="https://www.youtube.com/@ThePlainBagel" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#5C3317"><div class="video-thumb-bg">🧠</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">The Plain Bagel</div><div class="video-title">Analisi Critica dei Mercati</div><div class="video-meta">Strumenti finanziari · Analisi imparziale</div></div>
+        </a>
+        <a href="https://www.youtube.com/@AswathDamodaran" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#8B1A1A"><div class="video-thumb-bg">📐</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Aswath Damodaran</div><div class="video-title">Valuation — NYU Stern Professor</div><div class="video-meta">Il guru della valutazione aziendale mondiale</div></div>
+        </a>
+      </div>
+
+      <div class="section-divider">Canali italiani di qualità</div>
+      <div class="video-grid">
+        <a href="https://www.youtube.com/@segreti_bancari" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#2C5F2E"><div class="video-thumb-bg">🇮🇹</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Segreti Bancari — Giacomo Saver</div><div class="video-title">Investire in autonomia — il meglio in italiano</div><div class="video-meta">Ex gestore Deutsche Bank · Analisi di qualità</div></div>
+        </a>
+        <a href="https://www.youtube.com/@ColazioneMilano" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#1A1A8B"><div class="video-thumb-bg">☕</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Colazione a Wall Street</div><div class="video-title">Mercati quotidiani — Vito Lops</div><div class="video-meta">Il Sole 24 Ore · Mercati ogni mattina</div></div>
+        </a>
+        <a href="https://www.youtube.com/@EugenioBenetazzo" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#4A1A1A"><div class="video-thumb-bg">🔭</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Eugenio Benetazzo</div><div class="video-title">Analisi macroeconomica contrarian</div><div class="video-meta">Visione critica · Scenari alternativi</div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- PANEL: QUOTIDIANI ITALIANI -->
+    <div id="panel-italiani" class="panel">
+      <div class="news-header"><h2>Quotidiani Italiani</h2><span class="upd">Principali testate nazionali</span></div>
+      <div class="papers-grid">
+        <a href="https://www.ilsole24ore.com" target="_blank" class="paper-card"><div class="paper-country">Milano · Economico</div><div class="paper-name">Il Sole 24 Ore</div><div class="paper-desc">Il quotidiano economico-finanziario di riferimento italiano</div><div class="paper-tags"><span class="p-tag">Finanza</span><span class="p-tag">Economia</span><span class="p-tag">Diritto</span></div></a>
+        <a href="https://www.milanofinanza.it" target="_blank" class="paper-card"><div class="paper-country">Milano · Finanziario</div><div class="paper-name">Milano Finanza</div><div class="paper-desc">Quotidiano di borsa e mercati finanziari italiani</div><div class="paper-tags"><span class="p-tag">Borsa</span><span class="p-tag">Fondi</span></div></a>
+        <a href="https://www.corriere.it" target="_blank" class="paper-card"><div class="paper-country">Milano · Generalista</div><div class="paper-name">Corriere della Sera</div><div class="paper-desc">Il quotidiano nazionale più diffuso in Italia</div><div class="paper-tags"><span class="p-tag">Politica</span><span class="p-tag">Economia</span></div></a>
+        <a href="https://www.repubblica.it" target="_blank" class="paper-card"><div class="paper-country">Roma · Generalista</div><div class="paper-name">La Repubblica</div><div class="paper-desc">Quotidiano nazionale · Economica e politica</div><div class="paper-tags"><span class="p-tag">Politica</span><span class="p-tag">Economia</span></div></a>
+        <a href="https://www.lastampa.it" target="_blank" class="paper-card"><div class="paper-country">Torino · Generalista</div><div class="paper-name">La Stampa</div><div class="paper-desc">Storico quotidiano torinese · Finanza ed economia</div><div class="paper-tags"><span class="p-tag">Nord Italia</span></div></a>
+        <a href="https://www.teleborsa.it" target="_blank" class="paper-card"><div class="paper-country">Roma · Finanziario</div><div class="paper-name">Teleborsa</div><div class="paper-desc">Notizie di borsa e mercati finanziari in tempo reale</div><div class="paper-tags"><span class="p-tag">Real-time</span><span class="p-tag">Borsa</span></div></a>
+        <a href="https://www.borsaitaliana.it" target="_blank" class="paper-card"><div class="paper-country">Milano · Ufficiale</div><div class="paper-name">Borsa Italiana</div><div class="paper-desc">Fonte ufficiale per tutti i titoli quotati a Milano</div><div class="paper-tags"><span class="p-tag">Ufficiale</span><span class="p-tag">MIB</span></div></a>
+        <a href="https://www.ilmessaggero.it" target="_blank" class="paper-card"><div class="paper-country">Roma · Generalista</div><div class="paper-name">Il Messaggero</div><div class="paper-desc">Quotidiano romano · Economia e politica</div><div class="paper-tags"><span class="p-tag">Centro Italia</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: QUOTIDIANI EUROPEI -->
+    <div id="panel-europei" class="panel">
+      <div class="news-header"><h2>Quotidiani Europei</h2><span class="upd">Principali testate del continente</span></div>
+      <div class="papers-grid">
+        <a href="https://www.ft.com" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Finanziario</div><div class="paper-name">Financial Times</div><div class="paper-desc">Il quotidiano economico di riferimento mondiale</div><div class="paper-tags"><span class="p-tag">Finanza</span><span class="p-tag">Globale</span></div></a>
+        <a href="https://www.economist.com" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Settimanale</div><div class="paper-name">The Economist</div><div class="paper-desc">Il settimanale più influente al mondo su economia e geopolitica</div><div class="paper-tags"><span class="p-tag">Macro</span><span class="p-tag">Geo</span></div></a>
+        <a href="https://www.theguardian.com/business" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Generalista</div><div class="paper-name">The Guardian</div><div class="paper-desc">Sezione Business · Economia e finanza progressista</div><div class="paper-tags"><span class="p-tag">Business</span></div></a>
+        <a href="https://www.handelsblatt.com" target="_blank" class="paper-card"><div class="paper-country">🇩🇪 Düsseldorf · Economico</div><div class="paper-name">Handelsblatt</div><div class="paper-desc">Il quotidiano economico tedesco — cuore dell'economia europea</div><div class="paper-tags"><span class="p-tag">Germania</span><span class="p-tag">Industria</span></div></a>
+        <a href="https://www.faz.net" target="_blank" class="paper-card"><div class="paper-country">🇩🇪 Francoforte · Generalista</div><div class="paper-name">Frankfurter Allgemeine</div><div class="paper-desc">Autorità tedesca su economia, politica e finanza</div><div class="paper-tags"><span class="p-tag">Germania</span><span class="p-tag">BCE</span></div></a>
+        <a href="https://www.lemonde.fr/economie" target="_blank" class="paper-card"><div class="paper-country">🇫🇷 Parigi · Generalista</div><div class="paper-name">Le Monde Économie</div><div class="paper-desc">Il quotidiano francese di riferimento · Sezione economia</div><div class="paper-tags"><span class="p-tag">Francia</span><span class="p-tag">Europa</span></div></a>
+        <a href="https://www.lesechos.fr" target="_blank" class="paper-card"><div class="paper-country">🇫🇷 Parigi · Economico</div><div class="paper-name">Les Echos</div><div class="paper-desc">Il quotidiano economico-finanziario francese</div><div class="paper-tags"><span class="p-tag">Finanza</span><span class="p-tag">CAC40</span></div></a>
+        <a href="https://elpais.com/economia" target="_blank" class="paper-card"><div class="paper-country">🇪🇸 Madrid · Generalista</div><div class="paper-name">El País Economía</div><div class="paper-desc">Principale quotidiano spagnolo · Sezione economica</div><div class="paper-tags"><span class="p-tag">Spagna</span><span class="p-tag">IBEX</span></div></a>
+        <a href="https://www.nrc.nl" target="_blank" class="paper-card"><div class="paper-country">🇳🇱 Amsterdam · Generalista</div><div class="paper-name">NRC Handelsblad</div><div class="paper-desc">Quotidiano olandese autorevole · Economia e finanza</div><div class="paper-tags"><span class="p-tag">Olanda</span><span class="p-tag">AEX</span></div></a>
+        <a href="https://www.correiodamanha.pt" target="_blank" class="paper-card"><div class="paper-country">🇵🇹 Lisbona · Generalista</div><div class="paper-name">Diário de Notícias</div><div class="paper-desc">Storico quotidiano portoghese</div><div class="paper-tags"><span class="p-tag">Portogallo</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: QUOTIDIANI MONDIALI -->
+    <div id="panel-mondiali" class="panel">
+      <div class="news-header"><h2>Quotidiani Mondiali</h2><span class="upd">Le più importanti testate globali</span></div>
+
+      <div class="section-divider">Nord America</div>
+      <div class="papers-grid">
+        <a href="https://www.wsj.com" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Economico</div><div class="paper-name">Wall Street Journal</div><div class="paper-desc">Il quotidiano finanziario americano di riferimento mondiale</div><div class="paper-tags"><span class="p-tag">Wall St.</span><span class="p-tag">S&P500</span></div></a>
+        <a href="https://www.nytimes.com/section/business" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Generalista</div><div class="paper-name">New York Times Business</div><div class="paper-desc">Sezione economica del più influente quotidiano americano</div><div class="paper-tags"><span class="p-tag">USA</span><span class="p-tag">Tech</span></div></a>
+        <a href="https://www.washingtonpost.com/business" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 Washington · Generalista</div><div class="paper-name">Washington Post Business</div><div class="paper-desc">Economia, politica economica USA e relazioni internazionali</div><div class="paper-tags"><span class="p-tag">Politica US</span></div></a>
+        <a href="https://www.barrons.com" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Finanziario</div><div class="paper-name">Barron's</div><div class="paper-desc">Settimanale finanziario americano · Analisi investimenti</div><div class="paper-tags"><span class="p-tag">Investimenti</span><span class="p-tag">Analisi</span></div></a>
+        <a href="https://www.theglobeandmail.com/business" target="_blank" class="paper-card"><div class="paper-country">🇨🇦 Toronto · Generalista</div><div class="paper-name">Globe and Mail</div><div class="paper-desc">Il principale quotidiano canadese · Economia e mercati</div><div class="paper-tags"><span class="p-tag">Canada</span><span class="p-tag">TSX</span></div></a>
+      </div>
+
+      <div class="section-divider">Asia & Pacifico</div>
+      <div class="papers-grid">
+        <a href="https://www.nikkei.com" target="_blank" class="paper-card"><div class="paper-country">🇯🇵 Tokyo · Economico</div><div class="paper-name">Nikkei</div><div class="paper-desc">Il Bloomberg giapponese — riferimento per i mercati asiatici</div><div class="paper-tags"><span class="p-tag">Giappone</span><span class="p-tag">Nikkei225</span></div></a>
+        <a href="https://asia.nikkei.com" target="_blank" class="paper-card"><div class="paper-country">🌏 Asia · Economico</div><div class="paper-name">Nikkei Asia</div><div class="paper-desc">Copertura economica dell'intera regione asiatica in inglese</div><div class="paper-tags"><span class="p-tag">Asia</span><span class="p-tag">Emergenti</span></div></a>
+        <a href="https://www.scmp.com/business" target="_blank" class="paper-card"><div class="paper-country">🇭🇰 Hong Kong · Generalista</div><div class="paper-name">South China Morning Post</div><div class="paper-desc">La finestra sull'economia cinese e asiatica in inglese</div><div class="paper-tags"><span class="p-tag">Cina</span><span class="p-tag">HK</span></div></a>
+        <a href="https://www.thehindu.com/business" target="_blank" class="paper-card"><div class="paper-country">🇮🇳 Mumbai · Generalista</div><div class="paper-name">The Hindu Business</div><div class="paper-desc">L'India economica — mercato da 1,4 miliardi da monitorare</div><div class="paper-tags"><span class="p-tag">India</span><span class="p-tag">BSE</span></div></a>
+      </div>
+
+      <div class="section-divider">Middle East & Africa</div>
+      <div class="papers-grid">
+        <a href="https://www.arabianbusiness.com" target="_blank" class="paper-card"><div class="paper-country">🇦🇪 Dubai · Economico</div><div class="paper-name">Arabian Business</div><div class="paper-desc">Il quotidiano economico del Golfo Persico e Middle East</div><div class="paper-tags"><span class="p-tag">GCC</span><span class="p-tag">Petrolio</span></div></a>
+        <a href="https://www.businesslive.co.za" target="_blank" class="paper-card"><div class="paper-country">🇿🇦 Johannesburg · Economico</div><div class="paper-name">Business Live SA</div><div class="paper-desc">Principale fonte economica sudafricana e continentale</div><div class="paper-tags"><span class="p-tag">Africa</span><span class="p-tag">JSE</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: FONTI FINANZIARIE -->
+    <div id="panel-finanza" class="panel">
+      <div class="news-header"><h2>Fonti Finanziarie Specializzate</h2><span class="upd">Database, analytics e piattaforme dati</span></div>
+      <div class="papers-grid">
+        <a href="https://it.investing.com/news/latest-news" target="_blank" class="paper-card"><div class="paper-country">Globale · Dati mercati</div><div class="paper-name">Investing.com</div><div class="paper-desc">Notizie finanziarie real-time + dati mercati globali</div><div class="paper-tags"><span class="p-tag">Real-time</span><span class="p-tag">Globale</span></div></a>
+        <a href="https://www.bloomberg.com/markets" target="_blank" class="paper-card"><div class="paper-country">USA · Terminal professionale</div><div class="paper-name">Bloomberg Markets</div><div class="paper-desc">Il terminale finanziario professionale mondiale</div><div class="paper-tags"><span class="p-tag">Istituzionale</span></div></a>
+        <a href="https://cbonds.it" target="_blank" class="paper-card"><div class="paper-country">Globale · Obbligazioni</div><div class="paper-name">Cbonds</div><div class="paper-desc">Database obbligazionario mondiale — 1 milione di bond</div><div class="paper-tags"><span class="p-tag">BTP</span><span class="p-tag">Corporate</span></div></a>
+        <a href="https://www.morningstar.it" target="_blank" class="paper-card"><div class="paper-country">USA · Rating fondi</div><div class="paper-name">Morningstar</div><div class="paper-desc">Rating e analisi fondi comuni e ETF</div><div class="paper-tags"><span class="p-tag">Fondi</span><span class="p-tag">ETF</span></div></a>
+        <a href="https://www.justetf.com/it" target="_blank" class="paper-card"><div class="paper-country">Germania · ETF</div><div class="paper-name">JustETF</div><div class="paper-desc">Lo screener di ETF più completo disponibile in Europa</div><div class="paper-tags"><span class="p-tag">ETF</span><span class="p-tag">ETC</span></div></a>
+        <a href="https://www.milanofinanza.it/mercati" target="_blank" class="paper-card"><div class="paper-country">Italia · Borsa</div><div class="paper-name">Milano Finanza Mercati</div><div class="paper-desc">Dati di borsa italiani in tempo reale</div><div class="paper-tags"><span class="p-tag">FTSE MIB</span></div></a>
+        <a href="https://www.teleborsa.it" target="_blank" class="paper-card"><div class="paper-country">Italia · Borsa</div><div class="paper-name">Teleborsa</div><div class="paper-desc">Agenzia di stampa finanziaria italiana</div><div class="paper-tags"><span class="p-tag">Borsa IT</span></div></a>
+        <a href="https://www.borsaitaliana.it/homepage/homepage.htm" target="_blank" class="paper-card"><div class="paper-country">Italia · Ufficiale</div><div class="paper-name">Borsa Italiana</div><div class="paper-desc">Fonte ufficiale Euronext Milan — dati regolamentati</div><div class="paper-tags"><span class="p-tag">Ufficiale</span></div></a>
+        <a href="https://mercati.ilsole24ore.com" target="_blank" class="paper-card"><div class="paper-country">Italia · Dati</div><div class="paper-name">Il Sole 24 Ore Mercati</div><div class="paper-desc">Quotazioni BTP, azioni, valute aggiornate</div><div class="paper-tags"><span class="p-tag">BTP</span><span class="p-tag">Valute</span></div></a>
+        <a href="https://it.tradingview.com" target="_blank" class="paper-card"><div class="paper-country">USA · Grafici</div><div class="paper-name">TradingView</div><div class="paper-desc">Analisi tecnica e grafici professionali</div><div class="paper-tags"><span class="p-tag">Tecnica</span><span class="p-tag">Grafici</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: AGENZIE STAMPA -->
+    <div id="panel-agenzie" class="panel">
+      <div class="news-header"><h2>Agenzie di Stampa Mondiali</h2><span class="upd">Le fonti primarie delle notizie globali</span></div>
+      <div class="papers-grid">
+        <a href="https://www.reuters.com" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Agenzia</div><div class="paper-name">Reuters</div><div class="paper-desc">La più grande agenzia di stampa mondiale — fonte primaria per i mercati finanziari globali</div><div class="paper-tags"><span class="p-tag">Globale</span><span class="p-tag">Real-time</span><span class="p-tag">Mercati</span></div></a>
+        <a href="https://apnews.com/hub/business" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Agenzia</div><div class="paper-name">Associated Press</div><div class="paper-desc">La principale agenzia di stampa americana — notizie verificate</div><div class="paper-tags"><span class="p-tag">USA</span><span class="p-tag">Verificato</span></div></a>
+        <a href="https://www.afp.com/en/news-hub" target="_blank" class="paper-card"><div class="paper-country">🇫🇷 Parigi · Agenzia</div><div class="paper-name">AFP — Agence France-Presse</div><div class="paper-desc">Terza agenzia mondiale — forte copertura europea e africana</div><div class="paper-tags"><span class="p-tag">Europa</span><span class="p-tag">Africa</span></div></a>
+        <a href="https://www.ansa.it" target="_blank" class="paper-card"><div class="paper-country">🇮🇹 Roma · Agenzia</div><div class="paper-name">ANSA</div><div class="paper-desc">L'agenzia di stampa italiana nazionale — economia e finanza</div><div class="paper-tags"><span class="p-tag">Italia</span><span class="p-tag">Ufficiale</span></div></a>
+        <a href="https://www.dpa-international.com" target="_blank" class="paper-card"><div class="paper-country">🇩🇪 Berlino · Agenzia</div><div class="paper-name">DPA International</div><div class="paper-desc">L'agenzia di stampa tedesca — fondamentale per l'Europa centrale</div><div class="paper-tags"><span class="p-tag">Germania</span><span class="p-tag">Europa</span></div></a>
+        <a href="https://www.xinhuanet.com/english" target="_blank" class="paper-card"><div class="paper-country">🇨🇳 Pechino · Agenzia</div><div class="paper-name">Xinhua News</div><div class="paper-desc">L'agenzia ufficiale cinese — indispensabile per capire la narrativa di Pechino</div><div class="paper-tags"><span class="p-tag">Cina</span><span class="p-tag">Asia</span></div></a>
+        <a href="https://tass.com" target="_blank" class="paper-card"><div class="paper-country">🇷🇺 Mosca · Agenzia</div><div class="paper-name">TASS</div><div class="paper-desc">Agenzia ufficiale russa — per comprendere la posizione di Mosca</div><div class="paper-tags"><span class="p-tag">Russia</span><span class="p-tag">Energia</span></div></a>
+        <a href="https://www.kyodonews.net" target="_blank" class="paper-card"><div class="paper-country">🇯🇵 Tokyo · Agenzia</div><div class="paper-name">Kyodo News</div><div class="paper-desc">La principale agenzia giapponese — mercati asiatici e BoJ</div><div class="paper-tags"><span class="p-tag">Giappone</span><span class="p-tag">Asia</span></div></a>
+      </div>
+    </div>
+
+  </div>
+</div>
+  </div>
+
+  <!-- QUOTIDIANI FINANZIARI GLOBALI -->
+  <div class="section-label" style="margin-top:1.5rem">Quotidiani Finanziari Globali</div>
+  <div class="gold-line"></div>
+  <div style="font-size:11px;color:var(--text3);margin-bottom:1rem">Rassegna autorevole dei principali quotidiani economico-finanziari del mondo</div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem">
+
+    <!-- Colonna 1: Top Tier Globali -->
+    <div>
+      <div style="font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.15em;color:var(--gold2);margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:.5px solid var(--border)">🌐 Top Tier Globali</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <a href="https://www.wsj.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇺🇸</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">WSJ</div><div class="tool-sub" style="text-align:left">Mercati, corporate</div></div>
+        </a>
+        <a href="https://www.ft.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇬🇧</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">Financial Times</div><div class="tool-sub" style="text-align:left">Economia globale</div></div>
+        </a>
+        <a href="https://www.bloomberg.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇺🇸</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">Bloomberg News</div><div class="tool-sub" style="text-align:left">Mercati, analisi</div></div>
+        </a>
+        <a href="https://asia.nikkei.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇯🇵</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">Nikkei Asia</div><div class="tool-sub" style="text-align:left">Mercati asiatici</div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Colonna 2: Europa -->
+    <div>
+      <div style="font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.15em;color:var(--gold2);margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:.5px solid var(--border)">🇪🇺 Europa</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <a href="https://www.handelsblatt.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇩🇪</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">Handelsblatt</div><div class="tool-sub" style="text-align:left">Economia, industria</div></div>
+        </a>
+        <a href="https://www.lesechos.fr" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇫🇷</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">Les Échos</div><div class="tool-sub" style="text-align:left">Mercati, corporate</div></div>
+        </a>
+        <a href="https://www.ilsole24ore.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇮🇹</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">Il Sole 24 Ore</div><div class="tool-sub" style="text-align:left">Economia, normativa</div></div>
+        </a>
+        <a href="https://www.milanofinanza.it" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇮🇹</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">Milano Finanza</div><div class="tool-sub" style="text-align:left">Mercati, finanza</div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Colonna 3: Asia & Americhe -->
+    <div>
+      <div style="font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:.15em;color:var(--gold2);margin-bottom:.6rem;padding-bottom:.4rem;border-bottom:.5px solid var(--border)">🌏 Asia &amp; Americhe</div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <a href="https://www.caixinglobal.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇨🇳</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">Caixin</div><div class="tool-sub" style="text-align:left">Analisi investigativa</div></div>
+        </a>
+        <a href="https://www.scmp.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇭🇰</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">S. China Morning Post</div><div class="tool-sub" style="text-align:left">Mercati asiatici</div></div>
+        </a>
+        <a href="https://economictimes.indiatimes.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇮🇳</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">The Economic Times</div><div class="tool-sub" style="text-align:left">Mercati emergenti</div></div>
+        </a>
+        <a href="https://valor.globo.com" target="_blank" class="tool-btn" style="flex-direction:row;min-height:auto;padding:.6rem .8rem;gap:10px;justify-content:flex-start;align-items:center">
+          <div style="font-size:20px;flex-shrink:0">🇧🇷</div>
+          <div><div class="tool-name" style="text-align:left;font-size:12px">Valor Econômico</div><div class="tool-sub" style="text-align:left">Mercati sudamericani</div></div>
+        </a>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -534,7 +884,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   border-right: 1px solid var(--rule);
   padding: 0;
 }
-.main { flex: 1; padding: 0; overflow: hidden; }
+.main { flex: 1; padding: 0; overflow: visible; }
 .panel { display: none; }
 .panel.active { display: block; }
 
@@ -852,6 +1202,290 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .back-bar a:hover { text-decoration: underline; }
 
 </style>
+<<<<<<< HEAD
+=======
+
+<!-- VIEW NEWS -->
+<div id="view-news" class="view">
+  <div style="position:sticky;top:52px;z-index:150;background:var(--surface);border-bottom:.5px solid var(--border);padding:10px 1.5rem;display:flex;align-items:center;gap:12px">
+    <button class="btn-back" onclick="mostraView('home')">← Scrivania</button>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:500;color:var(--gold)">Il Giornale Finanziario Globale</div>
+  </div>
+
+<!-- MASTHEAD -->
+<div class="masthead">
+  <div class="masthead-title">
+    <h1>Il Giornale Finanziario Globale <span style="font-size:14px;font-weight:300;color:#AAA;letter-spacing:.05em" id="newsTime">— aggiornato alle --:--</span></h1>
+    <div class="tagline">Finanza · Economia · Geopolitica · Mercati · Mondo</div>
+  </div>
+  <div class="masthead-nav">
+    <button class="nav-btn active" onclick="showPanel('notizie',this)">Notizie Live</button>
+    <button class="nav-btn" onclick="showPanel('video',this)">Video & Canali</button>
+    <button class="nav-btn" onclick="showPanel('italiani',this)">Quotidiani Italiani</button>
+    <button class="nav-btn" onclick="showPanel('europei',this)">Quotidiani Europei</button>
+    <button class="nav-btn" onclick="showPanel('mondiali',this)">Quotidiani Mondiali</button>
+    <button class="nav-btn" onclick="showPanel('finanza',this)">Fonti Finanziarie</button>
+    <button class="nav-btn" onclick="showPanel('agenzie',this)">Agenzie Stampa</button>
+  </div>
+</div>
+
+<div class="back-bar">
+  <a href="#" onclick="apriFile('Hub_Personale_Multidisciplinare.html');return false;">← Hub Principale</a>
+  <a href="#" onclick="apriFile('Tableau_Finanziario.html');return false;">📊 Tableau Finanziario</a>
+  <a href="https://it.investing.com" target="_blank">Investing.com ↗</a>
+  <a href="https://it.tradingview.com" target="_blank">TradingView ↗</a>
+  <a href="https://www.baha.com" target="_blank">Baha ↗</a>
+</div>
+
+<div class="layout">
+
+  <!-- PANEL TITOLI GOVERNATIVI -->
+  <div id="tb-panel-titgov" class="tb-panel" style="display:none!important">
+    <div class="sec-label2">Titoli di Stato — BTP · CCT · Bund · Treasury · OAT</div>
+    <table class="fin-table" style="margin-top:12px">
+      <thead><tr><th>Titolo</th><th>Paese</th><th>Scadenza</th><th>Cedola</th><th>Rendimento</th><th>Durata</th><th>Rating</th></tr></thead>
+      <tbody>
+        <tr><td><b>BTP 10Y</b></td><td>🇮🇹 Italia</td><td>2034</td><td>3.85%</td><td class="c-up">3.72%</td><td>8.4y</td><td>BBB</td></tr>
+        <tr><td><b>CCT 7Y</b></td><td>🇮🇹 Italia</td><td>2031</td><td>Var.</td><td class="c-up">3.45%</td><td>5.8y</td><td>BBB</td></tr>
+        <tr><td><b>BTP 2Y</b></td><td>🇮🇹 Italia</td><td>2026</td><td>3.10%</td><td class="c-up">3.18%</td><td>1.8y</td><td>BBB</td></tr>
+        <tr><td><b>Bund 10Y</b></td><td>🇩🇪 Germania</td><td>2034</td><td>2.50%</td><td class="c-up">2.48%</td><td>8.6y</td><td>AAA</td></tr>
+        <tr><td><b>OAT 10Y</b></td><td>🇫🇷 Francia</td><td>2034</td><td>3.00%</td><td class="c-up">3.05%</td><td>8.5y</td><td>AA-</td></tr>
+        <tr><td><b>Treasury 10Y</b></td><td>🇺🇸 USA</td><td>2034</td><td>4.25%</td><td class="c-up">4.32%</td><td>8.7y</td><td>AA+</td></tr>
+        <tr><td><b>Treasury 2Y</b></td><td>🇺🇸 USA</td><td>2026</td><td>4.50%</td><td class="c-up">4.41%</td><td>1.9y</td><td>AA+</td></tr>
+        <tr><td><b>Gilt 10Y</b></td><td>🇬🇧 UK</td><td>2034</td><td>4.00%</td><td class="c-up">4.18%</td><td>8.3y</td><td>AA-</td></tr>
+        <tr><td><b>JGB 10Y</b></td><td>🇯🇵 Giappone</td><td>2034</td><td>1.50%</td><td class="c-up">1.52%</td><td>8.8y</td><td>A+</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap">
+      <a href="https://www.borsaitaliana.it/borsa/obbligazioni/titoli-di-stato/lista.html" target="_blank" class="idx-link-btn">🏛️ Borsa Italiana Gov Bonds</a>
+      <a href="https://it.tradingview.com/markets/bonds/" target="_blank" class="idx-link-btn">📈 TradingView Bonds</a>
+      <a href="https://www.mts.it/en/mts-markets/government-bonds" target="_blank" class="idx-link-btn">📊 MTS Markets</a>
+    </div>
+  </div>
+
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">
+      <div class="sb-label">Fonti principali</div>
+      <a href="https://it.investing.com/news/latest-news" target="_blank" class="sb-link"><span class="sb-flag">📊</span><span class="sb-name">Investing.com</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="sb-link"><span class="sb-flag">🇮🇹</span><span class="sb-name">Il Sole 24 Ore</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.bloomberg.com/markets" target="_blank" class="sb-link"><span class="sb-flag">🌐</span><span class="sb-name">Bloomberg</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.reuters.com/markets" target="_blank" class="sb-link"><span class="sb-flag">📰</span><span class="sb-name">Reuters</span><span class="sb-cat gen">Agenzia</span></a>
+      <a href="https://www.ft.com/markets" target="_blank" class="sb-link"><span class="sb-flag">🇬🇧</span><span class="sb-name">Financial Times</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.cnbc.com/world/?region=world" target="_blank" class="sb-link"><span class="sb-flag">📺</span><span class="sb-name">CNBC</span><span class="sb-cat fin">TV</span></a>
+      <a href="https://www.wsj.com/markets" target="_blank" class="sb-link"><span class="sb-flag">🇺🇸</span><span class="sb-name">Wall Street Journal</span><span class="sb-cat fin">Fin</span></a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Notizie per categoria</div>
+      <a href="https://it.investing.com/news/economy" target="_blank" class="sb-link"><span class="sb-flag">📈</span><span class="sb-name">Economia globale</span><span class="sb-cat eco">Eco</span></a>
+      <a href="https://it.investing.com/news/forex-news" target="_blank" class="sb-link"><span class="sb-flag">💱</span><span class="sb-name">Forex & Valute</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://it.investing.com/news/commodities-news" target="_blank" class="sb-link"><span class="sb-flag">🛢</span><span class="sb-name">Materie prime</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://it.investing.com/news/cryptocurrency-news" target="_blank" class="sb-link"><span class="sb-flag">₿</span><span class="sb-name">Criptovalute</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://cbonds.it/news/" target="_blank" class="sb-link"><span class="sb-flag">🏦</span><span class="sb-name">Obbligazioni</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.milanofinanza.it/" target="_blank" class="sb-link"><span class="sb-flag">🇮🇹</span><span class="sb-name">Milano Finanza</span><span class="sb-cat fin">Fin</span></a>
+      <a href="https://www.teleborsa.it/" target="_blank" class="sb-link"><span class="sb-flag">📡</span><span class="sb-name">Teleborsa</span><span class="sb-cat fin">Fin</span></a>
+    </div>
+    <div class="sb-section">
+      <div class="sb-label">Geopolitica & Macro</div>
+      <a href="https://www.economist.com" target="_blank" class="sb-link"><span class="sb-flag">🌐</span><span class="sb-name">The Economist</span><span class="sb-cat gen">Geo</span></a>
+      <a href="https://foreignpolicy.com" target="_blank" class="sb-link"><span class="sb-flag">🌍</span><span class="sb-name">Foreign Policy</span><span class="sb-cat gen">Geo</span></a>
+      <a href="https://intelligence.weforum.org" target="_blank" class="sb-link"><span class="sb-flag">🏛</span><span class="sb-name">WEF Intelligence</span><span class="sb-cat eco">Macro</span></a>
+      <a href="https://www.imf.org/en/News" target="_blank" class="sb-link"><span class="sb-flag">💰</span><span class="sb-name">FMI News</span><span class="sb-cat eco">Macro</span></a>
+      <a href="https://www.worldbank.org/en/news" target="_blank" class="sb-link"><span class="sb-flag">🌍</span><span class="sb-name">World Bank</span><span class="sb-cat eco">Macro</span></a>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- PANEL: NOTIZIE LIVE -->
+    <div id="panel-notizie" class="panel active">
+      <div class="news-header"><h2>Notizie Live</h2><span class="upd">Fonti finanziarie in tempo reale</span></div>
+      <div class="papers-grid">
+        <a href="https://it.investing.com/news/latest-news" target="_blank" class="paper-card"><div class="paper-country">Globale · Real-time</div><div class="paper-name">Investing.com</div><div class="paper-desc">Ultime notizie finanziarie globali in tempo reale</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Mercati</span><span class="p-tag">Forex</span></div></a>
+        <a href="https://www.ilsole24ore.com/finanza-e-mercati" target="_blank" class="paper-card"><div class="paper-country">Milano · Economico</div><div class="paper-name">Il Sole 24 Ore</div><div class="paper-desc">Finanza e mercati italiani aggiornati in tempo reale</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Italia</span><span class="p-tag">BTP</span></div></a>
+        <a href="https://www.reuters.com/finance" target="_blank" class="paper-card"><div class="paper-country">Londra · Agenzia</div><div class="paper-name">Reuters Finance</div><div class="paper-desc">Agenzia internazionale con breaking news sui mercati globali</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Banche Centrali</span></div></a>
+        <a href="https://www.bloomberg.com/markets" target="_blank" class="paper-card"><div class="paper-country">New York · Finanziario</div><div class="paper-name">Bloomberg Markets</div><div class="paper-desc">Dati e notizie sui mercati finanziari globali</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Azioni</span><span class="p-tag">Bond</span></div></a>
+        <a href="https://www.ft.com/markets" target="_blank" class="paper-card"><div class="paper-country">Londra · Finanziario</div><div class="paper-name">Financial Times</div><div class="paper-desc">Analisi e notizie dai mercati internazionali</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Analisi</span></div></a>
+        <a href="https://www.cnbc.com/world-markets/" target="_blank" class="paper-card"><div class="paper-country">New York · TV</div><div class="paper-name">CNBC World Markets</div><div class="paper-desc">Copertura live dei mercati mondiali Wall Street e Asia</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">USA</span><span class="p-tag">Asia</span></div></a>
+        <a href="https://www.milanofinanza.it/" target="_blank" class="paper-card"><div class="paper-country">Milano · Finanziario</div><div class="paper-name">Milano Finanza</div><div class="paper-desc">Notizie e aggiornamenti live dal mercato finanziario italiano</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Borsa</span></div></a>
+        <a href="https://finance.yahoo.com/news/" target="_blank" class="paper-card"><div class="paper-country">Globale · Aggregatore</div><div class="paper-name">Yahoo Finance News</div><div class="paper-desc">Aggregatore di notizie finanziarie da tutte le fonti principali</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Multi-fonte</span></div></a>
+        <a href="https://www.wsj.com/news/markets" target="_blank" class="paper-card"><div class="paper-country">New York · Finanziario</div><div class="paper-name">Wall Street Journal</div><div class="paper-desc">Notizie e analisi dai mercati finanziari americani</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">USA</span></div></a>
+        <a href="https://www.borsaitaliana.it/notizie/notizie.htm" target="_blank" class="paper-card"><div class="paper-country">Milano · Ufficiale</div><div class="paper-name">Borsa Italiana News</div><div class="paper-desc">Comunicati ufficiali e notizie da Borsa Italiana</div><div class="paper-tags"><span class="p-tag">🔴 Live</span><span class="p-tag">Ufficiale</span><span class="p-tag">MIB</span></div></a>
+      </div>
+    </div>
+    <!-- PANEL: VIDEO -->
+    <div id="panel-video" class="panel">
+      <div class="news-header"><h2>Canali Video Finanziari</h2><span class="upd">Migliori canali mondiali selezionati</span></div>
+
+      <div class="section-divider">Canali internazionali di riferimento</div>
+      <div class="video-grid">
+        <a href="https://www.youtube.com/@Bloomberg" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#1A1814"><div class="video-thumb-bg">📊</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Bloomberg · YouTube</div><div class="video-title">Bloomberg Markets & Finance — Live</div><div class="video-meta">Analisi istituzionale · Interviste CEO · Macro globale</div></div>
+        </a>
+        <a href="https://www.youtube.com/@CNBC" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#001F5B"><div class="video-thumb-bg">📺</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">CNBC · YouTube</div><div class="video-title">CNBC Markets — Breaking News</div><div class="video-meta">Mercati USA · Wall Street · Fed · Earnings</div></div>
+        </a>
+        <a href="https://www.youtube.com/@TheEconomist" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#E03131"><div class="video-thumb-bg">🌐</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">The Economist · YouTube</div><div class="video-title">The Economist — Analisi Geopolitica</div><div class="video-meta">Economia globale · Politica · Scenari strategici</div></div>
+        </a>
+        <a href="https://www.youtube.com/@FinancialTimes" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#F7C59F"><div class="video-thumb-bg">🏦</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Financial Times · YouTube</div><div class="video-title">FT News & Analysis</div><div class="video-meta">Finanza UK ed europea · Corporate news</div></div>
+        </a>
+        <a href="https://www.youtube.com/@Reuters" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#FF6B35"><div class="video-thumb-bg">📡</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Reuters · YouTube</div><div class="video-title">Reuters — News Mondiali in Video</div><div class="video-meta">Breaking news · Geopolitica · Economia</div></div>
+        </a>
+        <a href="https://www.youtube.com/@wsj" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#2D4A8A"><div class="video-thumb-bg">📰</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Wall Street Journal · YouTube</div><div class="video-title">WSJ — Markets & Business</div><div class="video-meta">Azioni USA · Business · Tecnologia</div></div>
+        </a>
+      </div>
+
+      <div class="section-divider">Analisi e formazione finanziaria</div>
+      <div class="video-grid">
+        <a href="https://www.youtube.com/@SvenCarlin" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#2D5A27"><div class="video-thumb-bg">📚</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Sven Carlin Ph.D.</div><div class="video-title">Value Investing — Analisi Fondamentale</div><div class="video-meta">Il migliore per value investing · Dati e ricerca</div></div>
+        </a>
+        <a href="https://www.youtube.com/@BenFelixCSI" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#1A3A5C"><div class="video-thumb-bg">🎓</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Ben Felix</div><div class="video-title">Evidence-Based Investing</div><div class="video-meta">Ricerca accademica applicata · ETF · Portafogli</div></div>
+        </a>
+        <a href="https://www.youtube.com/@ThePlainBagel" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#5C3317"><div class="video-thumb-bg">🧠</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">The Plain Bagel</div><div class="video-title">Analisi Critica dei Mercati</div><div class="video-meta">Strumenti finanziari · Analisi imparziale</div></div>
+        </a>
+        <a href="https://www.youtube.com/@AswathDamodaran" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#8B1A1A"><div class="video-thumb-bg">📐</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Aswath Damodaran</div><div class="video-title">Valuation — NYU Stern Professor</div><div class="video-meta">Il guru della valutazione aziendale mondiale</div></div>
+        </a>
+      </div>
+
+      <div class="section-divider">Canali italiani di qualità</div>
+      <div class="video-grid">
+        <a href="https://www.youtube.com/@segreti_bancari" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#2C5F2E"><div class="video-thumb-bg">🇮🇹</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Segreti Bancari — Giacomo Saver</div><div class="video-title">Investire in autonomia — il meglio in italiano</div><div class="video-meta">Ex gestore Deutsche Bank · Analisi di qualità</div></div>
+        </a>
+        <a href="https://www.youtube.com/@ColazioneMilano" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#1A1A8B"><div class="video-thumb-bg">☕</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Colazione a Wall Street</div><div class="video-title">Mercati quotidiani — Vito Lops</div><div class="video-meta">Il Sole 24 Ore · Mercati ogni mattina</div></div>
+        </a>
+        <a href="https://www.youtube.com/@EugenioBenetazzo" target="_blank" class="video-card">
+          <div class="video-thumb" style="background:#4A1A1A"><div class="video-thumb-bg">🔭</div><div class="play-btn"><div class="play-triangle"></div></div></div>
+          <div class="video-info"><div class="video-channel">Eugenio Benetazzo</div><div class="video-title">Analisi macroeconomica contrarian</div><div class="video-meta">Visione critica · Scenari alternativi</div></div>
+        </a>
+      </div>
+    </div>
+
+    <!-- PANEL: QUOTIDIANI ITALIANI -->
+    <div id="panel-italiani" class="panel">
+      <div class="news-header"><h2>Quotidiani Italiani</h2><span class="upd">Principali testate nazionali</span></div>
+      <div class="papers-grid">
+        <a href="https://www.ilsole24ore.com" target="_blank" class="paper-card"><div class="paper-country">Milano · Economico</div><div class="paper-name">Il Sole 24 Ore</div><div class="paper-desc">Il quotidiano economico-finanziario di riferimento italiano</div><div class="paper-tags"><span class="p-tag">Finanza</span><span class="p-tag">Economia</span><span class="p-tag">Diritto</span></div></a>
+        <a href="https://www.milanofinanza.it" target="_blank" class="paper-card"><div class="paper-country">Milano · Finanziario</div><div class="paper-name">Milano Finanza</div><div class="paper-desc">Quotidiano di borsa e mercati finanziari italiani</div><div class="paper-tags"><span class="p-tag">Borsa</span><span class="p-tag">Fondi</span></div></a>
+        <a href="https://www.corriere.it" target="_blank" class="paper-card"><div class="paper-country">Milano · Generalista</div><div class="paper-name">Corriere della Sera</div><div class="paper-desc">Il quotidiano nazionale più diffuso in Italia</div><div class="paper-tags"><span class="p-tag">Politica</span><span class="p-tag">Economia</span></div></a>
+        <a href="https://www.repubblica.it" target="_blank" class="paper-card"><div class="paper-country">Roma · Generalista</div><div class="paper-name">La Repubblica</div><div class="paper-desc">Quotidiano nazionale · Economica e politica</div><div class="paper-tags"><span class="p-tag">Politica</span><span class="p-tag">Economia</span></div></a>
+        <a href="https://www.lastampa.it" target="_blank" class="paper-card"><div class="paper-country">Torino · Generalista</div><div class="paper-name">La Stampa</div><div class="paper-desc">Storico quotidiano torinese · Finanza ed economia</div><div class="paper-tags"><span class="p-tag">Nord Italia</span></div></a>
+        <a href="https://www.teleborsa.it" target="_blank" class="paper-card"><div class="paper-country">Roma · Finanziario</div><div class="paper-name">Teleborsa</div><div class="paper-desc">Notizie di borsa e mercati finanziari in tempo reale</div><div class="paper-tags"><span class="p-tag">Real-time</span><span class="p-tag">Borsa</span></div></a>
+        <a href="https://www.borsaitaliana.it" target="_blank" class="paper-card"><div class="paper-country">Milano · Ufficiale</div><div class="paper-name">Borsa Italiana</div><div class="paper-desc">Fonte ufficiale per tutti i titoli quotati a Milano</div><div class="paper-tags"><span class="p-tag">Ufficiale</span><span class="p-tag">MIB</span></div></a>
+        <a href="https://www.ilmessaggero.it" target="_blank" class="paper-card"><div class="paper-country">Roma · Generalista</div><div class="paper-name">Il Messaggero</div><div class="paper-desc">Quotidiano romano · Economia e politica</div><div class="paper-tags"><span class="p-tag">Centro Italia</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: QUOTIDIANI EUROPEI -->
+    <div id="panel-europei" class="panel">
+      <div class="news-header"><h2>Quotidiani Europei</h2><span class="upd">Principali testate del continente</span></div>
+      <div class="papers-grid">
+        <a href="https://www.ft.com" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Finanziario</div><div class="paper-name">Financial Times</div><div class="paper-desc">Il quotidiano economico di riferimento mondiale</div><div class="paper-tags"><span class="p-tag">Finanza</span><span class="p-tag">Globale</span></div></a>
+        <a href="https://www.economist.com" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Settimanale</div><div class="paper-name">The Economist</div><div class="paper-desc">Il settimanale più influente al mondo su economia e geopolitica</div><div class="paper-tags"><span class="p-tag">Macro</span><span class="p-tag">Geo</span></div></a>
+        <a href="https://www.theguardian.com/business" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Generalista</div><div class="paper-name">The Guardian</div><div class="paper-desc">Sezione Business · Economia e finanza progressista</div><div class="paper-tags"><span class="p-tag">Business</span></div></a>
+        <a href="https://www.handelsblatt.com" target="_blank" class="paper-card"><div class="paper-country">🇩🇪 Düsseldorf · Economico</div><div class="paper-name">Handelsblatt</div><div class="paper-desc">Il quotidiano economico tedesco — cuore dell'economia europea</div><div class="paper-tags"><span class="p-tag">Germania</span><span class="p-tag">Industria</span></div></a>
+        <a href="https://www.faz.net" target="_blank" class="paper-card"><div class="paper-country">🇩🇪 Francoforte · Generalista</div><div class="paper-name">Frankfurter Allgemeine</div><div class="paper-desc">Autorità tedesca su economia, politica e finanza</div><div class="paper-tags"><span class="p-tag">Germania</span><span class="p-tag">BCE</span></div></a>
+        <a href="https://www.lemonde.fr/economie" target="_blank" class="paper-card"><div class="paper-country">🇫🇷 Parigi · Generalista</div><div class="paper-name">Le Monde Économie</div><div class="paper-desc">Il quotidiano francese di riferimento · Sezione economia</div><div class="paper-tags"><span class="p-tag">Francia</span><span class="p-tag">Europa</span></div></a>
+        <a href="https://www.lesechos.fr" target="_blank" class="paper-card"><div class="paper-country">🇫🇷 Parigi · Economico</div><div class="paper-name">Les Echos</div><div class="paper-desc">Il quotidiano economico-finanziario francese</div><div class="paper-tags"><span class="p-tag">Finanza</span><span class="p-tag">CAC40</span></div></a>
+        <a href="https://elpais.com/economia" target="_blank" class="paper-card"><div class="paper-country">🇪🇸 Madrid · Generalista</div><div class="paper-name">El País Economía</div><div class="paper-desc">Principale quotidiano spagnolo · Sezione economica</div><div class="paper-tags"><span class="p-tag">Spagna</span><span class="p-tag">IBEX</span></div></a>
+        <a href="https://www.nrc.nl" target="_blank" class="paper-card"><div class="paper-country">🇳🇱 Amsterdam · Generalista</div><div class="paper-name">NRC Handelsblad</div><div class="paper-desc">Quotidiano olandese autorevole · Economia e finanza</div><div class="paper-tags"><span class="p-tag">Olanda</span><span class="p-tag">AEX</span></div></a>
+        <a href="https://www.correiodamanha.pt" target="_blank" class="paper-card"><div class="paper-country">🇵🇹 Lisbona · Generalista</div><div class="paper-name">Diário de Notícias</div><div class="paper-desc">Storico quotidiano portoghese</div><div class="paper-tags"><span class="p-tag">Portogallo</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: QUOTIDIANI MONDIALI -->
+    <div id="panel-mondiali" class="panel">
+      <div class="news-header"><h2>Quotidiani Mondiali</h2><span class="upd">Le più importanti testate globali</span></div>
+
+      <div class="section-divider">Nord America</div>
+      <div class="papers-grid">
+        <a href="https://www.wsj.com" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Economico</div><div class="paper-name">Wall Street Journal</div><div class="paper-desc">Il quotidiano finanziario americano di riferimento mondiale</div><div class="paper-tags"><span class="p-tag">Wall St.</span><span class="p-tag">S&P500</span></div></a>
+        <a href="https://www.nytimes.com/section/business" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Generalista</div><div class="paper-name">New York Times Business</div><div class="paper-desc">Sezione economica del più influente quotidiano americano</div><div class="paper-tags"><span class="p-tag">USA</span><span class="p-tag">Tech</span></div></a>
+        <a href="https://www.washingtonpost.com/business" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 Washington · Generalista</div><div class="paper-name">Washington Post Business</div><div class="paper-desc">Economia, politica economica USA e relazioni internazionali</div><div class="paper-tags"><span class="p-tag">Politica US</span></div></a>
+        <a href="https://www.barrons.com" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Finanziario</div><div class="paper-name">Barron's</div><div class="paper-desc">Settimanale finanziario americano · Analisi investimenti</div><div class="paper-tags"><span class="p-tag">Investimenti</span><span class="p-tag">Analisi</span></div></a>
+        <a href="https://www.theglobeandmail.com/business" target="_blank" class="paper-card"><div class="paper-country">🇨🇦 Toronto · Generalista</div><div class="paper-name">Globe and Mail</div><div class="paper-desc">Il principale quotidiano canadese · Economia e mercati</div><div class="paper-tags"><span class="p-tag">Canada</span><span class="p-tag">TSX</span></div></a>
+      </div>
+
+      <div class="section-divider">Asia & Pacifico</div>
+      <div class="papers-grid">
+        <a href="https://www.nikkei.com" target="_blank" class="paper-card"><div class="paper-country">🇯🇵 Tokyo · Economico</div><div class="paper-name">Nikkei</div><div class="paper-desc">Il Bloomberg giapponese — riferimento per i mercati asiatici</div><div class="paper-tags"><span class="p-tag">Giappone</span><span class="p-tag">Nikkei225</span></div></a>
+        <a href="https://asia.nikkei.com" target="_blank" class="paper-card"><div class="paper-country">🌏 Asia · Economico</div><div class="paper-name">Nikkei Asia</div><div class="paper-desc">Copertura economica dell'intera regione asiatica in inglese</div><div class="paper-tags"><span class="p-tag">Asia</span><span class="p-tag">Emergenti</span></div></a>
+        <a href="https://www.scmp.com/business" target="_blank" class="paper-card"><div class="paper-country">🇭🇰 Hong Kong · Generalista</div><div class="paper-name">South China Morning Post</div><div class="paper-desc">La finestra sull'economia cinese e asiatica in inglese</div><div class="paper-tags"><span class="p-tag">Cina</span><span class="p-tag">HK</span></div></a>
+        <a href="https://www.thehindu.com/business" target="_blank" class="paper-card"><div class="paper-country">🇮🇳 Mumbai · Generalista</div><div class="paper-name">The Hindu Business</div><div class="paper-desc">L'India economica — mercato da 1,4 miliardi da monitorare</div><div class="paper-tags"><span class="p-tag">India</span><span class="p-tag">BSE</span></div></a>
+      </div>
+
+      <div class="section-divider">Middle East & Africa</div>
+      <div class="papers-grid">
+        <a href="https://www.arabianbusiness.com" target="_blank" class="paper-card"><div class="paper-country">🇦🇪 Dubai · Economico</div><div class="paper-name">Arabian Business</div><div class="paper-desc">Il quotidiano economico del Golfo Persico e Middle East</div><div class="paper-tags"><span class="p-tag">GCC</span><span class="p-tag">Petrolio</span></div></a>
+        <a href="https://www.businesslive.co.za" target="_blank" class="paper-card"><div class="paper-country">🇿🇦 Johannesburg · Economico</div><div class="paper-name">Business Live SA</div><div class="paper-desc">Principale fonte economica sudafricana e continentale</div><div class="paper-tags"><span class="p-tag">Africa</span><span class="p-tag">JSE</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: FONTI FINANZIARIE -->
+    <div id="panel-finanza" class="panel">
+      <div class="news-header"><h2>Fonti Finanziarie Specializzate</h2><span class="upd">Database, analytics e piattaforme dati</span></div>
+      <div class="papers-grid">
+        <a href="https://it.investing.com/news/latest-news" target="_blank" class="paper-card"><div class="paper-country">Globale · Dati mercati</div><div class="paper-name">Investing.com</div><div class="paper-desc">Notizie finanziarie real-time + dati mercati globali</div><div class="paper-tags"><span class="p-tag">Real-time</span><span class="p-tag">Globale</span></div></a>
+        <a href="https://www.bloomberg.com/markets" target="_blank" class="paper-card"><div class="paper-country">USA · Terminal professionale</div><div class="paper-name">Bloomberg Markets</div><div class="paper-desc">Il terminale finanziario professionale mondiale</div><div class="paper-tags"><span class="p-tag">Istituzionale</span></div></a>
+        <a href="https://cbonds.it" target="_blank" class="paper-card"><div class="paper-country">Globale · Obbligazioni</div><div class="paper-name">Cbonds</div><div class="paper-desc">Database obbligazionario mondiale — 1 milione di bond</div><div class="paper-tags"><span class="p-tag">BTP</span><span class="p-tag">Corporate</span></div></a>
+        <a href="https://www.morningstar.it" target="_blank" class="paper-card"><div class="paper-country">USA · Rating fondi</div><div class="paper-name">Morningstar</div><div class="paper-desc">Rating e analisi fondi comuni e ETF</div><div class="paper-tags"><span class="p-tag">Fondi</span><span class="p-tag">ETF</span></div></a>
+        <a href="https://www.justetf.com/it" target="_blank" class="paper-card"><div class="paper-country">Germania · ETF</div><div class="paper-name">JustETF</div><div class="paper-desc">Lo screener di ETF più completo disponibile in Europa</div><div class="paper-tags"><span class="p-tag">ETF</span><span class="p-tag">ETC</span></div></a>
+        <a href="https://www.milanofinanza.it/mercati" target="_blank" class="paper-card"><div class="paper-country">Italia · Borsa</div><div class="paper-name">Milano Finanza Mercati</div><div class="paper-desc">Dati di borsa italiani in tempo reale</div><div class="paper-tags"><span class="p-tag">FTSE MIB</span></div></a>
+        <a href="https://www.teleborsa.it" target="_blank" class="paper-card"><div class="paper-country">Italia · Borsa</div><div class="paper-name">Teleborsa</div><div class="paper-desc">Agenzia di stampa finanziaria italiana</div><div class="paper-tags"><span class="p-tag">Borsa IT</span></div></a>
+        <a href="https://www.borsaitaliana.it/homepage/homepage.htm" target="_blank" class="paper-card"><div class="paper-country">Italia · Ufficiale</div><div class="paper-name">Borsa Italiana</div><div class="paper-desc">Fonte ufficiale Euronext Milan — dati regolamentati</div><div class="paper-tags"><span class="p-tag">Ufficiale</span></div></a>
+        <a href="https://mercati.ilsole24ore.com" target="_blank" class="paper-card"><div class="paper-country">Italia · Dati</div><div class="paper-name">Il Sole 24 Ore Mercati</div><div class="paper-desc">Quotazioni BTP, azioni, valute aggiornate</div><div class="paper-tags"><span class="p-tag">BTP</span><span class="p-tag">Valute</span></div></a>
+        <a href="https://it.tradingview.com" target="_blank" class="paper-card"><div class="paper-country">USA · Grafici</div><div class="paper-name">TradingView</div><div class="paper-desc">Analisi tecnica e grafici professionali</div><div class="paper-tags"><span class="p-tag">Tecnica</span><span class="p-tag">Grafici</span></div></a>
+      </div>
+    </div>
+
+    <!-- PANEL: AGENZIE STAMPA -->
+    <div id="panel-agenzie" class="panel">
+      <div class="news-header"><h2>Agenzie di Stampa Mondiali</h2><span class="upd">Le fonti primarie delle notizie globali</span></div>
+      <div class="papers-grid">
+        <a href="https://www.reuters.com" target="_blank" class="paper-card"><div class="paper-country">🇬🇧 Londra · Agenzia</div><div class="paper-name">Reuters</div><div class="paper-desc">La più grande agenzia di stampa mondiale — fonte primaria per i mercati finanziari globali</div><div class="paper-tags"><span class="p-tag">Globale</span><span class="p-tag">Real-time</span><span class="p-tag">Mercati</span></div></a>
+        <a href="https://apnews.com/hub/business" target="_blank" class="paper-card"><div class="paper-country">🇺🇸 New York · Agenzia</div><div class="paper-name">Associated Press</div><div class="paper-desc">La principale agenzia di stampa americana — notizie verificate</div><div class="paper-tags"><span class="p-tag">USA</span><span class="p-tag">Verificato</span></div></a>
+        <a href="https://www.afp.com/en/news-hub" target="_blank" class="paper-card"><div class="paper-country">🇫🇷 Parigi · Agenzia</div><div class="paper-name">AFP — Agence France-Presse</div><div class="paper-desc">Terza agenzia mondiale — forte copertura europea e africana</div><div class="paper-tags"><span class="p-tag">Europa</span><span class="p-tag">Africa</span></div></a>
+        <a href="https://www.ansa.it" target="_blank" class="paper-card"><div class="paper-country">🇮🇹 Roma · Agenzia</div><div class="paper-name">ANSA</div><div class="paper-desc">L'agenzia di stampa italiana nazionale — economia e finanza</div><div class="paper-tags"><span class="p-tag">Italia</span><span class="p-tag">Ufficiale</span></div></a>
+        <a href="https://www.dpa-international.com" target="_blank" class="paper-card"><div class="paper-country">🇩🇪 Berlino · Agenzia</div><div class="paper-name">DPA International</div><div class="paper-desc">L'agenzia di stampa tedesca — fondamentale per l'Europa centrale</div><div class="paper-tags"><span class="p-tag">Germania</span><span class="p-tag">Europa</span></div></a>
+        <a href="https://www.xinhuanet.com/english" target="_blank" class="paper-card"><div class="paper-country">🇨🇳 Pechino · Agenzia</div><div class="paper-name">Xinhua News</div><div class="paper-desc">L'agenzia ufficiale cinese — indispensabile per capire la narrativa di Pechino</div><div class="paper-tags"><span class="p-tag">Cina</span><span class="p-tag">Asia</span></div></a>
+        <a href="https://tass.com" target="_blank" class="paper-card"><div class="paper-country">🇷🇺 Mosca · Agenzia</div><div class="paper-name">TASS</div><div class="paper-desc">Agenzia ufficiale russa — per comprendere la posizione di Mosca</div><div class="paper-tags"><span class="p-tag">Russia</span><span class="p-tag">Energia</span></div></a>
+        <a href="https://www.kyodonews.net" target="_blank" class="paper-card"><div class="paper-country">🇯🇵 Tokyo · Agenzia</div><div class="paper-name">Kyodo News</div><div class="paper-desc">La principale agenzia giapponese — mercati asiatici e BoJ</div><div class="paper-tags"><span class="p-tag">Giappone</span><span class="p-tag">Asia</span></div></a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">
+  Giornale Finanziario Globale — Hub Personale Multidisciplinare · Generato con Claude AI · <span id="footerDate"></span>
+</div>
+
+
+</div>
+>>>>>>> parent of c81c924 (Add files via upload)
 <div id="view-finanza" class="view">
   <!-- BARRA FISSA FINANZA -->
   <div style="position:sticky;top:52px;z-index:150;background:var(--surface);border-bottom:.5px solid var(--border);padding:10px 1.5rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
